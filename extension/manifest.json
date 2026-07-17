@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Automatically fill job application forms using your profile and tailored resumes from ResumeDB.",
   "permissions": [
+    "sidePanel",
     "tabs",
     "scripting"
   ],
@@ -13,7 +14,11 @@
     "https://*.greenhouse.io/*",
     "https://*.myworkdayjobs.com/*"
   ],
-  "action": {
-    "default_popup": "popup.html"
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {},
+  "side_panel": {
+    "default_path": "sidepanel.html"
   }
 }

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --bg: #1a1a1a;
+      --surface: #262626;
+      --text: #e0e0e0;
+      --accent: #b68235;
+      --divider: #3a3a3a;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h2 {
+      margin: 0;
+      font-size: 16px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--divider);
+      background: var(--surface);
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #888;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+    .panel.active {
+      display: flex;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    select, button, input {
+      width: 100%;
+      padding: 8px 10px;
+      background: var(--surface);
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+    button {
+      background: var(--accent);
+      color: #1a1a1a;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    button:hover {
+      background: #cfa058;
+    }
+    button:disabled {
+      background: #444;
+      color: #888;
+      cursor: not-allowed;
+    }
+    .status {
+      font-size: 12px;
+      color: #888;
+      margin-top: 10px;
+      text-align: center;
+      min-height: 18px;
+    }
+    .status.success { color: #4caf50; }
+    .status.error { color: #f44336; }
+    
+    /* Metrics & Keyword styles */
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--divider);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .metric-score {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    .keyword-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .keyword {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: #333;
+    }
+    .keyword.matched { background: #1b4d22; color: #81c784; }
+    .keyword.missing { background: #621b1b; color: #e57373; }
+
+    /* Chat styles */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 250px;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      border: 1px solid var(--divider);
+      border-radius: 4px;
+      padding: 10px;
+      background: #111;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 350px;
+    }
+    .msg {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+    .msg.agent {
+      align-self: flex-start;
+      background: #2a2a2a;
+      color: #e0e0e0;
+    }
+    .chat-input-row {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-input-row input {
+      flex: 1;
+    }
+    .chat-input-row button {
+      width: auto;
+      margin-top: 0;
+      padding-inline: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>ResumeDB Side Panel</h2>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-target="autofill-panel">Autofill</div>
+    <div class="tab" data-target="metrics-panel">Keywords</div>
+    <div class="tab" data-target="chat-panel">AI Assistant</div>
+  </div>
+
+  <div class="content-area">
+    <!-- Autofill Panel -->
+    <div class="panel active" id="autofill-panel">
+      <div class="field">
+        <label for="app-select">Select Tracked Role</label>
+        <select id="app-select">
+          <option value="">Connecting to ResumeDB...</option>
+        </select>
+      </div>
+      <button id="fill-btn" disabled>Auto-fill current form</button>
+      <div class="status" id="status-text">Ready.</div>
+    </div>
+
+    <!-- Keywords & Metrics Panel -->
+    <div class="panel" id="metrics-panel">
+      <div class="metric-card">
+        <div>
+          <strong style="font-size: 13px;">ATS Match Score</strong>
+          <div style="font-size: 11px; color: #888; margin-top: 2px;">Based on keywords analysis</div>
+        </div>
+        <div class="metric-score" id="match-score">-</div>
+      </div>
+
+      <div class="field">
+        <label>Matched Keywords</label>
+        <div class="keyword-list" id="matched-keywords">
+          <div class="text-muted" style="font-size: 12px; font-style: italic;">Select application to see analysis...</div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top: 14px;">
+        <label>Missing Keywords</label>
+        <div class="keyword-list" id="missing-keywords">
+          <div class="text-muted" style="font-size: 12px; font-style: italic;">Select application to see analysis...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Assistant Panel -->
+    <div class="panel" id="chat-panel">
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg agent">Select a role and type a message below to consult the tailored application assistant...</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Type instructions or questions..." disabled>
+          <button id="send-btn" disabled>Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
