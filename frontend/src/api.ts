@@ -61,8 +61,11 @@ export interface Config {
 }
 
 export interface Health {
+  agent_provider: string
   claude: string | null
   claude_version: string | null
+  codex: string | null
+  codex_version: string | null
   typst: string | null
   data_repo: string
   data_repo_ok: boolean

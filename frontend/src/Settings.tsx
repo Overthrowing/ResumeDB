@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api, type Health, type ModelConfig, type Profile } from './api'
 
-const MODEL_OPTIONS = ['', 'haiku', 'sonnet', 'opus', 'fable']
+const MODEL_OPTIONS = ['', 'haiku', 'sonnet', 'opus', 'fable', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
 const EFFORT_OPTIONS = ['', 'low', 'medium', 'high', 'xhigh', 'max']
 
 const MODEL_ROWS: { label: string; hint: string; model: keyof ModelConfig; effort: keyof ModelConfig }[] = [
@@ -122,7 +122,12 @@ export default function Settings({
           <h4 style={{ margin: '0 0 var(--space-2)' }}>Environment</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', fontSize: 14 }}>
             <Row label="Data repository" ok={!!health?.data_repo_ok} value={health?.data_repo ?? '-'} />
-            <Row label="claude CLI" ok={!!health?.claude} value={health?.claude_version ?? 'not found - run: claude auth login'} />
+            <Row label="Agent provider" ok={true} value={health?.agent_provider ?? 'claude'} />
+            {health?.agent_provider === 'codex' ? (
+              <Row label="codex CLI" ok={!!health?.codex} value={health?.codex_version ?? 'not found - run: codex login'} />
+            ) : (
+              <Row label="claude CLI" ok={!!health?.claude} value={health?.claude_version ?? 'not found - run: claude auth login'} />
+            )}
             <Row label="typst" ok={!!health?.typst} value={health?.typst ?? 'not found - run: brew install typst'} />
           </div>
         </div>
