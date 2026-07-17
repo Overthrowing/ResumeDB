@@ -1,0 +1,3 @@
+*.pdf
+.state.json
+.DS_Store

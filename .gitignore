@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# OS
+.DS_Store
+
+# Local runtime config (data-repo path etc.) lives in ~/.resumedb.json, not here

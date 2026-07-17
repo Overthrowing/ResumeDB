@@ -1,0 +1,45 @@
+# Test data every template must compile against. Exercises both section shapes
+# and all optional fields (present and absent).
+name: Jane Doe
+headline: Software Engineer
+contact:
+  email: jane@example.com
+  phone: "555 555 5555"
+  location: San Francisco, CA
+  links:
+    - label: GitHub
+      url: https://github.com/jane
+    - label: Website
+      url: https://jane.dev
+sections:
+  - title: Experience
+    entries:
+      - title: Software Engineer
+        org: Acme Corp
+        location: San Francisco, CA
+        dates: "Jun 2023 - Present"
+        bullets:
+          - Cut p99 latency 40% by rearchitecting the cache layer
+          - Led a team of 4 engineers shipping the billing service
+      - title: Junior Developer
+        dates: "2021 - 2023"
+        bullets:
+          - Built internal tooling used by 200 employees
+  - title: Projects
+    entries:
+      - title: ResumeDB
+        dates: "2026"
+        bullets:
+          - Local-first resume tailoring app driven by an LLM agent
+  - title: Skills
+    items:
+      - label: Languages
+        value: Python, Go, TypeScript
+      - label: Tools
+        value: Docker, Kubernetes, Postgres
+  - title: Education
+    entries:
+      - title: BS Computer Science
+        org: State University
+        dates: "2017 - 2021"
+        bullets: []
