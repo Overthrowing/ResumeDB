@@ -318,7 +318,43 @@ class DataRepo:
         self._proposal_path(name).unlink()
         gitops.checkpoint(self.root, "db", f"reject proposal {name}")
 
+    # -- research runs --------------------------------------------------------
+
+    def _runs_dir(self) -> Path:
+        d = self.root / "db" / "research_runs"
+        d.mkdir(parents=True, exist_ok=True)
+        return d
+
+    def save_research_run(self, run_id: str, data: dict) -> None:
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):
+            raise DataRepoError(f"bad run id: {run_id!r}")
+        path = self._runs_dir() / f"{run_id}.yaml"
+        _dump(data, path)
+        gitops.checkpoint(self.root, "db", f"save research run {run_id}")
+
+    def get_research_run(self, run_id: str) -> dict:
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):
+            raise DataRepoError(f"bad run id: {run_id!r}")
+        path = self._runs_dir() / f"{run_id}.yaml"
+        if not path.exists():
+            raise DataRepoError(f"no research run {run_id}")
+        return _load(path) or {}
+
+    def list_research_runs(self, limit: int = 10) -> list[dict]:
+        d = self._runs_dir()
+        runs = []
+        for f in sorted(d.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True):
+            try:
+                data = _load(f) or {}
+                runs.append(data)
+                if len(runs) >= limit:
+                    break
+            except Exception:
+                pass
+        return runs
+
     # -- templates -----------------------------------------------------------
 
     def list_templates(self) -> list[str]:
         return sorted(f.stem for f in (self.root / "templates").glob("*.typ"))
+

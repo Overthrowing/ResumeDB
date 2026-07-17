@@ -4,13 +4,14 @@ import ChatRail from './ChatRail'
 import MarkdownField from './MarkdownField'
 import { IconCheck, IconChevronLeft, IconDownload, IconRefresh, IconSparkle, IconWarn } from './icons'
 
-type Tab = 'overview' | 'resume' | 'cover' | 'ats' | 'versions'
+type Tab = 'overview' | 'resume' | 'cover' | 'ats' | 'versions' | 'autofill'
 const TABS: { id: Tab; label: string }[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'resume', label: 'Resume' },
   { id: 'cover', label: 'Cover & Q&A' },
   { id: 'ats', label: 'ATS check' },
   { id: 'versions', label: 'Versions' },
+  { id: 'autofill', label: 'Autofill' },
 ]
 
 export default function Workspace({ id, onClose }: { id: string; onClose: () => void }) {
@@ -84,6 +85,7 @@ export default function Workspace({ id, onClose }: { id: string; onClose: () => 
             {tab === 'cover' && <CoverTab app={app} onError={setError} onSaved={reload} />}
             {tab === 'ats' && <AtsTab appId={id} />}
             {tab === 'versions' && <VersionsTab appId={id} onReverted={reload} onError={setError} />}
+            {tab === 'autofill' && <AutofillTab app={app} />}
           </div>
         </div>
 
@@ -575,3 +577,109 @@ function VersionsTab({ appId, onReverted, onError }: { appId: string; onReverted
     </div>
   )
 }
+
+function AutofillTab({ app }: { app: Application }) {
+  const [profile, setProfile] = useState<any>(null)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
+
+  useEffect(() => {
+    api.profile().then(setProfile).catch(() => {})
+  }, [])
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text)
+    setCopiedField(label)
+    setTimeout(() => setCopiedField(null), 2000)
+  }
+
+  const handleDownload = () => {
+    window.open(`/api/applications/${app.meta.id}/resume.pdf`, '_blank')
+  }
+
+  if (!profile) return <div className="text-muted">Loading profile...</div>
+
+  const fields = [
+    { label: 'Full Name', value: profile.name || '' },
+    { label: 'Email Address', value: profile.email || '' },
+    { label: 'Phone Number', value: profile.phone || '' },
+    { label: 'Location (City/State)', value: profile.location || '' },
+  ]
+
+  if (profile.links) {
+    profile.links.forEach((l: any) => {
+      fields.push({ label: l.label, value: l.url })
+    })
+  }
+
+  return (
+    <div style={{ maxWidth: 720 }}>
+      <div style={{ marginBottom: 'var(--space-4)' }}>
+        <h3 style={{ margin: '0 0 4px', fontSize: 20 }}>Auto-fill Application Form</h3>
+        <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
+          Use the ResumeDB Chrome Extension to automatically fill this application's forms and upload the tailored resume PDF in one click.
+        </p>
+      </div>
+
+      <div className="card" style={{ padding: 'var(--space-4)', marginBottom: 'var(--space-6)', borderLeft: '3px solid var(--color-accent)' }}>
+        <h4 style={{ margin: '0 0 var(--space-2)', fontSize: 15 }}>How to use the Chrome Extension:</h4>
+        <ol style={{ fontSize: 13, margin: 0, paddingLeft: 20, lineHeight: 1.6 }}>
+          <li>
+            Open Chrome and navigate to <strong>chrome://extensions</strong>.
+          </li>
+          <li>
+            Enable <strong>Developer mode</strong> (toggle switch in the top-right corner).
+          </li>
+          <li>
+            Click <strong>Load unpacked</strong> (top-left button) and select the extension folder:
+            <code style={{ display: 'block', background: 'var(--color-neutral-100)', padding: '4px 8px', borderRadius: 'var(--radius-sm)', marginTop: 4, fontFamily: 'monospace', fontSize: 12 }}>
+              /Users/nathanye/Dev/Hackathons/ResumeDB/extension
+            </code>
+          </li>
+          <li>
+            Open the job application page (Lever, Greenhouse, etc.), open the extension from your browser toolbar, select <strong>{app.meta.company} - {app.meta.role}</strong>, and click <strong>Auto-fill current form</strong>.
+          </li>
+        </ol>
+      </div>
+
+      <div style={{ marginBottom: 'var(--space-4)' }}>
+        <h3 style={{ margin: '0 0 4px', fontSize: 20 }}>Manual Copy-Paste Details</h3>
+        <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
+          Quick one-click copying for manual form entry.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-2) var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)' }}>
+          <div>
+            <strong style={{ fontSize: 13 }}>Tailored Resume (PDF)</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>Download the PDF tailored specifically for this role</div>
+          </div>
+          <button className="btn btn-primary" onClick={handleDownload} style={{ padding: '4px 10px', fontSize: 12 }}>
+            Download PDF
+          </button>
+        </div>
+
+        {fields.map((f, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-2) var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)' }}>
+            <div>
+              <strong style={{ fontSize: 13 }}>{f.label}</strong>
+              <div style={{ fontSize: 13, marginTop: 2, fontFamily: 'monospace', color: 'var(--color-accent-900)' }}>
+                {f.value || <span className="text-muted" style={{ fontStyle: 'italic' }}>Not specified</span>}
+              </div>
+            </div>
+            {f.value && (
+              <button
+                className="btn btn-secondary"
+                onClick={() => copyToClipboard(f.value, f.label)}
+                style={{ padding: '4px 10px', fontSize: 12 }}
+              >
+                {copiedField === f.label ? 'Copied ✓' : 'Copy'}
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+

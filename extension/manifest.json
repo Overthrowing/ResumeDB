@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "ResumeDB Autofill Helper",
+  "version": "1.0.0",
+  "description": "Automatically fill job application forms using your profile and tailored resumes from ResumeDB.",
+  "permissions": [
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "https://*.lever.co/*",
+    "https://*.greenhouse.io/*",
+    "https://*.myworkdayjobs.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

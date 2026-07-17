@@ -107,6 +107,41 @@ export interface AuditResult {
   }
 }
 
+export interface JobLead {
+  company: string
+  role: string
+  location?: string
+  term?: string
+  department?: string
+  team?: string
+  deadline?: string | null
+  salary_amount?: number | null
+  salary_currency?: string
+  salary_period?: string
+  priority?: number
+  what_they_look_for?: string
+  good_to_know?: string
+  job_description?: string
+  notes?: string
+  application_url?: string
+  source_url?: string
+}
+
+export interface ResearchRun {
+  id: string
+  kind: 'search' | 'ingest'
+  query: string
+  status: 'pending' | 'completed' | 'failed'
+  summary: string
+  created_at: string
+  error?: string | null
+  result?: {
+    summary?: string
+    job?: JobLead
+    jobs?: JobLead[]
+  } | null
+}
+
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init)
   if (!res.ok) {
@@ -166,4 +201,10 @@ export const api = {
     return res.text()
   },
   revert: (sha: string) => req<{ ok: boolean }>(`/api/history/${sha}/revert`, { method: 'POST' }),
+
+  agentIngest: (body: { input: string }) => req<{ run_id: string; summary: string; job: JobLead }>('/api/agent/ingest', json('POST', body)),
+  agentSearch: (body: { query: string }) => req<{ run_id: string; summary: string; jobs: JobLead[] }>('/api/agent/search', json('POST', body)),
+  runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
+  run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
 }
+

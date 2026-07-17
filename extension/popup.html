@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      margin: 0;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #b68235;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    select, button {
+      width: 100%;
+      padding: 8px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+    select:focus, button:focus {
+      outline: 1px solid #b68235;
+    }
+    button {
+      background: #b68235;
+      color: #1a1a1a;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #cfa058;
+    }
+    button:disabled {
+      background: #444;
+      color: #888;
+      cursor: not-allowed;
+    }
+    .status {
+      font-size: 12px;
+      color: #888;
+      margin-top: 10px;
+      text-align: center;
+      min-height: 18px;
+    }
+    .success {
+      color: #4caf50;
+    }
+    .error {
+      color: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <h2>ResumeDB Autofill Helper</h2>
+  
+  <div class="field">
+    <label for="app-select">Select Application</label>
+    <select id="app-select">
+      <option value="">Loading applications...</option>
+    </select>
+  </div>
+
+  <button id="fill-btn" disabled>Auto-fill Form</button>
+
+  <div class="status" id="status-text">Connecting to ResumeDB...</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

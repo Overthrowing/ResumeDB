@@ -3,11 +3,12 @@ import { api, type Health, type Profile } from './api'
 import { IconBriefcase, IconLogo, IconSettings, IconTemplate, IconUser } from './icons'
 import Library from './Library'
 import Applications from './Applications'
+import Ingest from './Ingest'
 import Templates from './Templates'
 import Settings from './Settings'
 import Onboarding from './Onboarding'
 
-type Screen = 'library' | 'applications' | 'templates' | 'settings'
+type Screen = 'library' | 'applications' | 'ingest' | 'templates' | 'settings'
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('library')
@@ -49,6 +50,17 @@ export default function App() {
           </span>
         ) : undefined,
     },
+    {
+      id: 'ingest',
+      label: 'Ingest & Discover',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flex: 'none' }}>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      ),
+    },
     { id: 'templates', label: 'Templates', icon: <IconTemplate /> },
     { id: 'settings', label: 'Settings', icon: <IconSettings /> },
   ]
@@ -83,9 +95,11 @@ export default function App() {
       <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {screen === 'library' && <Library />}
         {screen === 'applications' && <Applications onCountChange={setAppCount} />}
+        {screen === 'ingest' && <Ingest />}
         {screen === 'templates' && <Templates />}
         {screen === 'settings' && <Settings health={health} onProfileChange={setProfile} />}
       </main>
     </div>
   )
 }
+
