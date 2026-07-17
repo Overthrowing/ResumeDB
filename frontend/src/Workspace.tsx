@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
-import { api, type Application, type AuditResult, type HistoryEntry, type RenderResult } from './api'
+import { api, type Application, type AppStatus, type AuditResult, type HistoryEntry, type RenderResult } from './api'
 import ChatRail from './ChatRail'
 import MarkdownField from './MarkdownField'
 import { IconCheck, IconChevronLeft, IconDownload, IconRefresh, IconSparkle, IconWarn } from './icons'
+
+const PIPELINE_STEPS: { status: AppStatus; label: string; color: string }[] = [
+  { status: 'not_started', label: 'Not Started', color: 'var(--color-neutral-400)' },
+  { status: 'in_progress', label: 'In Progress', color: '#42a5f5' },
+  { status: 'awaiting_review', label: 'Awaiting Review', color: '#ffa726' },
+  { status: 'ready', label: 'Ready', color: '#66bb6a' },
+  { status: 'applied', label: 'Applied', color: 'var(--color-accent)' },
+]
 
 type Tab = 'overview' | 'resume' | 'cover' | 'ats' | 'versions' | 'autofill'
 const TABS: { id: Tab; label: string }[] = [
@@ -138,8 +146,75 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
     setDirty(true)
   }
 
+  const currentIdx = PIPELINE_STEPS.findIndex((s) => s.status === fields.status)
+
+  const transitionStatus = async (newStatus: AppStatus) => {
+    try {
+      await api.saveAppMeta(meta.id, { status: newStatus })
+      setFields({ ...fields, status: newStatus })
+      onSaved()
+    } catch (e) {
+      onError((e as Error).message)
+    }
+  }
+
   return (
     <div style={{ maxWidth: 640 }}>
+      {/* Status progression bar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 'var(--space-6)', padding: 'var(--space-3) 0' }}>
+        {PIPELINE_STEPS.map((step, i) => {
+          const isActive = step.status === fields.status
+          const isPast = i < currentIdx
+          const dotColor = isActive || isPast ? step.color : 'var(--color-neutral-300)'
+          return (
+            <div key={step.status} style={{ display: 'flex', alignItems: 'center', flex: i < PIPELINE_STEPS.length - 1 ? 1 : 'none' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <div
+                  style={{
+                    width: isActive ? 20 : 12,
+                    height: isActive ? 20 : 12,
+                    borderRadius: '50%',
+                    background: dotColor,
+                    border: isActive ? `3px solid color-mix(in srgb, ${step.color} 30%, transparent)` : 'none',
+                    transition: 'all 0.2s',
+                  }}
+                />
+                <span style={{ fontSize: 10, color: isActive ? step.color : 'var(--color-neutral-500)', fontWeight: isActive ? 700 : 400, whiteSpace: 'nowrap' }}>
+                  {step.label}
+                </span>
+              </div>
+              {i < PIPELINE_STEPS.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: isPast ? PIPELINE_STEPS[i + 1].color : 'var(--color-neutral-300)', margin: '0 6px', marginBottom: 18 }} />
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Status action buttons */}
+      {fields.status === 'awaiting_review' && (
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', padding: 'var(--space-3)', border: '1px solid #66bb6a', borderRadius: 'var(--radius-md)', background: '#e8f5e920' }}>
+          <div style={{ flex: 1, fontSize: 13 }}>
+            <strong style={{ color: '#2e7d32' }}>Ready to lock in?</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>Review everything above, then finalize.</div>
+          </div>
+          <button className="btn" style={{ background: '#2e7d32', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('ready')}>
+            Lock In
+          </button>
+        </div>
+      )}
+      {fields.status === 'ready' && (
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', padding: 'var(--space-3)', border: '1px solid var(--color-accent)', borderRadius: 'var(--radius-md)', background: 'var(--color-accent-100)' }}>
+          <div style={{ flex: 1, fontSize: 13 }}>
+            <strong style={{ color: 'var(--color-accent-800)' }}>Application is locked and ready.</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>Once you submit it, mark it as applied.</div>
+          </div>
+          <button className="btn" style={{ background: 'var(--color-accent)', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('applied')}>
+            Mark as Applied
+          </button>
+        </div>
+      )}
+
       <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
         <div className="field" style={{ flex: 1 }}>
           <label>Company</label>
@@ -161,9 +236,9 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
         </div>
         <div className="field" style={{ width: 150 }}>
           <label>Status</label>
-          <select className="input" value={fields.status} onChange={(e) => set({ status: e.target.value })}>
-            {['draft', 'tailoring', 'submitted', 'interview', 'closed'].map((s) => (
-              <option key={s}>{s}</option>
+          <select className="input" value={fields.status} onChange={(e) => set({ status: e.target.value as AppStatus })}>
+            {PIPELINE_STEPS.map((s) => (
+              <option key={s.status} value={s.status}>{s.label}</option>
             ))}
           </select>
         </div>
