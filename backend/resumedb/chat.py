@@ -26,6 +26,7 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 from . import config, gitops, render
 from .claude import ClaudeProcess
+from .codex import CodexProcess
 from .datarepo import DataRepo, DataRepoError
 
 router = APIRouter()
@@ -182,14 +183,25 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
     await ws.accept()
     cfg = config.load()
     repo = DataRepo(Path(cfg["data_repo"]))
-    claude_bin = config.claude_bin(cfg)
-    if not claude_bin:
-        await ws.send_json({"type": "error", "message": "claude CLI not found. Install Claude Code."})
-        await ws.close()
-        return
+    provider = cfg.get("agent_provider", "claude")
+
+    if provider == "codex":
+        codex_bin = config.codex_bin(cfg)
+        if not codex_bin:
+            await ws.send_json({"type": "error", "message": "codex CLI not found. Install Codex."})
+            await ws.close()
+            return
+        agent_bin = codex_bin
+    else:
+        claude_bin = config.claude_bin(cfg)
+        if not claude_bin:
+            await ws.send_json({"type": "error", "message": "claude CLI not found. Install Claude Code."})
+            await ws.close()
+            return
+        agent_bin = claude_bin
 
     conv = conversation if conversation and CONV_RE.fullmatch(conversation) else None
-    proc: ClaudeProcess | None = None
+    proc = None
 
     try:
         while True:
@@ -224,14 +236,24 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
             else:
                 model = msg.get("model") or models.get("chat")
                 effort = msg.get("effort") or models.get("chat_effort")
-            proc = ClaudeProcess(
-                claude_bin,
-                cwd=repo.root,
-                prompt=prompt,
-                session_id=session_id,
-                model=model,
-                effort=effort,
-            )
+            if provider == "codex":
+                proc = CodexProcess(
+                    agent_bin,
+                    cwd=repo.root,
+                    prompt=prompt,
+                    session_id=session_id,
+                    model=model,
+                    effort=effort,
+                )
+            else:
+                proc = ClaudeProcess(
+                    agent_bin,
+                    cwd=repo.root,
+                    prompt=prompt,
+                    session_id=session_id,
+                    model=model,
+                    effort=effort,
+                )
 
             log = _chats_dir(repo, scope) / f"{conv}.jsonl"
             _append(log, "user", text)

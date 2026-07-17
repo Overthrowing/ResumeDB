@@ -9,6 +9,7 @@ from pypdf import PdfReader
 
 from . import config
 from .claude import ClaudeError, run_oneshot
+from .codex import run_oneshot_codex
 from .datarepo import DataRepo, _load
 
 RUBRIC_SCHEMA = {
@@ -61,9 +62,7 @@ def extraction_check(repo_root: Path, app_id: str) -> dict:
 
 async def llm_rubric(repo: DataRepo, app_id: str) -> dict:
     cfg = config.load()
-    claude_bin = config.claude_bin(cfg)
-    if not claude_bin:
-        return {"error": "claude CLI not found"}
+    provider = cfg.get("agent_provider", "claude")
     prompt = (
         f"Follow the ats-audit skill for the application in applications/{app_id}/: "
         f"read its jd.md and resume.yaml and score keyword coverage. "
@@ -72,14 +71,28 @@ async def llm_rubric(repo: DataRepo, app_id: str) -> dict:
     try:
         import json
 
-        text = await run_oneshot(
-            claude_bin,
-            cwd=repo.root,
-            prompt=prompt,
-            model=cfg["models"].get("audit"),
-            effort=cfg["models"].get("audit_effort"),
-            json_schema=RUBRIC_SCHEMA,
-        )
+        if provider == "codex":
+            codex_bin = config.codex_bin(cfg)
+            text = await run_oneshot_codex(
+                codex_bin,
+                cwd=repo.root,
+                prompt=prompt,
+                model=cfg["models"].get("audit"),
+                effort=cfg["models"].get("audit_effort"),
+                json_schema=RUBRIC_SCHEMA,
+            )
+        else:
+            claude_bin = config.claude_bin(cfg)
+            if not claude_bin:
+                return {"error": "claude CLI not found"}
+            text = await run_oneshot(
+                claude_bin,
+                cwd=repo.root,
+                prompt=prompt,
+                model=cfg["models"].get("audit"),
+                effort=cfg["models"].get("audit_effort"),
+                json_schema=RUBRIC_SCHEMA,
+            )
         return json.loads(text)
-    except (ClaudeError, ValueError) as e:
+    except Exception as e:
         return {"error": str(e)}

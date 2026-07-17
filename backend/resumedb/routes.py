@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from . import audit, config, datarepo, gitops, render
 from .claude import ClaudeError, run_oneshot
+from .codex import run_oneshot_codex
 
 router = APIRouter(prefix="/api")
 
@@ -33,18 +34,27 @@ def _wrap(fn, *args, **kwargs):
 @router.get("/health")
 def health():
     cfg = config.load()
+    provider = cfg.get("agent_provider", "claude")
     claude = config.claude_bin(cfg)
     claude_version = None
     if claude:
         proc = subprocess.run([claude, "--version"], capture_output=True, text=True, timeout=30)
         claude_version = proc.stdout.strip() or None
+    codex = config.codex_bin(cfg)
+    codex_version = None
+    if codex:
+        proc = subprocess.run([codex, "--version"], capture_output=True, text=True, timeout=30)
+        codex_version = proc.stdout.strip() or None
     root = Path(cfg["data_repo"]).expanduser()
     ok = datarepo.is_datarepo(root)
     if ok:
         datarepo.sync_new_skills(root)  # ship newly added skills to existing repos
     return {
+        "agent_provider": provider,
         "claude": claude,
         "claude_version": claude_version,
+        "codex": codex,
+        "codex_version": codex_version,
         "typst": config.typst_bin(),
         "data_repo": str(root),
         "data_repo_ok": ok,
@@ -197,22 +207,34 @@ async def create_application(body: NewApplication):
 
 async def _fetch_jd(r: datarepo.DataRepo, app_id: str, url: str) -> None:
     cfg = config.load()
-    claude_bin = config.claude_bin(cfg)
-    if not claude_bin:
-        return
+    provider = cfg.get("agent_provider", "claude")
+    prompt = (
+        f"Use the jd-from-link skill: fetch {url} and write "
+        f"applications/{app_id}/jd.md in the structured format the skill describes."
+    )
     try:
-        await run_oneshot(
-            claude_bin,
-            cwd=r.root,
-            prompt=(
-                f"Use the jd-from-link skill: fetch {url} and write "
-                f"applications/{app_id}/jd.md in the structured format the skill describes."
-            ),
-            model=cfg["models"].get("jd"),
-            effort=cfg["models"].get("jd_effort"),
-        )
+        if provider == "codex":
+            codex_bin = config.codex_bin(cfg)
+            await run_oneshot_codex(
+                codex_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+            )
+        else:
+            claude_bin = config.claude_bin(cfg)
+            if not claude_bin:
+                return
+            await run_oneshot(
+                claude_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+            )
         gitops.checkpoint(r.root, f"app:{app_id}", "fetch jd from link")
-    except ClaudeError:
+    except Exception:
         pass  # placeholder jd.md stays; the user can paste the text instead
 
 
