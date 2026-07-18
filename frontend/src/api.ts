@@ -207,6 +207,8 @@ export const api = {
   runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
   run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
   review: (id: string) => req<ReviewReport>(`/api/applications/${id}/review`, { method: 'POST' }),
+  generateInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/generate`, { method: 'POST' }),
+  getInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/questions`),
 }
 
 export interface ReviewItem {
@@ -221,5 +223,14 @@ export interface ReviewReport {
   readiness_score: number
   summary: string
   items: ReviewItem[]
+}
+
+export interface InterviewQuestion {
+  id: string
+  type: 'behavioral' | 'technical' | 'situational'
+  question: string
+  context: string
+  tips: string
+}
 }
 

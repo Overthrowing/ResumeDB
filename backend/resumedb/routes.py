@@ -520,3 +520,15 @@ async def audit_review(app_id: str):
     from . import review
     return await review.run_review(repo(), app_id)
 
+
+@router.post("/applications/{app_id}/interview/generate")
+async def generate_interview(app_id: str):
+    from . import interview
+    return await interview.generate_questions(repo(), app_id)
+
+
+@router.get("/applications/{app_id}/interview/questions")
+def get_interview(app_id: str):
+    from . import interview
+    return interview.load_questions(repo(), app_id)
+
