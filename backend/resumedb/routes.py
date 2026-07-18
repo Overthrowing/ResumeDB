@@ -514,3 +514,15 @@ def list_runs(limit: int = 10):
 def get_run(run_id: str):
     return _wrap(repo().get_research_run, run_id)
 
+
+@router.post("/applications/{app_id}/interview/generate")
+async def generate_interview(app_id: str):
+    from . import interview
+    return await interview.generate_questions(repo(), app_id)
+
+
+@router.get("/applications/{app_id}/interview/questions")
+def get_interview(app_id: str):
+    from . import interview
+    return interview.load_questions(repo(), app_id)
+

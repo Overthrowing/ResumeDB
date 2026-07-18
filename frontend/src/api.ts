@@ -206,5 +206,15 @@ export const api = {
   agentSearch: (body: { query: string }) => req<{ run_id: string; summary: string; jobs: JobLead[] }>('/api/agent/search', json('POST', body)),
   runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
   run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
+  generateInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/generate`, { method: 'POST' }),
+  getInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/questions`),
+}
+
+export interface InterviewQuestion {
+  id: string
+  type: 'behavioral' | 'technical' | 'situational'
+  question: string
+  context: string
+  tips: string
 }
 

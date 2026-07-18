@@ -4,11 +4,12 @@ import { IconBriefcase, IconLogo, IconSettings, IconTemplate, IconUser } from '.
 import Library from './Library'
 import Applications from './Applications'
 import Ingest from './Ingest'
+import InterviewPrep from './InterviewPrep'
 import Templates from './Templates'
 import Settings from './Settings'
 import Onboarding from './Onboarding'
 
-type Screen = 'library' | 'applications' | 'ingest' | 'templates' | 'settings'
+type Screen = 'library' | 'applications' | 'ingest' | 'interview' | 'templates' | 'settings'
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('library')
@@ -61,6 +62,16 @@ export default function App() {
         </svg>
       ),
     },
+    {
+      id: 'interview',
+      label: 'Interview Prep',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flex: 'none' }}>
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
+        </svg>
+      ),
+    },
     { id: 'templates', label: 'Templates', icon: <IconTemplate /> },
     { id: 'settings', label: 'Settings', icon: <IconSettings /> },
   ]
@@ -96,6 +107,7 @@ export default function App() {
         {screen === 'library' && <Library />}
         {screen === 'applications' && <Applications onCountChange={setAppCount} />}
         {screen === 'ingest' && <Ingest />}
+        {screen === 'interview' && <InterviewPrep />}
         {screen === 'templates' && <Templates />}
         {screen === 'settings' && <Settings health={health} onProfileChange={setProfile} />}
       </main>
