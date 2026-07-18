@@ -216,7 +216,7 @@ class DataRepo:
                 "role": role,
                 "template": template,
                 "created": f"{datetime.date.today():%Y-%m-%d}",
-                "status": "draft",
+                "status": "not_started",
                 "session_id": None,
             },
             d / "meta.yaml",
@@ -254,11 +254,14 @@ class DataRepo:
         gitops.checkpoint(self.root, f"app:{app_id}", f"edit {name}")
 
     META_FIELDS = {"company", "role", "status", "deadline", "source", "template", "session_id"}
+    APP_STATUSES = ["not_started", "in_progress", "awaiting_review", "ready", "applied"]
 
     def set_app_meta(self, app_id: str, **updates) -> None:
         bad = set(updates) - self.META_FIELDS
         if bad:
             raise DataRepoError(f"not editable meta fields: {sorted(bad)}")
+        if "status" in updates and updates["status"] not in self.APP_STATUSES:
+            raise DataRepoError(f"invalid status: {updates['status']}")
         path = self.app_dir(app_id) / "meta.yaml"
         meta = _load(path) or {}
         meta.update(updates)
