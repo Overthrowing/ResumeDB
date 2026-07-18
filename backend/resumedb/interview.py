@@ -1,5 +1,5 @@
 import json
-import yaml
+from ruamel.yaml import YAML
 from pathlib import Path
 from .claude import run_oneshot
 
@@ -24,6 +24,11 @@ INTERVIEW_SCHEMA = {
     "required": ["questions"]
 }
 
+def _yaml() -> YAML:
+    y = YAML()
+    y.indent(mapping=2, sequence=4, offset=2)
+    return y
+
 def prep_dir(r, app_id: str) -> Path:
     d = r.app_dir(app_id) / "interview_prep"
     d.mkdir(exist_ok=True, parents=True)
@@ -33,14 +38,16 @@ def load_questions(r, app_id: str) -> list:
     f = prep_dir(r, app_id) / "questions.yaml"
     if f.exists():
         try:
-            return yaml.safe_load(f.read_text()) or []
+            with f.open("r") as stream:
+                return _yaml().load(stream) or []
         except Exception:
             return []
     return []
 
 def save_questions(r, app_id: str, questions: list) -> None:
     f = prep_dir(r, app_id) / "questions.yaml"
-    f.write_text(yaml.safe_dump(questions))
+    with f.open("w") as stream:
+        _yaml().dump(questions, stream)
 
 async def generate_questions(r, app_id: str) -> list:
     app = r.get_application(app_id)
