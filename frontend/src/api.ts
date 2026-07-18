@@ -25,13 +25,15 @@ export interface Memory {
   content: string
 }
 
+export type AppStatus = 'not_started' | 'in_progress' | 'awaiting_review' | 'ready' | 'applied'
+
 export interface AppMeta {
   id: string
   company: string
   role: string
   template: string
   created: string
-  status: string
+  status: AppStatus
   deadline?: string
   source?: string
   session_id?: string | null
@@ -245,6 +247,5 @@ export interface InterviewQuestion {
 export interface ParsedResume {
   profile: Profile
   entries: Entry[]
-}
 }
 
