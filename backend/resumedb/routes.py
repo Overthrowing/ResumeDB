@@ -514,3 +514,9 @@ def list_runs(limit: int = 10):
 def get_run(run_id: str):
     return _wrap(repo().get_research_run, run_id)
 
+
+@router.post("/applications/{app_id}/review")
+async def audit_review(app_id: str):
+    from . import review
+    return await review.run_review(repo(), app_id)
+
