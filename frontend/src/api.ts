@@ -206,5 +206,19 @@ export const api = {
   agentSearch: (body: { query: string }) => req<{ run_id: string; summary: string; jobs: JobLead[] }>('/api/agent/search', json('POST', body)),
   runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
   run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
+  importResume: (file: File) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return req<ParsedResume>('/api/import/resume', {
+      method: 'POST',
+      body: fd,
+    })
+  },
+  confirmImport: (parsed: ParsedResume) => req<{ ok: boolean }>('/api/import/resume/confirm', json('POST', parsed)),
+}
+
+export interface ParsedResume {
+  profile: Profile
+  entries: Entry[]
 }
 
