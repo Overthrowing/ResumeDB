@@ -220,6 +220,10 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
       <button className="btn btn-primary" disabled={!dirty} onClick={save}>
         Save overview
       </button>
+
+      {(meta.status === 'not_started' || meta.status === 'in_progress' || meta.status === 'awaiting_review') && (
+        <ReviewPanel appId={meta.id} />
+      )}
     </div>
   )
 }
@@ -678,6 +682,127 @@ function AutofillTab({ app }: { app: Application }) {
             )}
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+interface ReviewItem {
+  severity: 'critical' | 'medium' | 'low'
+  category: 'missing_field' | 'weak_content' | 'keyword_gap' | 'suggestion'
+  title: string
+  description: string
+  action: string
+}
+
+interface ReviewReport {
+  readiness_score: number
+  summary: string
+  items: ReviewItem[]
+}
+
+function ReviewPanel({ appId }: { appId: string }) {
+  const [report, setReport] = useState<ReviewReport | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [dismissed, setDismissed] = useState<Record<number, boolean>>({})
+
+  const runReview = async () => {
+    setBusy(true)
+    setError(null)
+    try {
+      const res = await api.review(appId)
+      setReport(res)
+    } catch (e) {
+      setError((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  useEffect(() => {
+    runReview()
+  }, [appId])
+
+  if (busy) {
+    return (
+      <div style={{ padding: 'var(--space-4) 0', color: 'var(--color-neutral-600)', fontSize: 13 }}>
+        ⏳ Running application audit & readiness review...
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 'var(--space-3)', border: '1px solid var(--color-accent-300)', borderRadius: 'var(--radius-md)', background: 'var(--color-neutral-100)', color: 'var(--color-accent-800)', fontSize: 13, marginBottom: 'var(--space-4)' }}>
+        Failed to load review: {error}
+        <button className="btn btn-primary" style={{ display: 'block', marginTop: 8, padding: '4px 10px', fontSize: 12 }} onClick={runReview}>Retry</button>
+      </div>
+    )
+  }
+
+  if (!report) return null
+
+  const severityColors = {
+    critical: '#f44336',
+    medium: '#ff9800',
+    low: '#9e9e9e'
+  }
+
+  const visibleItems = report.items.filter((_, idx) => !dismissed[idx])
+
+  return (
+    <div style={{ marginTop: 'var(--space-6)', borderTop: '1px solid var(--color-divider)', paddingTop: 'var(--space-4)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
+        <div>
+          <h3 style={{ margin: 0, fontSize: 18 }}>AI Readiness Audit</h3>
+          <p className="text-muted" style={{ fontSize: 12, margin: '2px 0 0' }}>Review critical priorities and suggestions before finalizing.</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ textAlign: 'right' }}>
+            <span style={{ fontSize: 11, color: 'var(--color-neutral-600)' }}>Readiness Score</span>
+            <div style={{ fontSize: 22, fontWeight: 700, color: report.readiness_score >= 80 ? '#2e7d32' : report.readiness_score >= 50 ? '#e65100' : '#c62828' }}>
+              {report.readiness_score}%
+            </div>
+          </div>
+          <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: 12 }} onClick={runReview}>Re-run Audit</button>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+        {visibleItems.map((item) => {
+          const actualIdx = report.items.indexOf(item)
+          return (
+            <div key={actualIdx} style={{ display: 'flex', gap: 12, padding: 'var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', background: 'var(--color-neutral-100)' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: severityColors[item.severity], marginTop: 6, flex: 'none' }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                  <strong style={{ fontSize: 14 }}>{item.title}</strong>
+                  <span className="tag tag-neutral" style={{ fontSize: 9, padding: '1px 6px', textTransform: 'uppercase' }}>{item.category.replace('_', ' ')}</span>
+                </div>
+                <div style={{ fontSize: 13, marginTop: 4, color: 'var(--color-neutral-800)' }}>{item.description}</div>
+                {item.action && (
+                  <div style={{ fontSize: 12, marginTop: 6, color: 'var(--color-accent-800)', fontStyle: 'italic' }}>
+                    💡 Suggested: {item.action}
+                  </div>
+                )}
+              </div>
+              <button
+                className="btn-ghost"
+                style={{ alignSelf: 'flex-start', padding: '2px 6px', fontSize: 11, border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--color-neutral-500)' }}
+                onClick={() => setDismissed({ ...dismissed, [actualIdx]: true })}
+              >
+                Dismiss
+              </button>
+            </div>
+          )
+        })}
+
+        {visibleItems.length === 0 && (
+          <div className="text-muted" style={{ padding: 'var(--space-3)', textAlign: 'center', fontSize: 13, border: '1px dashed var(--color-divider)', borderRadius: 'var(--radius-md)' }}>
+            🎉 No checklist priorities found. Your application looks strong and ready to go!
+          </div>
+        )}
       </div>
     </div>
   )

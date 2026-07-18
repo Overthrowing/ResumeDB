@@ -206,5 +206,20 @@ export const api = {
   agentSearch: (body: { query: string }) => req<{ run_id: string; summary: string; jobs: JobLead[] }>('/api/agent/search', json('POST', body)),
   runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
   run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
+  review: (id: string) => req<ReviewReport>(`/api/applications/${id}/review`, { method: 'POST' }),
+}
+
+export interface ReviewItem {
+  severity: 'critical' | 'medium' | 'low'
+  category: 'missing_field' | 'weak_content' | 'keyword_gap' | 'suggestion'
+  title: string
+  description: string
+  action: string
+}
+
+export interface ReviewReport {
+  readiness_score: number
+  summary: string
+  items: ReviewItem[]
 }
 
