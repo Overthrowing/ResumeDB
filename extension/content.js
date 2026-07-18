@@ -1,5 +1,25 @@
 // Listening for messages from the popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'scrape') {
+    try {
+      // Extract text content and search for potential apply/application links
+      const pageText = document.body.innerText || '';
+      let applyUrl = null;
+      const links = Array.from(document.querySelectorAll('a'));
+      for (const link of links) {
+        const text = (link.innerText || '').toLowerCase();
+        if (text.includes('apply') || text.includes('submit application') || text.includes('apply now') || text.includes('start application') || text.includes('job application')) {
+          applyUrl = link.href;
+          break;
+        }
+      }
+      sendResponse({ success: true, text: pageText, applyUrl });
+    } catch (err) {
+      sendResponse({ success: false, message: err.message });
+    }
+    return true;
+  }
+
   if (request.action === 'autofill') {
     try {
       const { profile, application, pdfBase64, pdfName } = request;
@@ -14,13 +34,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const name = (element.name || '').toLowerCase();
         const id = (element.id || '').toLowerCase();
         const ariaLabel = (element.getAttribute('aria-label') || '').toLowerCase();
+        const dataQa = (element.getAttribute('data-qa') || '').toLowerCase();
+        const dataTestId = (element.getAttribute('data-testid') || '').toLowerCase();
 
         return terms.some(term => 
           text.includes(term) || 
           placeholder.includes(term) || 
           name.includes(term) || 
           id.includes(term) || 
-          ariaLabel.includes(term)
+          ariaLabel.includes(term) ||
+          dataQa.includes(term) ||
+          dataTestId.includes(term)
         );
       };
 
