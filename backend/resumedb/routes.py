@@ -510,6 +510,8 @@ async def agent_search(body: AgentSearchRequest):
 def list_runs(limit: int = 10):
     return repo().list_research_runs(limit=limit)
 
+from fastapi import File, UploadFile
+
 @router.get("/agent/runs/{run_id}")
 def get_run(run_id: str):
     return _wrap(repo().get_research_run, run_id)
@@ -531,4 +533,21 @@ async def generate_interview(app_id: str):
 def get_interview(app_id: str):
     from . import interview
     return interview.load_questions(repo(), app_id)
+
+
+@router.post("/import/resume")
+async def import_resume(file: UploadFile = File(...)):
+    from . import importer
+    try:
+        pdf_bytes = await file.read()
+        return await importer.parse_resume_pdf(pdf_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/import/resume/confirm")
+def import_resume_confirm(parsed: dict):
+    from . import importer
+    importer.apply_import(repo(), parsed)
+    return {"ok": True}
 

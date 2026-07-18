@@ -209,6 +209,15 @@ export const api = {
   review: (id: string) => req<ReviewReport>(`/api/applications/${id}/review`, { method: 'POST' }),
   generateInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/generate`, { method: 'POST' }),
   getInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/questions`),
+  importResume: (file: File) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return req<ParsedResume>('/api/import/resume', {
+      method: 'POST',
+      body: fd,
+    })
+  },
+  confirmImport: (parsed: ParsedResume) => req<{ ok: boolean }>('/api/import/resume/confirm', json('POST', parsed)),
 }
 
 export interface ReviewItem {
@@ -231,6 +240,11 @@ export interface InterviewQuestion {
   question: string
   context: string
   tips: string
+}
+
+export interface ParsedResume {
+  profile: Profile
+  entries: Entry[]
 }
 }
 
