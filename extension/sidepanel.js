@@ -45,6 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatInput = document.getElementById('chat-input');
   const sendBtn = document.getElementById('send-btn');
 
+  const openFillBtn = document.getElementById('open-fill-btn');
+  const openFillProgress = document.getElementById('open-fill-progress');
+  const openFillStatus = document.getElementById('open-fill-status');
+
+  const scrapeBtn = document.getElementById('scrape-btn');
+  const scrapeResults = document.getElementById('scrape-results');
+  const scrapeCompany = document.getElementById('scrape-company');
+  const scrapeRole = document.getElementById('scrape-role');
+  const scrapeLocation = document.getElementById('scrape-location');
+  const trackRoleBtn = document.getElementById('track-role-btn');
+
+  let lastScrapedJob = null;
+
   // Load Initial Data (Profile and Application Tracker)
   const init = async () => {
     try {
@@ -89,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appId = select.value;
     activeApp = null;
     fillBtn.disabled = !appId;
+    openFillBtn.disabled = !appId;
     
     // Reset views
     resetMetrics();
@@ -178,6 +192,100 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (err) {
       fillBtn.disabled = false;
+      updateStatus(err.message, 'error');
+    }
+  });
+
+  // Open & Auto-fill Action Trigger
+  openFillBtn.addEventListener('click', async () => {
+    if (!activeApp || !activeProfile) return;
+    
+    const sourceUrl = activeApp.meta.source || activeApp.meta.jd_url;
+    if (!sourceUrl) {
+      updateStatus('No source link specified for this application.', 'error');
+      return;
+    }
+
+    openFillBtn.disabled = true;
+    fillBtn.disabled = true;
+    openFillProgress.style.display = 'flex';
+    openFillStatus.innerText = 'Opening application page...';
+
+    try {
+      const appId = activeApp.meta.id;
+
+      // 1. Fetch tailored PDF
+      openFillStatus.innerText = 'Downloading tailored resume PDF...';
+      let pdfBase64 = null;
+      try {
+        const pdfRes = await fetch(`${BACKEND_URL}/api/applications/${appId}/resume.pdf`);
+        if (pdfRes.ok) {
+          const arrayBuffer = await pdfRes.arrayBuffer();
+          const bytes = new Uint8Array(arrayBuffer);
+          let binary = '';
+          const len = bytes.byteLength;
+          for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          pdfBase64 = btoa(binary);
+        }
+      } catch (pdfErr) {
+        console.warn('PDF compile check failed. Continuing with profile fields only.', pdfErr);
+      }
+
+      // 2. Open new tab
+      openFillStatus.innerText = 'Loading page in new tab...';
+      const tab = await chrome.tabs.create({ url: sourceUrl, active: true });
+      
+      // 3. Wait for load complete
+      const tabId = tab.id;
+      const onTabUpdated = (updatedTabId, changeInfo) => {
+        if (updatedTabId === tabId && changeInfo.status === 'complete') {
+          chrome.tabs.onUpdated.removeListener(onTabUpdated);
+          
+          // Wait 1.5 seconds for React/SPA initialization on the page
+          setTimeout(async () => {
+            try {
+              openFillStatus.innerText = 'Injecting autofill script...';
+              await chrome.scripting.executeScript({
+                target: { tabId },
+                files: ['content.js']
+              });
+
+              openFillStatus.innerText = 'Auto-filling form fields...';
+              chrome.tabs.sendMessage(tabId, {
+                action: 'autofill',
+                profile: activeProfile,
+                application: activeApp,
+                pdfBase64,
+                pdfName: `${activeApp.meta.company.replace(/[^a-zA-Z0-9]/g, '_')}_Resume.pdf`
+              }, (response) => {
+                openFillBtn.disabled = false;
+                fillBtn.disabled = false;
+                openFillProgress.style.display = 'none';
+                if (chrome.runtime.lastError) {
+                  updateStatus(`Error: ${chrome.runtime.lastError.message}`, 'error');
+                } else if (response && response.success) {
+                  updateStatus(response.message, 'success');
+                } else {
+                  updateStatus(response?.message || 'Autofill failed.', 'error');
+                }
+              });
+            } catch (err) {
+              openFillBtn.disabled = false;
+              fillBtn.disabled = false;
+              openFillProgress.style.display = 'none';
+              updateStatus(err.message, 'error');
+            }
+          }, 1500);
+        }
+      };
+      chrome.tabs.onUpdated.addListener(onTabUpdated);
+
+    } catch (err) {
+      openFillBtn.disabled = false;
+      fillBtn.disabled = false;
+      openFillProgress.style.display = 'none';
       updateStatus(err.message, 'error');
     }
   });
@@ -365,6 +473,110 @@ document.addEventListener('DOMContentLoaded', () => {
   chatInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       sendMessage();
+    }
+  });
+
+  });
+
+  // Page Scraping Logic
+  scrapeBtn.addEventListener('click', async () => {
+    scrapeBtn.disabled = true;
+    updateStatus('Scraping page...');
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab) throw new Error('No active browser tab found.');
+
+      // Inject content script if not already present
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['content.js']
+      });
+
+      chrome.tabs.sendMessage(tab.id, { action: 'scrape' }, async (response) => {
+        if (chrome.runtime.lastError) {
+          updateStatus(chrome.runtime.lastError.message, 'error');
+          scrapeBtn.disabled = false;
+          return;
+        }
+        if (!response || !response.success) {
+          updateStatus(response?.message || 'Scrape failed.', 'error');
+          scrapeBtn.disabled = false;
+          return;
+        }
+
+        updateStatus('Extracting job details via agent...');
+        try {
+          const ingestRes = await fetch(`${BACKEND_URL}/api/agent/ingest`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input: response.text })
+          });
+          if (!ingestRes.ok) throw new Error('Ingest agent failed to process text.');
+          const parsed = await ingestRes.json();
+          
+          if (parsed.job) {
+            lastScrapedJob = parsed.job;
+            if (response.applyUrl && !lastScrapedJob.application_url) {
+              lastScrapedJob.application_url = response.applyUrl;
+            }
+            if (!lastScrapedJob.source_url) {
+              lastScrapedJob.source_url = tab.url;
+            }
+
+            scrapeCompany.innerText = `Company: ${parsed.job.company}`;
+            scrapeRole.innerText = `Role: ${parsed.job.role}`;
+            scrapeLocation.innerText = `Location: ${parsed.job.location || 'Remote/Not listed'}`;
+            
+            scrapeResults.style.display = 'block';
+            updateStatus('Page scraped successfully!', 'success');
+          } else {
+            throw new Error('No job details could be parsed.');
+          }
+        } catch (apiErr) {
+          updateStatus(apiErr.message, 'error');
+        } finally {
+          scrapeBtn.disabled = false;
+        }
+      });
+    } catch (err) {
+      scrapeBtn.disabled = false;
+      updateStatus(err.message, 'error');
+    }
+  });
+
+  trackRoleBtn.addEventListener('click', async () => {
+    if (!lastScrapedJob) return;
+    trackRoleBtn.disabled = true;
+    updateStatus('Tracking application...');
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/applications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company: lastScrapedJob.company,
+          role: lastScrapedJob.role,
+          jd_text: `What they look for:\n${lastScrapedJob.what_they_look_for || ''}\n\nGood to know:\n${lastScrapedJob.good_to_know || ''}\n\nJob description:\n${lastScrapedJob.job_description || ''}`,
+          jd_url: lastScrapedJob.application_url || undefined,
+          template: 'classic'
+        })
+      });
+      if (!res.ok) throw new Error('Failed to track application.');
+      const data = await res.json();
+      
+      // Update status to not_started
+      await fetch(`${BACKEND_URL}/api/applications/${data.id}/meta`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'not_started', source: lastScrapedJob.source_url || lastScrapedJob.application_url })
+      });
+
+      updateStatus('Application tracked successfully!', 'success');
+      scrapeResults.style.display = 'none';
+      init(); // Refresh applications dropdown
+    } catch (err) {
+      updateStatus(err.message, 'error');
+    } finally {
+      trackRoleBtn.disabled = false;
     }
   });
 

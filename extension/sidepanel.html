@@ -197,6 +197,15 @@
       margin-top: 0;
       padding-inline: 16px;
     }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .spinner {
+      border: 2px solid #333;
+      border-top: 2px solid var(--accent);
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      animation: spin 1s linear infinite;
+    }
   </style>
 </head>
 <body>
@@ -220,7 +229,25 @@
         </select>
       </div>
       <button id="fill-btn" disabled>Auto-fill current form</button>
+      <button id="open-fill-btn" style="background: #208b5e; color: #fff;" disabled>Open & Auto-fill</button>
       <div class="status" id="status-text">Ready.</div>
+      
+      <div id="open-fill-progress" style="display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
+         <div class="spinner"></div>
+         <span id="open-fill-status" style="font-size: 12px; color: #888;">Opening page...</span>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid var(--divider); margin: 16px 0;">
+      
+      <button id="scrape-btn" style="background: var(--surface); color: var(--text); border: 1px solid var(--divider);">📄 Scrape This Page</button>
+      
+      <div id="scrape-results" style="display: none; margin-top: 12px; padding: 12px; background: #111; border: 1px solid var(--divider); border-radius: 4px;">
+         <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: var(--accent);">Extracted Details:</div>
+         <div id="scrape-company" style="font-size: 12px; margin-bottom: 4px;"></div>
+         <div id="scrape-role" style="font-size: 12px; margin-bottom: 4px;"></div>
+         <div id="scrape-location" style="font-size: 12px; margin-bottom: 8px;"></div>
+         <button id="track-role-btn">Track This Role</button>
+      </div>
     </div>
 
     <!-- Keywords & Metrics Panel -->
