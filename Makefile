@@ -5,13 +5,13 @@ dev:
 	$(MAKE) -j2 backend frontend
 
 backend:
-	micromamba run -n resumedb uvicorn resumedb.main:app --reload --port 8000 --app-dir backend
+	uv run uvicorn resumedb.main:app --reload --port 8000 --app-dir backend
 
 frontend:
 	cd frontend && pnpm dev
 
 test:
-	micromamba run -n resumedb pytest backend/tests -q
+	uv run pytest backend/tests -q
 
 build:
 	cd frontend && pnpm build

@@ -8,7 +8,7 @@
 
 ## Python environment
 
-- All python code must be run in a micromamba environment. Feel free to make new ones, but never install packages to the base system.
+- All python code must be run in a uv environment.
 
 ## Research and libraries
 
@@ -74,12 +74,12 @@
   commit, reset, merge into, or push `main` or another task branch.
 - Before handoff, merge current `main` into the task branch with
   `git merge main`, resolve drift there without rewriting
-  history, run the focused checks and `just test`, and leave it clean.
+  history, run the focused checks and `make test`, and leave it clean.
 - The task thread is the canonical handoff record; Git history is the canonical
   record of integrated commits. Do not create ad hoc repository handoff ledgers
   or status plans.
 - The integration owner may integrate into `main`. After integration it
-  reruns `just test`, pushes `origin/main`, and marks the task `integrated` or
+  reruns `make test`, pushes `origin/main`, and marks the task `integrated` or
   `superseded` before any cleanup.
 - Return a Treehouse lease using `treehouse return <path>` after its disposition is
   recorded as `integrated` or `superseded`, canonical `main` is on `origin/main`,
