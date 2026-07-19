@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse
 from pydantic import BaseModel
 
@@ -158,6 +158,11 @@ def list_proposals():
     return repo().list_proposals()
 
 
+@router.post("/proposals/approve-all")
+def approve_all_proposals():
+    return _wrap(repo().approve_all_proposals)
+
+
 @router.post("/proposals/{name}/approve")
 def approve_proposal(name: str):
     return {"ok": True, "target": _wrap(repo().approve_proposal, name)}
@@ -167,6 +172,19 @@ def approve_proposal(name: str):
 def reject_proposal(name: str):
     _wrap(repo().reject_proposal, name)
     return {"ok": True}
+
+
+# -- uploads ----------------------------------------------------------------------
+
+MAX_UPLOAD = 20 * 1024 * 1024
+
+
+@router.post("/upload")
+async def upload(scope: str = Form(...), file: UploadFile = File(...)):
+    data = await file.read()
+    if len(data) > MAX_UPLOAD:
+        raise HTTPException(400, "file too large (max 20 MB)")
+    return {"path": _wrap(repo().save_upload, scope, file.filename or "file", data)}
 
 
 # -- applications -----------------------------------------------------------------

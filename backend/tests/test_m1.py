@@ -167,8 +167,38 @@ def test_sync_restores_missing_claude_md(repo):
     gitops.checkpoint(repo.root, "db", "agent deleted the rulebook")
     sync_new_skills(repo.root)
     assert (repo.root / "CLAUDE.md").exists()
-    assert gitops.log(repo.root, "db")[0]["subject"].startswith("db: sync from app update")
+    assert gitops.log(repo.root, "db")[0]["subject"].startswith("db: sync boilerplate from scaffold")
     assert "NEVER delete" in (repo.root / "CLAUDE.md").read_text()
+
+
+def test_sync_boilerplate_force_overwrites_but_spares_data(repo):
+    from resumedb.datarepo import sync_boilerplate
+
+    skill = repo.root / ".claude" / "skills" / "tailor-resume" / "SKILL.md"
+    skill.write_text("locally hacked, not the scaffold version\n")
+    # user data that must never be touched by a sync
+    (repo.root / "db" / "profile.yaml").write_text("name: Real User\n")
+    entry = repo.root / "db" / "my-entry.yaml"
+    entry.write_text("type: project\ntitle: Mine\n")
+    gitops.checkpoint(repo.root, "db", "commit local edits")  # app auto-commits in practice
+
+    changed = sync_boilerplate(repo.root, force=True)
+    assert any("tailor-resume" in c for c in changed)
+    assert "locally hacked" not in skill.read_text()  # restored from scaffold
+    assert (repo.root / "db" / "profile.yaml").read_text() == "name: Real User\n"  # untouched
+    assert entry.exists()  # user entry untouched
+
+    # idempotent: a second force sync changes nothing
+    assert sync_boilerplate(repo.root, force=True) == []
+
+
+def test_sync_additive_preserves_edited_skill(repo):
+    from resumedb.datarepo import sync_boilerplate
+
+    skill = repo.root / ".claude" / "skills" / "tailor-resume" / "SKILL.md"
+    skill.write_text("my edit\n")
+    sync_boilerplate(repo.root, force=False)
+    assert skill.read_text() == "my edit\n"  # additive mode never overwrites
 
 
 def test_changed_files(repo):

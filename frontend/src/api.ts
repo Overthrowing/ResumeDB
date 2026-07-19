@@ -141,7 +141,15 @@ export const api = {
 
   proposals: () => req<Proposal[]>('/api/proposals'),
   approveProposal: (name: string) => req<{ ok: boolean }>(`/api/proposals/${name}/approve`, { method: 'POST' }),
+  approveAllProposals: () => req<{ approved: string[]; skipped: string[] }>('/api/proposals/approve-all', { method: 'POST' }),
   rejectProposal: (name: string) => req<{ ok: boolean }>(`/api/proposals/${name}/reject`, { method: 'POST' }),
+
+  upload: (scope: string, file: File) => {
+    const fd = new FormData()
+    fd.append('scope', scope)
+    fd.append('file', file)
+    return req<{ path: string }>('/api/upload', { method: 'POST', body: fd })
+  },
 
   applications: () => req<AppMeta[]>('/api/applications'),
   createApplication: (body: { company: string; role: string; jd_text?: string; jd_url?: string; template?: string }) =>
