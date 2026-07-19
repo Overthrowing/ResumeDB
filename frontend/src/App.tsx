@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api, type Health, type Profile } from './api'
-import { IconBriefcase, IconLogo, IconSettings, IconTemplate, IconUser } from './icons'
+import { IconBriefcase, IconLogo, IconSettings, IconUser } from './icons'
+import Dashboard from './Dashboard'
 import Library from './Library'
 import Applications from './Applications'
 import Ingest from './Ingest'
-import InterviewPrep from './InterviewPrep'
-import Templates from './Templates'
 import Settings from './Settings'
 import Onboarding from './Onboarding'
 
-type Screen = 'library' | 'applications' | 'ingest' | 'interview' | 'templates' | 'settings'
+type Screen = 'dashboard' | 'library' | 'applications' | 'agent' | 'settings'
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('library')
+  const [screen, setScreen] = useState<Screen>('dashboard')
   const [health, setHealth] = useState<Health | null>(null)
   const [profile, setProfile] = useState<Profile>({})
   const [appCount, setAppCount] = useState<number | null>(null)
@@ -39,7 +38,17 @@ export default function App() {
       .toUpperCase() || '·'
 
   const nav: { id: Screen; label: string; icon: React.ReactNode; extra?: React.ReactNode }[] = [
-    { id: 'library', label: 'Profile', icon: <IconUser /> },
+    {
+      id: 'dashboard',
+      label: 'Home',
+      icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg>,
+    },
+    { id: 'library', label: 'Knowledge', icon: <IconUser /> },
+    {
+      id: 'agent',
+      label: 'Career Agent',
+      icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></svg>,
+    },
     {
       id: 'applications',
       label: 'Applications',
@@ -51,29 +60,7 @@ export default function App() {
           </span>
         ) : undefined,
     },
-    {
-      id: 'ingest',
-      label: 'Ingest & Discover',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flex: 'none' }}>
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </svg>
-      ),
-    },
-    {
-      id: 'interview',
-      label: 'Interview Prep',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flex: 'none' }}>
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-          <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
-        </svg>
-      ),
-    },
-    { id: 'templates', label: 'Templates', icon: <IconTemplate /> },
-    { id: 'settings', label: 'Settings', icon: <IconSettings /> },
+    { id: 'settings', label: 'Profile & Settings', icon: <IconSettings /> },
   ]
 
   return (
@@ -104,14 +91,12 @@ export default function App() {
       </aside>
 
       <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {screen === 'dashboard' && <Dashboard onNavigate={(next) => setScreen(next)} />}
         {screen === 'library' && <Library />}
         {screen === 'applications' && <Applications onCountChange={setAppCount} />}
-        {screen === 'ingest' && <Ingest />}
-        {screen === 'interview' && <InterviewPrep />}
-        {screen === 'templates' && <Templates />}
+        {screen === 'agent' && <Ingest />}
         {screen === 'settings' && <Settings health={health} onProfileChange={setProfile} />}
       </main>
     </div>
   )
 }
-

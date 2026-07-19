@@ -25,11 +25,21 @@ Creating an application from a link or pasted posting:
        curl -s -X PUT <base>/api/applications/<id>/meta -H 'Content-Type: application/json' \
          -d '{"deadline": "...", "source": "<url>"}'
 
+5. Prepare the tracked role through the API. ResumeDB validates and persists the
+   structured package:
+
+       curl -s -X POST <base>/api/applications/<id>/prepare
+
 Tracking:
 
 - List the pipeline: GET <base>/api/applications
-- Update status: PUT .../meta with {"status": "draft|tailoring|submitted|interview|closed"}
+- Update status: PUT .../meta with one of `not_started`, `in_progress`, `draft`,
+  `ready`, or `submitted`.
 - Editable meta fields: company, role, status, deadline, source, template.
+
+Discovery leads are separate from applications. A high-confidence lead may be
+prepared automatically through `draft`. Only the user approves `draft` as
+`ready`, and only the user submits the external form.
 
 Rules:
 

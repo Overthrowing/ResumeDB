@@ -5,7 +5,8 @@ import { IconChat, IconCheck, IconHistory, IconPlus, IconSend, IconWarn, IconX }
 
 const RAIL_MIN = 300
 const RAIL_MAX = 720
-const MODELS = ['', 'haiku', 'sonnet', 'opus', 'fable', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
+const CLAUDE_MODELS = ['', 'haiku', 'sonnet', 'opus', 'fable']
+const CODEX_MODELS = ['', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
 
 export interface Conversation {
   id: string
@@ -54,6 +55,7 @@ export default function ChatRail({
   const [convId, setConvId] = useState<string | null>(null)
   const [showHistory, setShowHistory] = useState(false)
   const [model, setModel] = useState(() => localStorage.getItem(`chatModel:${scope}`) ?? '')
+  const [provider, setProvider] = useState<'claude' | 'codex' | null>(null)
   const wsRef = useRef<WebSocket | null>(null)
   const convRef = useRef<string | null>(null)
   convRef.current = convId
@@ -126,6 +128,19 @@ export default function ChatRail({
       .proposals()
       .then(setProposals)
       .catch((e) => setMessages((m) => [...m, { role: 'error', text: `Could not load pending approvals: ${e.message}` }]))
+    api
+      .config()
+      .then((configured) => {
+        const nextProvider = configured.agent_provider
+        const available = nextProvider === 'codex' ? CODEX_MODELS : CLAUDE_MODELS
+        setProvider(nextProvider)
+        setModel((current) => {
+          if (available.includes(current)) return current
+          localStorage.removeItem(`chatModel:${scope}`)
+          return ''
+        })
+      })
+      .catch(() => setProvider(null))
     return () => wsRef.current?.close()
   }, [scope, refreshConvs, loadConversation])
 
@@ -358,7 +373,7 @@ export default function ChatRail({
             title="Model for this chat"
             style={{ border: 'none', background: 'transparent', color: 'var(--color-neutral-600)', fontSize: 11, fontFamily: 'var(--font-body)', cursor: 'pointer', textAlign: 'right' }}
           >
-            {MODELS.map((m) => (
+            {(provider === 'codex' ? CODEX_MODELS : provider === 'claude' ? CLAUDE_MODELS : ['']).map((m) => (
               <option key={m} value={m}>
                 {m === '' ? 'default model' : m}
               </option>

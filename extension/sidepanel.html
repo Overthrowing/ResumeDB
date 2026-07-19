@@ -210,7 +210,7 @@
 </head>
 <body>
   <header>
-    <h2>ResumeDB Side Panel</h2>
+    <h2>ResumeDB Agent</h2>
   </header>
 
   <div class="tabs">
@@ -230,6 +230,8 @@
       </div>
       <button id="fill-btn" disabled>Auto-fill current form</button>
       <button id="open-fill-btn" style="background: #208b5e; color: #fff;" disabled>Open & Auto-fill</button>
+      <button id="ready-queue-btn" style="background: #335f73; color: #fff;" disabled>Open ready queue (0)</button>
+      <button id="submitted-btn" style="display: none; background: transparent; color: var(--accent); border: 1px solid var(--accent);" disabled>I submitted this application</button>
       <div class="status" id="status-text">Ready.</div>
       
       <div id="open-fill-progress" style="display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
@@ -239,15 +241,7 @@
 
       <hr style="border: none; border-top: 1px solid var(--divider); margin: 16px 0;">
       
-      <button id="scrape-btn" style="background: var(--surface); color: var(--text); border: 1px solid var(--divider);">📄 Scrape This Page</button>
-      
-      <div id="scrape-results" style="display: none; margin-top: 12px; padding: 12px; background: #111; border: 1px solid var(--divider); border-radius: 4px;">
-         <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: var(--accent);">Extracted Details:</div>
-         <div id="scrape-company" style="font-size: 12px; margin-bottom: 4px;"></div>
-         <div id="scrape-role" style="font-size: 12px; margin-bottom: 4px;"></div>
-         <div id="scrape-location" style="font-size: 12px; margin-bottom: 8px;"></div>
-         <button id="track-role-btn">Track This Role</button>
-      </div>
+      <button id="scrape-btn" style="background: var(--surface); color: var(--text); border: 1px solid var(--divider);">Capture this job page</button>
     </div>
 
     <!-- Keywords & Metrics Panel -->

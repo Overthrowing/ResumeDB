@@ -1,9 +1,8 @@
-import json
 import pytest
 from fastapi.testclient import TestClient
 from resumedb.main import app
-from resumedb import config, routes
-from resumedb.datarepo import init_datarepo, DataRepo
+from resumedb import config
+from resumedb.datarepo import init_datarepo
 from unittest.mock import patch, AsyncMock
 
 @pytest.fixture()
@@ -22,11 +21,11 @@ def client(tmp_path, monkeypatch):
     })
     return TestClient(app)
 
-@patch("resumedb.routes.run_oneshot", new_callable=AsyncMock)
-def test_agent_ingest(mock_run_oneshot, client):
-    mock_run_oneshot.return_value = json.dumps({
+@patch("resumedb.routes.pipeline.run_job_command", new_callable=AsyncMock)
+def test_agent_ingest(mock_run_job_command, client):
+    mock_run_job_command.return_value = {
         "summary": "Extracted Software Engineer role at Google",
-        "job": {
+        "jobs": [{
             "company": "Google",
             "role": "Software Engineer",
             "location": "Mountain View, CA",
@@ -36,8 +35,8 @@ def test_agent_ingest(mock_run_oneshot, client):
             "priority": 3,
             "job_description": "We need a python dev",
             "application_url": "https://google.com/jobs",
-        }
-    })
+        }],
+    }
     
     response = client.post("/api/agent/ingest", json={"input": "Google SWE listing"})
     assert response.status_code == 200
@@ -54,9 +53,9 @@ def test_agent_ingest(mock_run_oneshot, client):
     assert runs[0]["id"] == res_data["run_id"]
     assert runs[0]["status"] == "completed"
 
-@patch("resumedb.routes.run_oneshot", new_callable=AsyncMock)
-def test_agent_search(mock_run_oneshot, client):
-    mock_run_oneshot.return_value = json.dumps({
+@patch("resumedb.routes.pipeline.run_job_command", new_callable=AsyncMock)
+def test_agent_search(mock_run_job_command, client):
+    mock_run_job_command.return_value = {
         "summary": "Found 1 role",
         "jobs": [
             {
@@ -67,7 +66,7 @@ def test_agent_search(mock_run_oneshot, client):
                 "job_description": "Swift developer",
             }
         ]
-    })
+    }
     
     response = client.post("/api/agent/search", json={"query": "iOS internships"})
     assert response.status_code == 200

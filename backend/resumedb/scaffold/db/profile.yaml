@@ -1,7 +1,19 @@
-name: Your Name
-email: you@example.com
+name: ""
+email: ""
 phone: ""
 location: ""
-links:
-  - label: GitHub
-    url: https://github.com/you
+college: ""
+major: ""
+degree: ""
+graduation_year: ""
+work_authorization: ""
+requires_sponsorship: ""
+preferred_roles: []
+preferred_locations: []
+links: []
+application_answers:
+  age_18_or_older: ""
+  gender: ""
+  race_ethnicity: ""
+  veteran_status: ""
+  disability_status: ""

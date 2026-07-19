@@ -12,6 +12,8 @@ Process:
 2. Select the entries most relevant to the job description, decide section order,
    and rewrite bullets into applications/<id>/resume.yaml following SCHEMA.md
    exactly. Mirror the JD's terminology where the underlying fact supports it.
+   Also fill applications/<id>/answers.yaml from explicit profile facts. Record
+   every unknown factual answer in its `missing` list instead of guessing.
 3. Render and fit: run
    typst compile --root . --input data=/applications/<id>/resume.yaml applications/<id>/resume.typ applications/<id>/resume.pdf
    and check the page count. Target exactly 1 page. Prefer cutting or tightening
@@ -38,5 +40,8 @@ Truth policy:
   EMBELLISHMENT: <claim> (db says: <fact>)" and only include approved ones. The
   user can dial aggressiveness up or down per chat.
 - Missing metrics: ask the user for the real number. Never invent one.
+- Missing identity, demographic, age, graduation, authorization, credential,
+  date, or education facts: record the missing field and ask the user. Never
+  infer one from context.
 - If an answer reveals durable new facts about an experience, draft a proposal
   into proposals/ (see intake-interview) instead of editing db/.

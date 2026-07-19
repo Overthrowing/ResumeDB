@@ -1,19 +1,27 @@
-# ResumeDB Autofill Helper Extension
+# ResumeDB Chrome extension
 
-This Chrome Extension works directly with your local ResumeDB server to automatically fill job application forms (on Lever, Greenhouse, Workday, etc.) using your stored profile details and programmatically uploads your tailored PDF resume.
+The extension bridges ResumeDB with the user's signed-in browser session. It
+captures job pages, fills approved application packages, uploads tailored PDF
+resumes, and opens the ready queue without storing job-site passwords.
 
-## Installation
+## Install
 
-1. Open Google Chrome and navigate to `chrome://extensions/`.
-2. Enable **Developer mode** using the toggle switch in the top-right corner.
-3. Click the **Load unpacked** button in the top-left corner.
-4. Select the extension directory:
-   `/Users/nathanye/Dev/Hackathons/ResumeDB/extension`
+1. Start ResumeDB with `make dev`.
+2. Open `chrome://extensions`.
+3. Enable Developer mode.
+4. Choose Load unpacked and select this `extension` directory.
+5. Click the ResumeDB extension icon to open the side panel.
 
-## Usage
+## Workflow
 
-1. Start your ResumeDB server as usual (`make dev`).
-2. Go to any job application form on the web (e.g. Lever, Greenhouse, or Workday).
-3. Click the **ResumeDB Autofill Helper** icon in your Chrome toolbar.
-4. Select the specific job application you are filling out from the dropdown menu.
-5. Click **Auto-fill Form**. The extension will automatically populate the form fields and upload your tailored PDF resume!
+- Capture this job page sends the visible page and structured metadata through
+  the universal ResumeDB job agent.
+- Auto-fill current form fills explicit profile and application answers and
+  uploads the tailored resume.
+- Open and Auto-fill opens the selected approved posting and fills it.
+- Open ready queue prepares every approved application in separate tabs.
+- I submitted this application records the final state after the user submits.
+
+ResumeDB never clicks the external site's final Submit button and does not
+bypass CAPTCHAs. Required fields without canonical answers remain visible for
+the user.
