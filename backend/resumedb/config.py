@@ -6,7 +6,9 @@ CONFIG_PATH = Path.home() / ".resumedb.json"
 
 DEFAULTS = {
     "data_repo": str(Path.home() / "resume-data"),
+    "agent_provider": "claude",
     "claude_bin": None,  # null = resolve via which
+    "codex_bin": None,   # null = resolve via which
     "models": {
         "chat": None,  # null = user's CLI default
         "chat_effort": None,
@@ -37,5 +39,10 @@ def claude_bin(cfg: dict) -> str | None:
     return cfg.get("claude_bin") or shutil.which("claude")
 
 
+def codex_bin(cfg: dict) -> str | None:
+    return cfg.get("codex_bin") or shutil.which("codex")
+
+
 def typst_bin() -> str | None:
     return shutil.which("typst")
+

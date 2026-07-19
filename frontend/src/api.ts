@@ -25,13 +25,15 @@ export interface Memory {
   content: string
 }
 
+export type AppStatus = 'not_started' | 'in_progress' | 'awaiting_review' | 'ready' | 'applied'
+
 export interface AppMeta {
   id: string
   company: string
   role: string
   template: string
   created: string
-  status: string
+  status: AppStatus
   deadline?: string
   source?: string
   session_id?: string | null
@@ -61,8 +63,11 @@ export interface Config {
 }
 
 export interface Health {
+  agent_provider: string
   claude: string | null
   claude_version: string | null
+  codex: string | null
+  codex_version: string | null
   typst: string | null
   data_repo: string
   data_repo_ok: boolean
@@ -102,6 +107,41 @@ export interface AuditResult {
     notes?: string
     error?: string
   }
+}
+
+export interface JobLead {
+  company: string
+  role: string
+  location?: string
+  term?: string
+  department?: string
+  team?: string
+  deadline?: string | null
+  salary_amount?: number | null
+  salary_currency?: string
+  salary_period?: string
+  priority?: number
+  what_they_look_for?: string
+  good_to_know?: string
+  job_description?: string
+  notes?: string
+  application_url?: string
+  source_url?: string
+}
+
+export interface ResearchRun {
+  id: string
+  kind: 'search' | 'ingest'
+  query: string
+  status: 'pending' | 'completed' | 'failed'
+  summary: string
+  created_at: string
+  error?: string | null
+  result?: {
+    summary?: string
+    job?: JobLead
+    jobs?: JobLead[]
+  } | null
 }
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
@@ -171,4 +211,49 @@ export const api = {
     return res.text()
   },
   revert: (sha: string) => req<{ ok: boolean }>(`/api/history/${sha}/revert`, { method: 'POST' }),
+
+  agentIngest: (body: { input: string }) => req<{ run_id: string; summary: string; job: JobLead }>('/api/agent/ingest', json('POST', body)),
+  agentSearch: (body: { query: string }) => req<{ run_id: string; summary: string; jobs: JobLead[] }>('/api/agent/search', json('POST', body)),
+  runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
+  run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
+  review: (id: string) => req<ReviewReport>(`/api/applications/${id}/review`, { method: 'POST' }),
+  generateInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/generate`, { method: 'POST' }),
+  getInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/questions`),
+  importResume: (file: File) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return req<ParsedResume>('/api/import/resume', {
+      method: 'POST',
+      body: fd,
+    })
+  },
+  confirmImport: (parsed: ParsedResume) => req<{ ok: boolean }>('/api/import/resume/confirm', json('POST', parsed)),
 }
+
+export interface ReviewItem {
+  severity: 'critical' | 'medium' | 'low'
+  category: 'missing_field' | 'weak_content' | 'keyword_gap' | 'suggestion'
+  title: string
+  description: string
+  action: string
+}
+
+export interface ReviewReport {
+  readiness_score: number
+  summary: string
+  items: ReviewItem[]
+}
+
+export interface InterviewQuestion {
+  id: string
+  type: 'behavioral' | 'technical' | 'situational'
+  question: string
+  context: string
+  tips: string
+}
+
+export interface ParsedResume {
+  profile: Profile
+  entries: Entry[]
+}
+

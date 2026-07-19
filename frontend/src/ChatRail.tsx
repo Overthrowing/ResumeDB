@@ -5,7 +5,7 @@ import { IconChat, IconCheck, IconChevronDown, IconHistory, IconPaperclip, IconP
 
 const RAIL_MIN = 300
 const RAIL_MAX = 720
-const MODELS = ['', 'haiku', 'sonnet', 'opus', 'fable']
+const MODELS = ['', 'haiku', 'sonnet', 'opus', 'fable', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
 
 export interface Conversation {
   id: string

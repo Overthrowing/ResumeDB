@@ -9,16 +9,16 @@ dev: sync
 # Overwrite the data repo's app-authored boilerplate (skills, CLAUDE.md,
 # template contract) from scaffold/. Never touches db/, applications/, proposals/.
 sync:
-	cd backend && micromamba run -n resumedb python -m resumedb.datarepo
+	cd backend && uv run python -m resumedb.datarepo
 
 backend:
-	micromamba run -n resumedb uvicorn resumedb.main:app --reload --port 8000 --app-dir backend
+	uv run uvicorn resumedb.main:app --reload --port 8000 --app-dir backend
 
 frontend:
 	cd frontend && pnpm dev
 
 test:
-	micromamba run -n resumedb pytest backend/tests -q
+	uv run pytest backend/tests -q
 
 build:
 	cd frontend && pnpm build

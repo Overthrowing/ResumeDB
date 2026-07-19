@@ -1,16 +1,25 @@
 import { useCallback, useEffect, useState } from 'react'
-import { api, type Application, type AuditResult, type HistoryEntry, type RenderResult } from './api'
+import { api, type Application, type AppStatus, type AuditResult, type HistoryEntry, type RenderResult } from './api'
 import ChatRail from './ChatRail'
 import MarkdownField from './MarkdownField'
 import { IconCheck, IconChevronLeft, IconDownload, IconRefresh, IconSparkle, IconWarn } from './icons'
 
-type Tab = 'overview' | 'resume' | 'cover' | 'ats' | 'versions'
+const PIPELINE_STEPS: { status: AppStatus; label: string; color: string }[] = [
+  { status: 'not_started', label: 'Not Started', color: 'var(--color-neutral-400)' },
+  { status: 'in_progress', label: 'In Progress', color: '#42a5f5' },
+  { status: 'awaiting_review', label: 'Awaiting Review', color: '#ffa726' },
+  { status: 'ready', label: 'Ready', color: '#66bb6a' },
+  { status: 'applied', label: 'Applied', color: 'var(--color-accent)' },
+]
+
+type Tab = 'overview' | 'resume' | 'cover' | 'ats' | 'versions' | 'autofill'
 const TABS: { id: Tab; label: string }[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'resume', label: 'Resume' },
   { id: 'cover', label: 'Cover & Q&A' },
   { id: 'ats', label: 'ATS check' },
   { id: 'versions', label: 'Versions' },
+  { id: 'autofill', label: 'Autofill' },
 ]
 
 export default function Workspace({ id, onClose }: { id: string; onClose: () => void }) {
@@ -84,6 +93,7 @@ export default function Workspace({ id, onClose }: { id: string; onClose: () => 
             {tab === 'cover' && <CoverTab app={app} onError={setError} onSaved={reload} />}
             {tab === 'ats' && <AtsTab appId={id} />}
             {tab === 'versions' && <VersionsTab appId={id} onReverted={reload} onError={setError} />}
+            {tab === 'autofill' && <AutofillTab app={app} />}
           </div>
         </div>
 
@@ -136,8 +146,75 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
     setDirty(true)
   }
 
+  const currentIdx = PIPELINE_STEPS.findIndex((s) => s.status === fields.status)
+
+  const transitionStatus = async (newStatus: AppStatus) => {
+    try {
+      await api.saveAppMeta(meta.id, { status: newStatus })
+      setFields({ ...fields, status: newStatus })
+      onSaved()
+    } catch (e) {
+      onError((e as Error).message)
+    }
+  }
+
   return (
     <div style={{ maxWidth: 640 }}>
+      {/* Status progression bar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 'var(--space-6)', padding: 'var(--space-3) 0' }}>
+        {PIPELINE_STEPS.map((step, i) => {
+          const isActive = step.status === fields.status
+          const isPast = i < currentIdx
+          const dotColor = isActive || isPast ? step.color : 'var(--color-neutral-300)'
+          return (
+            <div key={step.status} style={{ display: 'flex', alignItems: 'center', flex: i < PIPELINE_STEPS.length - 1 ? 1 : 'none' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <div
+                  style={{
+                    width: isActive ? 20 : 12,
+                    height: isActive ? 20 : 12,
+                    borderRadius: '50%',
+                    background: dotColor,
+                    border: isActive ? `3px solid color-mix(in srgb, ${step.color} 30%, transparent)` : 'none',
+                    transition: 'all 0.2s',
+                  }}
+                />
+                <span style={{ fontSize: 10, color: isActive ? step.color : 'var(--color-neutral-500)', fontWeight: isActive ? 700 : 400, whiteSpace: 'nowrap' }}>
+                  {step.label}
+                </span>
+              </div>
+              {i < PIPELINE_STEPS.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: isPast ? PIPELINE_STEPS[i + 1].color : 'var(--color-neutral-300)', margin: '0 6px', marginBottom: 18 }} />
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Status action buttons */}
+      {fields.status === 'awaiting_review' && (
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', padding: 'var(--space-3)', border: '1px solid #66bb6a', borderRadius: 'var(--radius-md)', background: '#e8f5e920' }}>
+          <div style={{ flex: 1, fontSize: 13 }}>
+            <strong style={{ color: '#2e7d32' }}>Ready to lock in?</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>Review everything above, then finalize.</div>
+          </div>
+          <button className="btn" style={{ background: '#2e7d32', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('ready')}>
+            Lock In
+          </button>
+        </div>
+      )}
+      {fields.status === 'ready' && (
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', padding: 'var(--space-3)', border: '1px solid var(--color-accent)', borderRadius: 'var(--radius-md)', background: 'var(--color-accent-100)' }}>
+          <div style={{ flex: 1, fontSize: 13 }}>
+            <strong style={{ color: 'var(--color-accent-800)' }}>Application is locked and ready.</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>Once you submit it, mark it as applied.</div>
+          </div>
+          <button className="btn" style={{ background: 'var(--color-accent)', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('applied')}>
+            Mark as Applied
+          </button>
+        </div>
+      )}
+
       <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
         <div className="field" style={{ flex: 1 }}>
           <label>Company</label>
@@ -159,9 +236,9 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
         </div>
         <div className="field" style={{ width: 150 }}>
           <label>Status</label>
-          <select className="input" value={fields.status} onChange={(e) => set({ status: e.target.value })}>
-            {['draft', 'tailoring', 'submitted', 'interview', 'closed'].map((s) => (
-              <option key={s}>{s}</option>
+          <select className="input" value={fields.status} onChange={(e) => set({ status: e.target.value as AppStatus })}>
+            {PIPELINE_STEPS.map((s) => (
+              <option key={s.status} value={s.status}>{s.label}</option>
             ))}
           </select>
         </div>
@@ -218,6 +295,10 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
       <button className="btn btn-primary" disabled={!dirty} onClick={save}>
         Save overview
       </button>
+
+      {(meta.status === 'not_started' || meta.status === 'in_progress' || meta.status === 'awaiting_review') && (
+        <ReviewPanel appId={meta.id} />
+      )}
     </div>
   )
 }
@@ -575,3 +656,230 @@ function VersionsTab({ appId, onReverted, onError }: { appId: string; onReverted
     </div>
   )
 }
+
+function AutofillTab({ app }: { app: Application }) {
+  const [profile, setProfile] = useState<any>(null)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
+
+  useEffect(() => {
+    api.profile().then(setProfile).catch(() => {})
+  }, [])
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text)
+    setCopiedField(label)
+    setTimeout(() => setCopiedField(null), 2000)
+  }
+
+  const handleDownload = () => {
+    window.open(`/api/applications/${app.meta.id}/resume.pdf`, '_blank')
+  }
+
+  if (!profile) return <div className="text-muted">Loading profile...</div>
+
+  const fields = [
+    { label: 'Full Name', value: profile.name || '' },
+    { label: 'Email Address', value: profile.email || '' },
+    { label: 'Phone Number', value: profile.phone || '' },
+    { label: 'Location (City/State)', value: profile.location || '' },
+  ]
+
+  if (profile.links) {
+    profile.links.forEach((l: any) => {
+      fields.push({ label: l.label, value: l.url })
+    })
+  }
+
+  return (
+    <div style={{ maxWidth: 720 }}>
+      <div style={{ marginBottom: 'var(--space-4)' }}>
+        <h3 style={{ margin: '0 0 4px', fontSize: 20 }}>Auto-fill Application Form</h3>
+        <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
+          Use the ResumeDB Chrome Extension to automatically fill this application's forms and upload the tailored resume PDF in one click.
+        </p>
+      </div>
+
+      <div className="card" style={{ padding: 'var(--space-4)', marginBottom: 'var(--space-6)', borderLeft: '3px solid var(--color-accent)' }}>
+        <h4 style={{ margin: '0 0 var(--space-2)', fontSize: 15 }}>How to use the Chrome Extension:</h4>
+        <ol style={{ fontSize: 13, margin: 0, paddingLeft: 20, lineHeight: 1.6 }}>
+          <li>
+            Open Chrome and navigate to <strong>chrome://extensions</strong>.
+          </li>
+          <li>
+            Enable <strong>Developer mode</strong> (toggle switch in the top-right corner).
+          </li>
+          <li>
+            Click <strong>Load unpacked</strong> (top-left button) and select the extension folder:
+            <code style={{ display: 'block', background: 'var(--color-neutral-100)', padding: '4px 8px', borderRadius: 'var(--radius-sm)', marginTop: 4, fontFamily: 'monospace', fontSize: 12 }}>
+              /Users/nathanye/Dev/Hackathons/ResumeDB/extension
+            </code>
+          </li>
+          <li>
+            Open the job application page (Lever, Greenhouse, etc.), open the extension from your browser toolbar, select <strong>{app.meta.company} - {app.meta.role}</strong>, and click <strong>Auto-fill current form</strong>.
+          </li>
+        </ol>
+      </div>
+
+      <div style={{ marginBottom: 'var(--space-4)' }}>
+        <h3 style={{ margin: '0 0 4px', fontSize: 20 }}>Manual Copy-Paste Details</h3>
+        <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
+          Quick one-click copying for manual form entry.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-2) var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)' }}>
+          <div>
+            <strong style={{ fontSize: 13 }}>Tailored Resume (PDF)</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>Download the PDF tailored specifically for this role</div>
+          </div>
+          <button className="btn btn-primary" onClick={handleDownload} style={{ padding: '4px 10px', fontSize: 12 }}>
+            Download PDF
+          </button>
+        </div>
+
+        {fields.map((f, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-2) var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)' }}>
+            <div>
+              <strong style={{ fontSize: 13 }}>{f.label}</strong>
+              <div style={{ fontSize: 13, marginTop: 2, fontFamily: 'monospace', color: 'var(--color-accent-900)' }}>
+                {f.value || <span className="text-muted" style={{ fontStyle: 'italic' }}>Not specified</span>}
+              </div>
+            </div>
+            {f.value && (
+              <button
+                className="btn btn-secondary"
+                onClick={() => copyToClipboard(f.value, f.label)}
+                style={{ padding: '4px 10px', fontSize: 12 }}
+              >
+                {copiedField === f.label ? 'Copied ✓' : 'Copy'}
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+interface ReviewItem {
+  severity: 'critical' | 'medium' | 'low'
+  category: 'missing_field' | 'weak_content' | 'keyword_gap' | 'suggestion'
+  title: string
+  description: string
+  action: string
+}
+
+interface ReviewReport {
+  readiness_score: number
+  summary: string
+  items: ReviewItem[]
+}
+
+function ReviewPanel({ appId }: { appId: string }) {
+  const [report, setReport] = useState<ReviewReport | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [dismissed, setDismissed] = useState<Record<number, boolean>>({})
+
+  const runReview = async () => {
+    setBusy(true)
+    setError(null)
+    try {
+      const res = await api.review(appId)
+      setReport(res)
+    } catch (e) {
+      setError((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  useEffect(() => {
+    runReview()
+  }, [appId])
+
+  if (busy) {
+    return (
+      <div style={{ padding: 'var(--space-4) 0', color: 'var(--color-neutral-600)', fontSize: 13 }}>
+        ⏳ Running application audit & readiness review...
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 'var(--space-3)', border: '1px solid var(--color-accent-300)', borderRadius: 'var(--radius-md)', background: 'var(--color-neutral-100)', color: 'var(--color-accent-800)', fontSize: 13, marginBottom: 'var(--space-4)' }}>
+        Failed to load review: {error}
+        <button className="btn btn-primary" style={{ display: 'block', marginTop: 8, padding: '4px 10px', fontSize: 12 }} onClick={runReview}>Retry</button>
+      </div>
+    )
+  }
+
+  if (!report) return null
+
+  const severityColors = {
+    critical: '#f44336',
+    medium: '#ff9800',
+    low: '#9e9e9e'
+  }
+
+  const visibleItems = report.items.filter((_, idx) => !dismissed[idx])
+
+  return (
+    <div style={{ marginTop: 'var(--space-6)', borderTop: '1px solid var(--color-divider)', paddingTop: 'var(--space-4)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
+        <div>
+          <h3 style={{ margin: 0, fontSize: 18 }}>AI Readiness Audit</h3>
+          <p className="text-muted" style={{ fontSize: 12, margin: '2px 0 0' }}>Review critical priorities and suggestions before finalizing.</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ textAlign: 'right' }}>
+            <span style={{ fontSize: 11, color: 'var(--color-neutral-600)' }}>Readiness Score</span>
+            <div style={{ fontSize: 22, fontWeight: 700, color: report.readiness_score >= 80 ? '#2e7d32' : report.readiness_score >= 50 ? '#e65100' : '#c62828' }}>
+              {report.readiness_score}%
+            </div>
+          </div>
+          <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: 12 }} onClick={runReview}>Re-run Audit</button>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+        {visibleItems.map((item) => {
+          const actualIdx = report.items.indexOf(item)
+          return (
+            <div key={actualIdx} style={{ display: 'flex', gap: 12, padding: 'var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', background: 'var(--color-neutral-100)' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: severityColors[item.severity], marginTop: 6, flex: 'none' }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                  <strong style={{ fontSize: 14 }}>{item.title}</strong>
+                  <span className="tag tag-neutral" style={{ fontSize: 9, padding: '1px 6px', textTransform: 'uppercase' }}>{item.category.replace('_', ' ')}</span>
+                </div>
+                <div style={{ fontSize: 13, marginTop: 4, color: 'var(--color-neutral-800)' }}>{item.description}</div>
+                {item.action && (
+                  <div style={{ fontSize: 12, marginTop: 6, color: 'var(--color-accent-800)', fontStyle: 'italic' }}>
+                    💡 Suggested: {item.action}
+                  </div>
+                )}
+              </div>
+              <button
+                className="btn-ghost"
+                style={{ alignSelf: 'flex-start', padding: '2px 6px', fontSize: 11, border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--color-neutral-500)' }}
+                onClick={() => setDismissed({ ...dismissed, [actualIdx]: true })}
+              >
+                Dismiss
+              </button>
+            </div>
+          )
+        })}
+
+        {visibleItems.length === 0 && (
+          <div className="text-muted" style={{ padding: 'var(--space-3)', textAlign: 'center', fontSize: 13, border: '1px dashed var(--color-divider)', borderRadius: 'var(--radius-md)' }}>
+            🎉 No checklist priorities found. Your application looks strong and ready to go!
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+

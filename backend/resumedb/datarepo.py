@@ -253,7 +253,7 @@ class DataRepo:
                 "role": role,
                 "template": template,
                 "created": f"{datetime.date.today():%Y-%m-%d}",
-                "status": "draft",
+                "status": "not_started",
                 "session_id": None,
             },
             d / "meta.yaml",
@@ -291,11 +291,14 @@ class DataRepo:
         gitops.checkpoint(self.root, f"app:{app_id}", f"edit {name}")
 
     META_FIELDS = {"company", "role", "status", "deadline", "source", "template", "session_id"}
+    APP_STATUSES = ["not_started", "in_progress", "awaiting_review", "ready", "applied"]
 
     def set_app_meta(self, app_id: str, **updates) -> None:
         bad = set(updates) - self.META_FIELDS
         if bad:
             raise DataRepoError(f"not editable meta fields: {sorted(bad)}")
+        if "status" in updates and updates["status"] not in self.APP_STATUSES:
+            raise DataRepoError(f"invalid status: {updates['status']}")
         path = self.app_dir(app_id) / "meta.yaml"
         meta = _load(path) or {}
         meta.update(updates)
@@ -397,7 +400,43 @@ class DataRepo:
         gitops.checkpoint(self.root, git_scope, f"upload {path.name}")
         return str(path.relative_to(self.root))
 
+    # -- research runs --------------------------------------------------------
+
+    def _runs_dir(self) -> Path:
+        d = self.root / "db" / "research_runs"
+        d.mkdir(parents=True, exist_ok=True)
+        return d
+
+    def save_research_run(self, run_id: str, data: dict) -> None:
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):
+            raise DataRepoError(f"bad run id: {run_id!r}")
+        path = self._runs_dir() / f"{run_id}.yaml"
+        _dump(data, path)
+        gitops.checkpoint(self.root, "db", f"save research run {run_id}")
+
+    def get_research_run(self, run_id: str) -> dict:
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):
+            raise DataRepoError(f"bad run id: {run_id!r}")
+        path = self._runs_dir() / f"{run_id}.yaml"
+        if not path.exists():
+            raise DataRepoError(f"no research run {run_id}")
+        return _load(path) or {}
+
+    def list_research_runs(self, limit: int = 10) -> list[dict]:
+        d = self._runs_dir()
+        runs = []
+        for f in sorted(d.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True):
+            try:
+                data = _load(f) or {}
+                runs.append(data)
+                if len(runs) >= limit:
+                    break
+            except Exception:
+                pass
+        return runs
+
     # -- templates -----------------------------------------------------------
 
     def list_templates(self) -> list[str]:
         return sorted(f.stem for f in (self.root / "templates").glob("*.typ"))
+

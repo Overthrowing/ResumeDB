@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from . import audit, config, datarepo, gitops, render
 from .claude import ClaudeError, run_oneshot
+from .codex import run_oneshot_codex
 
 router = APIRouter(prefix="/api")
 
@@ -33,18 +34,27 @@ def _wrap(fn, *args, **kwargs):
 @router.get("/health")
 def health():
     cfg = config.load()
+    provider = cfg.get("agent_provider", "claude")
     claude = config.claude_bin(cfg)
     claude_version = None
     if claude:
         proc = subprocess.run([claude, "--version"], capture_output=True, text=True, timeout=30)
         claude_version = proc.stdout.strip() or None
+    codex = config.codex_bin(cfg)
+    codex_version = None
+    if codex:
+        proc = subprocess.run([codex, "--version"], capture_output=True, text=True, timeout=30)
+        codex_version = proc.stdout.strip() or None
     root = Path(cfg["data_repo"]).expanduser()
     ok = datarepo.is_datarepo(root)
     if ok:
         datarepo.sync_new_skills(root)  # ship newly added skills to existing repos
     return {
+        "agent_provider": provider,
         "claude": claude,
         "claude_version": claude_version,
+        "codex": codex,
+        "codex_version": codex_version,
         "typst": config.typst_bin(),
         "data_repo": str(root),
         "data_repo_ok": ok,
@@ -215,22 +225,34 @@ async def create_application(body: NewApplication):
 
 async def _fetch_jd(r: datarepo.DataRepo, app_id: str, url: str) -> None:
     cfg = config.load()
-    claude_bin = config.claude_bin(cfg)
-    if not claude_bin:
-        return
+    provider = cfg.get("agent_provider", "claude")
+    prompt = (
+        f"Use the jd-from-link skill: fetch {url} and write "
+        f"applications/{app_id}/jd.md in the structured format the skill describes."
+    )
     try:
-        await run_oneshot(
-            claude_bin,
-            cwd=r.root,
-            prompt=(
-                f"Use the jd-from-link skill: fetch {url} and write "
-                f"applications/{app_id}/jd.md in the structured format the skill describes."
-            ),
-            model=cfg["models"].get("jd"),
-            effort=cfg["models"].get("jd_effort"),
-        )
+        if provider == "codex":
+            codex_bin = config.codex_bin(cfg)
+            await run_oneshot_codex(
+                codex_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+            )
+        else:
+            claude_bin = config.claude_bin(cfg)
+            if not claude_bin:
+                return
+            await run_oneshot(
+                claude_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+            )
         gitops.checkpoint(r.root, f"app:{app_id}", "fetch jd from link")
-    except ClaudeError:
+    except Exception:
         pass  # placeholder jd.md stays; the user can paste the text instead
 
 
@@ -302,3 +324,248 @@ def history_diff(sha: str):
 def history_revert(sha: str):
     _wrap(gitops.revert, repo().root, sha)
     return {"ok": True}
+
+
+# -- agent ingestion & discovery ---------------------------------------------------
+
+import datetime
+import json
+import uuid
+
+class AgentIngestRequest(BaseModel):
+    input: str
+
+class AgentSearchRequest(BaseModel):
+    query: str
+
+JOB_LEAD_SCHEMA = {
+    "type": "object",
+    "required": ["company", "role"],
+    "properties": {
+        "company": {"type": "string"},
+        "role": {"type": "string"},
+        "location": {"type": "string"},
+        "term": {"type": "string"},
+        "department": {"type": "string"},
+        "team": {"type": "string"},
+        "deadline": {"type": "string"},
+        "salary_amount": {"type": "integer"},
+        "salary_currency": {"type": "string"},
+        "salary_period": {"type": "string"},
+        "priority": {"type": "integer", "minimum": 0, "maximum": 3},
+        "what_they_look_for": {"type": "string"},
+        "good_to_know": {"type": "string"},
+        "job_description": {"type": "string"},
+        "notes": {"type": "string"},
+        "application_url": {"type": "string"},
+        "source_url": {"type": "string"},
+    }
+}
+
+INGEST_SCHEMA = {
+    "type": "object",
+    "required": ["job", "summary"],
+    "properties": {
+        "summary": {"type": "string"},
+        "job": JOB_LEAD_SCHEMA
+    }
+}
+
+SEARCH_SCHEMA = {
+    "type": "object",
+    "required": ["jobs", "summary"],
+    "properties": {
+        "summary": {"type": "string"},
+        "jobs": {
+            "type": "array",
+            "items": JOB_LEAD_SCHEMA
+        }
+    }
+}
+
+@router.post("/agent/ingest")
+async def agent_ingest(body: AgentIngestRequest):
+    r = repo()
+    cfg = config.load()
+    provider = cfg.get("agent_provider", "claude")
+    run_id = uuid.uuid4().hex
+    
+    run_data = {
+        "id": run_id,
+        "kind": "ingest",
+        "query": body.input[:100],
+        "status": "pending",
+        "summary": "Extracting details...",
+        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "error": None,
+        "result": None
+    }
+    r.save_research_run(run_id, run_data)
+    
+    prompt = (
+        f"Extract the details of a job posting and return them strictly structured according to the JSON schema.\n"
+        f"Input: {body.input}\n\n"
+        f"If the input is a URL (starts with http or https), fetch or browse that URL to retrieve the full job posting before extraction.\n"
+        f"Ensure all fields are populated correctly:\n"
+        f"- Use empty strings or null for unknown text fields.\n"
+        f"- salary_amount should be an integer (not string or float) or null.\n"
+        f"- Use deadline as YYYY-MM-DD or null.\n"
+        f"- priority is 0 through 3.\n"
+        f"Provide a brief 'summary' of the role."
+    )
+    
+    try:
+        if provider == "codex":
+            codex_bin = config.codex_bin(cfg)
+            res_text = await run_oneshot_codex(
+                codex_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+                json_schema=INGEST_SCHEMA,
+            )
+        else:
+            claude_bin = config.claude_bin(cfg)
+            if not claude_bin:
+                raise HTTPException(503, "Claude CLI path not configured")
+            res_text = await run_oneshot(
+                claude_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+                json_schema=INGEST_SCHEMA,
+            )
+            
+        result = json.loads(res_text)
+        run_data["status"] = "completed"
+        run_data["summary"] = result.get("summary", "Extraction completed")
+        run_data["result"] = result
+        r.save_research_run(run_id, run_data)
+        
+        return {
+            "run_id": run_id,
+            "summary": result.get("summary", ""),
+            "job": result.get("job", {})
+        }
+    except Exception as e:
+        run_data["status"] = "failed"
+        run_data["error"] = str(e)
+        r.save_research_run(run_id, run_data)
+        raise HTTPException(500, f"Ingestion failed: {e}")
+
+@router.post("/agent/search")
+async def agent_search(body: AgentSearchRequest):
+    r = repo()
+    cfg = config.load()
+    provider = cfg.get("agent_provider", "claude")
+    run_id = uuid.uuid4().hex
+    profile = r.get_profile()
+    
+    run_data = {
+        "id": run_id,
+        "kind": "search",
+        "query": body.query,
+        "status": "pending",
+        "summary": "Searching for roles...",
+        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "error": None,
+        "result": None
+    }
+    r.save_research_run(run_id, run_data)
+    
+    prompt = (
+        f"Search the web and find relevant internship/job openings matching this query: {body.query}\n\n"
+        f"Candidate profile details (use to match/rank fit, but do NOT leak candidate private contact info in search terms):\n"
+        f"{json.dumps(profile)}\n\n"
+        f"Use live web research/fetching to find up to 10 verified job listings. Return them as a structured list of jobs under 'jobs' plus a concise 'summary' of the coverage.\n"
+        f"Each job in the list must strictly follow the schema."
+    )
+    
+    try:
+        if provider == "codex":
+            codex_bin = config.codex_bin(cfg)
+            res_text = await run_oneshot_codex(
+                codex_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+                json_schema=SEARCH_SCHEMA,
+            )
+        else:
+            claude_bin = config.claude_bin(cfg)
+            if not claude_bin:
+                raise HTTPException(503, "Claude CLI path not configured")
+            res_text = await run_oneshot(
+                claude_bin,
+                cwd=r.root,
+                prompt=prompt,
+                model=cfg["models"].get("jd"),
+                effort=cfg["models"].get("jd_effort"),
+                json_schema=SEARCH_SCHEMA,
+            )
+            
+        result = json.loads(res_text)
+        run_data["status"] = "completed"
+        run_data["summary"] = result.get("summary", "Search completed")
+        run_data["result"] = result
+        r.save_research_run(run_id, run_data)
+        
+        return {
+            "run_id": run_id,
+            "summary": result.get("summary", ""),
+            "jobs": result.get("jobs", [])
+        }
+    except Exception as e:
+        run_data["status"] = "failed"
+        run_data["error"] = str(e)
+        r.save_research_run(run_id, run_data)
+        raise HTTPException(500, f"Search failed: {e}")
+
+@router.get("/agent/runs")
+def list_runs(limit: int = 10):
+    return repo().list_research_runs(limit=limit)
+
+from fastapi import File, UploadFile
+
+@router.get("/agent/runs/{run_id}")
+def get_run(run_id: str):
+    return _wrap(repo().get_research_run, run_id)
+
+
+@router.post("/applications/{app_id}/review")
+async def audit_review(app_id: str):
+    from . import review
+    return await review.run_review(repo(), app_id)
+
+
+@router.post("/applications/{app_id}/interview/generate")
+async def generate_interview(app_id: str):
+    from . import interview
+    return await interview.generate_questions(repo(), app_id)
+
+
+@router.get("/applications/{app_id}/interview/questions")
+def get_interview(app_id: str):
+    from . import interview
+    return interview.load_questions(repo(), app_id)
+
+
+@router.post("/import/resume")
+async def import_resume(file: UploadFile = File(...)):
+    from . import importer
+    try:
+        pdf_bytes = await file.read()
+        return await importer.parse_resume_pdf(pdf_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/import/resume/confirm")
+def import_resume_confirm(parsed: dict):
+    from . import importer
+    importer.apply_import(repo(), parsed)
+    return {"ok": True}
+
