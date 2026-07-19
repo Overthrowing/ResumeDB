@@ -106,6 +106,12 @@ For a walkthrough with your own data:
 3. Choose Load unpacked and select the repository's `extension` directory.
 4. Start ResumeDB, then click the extension icon on any job page.
 
+The installed side panel should display the ResumeDB logo and version `2.1.0`.
+If it has no logo or remains on **Connecting to ResumeDB...**, remove the old
+unpacked copy, load the `extension` directory from the checkout you are
+actually running, and reload the job page. Unpacked extensions do not update
+automatically.
+
 The extension can capture the current job, fill any approved application using
 semantic labels and the answer bank, upload the tailored PDF, and open all
 ready applications in browser tabs. It never clicks a final Submit button or
@@ -113,7 +119,8 @@ bypasses a CAPTCHA.
 
 For a repeatable local extension test, use the Northstar Robotics form created
 by the Hackathon demo flow above. Reload the unpacked extension from
-`chrome://extensions` after changing extension source files.
+`chrome://extensions` and reload the target page after changing extension
+source files.
 
 ## Agent access
 
@@ -142,5 +149,6 @@ make test
 pnpm --dir frontend lint
 pnpm --dir frontend build
 node --check extension/sidepanel.js
+node --check extension/background.js
 node --check extension/content.js
 ```

@@ -12,10 +12,12 @@ const I = ({ d, size = 17, sw = 1.5 }: { d: string; size?: number; sw?: number }
 )
 
 export const IconLogo = ({ size = 22 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth={1.4}>
-    <path d="M4 3h11l5 5v13H4z" />
-    <path d="M14 3v6h6" />
-    <path d="M8 13h8M8 17h8" />
+  <svg width={size} height={size} viewBox="0 0 512 512" role="img" aria-label="ResumeDB">
+    <rect x="16" y="16" width="480" height="480" rx="116" fill="#201f1d" />
+    <path fill="#f8f4f4" d="M128 72h168l88 88v280H128c-22 0-40-18-40-40V112c0-22 18-40 40-40Z" />
+    <path fill="#d6a252" d="M296 72v64c0 13 11 24 24 24h64l-88-88Z" />
+    <path fill="#615d57" d="M144 198h144v25H144zm0 58h176v25H144zm0 58h124v25H144z" />
+    <path fill="#b68235" stroke="#201f1d" strokeWidth="14" strokeLinejoin="round" d="m363 267 18 52 52 18-52 18-18 52-18-52-52-18 52-18 18-52Z" />
   </svg>
 )
 export const IconUser = (p: { size?: number }) => <I {...p} d="c:,12,8,4|M4 21c0-4 4-6 8-6s8 2 8 6" />

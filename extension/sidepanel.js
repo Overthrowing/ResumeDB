@@ -1,5 +1,6 @@
-const BACKEND_URL = 'http://localhost:8000';
-const WS_URL = 'ws://localhost:8000';
+const BACKEND_CANDIDATES = ['http://localhost:8000', 'http://127.0.0.1:8000'];
+let backendUrl = null;
+let wsUrl = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const appSelect = document.getElementById('app-select');
@@ -17,14 +18,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatMessages = document.getElementById('chat-messages');
   const chatInput = document.getElementById('chat-input');
   const sendButton = document.getElementById('send-btn');
+  const connectionPanel = document.getElementById('connection-panel');
+  const connectionMessage = document.getElementById('connection-message');
+  const retryButton = document.getElementById('retry-btn');
+  const openAppButton = document.getElementById('open-app-btn');
+  const versionText = document.getElementById('extension-version');
 
   let applications = [];
   let activePackage = null;
   let socket = null;
   let conversationId = null;
 
+  versionText.textContent = `v${chrome.runtime.getManifest().version}`;
+
+  const connectBackend = async () => {
+    let lastError = null;
+    for (const candidate of BACKEND_CANDIDATES) {
+      try {
+        const response = await fetch(`${candidate}/api/health`, { signal: AbortSignal.timeout(2500) });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const health = await response.json();
+        if (!health.data_repo_ok) throw new Error('The career-data repository is not initialized.');
+        backendUrl = candidate;
+        wsUrl = candidate.replace(/^http/, 'ws');
+        return health;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw new Error(
+      lastError?.message === 'The career-data repository is not initialized.'
+        ? lastError.message
+        : 'ResumeDB is not reachable. Start the app with make dev, then retry.',
+    );
+  };
+
   const request = async (path, options) => {
-    const response = await fetch(`${BACKEND_URL}${path}`, options);
+    if (!backendUrl) await connectBackend();
+    let response;
+    try {
+      response = await fetch(`${backendUrl}${path}`, options);
+    } catch {
+      backendUrl = null;
+      wsUrl = null;
+      throw new Error('Lost the ResumeDB connection. Confirm make dev is still running, then retry.');
+    }
     if (!response.ok) {
       let message = response.statusText;
       try { message = (await response.json()).detail || message; } catch { /* text response */ }
@@ -38,6 +76,22 @@ document.addEventListener('DOMContentLoaded', () => {
     statusText.className = `status${kind ? ` ${kind}` : ''}`;
   };
 
+  const showConnectionProblem = (error) => {
+    connectionMessage.textContent = error.message;
+    connectionPanel.hidden = false;
+    appSelect.disabled = true;
+    appSelect.innerHTML = '<option value="">ResumeDB disconnected</option>';
+    applications = [];
+    activePackage = null;
+    setBusy(false);
+    setStatus('Connection required.', 'error');
+  };
+
+  const clearConnectionProblem = () => {
+    connectionPanel.hidden = true;
+    appSelect.disabled = false;
+  };
+
   const setBusy = (busy, message = '') => {
     progress.style.display = busy ? 'flex' : 'none';
     if (message) progressText.textContent = message;
@@ -47,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const loadApplications = async () => {
+    setStatus('Connecting to ResumeDB...');
+    await connectBackend();
+    clearConnectionProblem();
     applications = await request('/api/applications');
     appSelect.innerHTML = '<option value="">Select an application</option>';
     for (const app of applications) {
@@ -58,7 +115,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const readyCount = applications.filter((app) => app.status === 'ready' && app.source).length;
     readyQueueButton.textContent = `Open ready queue (${readyCount})`;
     readyQueueButton.disabled = readyCount === 0;
-    setStatus(applications.length ? 'Select a ready application.' : 'No applications tracked yet.');
+    const preferred = applications.find((app) => app.status === 'ready');
+    if (preferred) {
+      appSelect.value = preferred.id;
+      await loadPackage(preferred.id);
+    } else {
+      setStatus(applications.length ? 'Select an application. Drafts must be approved before autofill.' : 'No applications tracked yet.');
+    }
   };
 
   const loadPackage = async (appId) => {
@@ -81,8 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const pdfBase64 = async (appId) => {
-    const response = await fetch(`${BACKEND_URL}/api/applications/${appId}/resume.pdf`);
-    if (!response.ok) return null;
+    const response = await fetch(`${backendUrl}/api/applications/${appId}/resume.pdf`);
+    if (!response.ok) throw new Error('The tailored resume PDF is unavailable. Render the draft in ResumeDB first.');
     const bytes = new Uint8Array(await response.arrayBuffer());
     let binary = '';
     for (const byte of bytes) binary += String.fromCharCode(byte);
@@ -112,7 +175,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const fillTab = async (tabId, applicationPackage) => {
     const app = applicationPackage.application;
-    await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+    const target = await chrome.tabs.get(tabId);
+    if (!/^https?:\/\//i.test(target.url || '')) {
+      throw new Error('Chrome blocks autofill on this page. Open an http or https application page and try again.');
+    }
+    try {
+      await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+    } catch (error) {
+      throw new Error(`ResumeDB cannot access this page. Reload the extension and confirm site access is allowed. ${error.message}`);
+    }
     const pdf = await pdfBase64(app.meta.id);
     return new Promise((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, {
@@ -273,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initChat = () => {
     if (!activePackage || socket) return;
     const scope = `app:${activePackage.application.meta.id}`;
-    socket = new WebSocket(`${WS_URL}/api/chat?scope=${encodeURIComponent(scope)}&conversation=${conversationId || ''}`);
+    socket = new WebSocket(`${wsUrl}/api/chat?scope=${encodeURIComponent(scope)}&conversation=${conversationId || ''}`);
     socket.onopen = () => {
       chatMessages.innerHTML = '<div class="msg agent">Connected to the application agent.</div>';
       chatInput.disabled = false;
@@ -317,6 +388,15 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   sendButton.addEventListener('click', sendMessage);
+  retryButton.addEventListener('click', () => {
+    backendUrl = null;
+    wsUrl = null;
+    retryButton.disabled = true;
+    loadApplications()
+      .catch(showConnectionProblem)
+      .finally(() => { retryButton.disabled = false; });
+  });
+  openAppButton.addEventListener('click', () => chrome.tabs.create({ url: 'http://localhost:5173/' }));
   chatInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') sendMessage(); });
   document.querySelectorAll('.tab').forEach((tab) => {
     tab.addEventListener('click', () => {
@@ -329,5 +409,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  loadApplications().catch((error) => setStatus(error.message, 'error'));
+  loadApplications().catch(showConnectionProblem);
 });

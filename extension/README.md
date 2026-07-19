@@ -12,6 +12,26 @@ resumes, and opens the ready queue without storing job-site passwords.
 4. Choose Load unpacked and select this `extension` directory.
 5. Click the ResumeDB extension icon to open the side panel.
 
+The current side panel shows the ResumeDB logo and version `2.1.0` in its
+header. The extension requests access to job application pages because Chrome
+requires explicit site access before it can capture or fill them.
+
+## Troubleshooting
+
+If the side panel remains on **Connecting to ResumeDB...**, first confirm that
+`make dev` is running. If the header has no ResumeDB logo or version, Chrome is
+still running an older unpacked copy:
+
+1. Open `chrome://extensions`.
+2. Remove the old ResumeDB extension.
+3. Choose **Load unpacked** and select the `extension` directory from the
+   checkout you are currently running.
+4. Reload the job application tab after loading or reloading the extension.
+
+After editing extension source files, use the Reload button on the ResumeDB
+card in `chrome://extensions`, then reload the target page. Chrome does not
+automatically refresh unpacked extensions or already-open pages.
+
 ## Workflow
 
 - Capture this job page sends the visible page and structured metadata through

@@ -31,8 +31,31 @@
     header h2 {
       margin: 0;
       font-size: 16px;
-      color: var(--accent);
+      color: var(--text);
       font-weight: 600;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .brand img {
+      width: 32px;
+      height: 32px;
+    }
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .brand-copy span {
+      margin-top: 3px;
+      color: #888;
+      font-size: 10px;
+    }
+    .version {
+      color: #777;
+      font-size: 10px;
     }
     .tabs {
       display: flex;
@@ -115,6 +138,38 @@
     }
     .status.success { color: #4caf50; }
     .status.error { color: #f44336; }
+    .connection-panel {
+      margin-bottom: 14px;
+      padding: 12px;
+      border: 1px solid #6c3434;
+      border-radius: 6px;
+      background: #2b1c1c;
+    }
+    .connection-panel strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #ffb4b4;
+      font-size: 12px;
+    }
+    .connection-panel p {
+      margin: 0 0 9px;
+      color: #c9a7a7;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .connection-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+    .connection-actions button {
+      margin: 0;
+      padding: 7px;
+      border: 1px solid #555;
+      background: #292929;
+      color: var(--text);
+      font-size: 11px;
+    }
     
     /* Metrics & Keyword styles */
     .metric-card {
@@ -210,7 +265,14 @@
 </head>
 <body>
   <header>
-    <h2>ResumeDB Agent</h2>
+    <div class="brand">
+      <img src="icons/icon32.png" alt="">
+      <div class="brand-copy">
+        <h2>ResumeDB</h2>
+        <span>Application agent</span>
+      </div>
+    </div>
+    <span class="version" id="extension-version"></span>
   </header>
 
   <div class="tabs">
@@ -222,6 +284,14 @@
   <div class="content-area">
     <!-- Autofill Panel -->
     <div class="panel active" id="autofill-panel">
+      <div class="connection-panel" id="connection-panel" hidden>
+        <strong>ResumeDB is offline</strong>
+        <p id="connection-message">Start the local app, then retry.</p>
+        <div class="connection-actions">
+          <button id="retry-btn" type="button">Retry</button>
+          <button id="open-app-btn" type="button">Open ResumeDB</button>
+        </div>
+      </div>
       <div class="field">
         <label for="app-select">Select Tracked Role</label>
         <select id="app-select">
@@ -232,7 +302,7 @@
       <button id="open-fill-btn" style="background: #208b5e; color: #fff;" disabled>Open & Auto-fill</button>
       <button id="ready-queue-btn" style="background: #335f73; color: #fff;" disabled>Open ready queue (0)</button>
       <button id="submitted-btn" style="display: none; background: transparent; color: var(--accent); border: 1px solid var(--accent);" disabled>I submitted this application</button>
-      <div class="status" id="status-text">Ready.</div>
+      <div class="status" id="status-text">Connecting to ResumeDB...</div>
       
       <div id="open-fill-progress" style="display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
          <div class="spinner"></div>
