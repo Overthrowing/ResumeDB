@@ -58,6 +58,27 @@ The production-style built frontend is served by FastAPI at
 
 ## Demo flow
 
+For the fastest hackathon walkthrough, open **Profile & Settings** and use the
+Hackathon demo card:
+
+1. **Fill fields with Faker** generates a synthetic student directly in the
+   visible form. Nothing is saved until you choose **Save profile**.
+2. **Create Ready demo + open form** saves a synthetic profile and three
+   clearly labeled demo knowledge entries, creates a tailored Northstar
+   Robotics application, renders its PDF, approves it as `ready`, and opens the
+   local ATS test site.
+3. Open the Chrome extension on the Northstar page, select the Ready demo
+   application, and choose **Auto-fill current form**.
+4. Confirm that the profile, answer bank, and tailored PDF are filled. The
+   intentionally unmatched interest question and certification checkbox stay
+   for human review, and the extension leaves final submission to you.
+
+You can reopen the blank ATS form at `http://localhost:5173/?demo=ats`, or use
+**Open blank test form** in the Hackathon demo card. The form has structured
+job metadata for capture testing and never transmits or stores an application.
+
+For a walkthrough with your own data:
+
 1. Complete the factual profile and import career evidence.
 2. Open Career Agent and enter a request such as:
 
@@ -89,6 +110,10 @@ The extension can capture the current job, fill any approved application using
 semantic labels and the answer bank, upload the tailored PDF, and open all
 ready applications in browser tabs. It never clicks a final Submit button or
 bypasses a CAPTCHA.
+
+For a repeatable local extension test, use the Northstar Robotics form created
+by the Hackathon demo flow above. Reload the unpacked extension from
+`chrome://extensions` after changing extension source files.
 
 ## Agent access
 

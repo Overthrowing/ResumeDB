@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react'
 import { api, type Health, type ModelConfig, type Profile } from './api'
+import {
+  DEMO_COMPANY,
+  DEMO_DECISIONS,
+  DEMO_JOB_DESCRIPTION,
+  DEMO_ROLE,
+  makeDemoAnswers,
+  makeDemoCoverLetter,
+  makeDemoEntries,
+  makeDemoProfile,
+  makeDemoResume,
+} from './demoData'
 
 const CLAUDE_MODEL_OPTIONS = ['', 'haiku', 'sonnet', 'opus', 'fable']
 const CODEX_MODEL_OPTIONS = ['', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
@@ -32,6 +43,8 @@ export default function Settings({
   const [dirty, setDirty] = useState(false)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
+  const [demoBusy, setDemoBusy] = useState(false)
+  const [demoStatus, setDemoStatus] = useState('')
 
   useEffect(() => {
     api
@@ -81,10 +94,129 @@ export default function Settings({
     set({ application_answers: { ...(profile.application_answers ?? {}), [key]: value } })
   }
 
+  const demoUrl = () => {
+    const url = new URL(window.location.href)
+    url.search = '?demo=ats'
+    url.hash = ''
+    return url.toString()
+  }
+
+  const showDemoProfile = async () => {
+    setDemoBusy(true)
+    try {
+      const next = await makeDemoProfile()
+      setProfile(next)
+      setLinks((next.links ?? []).map((link) => `${link.label}: ${link.url}`).join('\n'))
+      setDirty(true)
+      setSaved(false)
+      setError('')
+      setDemoStatus('Synthetic profile loaded. Review it, then save when you are ready.')
+    } catch (e) {
+      setError((e as Error).message)
+    } finally {
+      setDemoBusy(false)
+    }
+  }
+
+  const openDemoForm = () => {
+    window.open(demoUrl(), '_blank', 'noopener,noreferrer')
+  }
+
+  const createReadyDemo = async () => {
+    const confirmed = window.confirm(
+      'This will save a synthetic profile and three clearly labeled demo knowledge entries in your current career repository. Continue?',
+    )
+    if (!confirmed) return
+
+    setDemoBusy(true)
+    setError('')
+    setDemoStatus('Generating a synthetic student profile...')
+    try {
+      const next = await makeDemoProfile()
+      const source = demoUrl()
+      await api.saveProfile(next)
+
+      setDemoStatus('Adding synthetic education, experience, and project evidence...')
+      for (const item of makeDemoEntries(next)) {
+        const { id, ...entry } = item
+        await api.saveEntry(id, entry)
+      }
+
+      setDemoStatus('Building a tailored Northstar Robotics application...')
+      const existing = (await api.applications()).find(
+        (application) => application.source === source && application.status !== 'submitted',
+      )
+      const appId = existing
+        ? existing.id
+        : (
+            await api.createApplication({
+              company: DEMO_COMPANY,
+              role: DEMO_ROLE,
+              jd_text: DEMO_JOB_DESCRIPTION,
+              jd_url: source,
+            })
+          ).id
+
+      await api.saveAppFile(appId, 'jd.md', DEMO_JOB_DESCRIPTION)
+      await api.saveAppFile(appId, 'resume.yaml', makeDemoResume(next))
+      await api.saveAppFile(appId, 'answers.yaml', makeDemoAnswers(next))
+      await api.saveAppFile(appId, 'cover-letter.md', makeDemoCoverLetter(next))
+      await api.saveAppFile(appId, 'decisions.md', DEMO_DECISIONS)
+      await api.saveAppMeta(appId, {
+        status: 'draft',
+        source,
+        fit_score: 96,
+        fit_summary: 'Strong match across React, TypeScript, Python, APIs, PostgreSQL, Git, testing, and collaborative product work.',
+      })
+
+      setDemoStatus('Rendering the tailored PDF and approving the application...')
+      const rendered = await api.render(appId)
+      if (!rendered.ok) throw new Error(rendered.stderr || 'The demo resume could not be rendered.')
+      const readiness = await api.approve(appId)
+      if (!readiness.ready || readiness.status !== 'ready') throw new Error('The demo application did not reach Ready status.')
+
+      setProfile(next)
+      setLinks((next.links ?? []).map((link) => `${link.label}: ${link.url}`).join('\n'))
+      setDirty(false)
+      onProfileChange(next)
+      sessionStorage.setItem('resumedb.demoApplicationId', appId)
+      setDemoStatus('Ready. Opening the test application form...')
+      window.location.assign(source)
+    } catch (e) {
+      setError((e as Error).message)
+      setDemoStatus('Demo setup stopped before opening the test form.')
+    } finally {
+      setDemoBusy(false)
+    }
+  }
+
   return (
     <div className="rs-scroll" style={{ flex: 1, padding: 'var(--space-6) var(--space-8)' }}>
       <h2 style={{ margin: '0 0 var(--space-4)' }}>Settings</h2>
-      <div style={{ maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+      <div style={{ maxWidth: 680, display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <section className="card demo-tools-card">
+          <div className="card-kicker">Hackathon demo</div>
+          <h3 style={{ margin: 0, fontSize: 24 }}>Get to the good part faster</h3>
+          <p className="card-body">
+            Faker can populate the profile for a quick walkthrough. The full demo also creates a tailored Ready application so the Chrome extension can fill the local Northstar test site.
+          </p>
+          <div className="demo-tools-actions">
+            <button className="btn btn-secondary" type="button" onClick={showDemoProfile} disabled={demoBusy}>
+              Fill fields with Faker
+            </button>
+            <button className="btn btn-primary" type="button" onClick={createReadyDemo} disabled={demoBusy}>
+              {demoBusy ? 'Building demo...' : 'Create Ready demo + open form'}
+            </button>
+            <button className="btn btn-ghost" type="button" onClick={openDemoForm} disabled={demoBusy}>
+              Open blank test form
+            </button>
+          </div>
+          <p className="demo-tools-note">
+            Filling fields does not save anything. The full setup writes only clearly labeled synthetic demo records and requires Typst for the PDF.
+          </p>
+          {demoStatus && <div className="demo-tools-status" role="status">{demoStatus}</div>}
+        </section>
+
         <div>
           <div className="card-kicker">Canonical facts</div>
           <h3 style={{ margin: '3px 0 var(--space-2)', fontSize: 24 }}>Application profile</h3>

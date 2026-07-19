@@ -6,6 +6,21 @@ if (!globalThis.__resumeDBContentLoaded) {
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 
+  const ANSWER_STOP_WORDS = new Set([
+    'a', 'an', 'and', 'are', 'do', 'does', 'for', 'i', 'in', 'is', 'of', 'or',
+    'the', 'to', 'will', 'with', 'you', 'your',
+  ]);
+
+  const answerScore = (context, key) => {
+    if (!key) return 0;
+    if (context.includes(key)) return key.length + 100;
+    const meaningful = key
+      .split(' ')
+      .filter((part) => (/^\d+$/.test(part) || part.length >= 3) && !ANSWER_STOP_WORDS.has(part));
+    const overlap = meaningful.filter((part) => context.includes(part)).length;
+    return overlap >= 2 ? overlap : 0;
+  };
+
   const visible = (element) => {
     const style = window.getComputedStyle(element);
     return style.display !== 'none' && style.visibility !== 'hidden' && !element.disabled;
@@ -49,7 +64,7 @@ if (!globalThis.__resumeDBContentLoaded) {
   };
 
   const profileValues = (profile) => {
-    const names = normalize(profile.name).split(' ').filter(Boolean);
+    const names = String(profile.name ?? '').trim().split(/\s+/).filter(Boolean);
     const values = [
       { keys: ['first name', 'firstname', 'given name'], value: names[0] || '' },
       { keys: ['last name', 'lastname', 'family name', 'surname'], value: names.slice(1).join(' ') || names[0] || '' },
@@ -75,7 +90,7 @@ if (!globalThis.__resumeDBContentLoaded) {
     for (const answer of answers || []) {
       if (answer.value === undefined || answer.value === null || String(answer.value) === '') continue;
       const keys = [answer.key, answer.question].map(normalize).filter(Boolean);
-      const score = Math.max(...keys.map((key) => context.includes(key) || key.includes(context) ? key.length + 100 : key.split(' ').filter((part) => context.includes(part)).length));
+      const score = Math.max(...keys.map((key) => answerScore(context, key)));
       if (score > 1) candidates.push({ score, value: answer.value });
     }
     for (const candidate of profileValues(profile)) {

@@ -25,3 +25,20 @@ resumes, and opens the ready queue without storing job-site passwords.
 ResumeDB never clicks the external site's final Submit button and does not
 bypass CAPTCHAs. Required fields without canonical answers remain visible for
 the user.
+
+## Local test site
+
+1. In ResumeDB, open **Profile & Settings**.
+2. Choose **Create Ready demo + open form** and confirm the synthetic-data
+   notice.
+3. On the Northstar Robotics form, open the extension side panel.
+4. Select the Ready Northstar application and choose **Auto-fill current form**.
+5. Verify that the profile fields, voluntary answers, and hidden resume input
+   are filled. The interest response and certification remain manual on
+   purpose.
+6. Complete those two fields and use **Submit demo application**. The page
+   shows a local success message and sends no data.
+
+The blank test form is also available at
+`http://localhost:5173/?demo=ats`. It includes `JobPosting` structured data, so
+**Capture this job page** can exercise the ingestion path too.
