@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { api, type Application, type AppStatus, type AuditResult, type AutofillPackage, type HistoryEntry, type ReadinessReport, type RenderResult } from './api'
+import { api, type Application, type AppStatus, type AuditResult, type AutofillPackage, type HistoryEntry, type ReadinessReport, type RenderResult, type TailoringReport } from './api'
 import ChatRail from './ChatRail'
 import MarkdownField from './MarkdownField'
 import { IconCheck, IconChevronLeft, IconDownload, IconRefresh, IconSparkle, IconWarn } from './icons'
@@ -12,9 +12,10 @@ const PIPELINE_STEPS: { status: AppStatus; label: string; color: string }[] = [
   { status: 'submitted', label: 'Submitted', color: 'var(--color-accent)' },
 ]
 
-type Tab = 'overview' | 'resume' | 'cover' | 'ats' | 'versions' | 'autofill'
+type Tab = 'overview' | 'comparison' | 'resume' | 'cover' | 'ats' | 'versions' | 'autofill'
 const TABS: { id: Tab; label: string }[] = [
   { id: 'overview', label: 'Overview' },
+  { id: 'comparison', label: 'Tailoring' },
   { id: 'resume', label: 'Resume' },
   { id: 'cover', label: 'Cover & Q&A' },
   { id: 'ats', label: 'ATS check' },
@@ -22,7 +23,15 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'autofill', label: 'Autofill' },
 ]
 
-export default function Workspace({ id, onClose }: { id: string; onClose: () => void }) {
+export default function Workspace({
+  id,
+  onClose,
+  focusTab,
+}: {
+  id: string
+  onClose: () => void
+  focusTab?: 'comparison' | 'autofill'
+}) {
   const [app, setApp] = useState<Application | null>(null)
   const [tab, setTab] = useState<Tab>('overview')
   const [error, setError] = useState('')
@@ -33,6 +42,9 @@ export default function Workspace({ id, onClose }: { id: string; onClose: () => 
   useEffect(() => {
     reload()
   }, [reload])
+  useEffect(() => {
+    if (focusTab) setTab(focusTab)
+  }, [focusTab])
 
   const render = async () => {
     try {
@@ -87,6 +99,7 @@ export default function Workspace({ id, onClose }: { id: string; onClose: () => 
               </div>
             )}
             {tab === 'overview' && <Overview app={app} onError={setError} onSaved={reload} />}
+            {tab === 'comparison' && <TailoringTab appId={id} />}
             {tab === 'resume' && (
               <ResumeTab app={app} renderCount={renderCount} lastRender={lastRender} onRender={render} onError={setError} onSaved={reload} />
             )}
@@ -511,6 +524,79 @@ function CoverTab({ app, onError, onSaved }: { app: Application; onError: (e: st
   )
 }
 
+function TailoringTab({ appId }: { appId: string }) {
+  const [report, setReport] = useState<TailoringReport | null>(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    setReport(null)
+    setError('')
+    api.tailoring(appId).then(setReport).catch((e) => setError(e.message))
+  }, [appId])
+
+  return (
+    <section className="tailoring-comparison">
+      <div className="tailoring-head" data-tour="tailoring-comparison">
+        <div>
+          <div className="card-kicker">Evidence-backed tailoring</div>
+          <h3>What changed, and why</h3>
+          <p className="text-muted">
+            Every stronger phrase must trace back to a fact in the student&apos;s knowledge base.
+          </p>
+        </div>
+        {report && (
+          <div className="tailoring-count">
+            <strong>{report.comparisons.length}</strong>
+            <span>{report.generated ? 'agent rewrites' : 'verified changes'}</span>
+          </div>
+        )}
+      </div>
+
+      {error && <div className="error-banner">Could not load tailoring evidence: {error}</div>}
+      {!report && !error && <div className="empty-state">Loading tailoring evidence...</div>}
+      {report && report.comparisons.length === 0 && (
+        <div className="empty-state">
+          Prepare this application to generate a before-and-after explanation for each material rewrite.
+        </div>
+      )}
+
+      <div className="tailoring-list">
+        {report?.comparisons.map((comparison, index) => (
+          <article className="tailoring-card" key={`${comparison.source}-${index}`}>
+            <div className="tailoring-requirement">
+              <span>Job requirement</span>
+              <strong>{comparison.requirement}</strong>
+              {!!comparison.keywords?.length && (
+                <div className="tailoring-keywords">
+                  {comparison.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}
+                </div>
+              )}
+            </div>
+            <div className="tailoring-split">
+              <div className="tailoring-version tailoring-before">
+                <span className="tailoring-label"><b>-</b> Before</span>
+                <p>{comparison.before}</p>
+              </div>
+              <div className="tailoring-arrow" aria-hidden="true">→</div>
+              <div className="tailoring-version tailoring-after">
+                <span className="tailoring-label"><b>+</b> Tailored</span>
+                <p>{comparison.after}</p>
+              </div>
+            </div>
+            <div className="tailoring-evidence">
+              <IconCheck size={14} />
+              <div>
+                <strong>Supported by {comparison.source}</strong>
+                <span>{comparison.evidence}</span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function AtsTab({ appId }: { appId: string }) {
   const [result, setResult] = useState<AuditResult | null>(null)
   const [busy, setBusy] = useState(false)
@@ -782,6 +868,28 @@ function AutofillTab({ app }: { app: Application }) {
         </div>
       )}
 
+      <section className="extension-preflight" data-tour="extension-preflight">
+        <div className="extension-preflight-head">
+          <div>
+            <div className="card-kicker">Extension preflight</div>
+            <h3>Approved package is ready to map</h3>
+            <p className="text-muted">The extension scans the active page and previews its exact field matches before writing anything.</p>
+          </div>
+          <span className={`extension-ready-badge ${app.meta.status === 'ready' ? 'is-ready' : ''}`}>
+            {app.meta.status === 'ready' ? 'Ready to autofill' : 'Review required'}
+          </span>
+        </div>
+        <div className="extension-preflight-grid">
+          <div><strong>{fields.filter((field) => field.value).length}</strong><span>known answers</span></div>
+          <div><strong>{data.missing.length}</strong><span>need review</span></div>
+          <div><strong>{app.has_pdf ? 'Yes' : 'No'}</strong><span>tailored PDF</span></div>
+          <div><strong>Never</strong><span>auto-submits</span></div>
+        </div>
+        <div className="extension-preflight-flow">
+          <span>1. Scan page</span><i>→</i><span>2. Review mappings</span><i>→</i><span>3. Fill fields</span><i>→</i><span>4. You submit</span>
+        </div>
+      </section>
+
       <div className="card" style={{ padding: 'var(--space-4)', marginBottom: 'var(--space-6)', borderLeft: '3px solid var(--color-accent)' }}>
         <h4 style={{ margin: '0 0 var(--space-2)', fontSize: 15 }}>How to use the Chrome Extension:</h4>
         <ol style={{ fontSize: 13, margin: 0, paddingLeft: 20, lineHeight: 1.6 }}>
@@ -795,7 +903,7 @@ function AutofillTab({ app }: { app: Application }) {
             Click <strong>Load unpacked</strong> and select this repository&apos;s <code>extension</code> folder.
           </li>
           <li>
-            Open the job application page (Lever, Greenhouse, etc.), open the extension from your browser toolbar, select <strong>{app.meta.company} - {app.meta.role}</strong>, and click <strong>Auto-fill current form</strong>.
+            Open the job application page (Lever, Greenhouse, etc.), open the extension from your browser toolbar, select <strong>{app.meta.company} - {app.meta.role}</strong>, then choose <strong>Scan page before filling</strong> and <strong>Fill mapped fields</strong>.
           </li>
         </ol>
       </div>

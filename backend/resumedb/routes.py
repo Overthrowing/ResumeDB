@@ -13,6 +13,7 @@ from . import audit, config, datarepo, gitops, pipeline, render
 from .agent import public_agent_error
 
 router = APIRouter(prefix="/api")
+_agent_tasks: set[asyncio.Task] = set()
 
 
 def repo() -> datarepo.DataRepo:
@@ -300,6 +301,11 @@ def get_autofill_package(app_id: str):
     return _wrap(pipeline.autofill_package, repo(), app_id)
 
 
+@router.get("/applications/{app_id}/tailoring")
+def get_tailoring_comparison(app_id: str):
+    return _wrap(pipeline.tailoring_comparison, repo(), app_id)
+
+
 # -- templates ---------------------------------------------------------------------
 
 @router.get("/templates")
@@ -415,14 +421,16 @@ async def agent_search(body: AgentSearchRequest):
         raise HTTPException(500, f"Search failed: {public_agent_error(e)}")
 
 
-async def _prepare_tracked_leads(r: datarepo.DataRepo, jobs: list[dict]) -> None:
+async def _prepare_tracked_leads(r: datarepo.DataRepo, jobs: list[dict]) -> int:
     """Prepare high-confidence leads serially to keep git checkpoints safe."""
+    prepared = 0
     for lead in jobs[:3]:
         try:
             app_id = lead.get("application_id") or pipeline.track_lead(r, lead["id"])
             r.set_job_lead_status(lead["id"], "preparing", application_id=app_id)
             await pipeline.prepare_application(r, app_id)
             r.set_job_lead_status(lead["id"], "tracked", application_id=app_id)
+            prepared += 1
         except Exception as exc:
             try:
                 r.set_job_lead_status(
@@ -432,6 +440,165 @@ async def _prepare_tracked_leads(r: datarepo.DataRepo, jobs: list[dict]) -> None
                 )
             except Exception:
                 pass
+    return prepared
+
+
+def _run_event(
+    run_data: dict,
+    event_id: str,
+    label: str,
+    detail: str,
+    status: str,
+) -> None:
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    events = run_data.setdefault("events", [])
+    existing = next((event for event in events if event.get("id") == event_id), None)
+    update = {
+        "id": event_id,
+        "label": label,
+        "detail": detail,
+        "status": status,
+        "updated_at": now,
+    }
+    if existing:
+        existing.update(update)
+    else:
+        events.append({**update, "created_at": now})
+    run_data["updated_at"] = now
+
+
+def _save_live_run(r: datarepo.DataRepo, run_data: dict, *, checkpoint: bool = False) -> None:
+    r.save_research_run(run_data["id"], run_data, checkpoint=checkpoint)
+
+
+def _high_confidence_jobs(result: dict) -> list[dict]:
+    return [
+        job for job in result.get("jobs", [])
+        if job.get("fit_score", 0) >= 80 and not job.get("hard_conflicts")
+    ]
+
+
+async def _run_agent_command_task(
+    r: datarepo.DataRepo,
+    body: AgentCommandRequest,
+    run_data: dict,
+) -> None:
+    try:
+        _run_event(
+            run_data,
+            "knowledge",
+            "Read the complete career knowledge base",
+            f"Loaded {len(r.list_entries())} evidence records and the canonical profile.",
+            "completed",
+        )
+        _run_event(
+            run_data,
+            "research",
+            "Research and inspect live roles",
+            "The job agent is reading sources and extracting requirements.",
+            "active",
+        )
+        _save_live_run(r, run_data)
+
+        result = await pipeline.run_job_command(r, body.command)
+        jobs = result.get("jobs", [])
+        _run_event(
+            run_data,
+            "research",
+            "Research and inspect live roles",
+            f"Found {len(jobs)} distinct role{'s' if len(jobs) != 1 else ''}.",
+            "completed",
+        )
+        _run_event(
+            run_data,
+            "qualification",
+            "Score fit and verify factual support",
+            "Checked requirements against explicit evidence and missing profile facts.",
+            "completed",
+        )
+
+        high = _high_confidence_jobs(result)
+        if body.auto_prepare and high:
+            _run_event(
+                run_data,
+                "preparation",
+                "Prepare high-confidence application packages",
+                f"Preparing {min(len(high), 3)} strong match{'es' if min(len(high), 3) != 1 else ''}.",
+                "active",
+            )
+            _save_live_run(r, run_data)
+            for lead in high[:3]:
+                app_id = pipeline.track_lead(r, lead["id"])
+                lead.update(r.set_job_lead_status(lead["id"], "preparing", application_id=app_id))
+            prepared = await _prepare_tracked_leads(r, high)
+            needs_attention = min(len(high), 3) - prepared
+            _run_event(
+                run_data,
+                "preparation",
+                "Prepare high-confidence application packages",
+                f"Prepared {prepared} package{'s' if prepared != 1 else ''}"
+                + (f"; {needs_attention} need attention." if needs_attention else "."),
+                "completed",
+            )
+        else:
+            _run_event(
+                run_data,
+                "preparation",
+                "Decide what should be prepared",
+                "No role crossed the automatic preparation threshold; results are ready for review.",
+                "completed",
+            )
+
+        run_data.update({
+            "status": "completed",
+            "summary": result.get("summary", "Agent run completed."),
+            "result": result,
+            "completed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        })
+        _save_live_run(r, run_data, checkpoint=True)
+    except Exception as exc:
+        message = public_agent_error(exc)
+        _run_event(run_data, "error", "Agent run needs attention", message, "failed")
+        run_data.update({
+            "status": "failed",
+            "summary": "The career agent could not complete this run.",
+            "error": message,
+            "completed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        })
+        _save_live_run(r, run_data, checkpoint=True)
+
+
+@router.post("/agent/command/start")
+async def start_agent_command(body: AgentCommandRequest):
+    command = body.command.strip()
+    if not command:
+        raise HTTPException(400, "agent request cannot be empty")
+    r = repo()
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    run_data = {
+        "id": uuid.uuid4().hex,
+        "kind": "command",
+        "query": command[:240],
+        "status": "running",
+        "summary": "Starting the career agent...",
+        "created_at": now,
+        "updated_at": now,
+        "error": None,
+        "result": None,
+        "events": [],
+    }
+    _run_event(
+        run_data,
+        "knowledge",
+        "Read the complete career knowledge base",
+        "Loading the canonical profile, evidence, preferences, and agent memory.",
+        "active",
+    )
+    _save_live_run(r, run_data, checkpoint=True)
+    task = asyncio.create_task(_run_agent_command_task(r, body, run_data))
+    _agent_tasks.add(task)
+    task.add_done_callback(_agent_tasks.discard)
+    return run_data
 
 
 @router.post("/agent/command")
@@ -439,15 +606,14 @@ async def agent_command(body: AgentCommandRequest):
     r = repo()
     try:
         result = await pipeline.run_job_command(r, body.command)
-        high = [
-            job for job in result["jobs"]
-            if job.get("fit_score", 0) >= 80 and not job.get("hard_conflicts")
-        ]
+        high = _high_confidence_jobs(result)
         if body.auto_prepare and high:
             for lead in high[:3]:
                 app_id = pipeline.track_lead(r, lead["id"])
                 lead.update(r.set_job_lead_status(lead["id"], "preparing", application_id=app_id))
-            asyncio.create_task(_prepare_tracked_leads(r, high))
+            task = asyncio.create_task(_prepare_tracked_leads(r, high))
+            _agent_tasks.add(task)
+            task.add_done_callback(_agent_tasks.discard)
         return result
     except datarepo.DataRepoError as exc:
         raise HTTPException(400, str(exc))

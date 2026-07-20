@@ -30,6 +30,7 @@ APP_FILES = {
     "decisions.md",
     "answers.yaml",
     "readiness.yaml",
+    "tailoring.yaml",
 }
 
 APP_STATUSES = ["not_started", "in_progress", "draft", "ready", "submitted"]
@@ -305,6 +306,7 @@ class DataRepo:
         (d / "jd.md").write_text(jd_text)
         (d / "notes.md").write_text("")
         _dump({"answers": [], "missing": []}, d / "answers.yaml")
+        _dump({"comparisons": []}, d / "tailoring.yaml")
         shutil.copy(template_file, d / "resume.typ")
         _dump(
             {
@@ -629,12 +631,13 @@ class DataRepo:
         d.mkdir(parents=True, exist_ok=True)
         return d
 
-    def save_research_run(self, run_id: str, data: dict) -> None:
+    def save_research_run(self, run_id: str, data: dict, *, checkpoint: bool = True) -> None:
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):
             raise DataRepoError(f"bad run id: {run_id!r}")
         path = self._runs_dir() / f"{run_id}.yaml"
         _dump(data, path)
-        gitops.checkpoint(self.root, "db", f"save research run {run_id}")
+        if checkpoint:
+            gitops.checkpoint(self.root, "db", f"save research run {run_id}")
 
     def get_research_run(self, run_id: str) -> dict:
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):

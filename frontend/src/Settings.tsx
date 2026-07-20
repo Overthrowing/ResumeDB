@@ -10,6 +10,7 @@ import {
   makeDemoEntries,
   makeDemoProfile,
   makeDemoResume,
+  makeDemoTailoring,
 } from './demoData'
 
 const CLAUDE_MODEL_OPTIONS = ['', 'haiku', 'sonnet', 'opus', 'fable']
@@ -159,6 +160,7 @@ export default function Settings({
 
       await api.saveAppFile(appId, 'jd.md', DEMO_JOB_DESCRIPTION)
       await api.saveAppFile(appId, 'resume.yaml', makeDemoResume(next))
+      await api.saveAppFile(appId, 'tailoring.yaml', makeDemoTailoring())
       await api.saveAppFile(appId, 'answers.yaml', makeDemoAnswers(next))
       await api.saveAppFile(appId, 'cover-letter.md', makeDemoCoverLetter(next))
       await api.saveAppFile(appId, 'decisions.md', DEMO_DECISIONS)

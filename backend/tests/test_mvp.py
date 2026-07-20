@@ -2,7 +2,7 @@ import subprocess
 
 import pytest
 
-from resumedb import config, pipeline
+from resumedb import config, pipeline, routes
 from resumedb.agent import public_agent_error
 from resumedb.datarepo import DataRepo, DataRepoError, init_datarepo
 
@@ -151,6 +151,14 @@ async def test_prepare_application_persists_complete_draft(repo, monkeypatch):
                 "source": "profile.application_answers.age_18_or_older",
             }],
             "missing": [],
+            "comparisons": [{
+                "before": "Built a Python perception service",
+                "after": "Built a Python perception service for robotics workflows",
+                "requirement": "Build Python services",
+                "evidence": "Built a Python perception service",
+                "source": "db/robotics.yaml",
+                "keywords": ["Python", "services"],
+            }],
             "cover_letter": "I am excited to apply.",
             "recruiter_message": "Jordan is interested in the role.",
             "decisions": ["Led with Python because the posting asks for Python services."],
@@ -171,7 +179,47 @@ async def test_prepare_application_persists_complete_draft(repo, monkeypatch):
     assert "Robotics Lab" in app["files"]["resume.yaml"]
     assert "age_18_or_older" in app["files"]["answers.yaml"]
     assert "posting asks for Python" in app["files"]["decisions.md"]
+    comparison = pipeline.tailoring_comparison(repo, app_id)
+    assert comparison["generated"] is True
+    assert comparison["comparisons"][0]["source"] == "db/robotics.yaml"
     assert result["readiness"]["ready"] is True
+
+
+@pytest.mark.anyio
+async def test_live_agent_run_persists_timeline(repo, monkeypatch):
+    async def fake_job_command(_repo, _command):
+        return {
+            "intent": "discover",
+            "summary": "Found one supported role",
+            "jobs": [{"company": "Acme", "role": "Intern", "fit_score": 74}],
+        }
+
+    monkeypatch.setattr(pipeline, "run_job_command", fake_job_command)
+    run_data = {
+        "id": "timeline-test",
+        "kind": "command",
+        "query": "Find internships",
+        "status": "running",
+        "summary": "Starting",
+        "created_at": "2026-07-20T00:00:00+00:00",
+        "events": [],
+    }
+
+    await routes._run_agent_command_task(
+        repo,
+        routes.AgentCommandRequest(command="Find internships", auto_prepare=False),
+        run_data,
+    )
+
+    persisted = repo.get_research_run("timeline-test")
+    assert persisted["status"] == "completed"
+    assert persisted["summary"] == "Found one supported role"
+    assert [event["status"] for event in persisted["events"]] == [
+        "completed",
+        "completed",
+        "completed",
+        "completed",
+    ]
 
 
 def test_codex_config_clears_legacy_claude_model_names(tmp_path, monkeypatch):

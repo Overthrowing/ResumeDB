@@ -194,14 +194,40 @@ export interface AutofillPackage {
   readiness: ReadinessReport
 }
 
+export interface TailoringComparison {
+  before: string
+  after: string
+  requirement: string
+  evidence: string
+  source: string
+  keywords?: string[]
+}
+
+export interface TailoringReport {
+  comparisons: TailoringComparison[]
+  generated: boolean
+}
+
+export interface AgentRunEvent {
+  id: string
+  label: string
+  detail: string
+  status: 'pending' | 'active' | 'completed' | 'failed'
+  created_at: string
+  updated_at: string
+}
+
 export interface ResearchRun {
   id: string
-  kind: 'search' | 'ingest'
+  kind: 'search' | 'ingest' | 'command'
   query: string
-  status: 'pending' | 'completed' | 'failed'
+  status: 'pending' | 'running' | 'completed' | 'failed'
   summary: string
   created_at: string
+  updated_at?: string
+  completed_at?: string
   error?: string | null
+  events?: AgentRunEvent[]
   result?: {
     summary?: string
     job?: JobLead
@@ -263,6 +289,7 @@ export const api = {
   approve: (id: string) => req<ReadinessReport>(`/api/applications/${id}/approve`, { method: 'POST' }),
   markSubmitted: (id: string) => req<{ ok: boolean; application: Application }>(`/api/applications/${id}/submitted`, { method: 'POST' }),
   autofillPackage: (id: string) => req<AutofillPackage>(`/api/applications/${id}/autofill-package`),
+  tailoring: (id: string) => req<TailoringReport>(`/api/applications/${id}/tailoring`),
 
   templates: () => req<string[]>('/api/templates'),
 
@@ -281,6 +308,8 @@ export const api = {
       '/api/agent/command',
       json('POST', { command, auto_prepare: autoPrepare }),
     ),
+  startAgentCommand: (command: string, autoPrepare = true) =>
+    req<ResearchRun>('/api/agent/command/start', json('POST', { command, auto_prepare: autoPrepare })),
   jobLeads: (status?: string) => req<JobLead[]>(`/api/agent/jobs${status ? `?status=${encodeURIComponent(status)}` : ''}`),
   trackLead: (id: string) => req<{ ok: boolean; application_id: string }>(`/api/agent/jobs/${id}/track`, { method: 'POST' }),
   prepareLead: (id: string) => req<{ ok: boolean; application_id: string }>(`/api/agent/jobs/${id}/prepare`, { method: 'POST' }),

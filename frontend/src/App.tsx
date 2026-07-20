@@ -7,6 +7,7 @@ import Applications from './Applications'
 import Ingest from './Ingest'
 import Settings from './Settings'
 import Onboarding from './Onboarding'
+import GuidedDemo, { type DemoDestination } from './GuidedDemo'
 
 type Screen = 'dashboard' | 'library' | 'applications' | 'agent' | 'settings'
 
@@ -15,6 +16,13 @@ export default function App() {
   const [health, setHealth] = useState<Health | null>(null)
   const [profile, setProfile] = useState<Profile>({})
   const [appCount, setAppCount] = useState<number | null>(null)
+  const [guidedDemo, setGuidedDemo] = useState(false)
+  const [demoDestination, setDemoDestination] = useState<DemoDestination>({ screen: 'dashboard' })
+  const navigateDemo = useCallback((destination: DemoDestination) => {
+    setDemoDestination(destination)
+    setScreen(destination.screen)
+  }, [])
+  const closeDemo = useCallback(() => setGuidedDemo(false), [])
 
   const refresh = useCallback(() => {
     api.health().then(setHealth).catch(() => setHealth(null))
@@ -91,12 +99,31 @@ export default function App() {
       </aside>
 
       <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {screen === 'dashboard' && <Dashboard onNavigate={(next) => setScreen(next)} />}
+        {screen === 'dashboard' && (
+          <Dashboard
+            onNavigate={(next) => setScreen(next)}
+            onStartDemo={() => {
+              setScreen('dashboard')
+              setGuidedDemo(true)
+            }}
+          />
+        )}
         {screen === 'library' && <Library />}
-        {screen === 'applications' && <Applications onCountChange={setAppCount} />}
+        {screen === 'applications' && (
+          <Applications
+            onCountChange={setAppCount}
+            tourView={guidedDemo ? demoDestination.view : undefined}
+          />
+        )}
         {screen === 'agent' && <Ingest />}
         {screen === 'settings' && <Settings health={health} onProfileChange={setProfile} />}
       </main>
+      {guidedDemo && (
+        <GuidedDemo
+          onNavigate={navigateDemo}
+          onClose={closeDemo}
+        />
+      )}
     </div>
   )
 }

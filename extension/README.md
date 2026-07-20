@@ -12,7 +12,7 @@ resumes, and opens the ready queue without storing job-site passwords.
 4. Choose Load unpacked and select this `extension` directory.
 5. Click the ResumeDB extension icon to open the side panel.
 
-The current side panel shows the ResumeDB logo and version `2.1.0` in its
+The current side panel shows the ResumeDB logo and version `2.2.0` in its
 header. The extension requests access to job application pages because Chrome
 requires explicit site access before it can capture or fill them.
 
@@ -36,7 +36,9 @@ automatically refresh unpacked extensions or already-open pages.
 
 - Capture this job page sends the visible page and structured metadata through
   the universal ResumeDB job agent.
-- Auto-fill current form fills explicit profile and application answers and
+- Scan page before filling previews each mapped and manual field without
+  changing the application page.
+- Fill mapped fields fills explicit profile and application answers and
   uploads the tailored resume.
 - Open and Auto-fill opens the selected approved posting and fills it.
 - Open ready queue prepares every approved application in separate tabs.
@@ -52,11 +54,13 @@ the user.
 2. Choose **Create Ready demo + open form** and confirm the synthetic-data
    notice.
 3. On the Northstar Robotics form, open the extension side panel.
-4. Select the Ready Northstar application and choose **Auto-fill current form**.
-5. Verify that the profile fields, voluntary answers, and hidden resume input
+4. Select the Ready Northstar application and choose **Scan page before
+   filling**. Confirm that the preview reports mapped fields and a resume slot.
+5. Choose **Fill mapped fields**.
+6. Verify that the profile fields, voluntary answers, and hidden resume input
    are filled. The interest response and certification remain manual on
    purpose.
-6. Complete those two fields and use **Submit demo application**. The page
+7. Complete those two fields and use **Submit demo application**. The page
    shows a local success message and sends no data.
 
 The blank test form is also available at

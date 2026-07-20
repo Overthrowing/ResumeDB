@@ -22,7 +22,13 @@ const STATUS_LABELS: Record<AppStatus, string> = {
 
 const ALL_STATUSES: AppStatus[] = ['not_started', 'in_progress', 'draft', 'ready', 'submitted']
 
-export default function Applications({ onCountChange }: { onCountChange: (n: number) => void }) {
+export default function Applications({
+  onCountChange,
+  tourView,
+}: {
+  onCountChange: (n: number) => void
+  tourView?: 'comparison' | 'autofill'
+}) {
   const [apps, setApps] = useState<AppMeta[]>([])
   const [openId, setOpenId] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
@@ -44,7 +50,15 @@ export default function Applications({ onCountChange }: { onCountChange: (n: num
     reload()
   }, [reload])
 
-  if (openId) return <Workspace id={openId} onClose={() => (setOpenId(null), reload())} />
+  useEffect(() => {
+    if (!tourView || openId || apps.length === 0) return
+    const preferred = apps.find((app) => app.status === 'ready')
+      ?? apps.find((app) => app.status === 'draft')
+      ?? apps[0]
+    setOpenId(preferred.id)
+  }, [apps, openId, tourView])
+
+  if (openId) return <Workspace id={openId} focusTab={tourView} onClose={() => (setOpenId(null), reload())} />
 
   const filtered = filter === 'all' ? apps : apps.filter((a) => a.status === filter)
 

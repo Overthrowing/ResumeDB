@@ -170,6 +170,63 @@
       color: var(--text);
       font-size: 11px;
     }
+    .preflight-panel {
+      margin: 12px 0 4px;
+      overflow: hidden;
+      border: 1px solid #5e4b2f;
+      border-radius: 7px;
+      background: linear-gradient(145deg, #29251f, #232323);
+    }
+    .preflight-panel[hidden] { display: none; }
+    .preflight-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 11px;
+      border-bottom: 1px solid #443a2d;
+    }
+    .preflight-head strong { display: block; color: #f0dfc4; font-size: 12px; }
+    .preflight-head span { display: block; margin-top: 2px; color: #958b7c; font-size: 9px; }
+    .preflight-badge {
+      flex: none;
+      border-radius: 999px;
+      padding: 3px 7px;
+      background: #263f2a;
+      color: #8bd098 !important;
+      font-size: 9px !important;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .preflight-metrics { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .preflight-metric {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      padding: 10px 5px;
+      border-right: 1px solid #403930;
+    }
+    .preflight-metric:last-child { border-right: 0; }
+    .preflight-metric strong { color: #f3e5ce; font-size: 19px; line-height: 1; }
+    .preflight-metric span { margin-top: 3px; color: #8f877c; font-size: 8px; text-transform: uppercase; letter-spacing: .05em; }
+    .preflight-fields { max-height: 150px; overflow-y: auto; border-top: 1px solid #403930; }
+    .preflight-field {
+      display: grid;
+      grid-template-columns: 14px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border-bottom: 1px solid #34312d;
+      font-size: 10px;
+    }
+    .preflight-field:last-child { border-bottom: 0; }
+    .preflight-field .mark { color: #75c484; font-weight: 800; }
+    .preflight-field.review .mark { color: #e0aa56; }
+    .preflight-field .field-name { overflow: hidden; color: #ddd2c1; text-overflow: ellipsis; white-space: nowrap; }
+    .preflight-field .field-source { max-width: 102px; overflow: hidden; color: #77716a; text-overflow: ellipsis; white-space: nowrap; }
+    #preflight-btn { border: 1px solid #6a5435; background: #29251f; color: #dcb270; }
+    #preflight-btn:hover { background: #332b21; }
     
     /* Metrics & Keyword styles */
     .metric-card {
@@ -298,7 +355,23 @@
           <option value="">Connecting to ResumeDB...</option>
         </select>
       </div>
-      <button id="fill-btn" disabled>Auto-fill current form</button>
+      <button id="preflight-btn" disabled>Scan page before filling</button>
+      <div class="preflight-panel" id="preflight-panel" hidden>
+        <div class="preflight-head">
+          <div>
+            <strong>Page mapping preflight</strong>
+            <span id="preflight-page">Current application page</span>
+          </div>
+          <span class="preflight-badge">No fields changed</span>
+        </div>
+        <div class="preflight-metrics">
+          <div class="preflight-metric"><strong id="preflight-mapped">0</strong><span>mapped</span></div>
+          <div class="preflight-metric"><strong id="preflight-review">0</strong><span>review</span></div>
+          <div class="preflight-metric"><strong id="preflight-resume">No</strong><span>resume slot</span></div>
+        </div>
+        <div class="preflight-fields" id="preflight-fields"></div>
+      </div>
+      <button id="fill-btn" disabled>Fill mapped fields</button>
       <button id="open-fill-btn" style="background: #208b5e; color: #fff;" disabled>Open & Auto-fill</button>
       <button id="ready-queue-btn" style="background: #335f73; color: #fff;" disabled>Open ready queue (0)</button>
       <button id="submitted-btn" style="display: none; background: transparent; color: var(--accent); border: 1px solid var(--accent);" disabled>I submitted this application</button>

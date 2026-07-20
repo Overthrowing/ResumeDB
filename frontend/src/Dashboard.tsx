@@ -14,7 +14,13 @@ const PROFILE_FIELDS: Array<[keyof Profile, string]> = [
   ['requires_sponsorship', 'sponsorship preference'],
 ]
 
-export default function Dashboard({ onNavigate }: { onNavigate: (screen: 'agent' | 'applications' | 'settings') => void }) {
+export default function Dashboard({
+  onNavigate,
+  onStartDemo,
+}: {
+  onNavigate: (screen: 'agent' | 'applications' | 'settings') => void
+  onStartDemo: () => void
+}) {
   const [profile, setProfile] = useState<Profile>({})
   const [apps, setApps] = useState<AppMeta[]>([])
 
@@ -43,7 +49,13 @@ export default function Dashboard({ onNavigate }: { onNavigate: (screen: 'agent'
             </h1>
             <p className="text-muted" style={{ margin: 0 }}>Your agent discovers, qualifies, and prepares applications. You review and submit.</p>
           </div>
-          <button className="btn btn-primary" onClick={() => onNavigate('agent')}>Ask the career agent</button>
+          <div className="dashboard-hero-actions" data-tour="demo-launch">
+            <button className="btn btn-secondary" onClick={() => onNavigate('agent')}>Ask the career agent</button>
+            <button className="btn btn-primary guided-demo-launch" onClick={onStartDemo}>
+              <span className="demo-play-icon" aria-hidden="true">▶</span>
+              Watch guided demo
+            </button>
+          </div>
         </div>
 
         <div className="metric-grid">

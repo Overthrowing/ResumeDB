@@ -66,67 +66,142 @@ if (!globalThis.__resumeDBContentLoaded) {
   const profileValues = (profile) => {
     const names = String(profile.name ?? '').trim().split(/\s+/).filter(Boolean);
     const values = [
-      { keys: ['first name', 'firstname', 'given name'], value: names[0] || '' },
-      { keys: ['last name', 'lastname', 'family name', 'surname'], value: names.slice(1).join(' ') || names[0] || '' },
-      { keys: ['full name', 'legal name', 'candidate name'], value: profile.name },
-      { keys: ['email', 'email address'], value: profile.email },
-      { keys: ['phone', 'telephone', 'mobile'], value: profile.phone },
-      { keys: ['location', 'city state', 'current city', 'address'], value: profile.location },
-      { keys: ['college', 'university', 'school'], value: profile.college },
-      { keys: ['major', 'field of study'], value: profile.major },
-      { keys: ['degree'], value: profile.degree },
-      { keys: ['graduation year', 'graduation date', 'expected graduation'], value: profile.graduation_year },
-      { keys: ['work authorization', 'authorized to work'], value: profile.work_authorization },
-      { keys: ['sponsorship', 'visa sponsorship'], value: profile.requires_sponsorship },
+      { keys: ['first name', 'firstname', 'given name'], value: names[0] || '', source: 'profile.name' },
+      { keys: ['last name', 'lastname', 'family name', 'surname'], value: names.slice(1).join(' ') || names[0] || '', source: 'profile.name' },
+      { keys: ['full name', 'legal name', 'candidate name'], value: profile.name, source: 'profile.name' },
+      { keys: ['email', 'email address'], value: profile.email, source: 'profile.email' },
+      { keys: ['phone', 'telephone', 'mobile'], value: profile.phone, source: 'profile.phone' },
+      { keys: ['location', 'city state', 'current city', 'address'], value: profile.location, source: 'profile.location' },
+      { keys: ['college', 'university', 'school'], value: profile.college, source: 'profile.college' },
+      { keys: ['major', 'field of study'], value: profile.major, source: 'profile.major' },
+      { keys: ['degree'], value: profile.degree, source: 'profile.degree' },
+      { keys: ['graduation year', 'graduation date', 'expected graduation'], value: profile.graduation_year, source: 'profile.graduation_year' },
+      { keys: ['work authorization', 'authorized to work'], value: profile.work_authorization, source: 'profile.work_authorization' },
+      { keys: ['sponsorship', 'visa sponsorship'], value: profile.requires_sponsorship, source: 'profile.requires_sponsorship' },
     ];
     for (const link of profile.links || []) {
-      values.push({ keys: [normalize(link.label), `${normalize(link.label)} url`], value: link.url });
+      values.push({ keys: [normalize(link.label), `${normalize(link.label)} url`], value: link.url, source: `profile.links.${normalize(link.label)}` });
     }
     return values.filter((item) => item.value !== undefined && item.value !== null && String(item.value) !== '');
   };
 
-  const resolveValue = (context, profile, answers) => {
+  const resolveMatch = (context, profile, answers) => {
     const candidates = [];
     for (const answer of answers || []) {
       if (answer.value === undefined || answer.value === null || String(answer.value) === '') continue;
       const keys = [answer.key, answer.question].map(normalize).filter(Boolean);
       const score = Math.max(...keys.map((key) => answerScore(context, key)));
-      if (score > 1) candidates.push({ score, value: answer.value });
+      if (score > 1) candidates.push({ score, value: answer.value, source: answer.source || `answers.${answer.key}` });
     }
     for (const candidate of profileValues(profile)) {
       const score = Math.max(...candidate.keys.map((key) => context.includes(key) ? key.length + 50 : 0));
-      if (score > 0) candidates.push({ score, value: candidate.value });
+      if (score > 0) candidates.push({ score, value: candidate.value, source: candidate.source });
     }
     candidates.sort((a, b) => b.score - a.score);
-    return candidates[0]?.value;
+    return candidates[0];
   };
 
-  const fillSelect = (element, value) => {
+  const resolveValue = (context, profile, answers) => resolveMatch(context, profile, answers)?.value;
+
+  const matchingOption = (element, value) => {
     const wanted = normalize(value);
-    const option = Array.from(element.options).find((item) => {
+    return Array.from(element.options).find((item) => {
       const text = normalize(item.textContent);
       const optionValue = normalize(item.value);
       return text === wanted || optionValue === wanted || text.includes(wanted) || wanted.includes(text);
     });
+  };
+
+  const fillSelect = (element, value) => {
+    const option = matchingOption(element, value);
     if (!option) return false;
     setNativeValue(element, option.value);
     return true;
   };
 
-  const fillChoice = (element, context, value) => {
+  const choiceMatches = (element, context, value) => {
     const wanted = normalize(value);
     const optionLabel = normalize(element.labels?.[0]?.innerText || element.value || context);
     const affirmative = ['yes', 'true', '1'].includes(wanted);
     const negative = ['no', 'false', '0'].includes(wanted);
-    const matches = optionLabel.includes(wanted)
+    return optionLabel.includes(wanted)
       || wanted.includes(optionLabel)
       || (affirmative && /yes|agree|authorized/.test(optionLabel))
       || (negative && /no|decline|not authorized/.test(optionLabel));
+  };
+
+  const fillChoice = (element, context, value) => {
+    const matches = choiceMatches(element, context, value);
     if (!matches && element.type === 'radio') return false;
+    const negative = ['no', 'false', '0'].includes(normalize(value));
     const shouldCheck = element.type === 'checkbox' ? !negative : true;
     if (element.checked !== shouldCheck) element.click();
     element.dispatchEvent(new Event('change', { bubbles: true }));
     return true;
+  };
+
+  const titleCase = (value) => normalize(value)
+    .split(' ')
+    .slice(0, 12)
+    .map((part) => part ? part[0].toUpperCase() + part.slice(1) : part)
+    .join(' ');
+
+  const displayLabelFor = (element) => {
+    const raw = element.type === 'radio'
+      ? element.name
+      : element.labels?.[0]?.innerText
+        || element.getAttribute('aria-label')
+        || element.name
+        || element.placeholder
+        || 'Application field';
+    return titleCase(raw);
+  };
+
+  const preflight = ({ profile, answers }) => {
+    const mappings = [];
+    const seen = new Set();
+    const fields = Array.from(document.querySelectorAll('input, textarea, select'));
+    for (const field of fields) {
+      if (!visible(field) || ['hidden', 'submit', 'button', 'password', 'file'].includes(field.type)) continue;
+      const context = labelFor(field);
+      if (!context) continue;
+      const match = resolveMatch(context, profile, answers);
+      if (!match) {
+        if (field.required) {
+          const key = `review:${field.name || context}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            mappings.push({ label: displayLabelFor(field), status: 'review', source: 'No saved answer' });
+          }
+        }
+        continue;
+      }
+
+      let ready = true;
+      if (field instanceof HTMLSelectElement) ready = Boolean(matchingOption(field, match.value));
+      if (field.type === 'radio') {
+        if (!choiceMatches(field, context, match.value)) continue;
+      } else if (field.type === 'checkbox') {
+        ready = true;
+      }
+      const key = `${ready ? 'ready' : 'review'}:${field.name || context}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      mappings.push({
+        label: displayLabelFor(field),
+        status: ready ? 'ready' : 'review',
+        source: ready ? match.source : 'Saved answer does not match this control',
+      });
+    }
+
+    const resumeDetected = Array.from(document.querySelectorAll('input[type="file"]'))
+      .some((element) => !element.disabled && /resume|cv|document|attachment/.test(labelFor(element)));
+    return {
+      mapped: mappings.filter((item) => item.status === 'ready').length,
+      review: mappings.filter((item) => item.status === 'review').length,
+      resumeDetected,
+      fields: mappings.slice(0, 30),
+    };
   };
 
   const uploadResume = (pdfBase64, pdfName) => {
@@ -193,6 +268,14 @@ if (!globalThis.__resumeDBContentLoaded) {
           ...result,
           message: `Filled ${result.filled} fields${result.uploaded ? ' and uploaded the tailored resume' : ''}. ${result.unmatchedRequired.length ? `${result.unmatchedRequired.length} required fields still need review.` : 'Review the page before submitting.'}`,
         });
+      } catch (error) {
+        sendResponse({ success: false, message: error.message });
+      }
+      return true;
+    }
+    if (request.action === 'preflight') {
+      try {
+        sendResponse({ success: true, ...preflight(request) });
       } catch (error) {
         sendResponse({ success: false, message: error.message });
       }

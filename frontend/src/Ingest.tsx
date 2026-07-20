@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
-import { api, type JobLead, type SearchSubscription } from './api'
+import { api, type JobLead, type ResearchRun, type SearchSubscription } from './api'
+import AgentTimeline from './AgentTimeline'
 
 export default function Ingest() {
   const [command, setCommand] = useState('')
@@ -9,6 +10,9 @@ export default function Ingest() {
   const [busy, setBusy] = useState(false)
   const [workingLead, setWorkingLead] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [activeRun, setActiveRun] = useState<ResearchRun | null>(null)
+  const activeRunId = activeRun?.id
+  const activeRunStatus = activeRun?.status
 
   const refresh = useCallback(async () => {
     const [nextLeads, nextSubscriptions] = await Promise.all([api.jobLeads(), api.subscriptions()])
@@ -18,7 +22,43 @@ export default function Ingest() {
 
   useEffect(() => {
     refresh().catch((err) => setError((err as Error).message))
+    api.runs(1).then((runs) => {
+      const run = runs[0] ?? null
+      setActiveRun(run)
+      if (run && ['pending', 'running'].includes(run.status)) setBusy(true)
+    }).catch(() => {})
   }, [refresh])
+
+  useEffect(() => {
+    if (!activeRunId || !activeRunStatus || !['pending', 'running'].includes(activeRunStatus)) return
+    let cancelled = false
+    const poll = async () => {
+      try {
+        const next = await api.run(activeRunId)
+        if (cancelled) return
+        setActiveRun(next)
+        if (next.status === 'completed') {
+          setSummary(next.summary)
+          setBusy(false)
+          await refresh()
+        } else if (next.status === 'failed') {
+          setError(next.error || next.summary)
+          setBusy(false)
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError((err as Error).message)
+          setBusy(false)
+        }
+      }
+    }
+    const timer = window.setInterval(poll, 700)
+    poll()
+    return () => {
+      cancelled = true
+      window.clearInterval(timer)
+    }
+  }, [activeRunId, activeRunStatus, refresh])
 
   useEffect(() => {
     if (!leads.some((lead) => lead.status === 'preparing')) return
@@ -30,15 +70,14 @@ export default function Ingest() {
     event.preventDefault()
     if (!command.trim() || busy) return
     setBusy(true)
+    setSummary('')
     setError('')
     try {
-      const result = await api.agentCommand(command.trim())
-      setSummary(result.summary)
+      const run = await api.startAgentCommand(command.trim())
+      setActiveRun(run)
       setCommand('')
-      await refresh()
     } catch (err) {
       setError((err as Error).message)
-    } finally {
       setBusy(false)
     }
   }
@@ -101,7 +140,7 @@ export default function Ingest() {
           </p>
         </div>
 
-        <form onSubmit={runAgent}>
+        <form onSubmit={runAgent} data-tour="agent-command">
           <textarea
             className="input agent-command"
             value={command}
@@ -151,9 +190,9 @@ export default function Ingest() {
             <button className="btn btn-secondary" onClick={() => refresh().catch(() => {})}>Refresh</button>
           </div>
 
-          {summary && <div className="agent-summary">{summary}</div>}
           {error && <div className="error-banner">{error}</div>}
-          {busy && <div className="agent-working"><span className="agent-pulse" /> Researching live roles and matching your evidence...</div>}
+          <AgentTimeline run={activeRun} />
+          {summary && summary !== activeRun?.summary && <div className="agent-summary">{summary}</div>}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
             {activeLeads.map((lead) => (

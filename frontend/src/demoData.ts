@@ -143,8 +143,8 @@ export function makeDemoResume(profile: Profile): string {
               location: 'Remote',
               dates: 'May 2025 - Aug 2025',
               bullets: [
-                'Built TypeScript and React workflows that reduced repetitive student support tasks by 35%',
-                'Implemented Python REST API endpoints backed by PostgreSQL and covered critical paths with automated tests',
+                'Shipped reliable TypeScript and React product workflows, reducing repetitive student support tasks by 35%',
+                'Built Python REST API endpoints backed by PostgreSQL and protected critical paths with automated tests',
                 'Partnered with three student researchers to translate weekly feedback into scoped product improvements',
               ],
             },
@@ -170,6 +170,41 @@ export function makeDemoResume(profile: Profile): string {
             { label: 'Frameworks', value: 'React, FastAPI, Node.js' },
             { label: 'Tools', value: 'Git, PostgreSQL, Playwright, Docker' },
           ],
+        },
+      ],
+    },
+    null,
+    2,
+  )
+}
+
+export function makeDemoTailoring(): string {
+  return JSON.stringify(
+    {
+      comparisons: [
+        {
+          before: 'Built TypeScript and React workflows that reduced repetitive student support tasks by 35%',
+          after: 'Shipped reliable TypeScript and React product workflows, reducing repetitive student support tasks by 35%',
+          requirement: 'Build reliable product experiences with React and TypeScript',
+          evidence: 'The original experience explicitly names TypeScript, React, the workflow, and its measured 35% impact.',
+          source: 'db/hackathon-demo-experience.yaml',
+          keywords: ['React', 'TypeScript', 'reliable product experiences'],
+        },
+        {
+          before: 'Implemented Python REST API endpoints backed by PostgreSQL and covered critical paths with automated tests',
+          after: 'Built Python REST API endpoints backed by PostgreSQL and protected critical paths with automated tests',
+          requirement: 'Work with Python, REST APIs, PostgreSQL, and automated tests',
+          evidence: 'The canonical experience includes all four technologies and confirms automated coverage of critical paths.',
+          source: 'db/hackathon-demo-experience.yaml',
+          keywords: ['Python', 'REST APIs', 'PostgreSQL', 'automated tests'],
+        },
+        {
+          before: 'Partnered with three student researchers to turn weekly feedback into scoped product improvements',
+          after: 'Partnered with three student researchers to translate weekly feedback into scoped product improvements',
+          requirement: 'Turn ambiguous needs into small, measurable product improvements with a cross-functional team',
+          evidence: 'The source records the three collaborators, weekly feedback loop, and conversion into scoped improvements.',
+          source: 'db/hackathon-demo-experience.yaml',
+          keywords: ['cross-functional', 'product improvements'],
         },
       ],
     },

@@ -18,12 +18,16 @@ inspectable and recoverable.
 - Persistent daily discovery goals
 - Explainable fit scoring with evidence, missing facts, and hard conflicts
 - Automatic preparation of high-confidence matches
+- Live, persistent agent-run timelines from knowledge read through preparation
 - Job-specific resume, application answers, cover letter, recruiter message,
   provenance, and tailoring decisions
+- Evidence-linked before-and-after views for every material resume rewrite
 - Exact five-stage workflow: `not_started`, `in_progress`, `draft`, `ready`,
   and `submitted`
 - Deterministic readiness blockers before human approval
-- Chrome extension capture, custom-form autofill, resume upload, and ready queue
+- Chrome extension capture, read-only field-mapping preflight, custom-form
+  autofill, resume upload, and ready queue
+- Animated guided demo with spotlight masks and a simulated cursor
 - Manual post-submission outcomes
 - Claude Code and Codex provider support
 - Full API access for external agents through the generated OpenAPI interface
@@ -68,7 +72,8 @@ Hackathon demo card:
    Robotics application, renders its PDF, approves it as `ready`, and opens the
    local ATS test site.
 3. Open the Chrome extension on the Northstar page, select the Ready demo
-   application, and choose **Auto-fill current form**.
+   application, and choose **Scan page before filling**. Review the matched
+   fields without changing the form, then choose **Fill mapped fields**.
 4. Confirm that the profile, answer bank, and tailored PDF are filled. The
    intentionally unmatched interest question and certification checkbox stay
    for human review, and the extension leaves final submission to you.
@@ -106,16 +111,16 @@ For a walkthrough with your own data:
 3. Choose Load unpacked and select the repository's `extension` directory.
 4. Start ResumeDB, then click the extension icon on any job page.
 
-The installed side panel should display the ResumeDB logo and version `2.1.0`.
+The installed side panel should display the ResumeDB logo and version `2.2.0`.
 If it has no logo or remains on **Connecting to ResumeDB...**, remove the old
 unpacked copy, load the `extension` directory from the checkout you are
 actually running, and reload the job page. Unpacked extensions do not update
 automatically.
 
-The extension can capture the current job, fill any approved application using
-semantic labels and the answer bank, upload the tailored PDF, and open all
-ready applications in browser tabs. It never clicks a final Submit button or
-bypasses a CAPTCHA.
+The extension can capture the current job, preview exact mappings without
+changing the page, fill any approved application using semantic labels and the
+answer bank, upload the tailored PDF, and open all ready applications in
+browser tabs. It never clicks a final Submit button or bypasses a CAPTCHA.
 
 For a repeatable local extension test, use the Northstar Robotics form created
 by the Hackathon demo flow above. Reload the unpacked extension from

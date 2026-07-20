@@ -4,6 +4,13 @@ let wsUrl = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const appSelect = document.getElementById('app-select');
+  const preflightButton = document.getElementById('preflight-btn');
+  const preflightPanel = document.getElementById('preflight-panel');
+  const preflightPage = document.getElementById('preflight-page');
+  const preflightMapped = document.getElementById('preflight-mapped');
+  const preflightReview = document.getElementById('preflight-review');
+  const preflightResume = document.getElementById('preflight-resume');
+  const preflightFields = document.getElementById('preflight-fields');
   const fillButton = document.getElementById('fill-btn');
   const openFillButton = document.getElementById('open-fill-btn');
   const readyQueueButton = document.getElementById('ready-queue-btn');
@@ -83,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     appSelect.innerHTML = '<option value="">ResumeDB disconnected</option>';
     applications = [];
     activePackage = null;
+    preflightPanel.hidden = true;
     setBusy(false);
     setStatus('Connection required.', 'error');
   };
@@ -95,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const setBusy = (busy, message = '') => {
     progress.style.display = busy ? 'flex' : 'none';
     if (message) progressText.textContent = message;
+    preflightButton.disabled = busy || !activePackage || activePackage.application.meta.status !== 'ready';
     fillButton.disabled = busy || !activePackage || activePackage.application.meta.status !== 'ready';
     openFillButton.disabled = fillButton.disabled || !activePackage?.application.meta.source;
     readyQueueButton.disabled = busy || !applications.some((app) => app.status === 'ready' && app.source);
@@ -126,7 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const loadPackage = async (appId) => {
     activePackage = appId ? await request(`/api/applications/${appId}/autofill-package`) : null;
+    preflightPanel.hidden = true;
     const ready = activePackage?.application.meta.status === 'ready';
+    preflightButton.disabled = !ready;
     fillButton.disabled = !ready;
     openFillButton.disabled = !ready || !activePackage.application.meta.source;
     submittedButton.style.display = activePackage ? 'block' : 'none';
@@ -173,30 +184,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  const fillTab = async (tabId, applicationPackage) => {
-    const app = applicationPackage.application;
+  const prepareTab = async (tabId) => {
     const target = await chrome.tabs.get(tabId);
     if (!/^https?:\/\//i.test(target.url || '')) {
-      throw new Error('Chrome blocks autofill on this page. Open an http or https application page and try again.');
+      throw new Error('Chrome blocks ResumeDB on this page. Open an http or https application page and try again.');
     }
     try {
       await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
     } catch (error) {
       throw new Error(`ResumeDB cannot access this page. Reload the extension and confirm site access is allowed. ${error.message}`);
     }
+    return target;
+  };
+
+  const sendToTab = (tabId, message) => new Promise((resolve, reject) => {
+    chrome.tabs.sendMessage(tabId, message, (response) => {
+      if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
+      else if (!response?.success) reject(new Error(response?.message || 'The page scan failed.'));
+      else resolve(response);
+    });
+  });
+
+  const scanTab = async (tabId, applicationPackage) => {
+    const target = await prepareTab(tabId);
+    const result = await sendToTab(tabId, {
+      action: 'preflight',
+      profile: applicationPackage.profile,
+      answers: applicationPackage.answers,
+    });
+    return { ...result, pageTitle: target.title || 'Current application page', tabId };
+  };
+
+  const renderPreflight = (result) => {
+    preflightPage.textContent = result.pageTitle;
+    preflightMapped.textContent = String(result.mapped);
+    preflightReview.textContent = String(result.review);
+    preflightResume.textContent = result.resumeDetected ? 'Yes' : 'No';
+    preflightFields.innerHTML = '';
+    for (const field of result.fields || []) {
+      const row = document.createElement('div');
+      row.className = `preflight-field ${field.status}`;
+      const mark = document.createElement('span');
+      mark.className = 'mark';
+      mark.textContent = field.status === 'ready' ? '✓' : '!';
+      const name = document.createElement('span');
+      name.className = 'field-name';
+      name.textContent = field.label;
+      const source = document.createElement('span');
+      source.className = 'field-source';
+      source.textContent = field.source;
+      row.append(mark, name, source);
+      preflightFields.appendChild(row);
+    }
+    preflightPanel.hidden = false;
+  };
+
+  const fillTab = async (tabId, applicationPackage) => {
+    const app = applicationPackage.application;
+    await prepareTab(tabId);
     const pdf = await pdfBase64(app.meta.id);
-    return new Promise((resolve, reject) => {
-      chrome.tabs.sendMessage(tabId, {
-        action: 'autofill',
-        profile: applicationPackage.profile,
-        answers: applicationPackage.answers,
-        pdfBase64: pdf,
-        pdfName: `${app.meta.company.replace(/[^a-z0-9]/gi, '_')}_Resume.pdf`,
-      }, (response) => {
-        if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
-        else if (!response?.success) reject(new Error(response?.message || 'Autofill failed.'));
-        else resolve(response);
-      });
+    return sendToTab(tabId, {
+      action: 'autofill',
+      profile: applicationPackage.profile,
+      answers: applicationPackage.answers,
+      pdfBase64: pdf,
+      pdfName: `${app.meta.company.replace(/[^a-z0-9]/gi, '_')}_Resume.pdf`,
     });
   };
 
@@ -204,6 +256,25 @@ document.addEventListener('DOMContentLoaded', () => {
     resetChat();
     try { await loadPackage(appSelect.value); }
     catch (error) { setStatus(error.message, 'error'); }
+  });
+
+  preflightButton.addEventListener('click', async () => {
+    if (!activePackage) return;
+    setBusy(true, 'Scanning the current page without changing it...');
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab?.id) throw new Error('Open the application page first.');
+      const result = await scanTab(tab.id, activePackage);
+      renderPreflight(result);
+      setStatus(
+        `${result.mapped} fields ready${result.review ? `, ${result.review} need review` : ''}. Nothing was changed.`,
+        result.review ? '' : 'success',
+      );
+    } catch (error) {
+      setStatus(error.message, 'error');
+    } finally {
+      setBusy(false);
+    }
   });
 
   fillButton.addEventListener('click', async () => {

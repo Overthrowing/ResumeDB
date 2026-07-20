@@ -70,6 +70,19 @@ MISSING_SCHEMA = {
     },
 }
 
+COMPARISON_SCHEMA = {
+    "type": "object",
+    "required": ["before", "after", "requirement", "evidence", "source"],
+    "properties": {
+        "before": {"type": "string"},
+        "after": {"type": "string"},
+        "requirement": {"type": "string"},
+        "evidence": {"type": "string"},
+        "source": {"type": "string"},
+        "keywords": {"type": "array", "items": {"type": "string"}},
+    },
+}
+
 PREPARE_SCHEMA = {
     "type": "object",
     "required": ["resume", "answers", "missing", "decisions", "fit_summary"],
@@ -134,6 +147,7 @@ PREPARE_SCHEMA = {
         },
         "answers": {"type": "array", "items": ANSWER_SCHEMA},
         "missing": {"type": "array", "items": MISSING_SCHEMA},
+        "comparisons": {"type": "array", "items": COMPARISON_SCHEMA},
         "cover_letter": {"type": "string"},
         "recruiter_message": {"type": "string"},
         "decisions": {"type": "array", "items": {"type": "string"}},
@@ -256,7 +270,11 @@ Build answers from explicit profile facts and the profile's application_answers
 map. Include provenance in source. Put every required or optional question that
 cannot be answered factually in missing instead of guessing. Draft a cover
 letter only when useful. Explain important selection, omission, and keyword
-decisions with their supporting evidence.
+decisions with their supporting evidence. For every material resume rewrite,
+return a comparison containing the original user-authored bullet, the tailored
+bullet, the job requirement it addresses, the evidence that supports it, and
+the exact knowledge-base source such as db/project-name.yaml. Comparisons must
+never introduce a fact that is absent from the original evidence.
 """.strip()
 
 
@@ -282,6 +300,7 @@ async def prepare_application(r: DataRepo, app_id: str) -> dict:
         {"answers": result.get("answers", []), "missing": result.get("missing", [])},
         app_dir / "answers.yaml",
     )
+    _dump({"comparisons": result.get("comparisons", [])}, app_dir / "tailoring.yaml")
     decisions = result.get("decisions", [])
     (app_dir / "decisions.md").write_text(
         "# Tailoring decisions\n\n" + "\n".join(f"- {item}" for item in decisions) + "\n"
@@ -300,6 +319,63 @@ async def prepare_application(r: DataRepo, app_id: str) -> dict:
     _dump(readiness, app_dir / "readiness.yaml")
     gitops.checkpoint(r.root, f"app:{app_id}", "complete draft preparation")
     return {"application": r.get_application(app_id), "readiness": readiness, "render": render_result}
+
+
+def tailoring_comparison(r: DataRepo, app_id: str) -> dict:
+    """Return explicit agent comparisons, with a factual legacy fallback."""
+    app = r.get_application(app_id)
+    app_dir = r.app_dir(app_id)
+    path = app_dir / "tailoring.yaml"
+    document = _load(path) if path.exists() else {}
+    comparisons = list((document or {}).get("comparisons", []))
+    if comparisons:
+        return {"comparisons": comparisons, "generated": True}
+
+    resume_path = app_dir / "resume.yaml"
+    resume = _load(resume_path) if resume_path.exists() else {}
+    sources = r.list_entries()
+    source_by_title = {
+        str(item.get("title", "")).strip().lower(): item
+        for item in sources
+        if str(item.get("title", "")).strip()
+    }
+    job_words = {
+        word.strip(".,:;()[]").lower()
+        for word in str(app["files"].get("jd.md", "")).split()
+        if len(word.strip(".,:;()[]")) >= 4
+    }
+    for section in (resume or {}).get("sections", []):
+        for entry in section.get("entries", []) or []:
+            source = source_by_title.get(str(entry.get("title", "")).strip().lower())
+            if not source:
+                continue
+            original = list(source.get("bullets", []) or [])
+            tailored = list(entry.get("bullets", []) or [])
+            for index, after_value in enumerate(tailored):
+                if index >= len(original):
+                    break
+                before = str(original[index])
+                after = str(after_value)
+                if before.strip() == after.strip():
+                    continue
+                keywords = sorted({
+                    token.strip(".,:;()[]").lower()
+                    for token in after.split()
+                    if token.strip(".,:;()[]").lower() in job_words
+                    and token.strip(".,:;()[]").lower() not in before.lower()
+                })[:5]
+                comparisons.append({
+                    "before": before,
+                    "after": after,
+                    "requirement": (
+                        f"Emphasizes job language: {', '.join(keywords)}"
+                        if keywords else "Selected as direct evidence for this role"
+                    ),
+                    "evidence": before,
+                    "source": f"db/{source['id']}.yaml",
+                    "keywords": keywords,
+                })
+    return {"comparisons": comparisons, "generated": False}
 
 
 def autofill_package(r: DataRepo, app_id: str) -> dict:
