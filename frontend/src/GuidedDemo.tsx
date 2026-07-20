@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export type DemoDestination = {
   screen: 'dashboard' | 'agent' | 'applications'
@@ -10,6 +10,16 @@ type DemoStep = DemoDestination & {
   eyebrow: string
   title: string
   body: string
+  durationMs: number
+}
+
+type TourPhase = 'navigation' | 'content'
+
+const NAVIGATION_CLICK_MS = 2200
+const NAV_LABELS: Record<DemoDestination['screen'], string> = {
+  dashboard: 'Home',
+  agent: 'Career Agent',
+  applications: 'Applications',
 }
 
 const STEPS: DemoStep[] = [
@@ -19,6 +29,7 @@ const STEPS: DemoStep[] = [
     eyebrow: 'The complete loop',
     title: 'One agent, from intent to application',
     body: 'ResumeDB connects the student profile, job search, tailored artifacts, and browser autofill in one reviewable workflow.',
+    durationMs: 9000,
   },
   {
     screen: 'agent',
@@ -26,6 +37,7 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Natural-language control',
     title: 'Give the agent a goal or any job URL',
     body: 'The user describes the outcome. The agent decides whether to discover roles, capture a posting, qualify it, or prepare an application.',
+    durationMs: 10000,
   },
   {
     screen: 'agent',
@@ -33,6 +45,7 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Observable autonomy',
     title: 'Watch the agent reason through the work',
     body: 'Every run exposes its current phase, completed work, evidence checks, and preparation decisions instead of hiding behind a spinner.',
+    durationMs: 9500,
   },
   {
     screen: 'applications',
@@ -41,6 +54,7 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Evidence-backed tailoring',
     title: 'See exactly what changed and why',
     body: 'Each rewrite links the original bullet, the job requirement, the final language, and the canonical evidence that supports the claim.',
+    durationMs: 11500,
   },
   {
     screen: 'applications',
@@ -49,6 +63,7 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Human-controlled execution',
     title: 'Preview mappings before the extension fills',
     body: 'ResumeDB shows what is ready, what needs review, and whether the tailored PDF is available. The user still performs the final submission.',
+    durationMs: 10500,
   },
 ]
 
@@ -65,18 +80,34 @@ export default function GuidedDemo({
   const [focus, setFocus] = useState<FocusRect | null>(null)
   const [playing, setPlaying] = useState(true)
   const [cursorClick, setCursorClick] = useState(false)
+  const [phase, setPhase] = useState<TourPhase>('content')
+  const currentScreen = useRef<DemoDestination['screen']>('dashboard')
   const step = STEPS[index]
+  const targetSelector = phase === 'navigation' ? `[data-tour-nav="${step.screen}"]` : step.target
 
   useEffect(() => {
-    onNavigate({ screen: step.screen, view: step.view })
-  }, [onNavigate, step.screen, step.view])
+    const destination = { screen: step.screen, view: step.view }
+    if (currentScreen.current === step.screen) {
+      setPhase('content')
+      onNavigate(destination)
+      return
+    }
+
+    setPhase('navigation')
+    const timer = window.setTimeout(() => {
+      currentScreen.current = step.screen
+      onNavigate(destination)
+      setPhase('content')
+    }, NAVIGATION_CLICK_MS)
+    return () => window.clearTimeout(timer)
+  }, [index, onNavigate, step.screen, step.view])
 
   useEffect(() => {
     let stopped = false
     let didScroll = false
     const measure = () => {
       if (stopped) return
-      const target = document.querySelector<HTMLElement>(step.target)
+      const target = document.querySelector<HTMLElement>(targetSelector)
       if (!target) {
         setFocus(null)
         return
@@ -116,26 +147,26 @@ export default function GuidedDemo({
       observer.disconnect()
       window.removeEventListener('resize', measure)
     }
-  }, [step.target])
+  }, [targetSelector])
 
   useEffect(() => {
     setCursorClick(false)
     if (!focus) return
     const timer = window.setTimeout(() => setCursorClick(true), 720)
     return () => window.clearTimeout(timer)
-  }, [index, focus])
+  }, [index, phase, focus])
 
   useEffect(() => {
-    if (!playing) return
+    if (!playing || phase !== 'content') return
     const timer = window.setTimeout(() => {
       if (index === STEPS.length - 1) {
         setPlaying(false)
         return
       }
       setIndex((value) => value + 1)
-    }, 6200)
+    }, step.durationMs)
     return () => window.clearTimeout(timer)
-  }, [index, playing])
+  }, [index, phase, playing, step.durationMs])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -178,6 +209,14 @@ export default function GuidedDemo({
     ? { left: padded.left + Math.min(Math.max(32, (padded.right - padded.left) * 0.7), padded.right - padded.left - 20), top: padded.top + Math.min(42, padded.bottom - padded.top - 16) }
     : { left: window.innerWidth / 2, top: window.innerHeight / 2 }
 
+  const coachCopy = phase === 'navigation'
+    ? {
+        eyebrow: 'Find it in the sidebar',
+        title: `Open ${NAV_LABELS[step.screen]}`,
+        body: `${NAV_LABELS[step.screen]} is always available in the main navigation. The demo will click it, then show what to do on that page.`,
+      }
+    : step
+
   const previous = () => {
     setPlaying(false)
     setIndex((value) => Math.max(0, value - 1))
@@ -207,11 +246,11 @@ export default function GuidedDemo({
 
       <section className="tour-coach" style={coachPosition}>
         <div className="tour-coach-topline">
-          <span>{step.eyebrow}</span>
+          <span>{coachCopy.eyebrow}</span>
           <button type="button" onClick={onClose} aria-label="Close guided demo">×</button>
         </div>
-        <h2>{step.title}</h2>
-        <p>{step.body}</p>
+        <h2>{coachCopy.title}</h2>
+        <p>{coachCopy.body}</p>
         <div className="tour-progress" aria-label={`Step ${index + 1} of ${STEPS.length}`}>
           {STEPS.map((item, itemIndex) => <span className={itemIndex <= index ? 'active' : ''} key={item.title} />)}
         </div>

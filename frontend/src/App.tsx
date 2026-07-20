@@ -80,7 +80,12 @@ export default function App() {
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {nav.map((n) => (
-            <div key={n.id} className={`nav-item${screen === n.id ? ' active' : ''}`} onClick={() => setScreen(n.id)}>
+            <div
+              key={n.id}
+              className={`nav-item${screen === n.id ? ' active' : ''}`}
+              data-tour-nav={n.id}
+              onClick={() => setScreen(n.id)}
+            >
               {n.icon}
               {n.label}
               {n.extra}
