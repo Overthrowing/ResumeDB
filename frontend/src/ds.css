@@ -478,11 +478,22 @@ html, body, #root { height: 100%; }
 .tour-progress { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 17px 0 14px; }
 .tour-progress span { height: 3px; border-radius: 999px; background: rgba(255,255,255,.14); transition: background .25s ease; }
 .tour-progress span.active { background: #e8b65f; }
-.tour-actions { display: flex; align-items: center; gap: 8px; }
-.tour-actions .btn-ghost { color: #e8b65f; }
-.tour-actions .btn-primary { border-color: #e8b65f; color: #f3c879; }
-.tour-play { margin-left: auto; cursor: pointer; border: 0; background: transparent; color: #aaa299; font: 10px var(--font-body); }
-.tour-play:hover { color: #fff; }
+.tour-actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.tour-actions .btn {
+  min-width: 108px; min-height: 40px; border-radius: 8px; font-size: 12px; font-weight: 750;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.tour-actions .btn:not(:disabled):hover { transform: translateY(-1px); }
+.tour-actions .btn-ghost {
+  border: 1px solid rgba(240, 189, 103, .62); background: rgba(255, 255, 255, .06); color: #f4d59f;
+}
+.tour-actions .btn-ghost:not(:disabled):hover { border-color: #f0bd67; background: rgba(240, 189, 103, .13); }
+.tour-actions .btn-primary {
+  border-color: #f0bd67; background: #f0bd67; color: #241d14;
+  box-shadow: 0 7px 22px rgba(240, 189, 103, .24);
+}
+.tour-actions .btn-primary:hover { background: #f6cc82; box-shadow: 0 9px 28px rgba(240, 189, 103, .34); }
+.tour-actions .btn:disabled { border-color: rgba(255, 255, 255, .13); background: rgba(255, 255, 255, .025); color: #736d65; opacity: 1; }
 @keyframes tour-shade-in { from { opacity: 0; } }
 @keyframes tour-coach-in { from { opacity: 0; transform: translateY(8px) scale(.98); } }
 @keyframes tour-ring-pulse { 50% { box-shadow: 0 0 0 1px rgba(35,25,10,.42), 0 0 42px rgba(240,189,103,.5); } }

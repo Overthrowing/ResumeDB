@@ -10,7 +10,6 @@ type DemoStep = DemoDestination & {
   eyebrow: string
   title: string
   body: string
-  durationMs: number
 }
 
 type TourPhase = 'navigation' | 'content'
@@ -29,7 +28,6 @@ const STEPS: DemoStep[] = [
     eyebrow: 'The complete loop',
     title: 'One agent, from intent to application',
     body: 'ResumeDB connects the student profile, job search, tailored artifacts, and browser autofill in one reviewable workflow.',
-    durationMs: 9000,
   },
   {
     screen: 'agent',
@@ -37,7 +35,6 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Natural-language control',
     title: 'Give the agent a goal or any job URL',
     body: 'The user describes the outcome. The agent decides whether to discover roles, capture a posting, qualify it, or prepare an application.',
-    durationMs: 10000,
   },
   {
     screen: 'agent',
@@ -45,7 +42,6 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Observable autonomy',
     title: 'Watch the agent reason through the work',
     body: 'Every run exposes its current phase, completed work, evidence checks, and preparation decisions instead of hiding behind a spinner.',
-    durationMs: 9500,
   },
   {
     screen: 'applications',
@@ -54,7 +50,6 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Evidence-backed tailoring',
     title: 'See exactly what changed and why',
     body: 'Each rewrite links the original bullet, the job requirement, the final language, and the canonical evidence that supports the claim.',
-    durationMs: 11500,
   },
   {
     screen: 'applications',
@@ -63,7 +58,6 @@ const STEPS: DemoStep[] = [
     eyebrow: 'Human-controlled execution',
     title: 'Preview mappings before the extension fills',
     body: 'ResumeDB shows what is ready, what needs review, and whether the tailored PDF is available. The user still performs the final submission.',
-    durationMs: 10500,
   },
 ]
 
@@ -78,7 +72,6 @@ export default function GuidedDemo({
 }) {
   const [index, setIndex] = useState(0)
   const [focus, setFocus] = useState<FocusRect | null>(null)
-  const [playing, setPlaying] = useState(true)
   const [cursorClick, setCursorClick] = useState(false)
   const [phase, setPhase] = useState<TourPhase>('content')
   const currentScreen = useRef<DemoDestination['screen']>('dashboard')
@@ -157,22 +150,8 @@ export default function GuidedDemo({
   }, [index, phase, focus])
 
   useEffect(() => {
-    if (!playing || phase !== 'content') return
-    const timer = window.setTimeout(() => {
-      if (index === STEPS.length - 1) {
-        setPlaying(false)
-        return
-      }
-      setIndex((value) => value + 1)
-    }, step.durationMs)
-    return () => window.clearTimeout(timer)
-  }, [index, phase, playing, step.durationMs])
-
-  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose()
-      if (event.key === 'ArrowRight') setIndex((value) => Math.min(STEPS.length - 1, value + 1))
-      if (event.key === 'ArrowLeft') setIndex((value) => Math.max(0, value - 1))
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -218,11 +197,9 @@ export default function GuidedDemo({
     : step
 
   const previous = () => {
-    setPlaying(false)
     setIndex((value) => Math.max(0, value - 1))
   }
   const next = () => {
-    setPlaying(false)
     if (index === STEPS.length - 1) onClose()
     else setIndex((value) => value + 1)
   }
@@ -255,12 +232,9 @@ export default function GuidedDemo({
           {STEPS.map((item, itemIndex) => <span className={itemIndex <= index ? 'active' : ''} key={item.title} />)}
         </div>
         <div className="tour-actions">
-          <button className="btn btn-ghost" type="button" disabled={index === 0} onClick={previous}>Back</button>
-          <button className="tour-play" type="button" onClick={() => setPlaying((value) => !value)}>
-            {playing ? 'Pause animation' : 'Play animation'}
-          </button>
+          <button className="btn btn-ghost" type="button" disabled={index === 0} onClick={previous}>← Back</button>
           <button className="btn btn-primary" type="button" onClick={next}>
-            {index === STEPS.length - 1 ? 'Finish' : 'Next'}
+            {index === STEPS.length - 1 ? 'Finish' : 'Next →'}
           </button>
         </div>
       </section>
