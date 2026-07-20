@@ -1,0 +1,10 @@
+.git
+.gitignore
+.pytest_cache
+.playwright-cli
+.venv
+frontend
+extension
+output
+**/__pycache__
+**/*.pyc

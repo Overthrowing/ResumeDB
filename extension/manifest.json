@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "ResumeDB Autofill Helper",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Automatically fill job application forms using your profile and tailored resumes from ResumeDB.",
   "minimum_chrome_version": "114",
   "permissions": [
     "sidePanel",
     "tabs",
     "scripting",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "host_permissions": [
     "http://localhost:8000/*",
@@ -33,5 +34,6 @@
   },
   "side_panel": {
     "default_path": "sidepanel.html"
-  }
+  },
+  "options_page": "options.html"
 }

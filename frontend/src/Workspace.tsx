@@ -3,6 +3,7 @@ import { api, type Application, type AppStatus, type AuditResult, type AutofillP
 import ChatRail from './ChatRail'
 import MarkdownField from './MarkdownField'
 import { IconCheck, IconChevronLeft, IconDownload, IconRefresh, IconSparkle, IconWarn } from './icons'
+import { apiUrl } from './runtime'
 
 const PIPELINE_STEPS: { status: AppStatus; label: string; color: string }[] = [
   { status: 'not_started', label: 'Not Started', color: 'var(--color-neutral-400)' },
@@ -423,7 +424,7 @@ function ResumeTab({
               Render
             </button>
           )}
-          <a className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: 13 }} href={`/api/applications/${app.meta.id}/resume.pdf`} download={`resume-${app.meta.company.toLowerCase()}.pdf`}>
+          <a className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: 13 }} href={apiUrl(`/api/applications/${app.meta.id}/resume.pdf`)} download={`resume-${app.meta.company.toLowerCase()}.pdf`}>
             <IconDownload size={14} />
             Export
           </a>
@@ -435,7 +436,7 @@ function ResumeTab({
           <iframe
             key={renderCount}
             title="resume preview"
-            src={`/api/applications/${app.meta.id}/resume.pdf#toolbar=0&t=${renderCount}`}
+            src={`${apiUrl(`/api/applications/${app.meta.id}/resume.pdf`)}#toolbar=0&t=${renderCount}`}
             style={{ flex: 1, minHeight: 0, width: '100%', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', background: '#fff' }}
           />
         ) : (
@@ -829,7 +830,7 @@ function AutofillTab({ app }: { app: Application }) {
   }
 
   const handleDownload = () => {
-    window.open(`/api/applications/${app.meta.id}/resume.pdf`, '_blank')
+    window.open(apiUrl(`/api/applications/${app.meta.id}/resume.pdf`), '_blank')
   }
 
   if (!data) return <div className="text-muted">Loading application package...</div>

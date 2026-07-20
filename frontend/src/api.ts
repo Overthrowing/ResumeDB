@@ -1,3 +1,5 @@
+import { apiUrl } from './runtime'
+
 export interface Entry {
   id: string
   type: 'experience' | 'project' | 'skill' | 'course' | 'education' | 'achievement' | 'extra'
@@ -236,7 +238,7 @@ export interface ResearchRun {
 }
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
+  const res = await fetch(apiUrl(url), init)
   if (!res.ok) {
     let detail = res.statusText
     try {
@@ -295,7 +297,7 @@ export const api = {
 
   history: (scope: string) => req<HistoryEntry[]>(`/api/history?scope=${encodeURIComponent(scope)}`),
   historyDiff: async (sha: string) => {
-    const res = await fetch(`/api/history/${sha}/diff`)
+    const res = await fetch(apiUrl(`/api/history/${sha}/diff`))
     if (!res.ok) throw new Error(res.statusText)
     return res.text()
   },

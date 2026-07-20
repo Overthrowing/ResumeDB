@@ -60,6 +60,55 @@ resume.
 The production-style built frontend is served by FastAPI at
 `http://localhost:8000` after `make build`.
 
+## Hosted hackathon deployment
+
+The hosted demo uses Vercel for the Vite frontend and Railway for the FastAPI
+backend. Local development still uses the Vite proxy and requires no
+environment changes.
+
+### Railway backend
+
+1. Create a Railway service from this GitHub repository and keep the service
+   root at `/` so Railway detects the root `Dockerfile` and `railway.toml`.
+2. Attach one persistent volume at `/data`. The deployment is intentionally
+   limited to one replica because career-data writes are Git-backed. Do not
+   set `RAILWAY_RUN_UID`; the startup script enters as root only to assign the
+   mounted volume to its unprivileged `resumedb` runtime user.
+3. Set these variables:
+
+   ```text
+   RESUMEDB_ALLOWED_ORIGINS=https://your-app.vercel.app
+   RESUMEDB_AGENT_PROVIDER=claude
+   ANTHROPIC_API_KEY=your-server-side-key
+   ```
+
+   To use Codex instead, set `RESUMEDB_AGENT_PROVIDER=codex` and
+   `OPENAI_API_KEY`. The startup script authenticates the containerized Codex
+   CLI from that secret. Never put either model key in a Vercel `VITE_`
+   variable.
+4. Generate a Railway public domain. On first launch, the onboarding screen
+   creates the career-data repository at `/data/resume-data`.
+
+For Vercel preview deployments, either add each preview origin to
+`RESUMEDB_ALLOWED_ORIGINS` or set a deliberately narrow
+`RESUMEDB_ALLOWED_ORIGIN_REGEX`. Do not use a catch-all origin regex for a
+backend that holds a model credential.
+
+### Vercel frontend
+
+1. Import the same repository into Vercel and set the project Root Directory
+   to `frontend`.
+2. Set `VITE_API_BASE_URL` to the Railway public domain for Production and any
+   Preview environments you intend to use.
+3. Deploy. `frontend/vercel.json` preserves SPA deep links, and both HTTP and
+   WebSocket clients connect directly to Railway.
+
+### Hosted Chrome extension
+
+Reload the unpacked extension after pulling deployment changes, then open its
+connection settings. Enter the Railway backend domain and Vercel web app
+domain. Localhost remains the default for local development.
+
 ## Demo flow
 
 For the fastest hackathon walkthrough, open **Profile & Settings** and use the
@@ -111,7 +160,7 @@ For a walkthrough with your own data:
 3. Choose Load unpacked and select the repository's `extension` directory.
 4. Start ResumeDB, then click the extension icon on any job page.
 
-The installed side panel should display the ResumeDB logo and version `2.2.0`.
+The installed side panel should display the ResumeDB logo and version `2.3.0`.
 If it has no logo or remains on **Connecting to ResumeDB...**, remove the old
 unpacked copy, load the `extension` directory from the checkout you are
 actually running, and reload the job page. Unpacked extensions do not update
@@ -129,11 +178,16 @@ source files.
 
 ## Agent access
 
-ResumeDB exposes the complete local knowledge base and the same career
-capabilities through its FastAPI OpenAPI API at `http://localhost:8000/docs`.
-An external agent can read the profile and evidence, invoke `/api/agent/command`,
-prepare applications, and inspect readiness. The hackathon build has no auth,
-so expose it only on the local machine.
+ResumeDB exposes the complete knowledge base and the same career capabilities
+through its FastAPI OpenAPI API at `http://localhost:8000/docs`. An external
+agent can read the profile and evidence, invoke `/api/agent/command`, prepare
+applications, and inspect readiness.
+
+The hackathon build has no account authentication or per-user data isolation.
+Treat a public Railway deployment as a shared synthetic demo: do not load real
+candidate data, use a provider key with a strict spending limit, and remove or
+rotate the key after judging. Real user deployments require authentication,
+tenant isolation, and durable request-level usage controls.
 
 ## Safety model
 

@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from . import config
 from .chat import router as chat_router
 from .routes import router
 from .scheduler import discovery_loop
@@ -26,8 +27,8 @@ app = FastAPI(title="ResumeDB", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:8000"],
-    allow_origin_regex=r"chrome-extension://.*",
+    allow_origins=config.allowed_origins(),
+    allow_origin_regex=config.allowed_origin_regex(),
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

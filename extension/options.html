@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ResumeDB connection settings</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; background: #1a1a1a; color: #e0e0e0; }
+    main { width: min(560px, calc(100vw - 40px)); margin: 48px auto; }
+    .card { padding: 24px; border: 1px solid #3a3a3a; border-radius: 10px; background: #262626; }
+    h1 { margin: 0 0 8px; color: #d0a25e; font-size: 22px; }
+    p { margin: 0 0 24px; color: #aaa; line-height: 1.5; }
+    label { display: block; margin-top: 16px; color: #ccc; font-size: 13px; font-weight: 600; }
+    input { width: 100%; margin-top: 6px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #4b4b4b; border-radius: 6px; background: #191919; color: #fff; font: inherit; }
+    input:focus { outline: 2px solid #b68235; outline-offset: 1px; }
+    button { margin-top: 22px; padding: 10px 16px; border: 0; border-radius: 6px; background: #b68235; color: #171717; font-weight: 700; cursor: pointer; }
+    #status { min-height: 20px; margin-top: 12px; color: #86c892; font-size: 13px; }
+    .hint { margin-top: 5px; color: #777; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>ResumeDB connection</h1>
+      <p>Use local addresses during development, or enter the Railway API and Vercel web app domains for the hosted demo.</p>
+      <form id="settings-form">
+        <label for="backend-url">Railway backend URL</label>
+        <input id="backend-url" name="backend-url" type="url" required placeholder="https://your-backend.up.railway.app">
+        <div class="hint">Do not include <code>/api</code> or a trailing slash.</div>
+
+        <label for="web-app-url">Vercel web app URL</label>
+        <input id="web-app-url" name="web-app-url" type="url" required placeholder="https://your-app.vercel.app">
+        <div class="hint">Used by the Open ResumeDB button.</div>
+
+        <button type="submit">Save and test connection</button>
+        <div id="status" role="status"></div>
+      </form>
+    </div>
+  </main>
+  <script src="backend-config.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

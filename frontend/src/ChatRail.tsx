@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Markdown from 'react-markdown'
 import { api, type Proposal } from './api'
 import { IconChat, IconCheck, IconHistory, IconPlus, IconSend, IconWarn, IconX } from './icons'
+import { apiUrl, websocketUrl } from './runtime'
 
 const RAIL_MIN = 300
 const RAIL_MAX = 720
@@ -89,7 +90,7 @@ export default function ChatRail({
         setMessages([])
         return
       }
-      fetch(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`)
+      fetch(apiUrl(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`))
         .then((r) => (r.ok ? r.json() : []))
         .then(setMessages)
         .catch(() => setMessages([]))
@@ -99,7 +100,7 @@ export default function ChatRail({
 
   const refreshConvs = useCallback(
     () =>
-      fetch(`/api/chat/${encodeURIComponent(scope)}/conversations`)
+      fetch(apiUrl(`/api/chat/${encodeURIComponent(scope)}/conversations`))
         .then((r) => (r.ok ? r.json() : []))
         .then((c: Conversation[]) => {
           setConvs(c)
@@ -111,7 +112,7 @@ export default function ChatRail({
   const deleteConv = async (id: string) => {
     if (!confirm('Delete this conversation? Its checkpointed history stays in git.')) return
     try {
-      const res = await fetch(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`, { method: 'DELETE' })
+      const res = await fetch(apiUrl(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`), { method: 'DELETE' })
       if (!res.ok) throw new Error((await res.json()).detail ?? res.statusText)
       const remaining = await refreshConvs()
       if (id === convRef.current) loadConversation(remaining[0]?.id ?? null)
@@ -223,10 +224,11 @@ export default function ChatRail({
         resolve(wsRef.current)
         return
       }
-      const proto = location.protocol === 'https:' ? 'wss' : 'ws'
-      const ws = new WebSocket(
-        `${proto}://${location.host}/api/chat?scope=${encodeURIComponent(scope)}&conversation=${convRef.current ?? ''}`,
-      )
+      const query = new URLSearchParams({
+        scope,
+        conversation: convRef.current ?? '',
+      })
+      const ws = new WebSocket(websocketUrl(`/api/chat?${query}`))
       ws.onopen = () => resolve(ws)
       ws.onerror = () => reject(new Error('chat connection failed'))
       ws.onmessage = (e) => handleEvent(JSON.parse(e.data))

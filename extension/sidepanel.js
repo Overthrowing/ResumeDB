@@ -1,4 +1,3 @@
-const BACKEND_CANDIDATES = ['http://localhost:8000', 'http://127.0.0.1:8000'];
 let backendUrl = null;
 let wsUrl = null;
 
@@ -29,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const connectionMessage = document.getElementById('connection-message');
   const retryButton = document.getElementById('retry-btn');
   const openAppButton = document.getElementById('open-app-btn');
+  const connectionSettingsButton = document.getElementById('connection-settings-btn');
   const versionText = document.getElementById('extension-version');
 
   let applications = [];
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const connectBackend = async () => {
     let lastError = null;
-    for (const candidate of BACKEND_CANDIDATES) {
+    for (const candidate of await getBackendCandidates()) {
       try {
         const response = await fetch(`${candidate}/api/health`, { signal: AbortSignal.timeout(2500) });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     throw new Error(
       lastError?.message === 'The career-data repository is not initialized.'
         ? lastError.message
-        : 'ResumeDB is not reachable. Start the app with make dev, then retry.',
+        : 'ResumeDB is not reachable. Check the configured backend URL, then retry.',
     );
   };
 
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {
       backendUrl = null;
       wsUrl = null;
-      throw new Error('Lost the ResumeDB connection. Confirm make dev is still running, then retry.');
+      throw new Error('Lost the ResumeDB connection. Check the configured backend URL, then retry.');
     }
     if (!response.ok) {
       let message = response.statusText;
@@ -467,7 +467,11 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(showConnectionProblem)
       .finally(() => { retryButton.disabled = false; });
   });
-  openAppButton.addEventListener('click', () => chrome.tabs.create({ url: 'http://localhost:5173/' }));
+  openAppButton.addEventListener('click', async () => {
+    const { webAppUrl } = await getResumeDbSettings();
+    chrome.tabs.create({ url: webAppUrl });
+  });
+  connectionSettingsButton.addEventListener('click', () => chrome.runtime.openOptionsPage());
   chatInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') sendMessage(); });
   document.querySelectorAll('.tab').forEach((tab) => {
     tab.addEventListener('click', () => {

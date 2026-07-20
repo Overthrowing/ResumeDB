@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -23,6 +24,37 @@ DEFAULTS = {
 }
 
 CLAUDE_MODEL_NAMES = {"haiku", "sonnet", "opus"}
+LOCAL_WEB_ORIGINS = (
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+)
+EXTENSION_ORIGIN_REGEX = r"chrome-extension://.*"
+
+
+def allowed_origins() -> list[str]:
+    """Return exact browser origins allowed to call the API."""
+    configured = os.environ.get("RESUMEDB_ALLOWED_ORIGINS", "")
+    origins = [*LOCAL_WEB_ORIGINS]
+    origins.extend(origin.strip().rstrip("/") for origin in configured.split(","))
+    return list(dict.fromkeys(origin for origin in origins if origin))
+
+
+def allowed_origin_regex() -> str:
+    """Allow extension pages and an optional deployment-specific origin regex."""
+    configured = os.environ.get("RESUMEDB_ALLOWED_ORIGIN_REGEX", "").strip()
+    if not configured:
+        return EXTENSION_ORIGIN_REGEX
+    return rf"(?:{EXTENSION_ORIGIN_REGEX})|(?:{configured})"
+
+
+def origin_is_allowed(origin: str | None) -> bool:
+    """Validate WebSocket origins, which are not covered by CORS middleware."""
+    if not origin:
+        return True
+    normalized = origin.rstrip("/")
+    return normalized in allowed_origins() or re.fullmatch(allowed_origin_regex(), normalized) is not None
 
 
 def _clear_incompatible_models(cfg: dict) -> None:

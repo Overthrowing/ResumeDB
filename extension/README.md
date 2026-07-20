@@ -12,9 +12,13 @@ resumes, and opens the ready queue without storing job-site passwords.
 4. Choose Load unpacked and select this `extension` directory.
 5. Click the ResumeDB extension icon to open the side panel.
 
-The current side panel shows the ResumeDB logo and version `2.2.0` in its
+The current side panel shows the ResumeDB logo and version `2.3.0` in its
 header. The extension requests access to job application pages because Chrome
 requires explicit site access before it can capture or fill them.
+
+For the hosted demo, open the extension's **Connection settings** and enter
+the Railway backend URL and Vercel web app URL. The settings sync through the
+Chrome profile. Localhost remains the default for local testing.
 
 ## Troubleshooting
 
