@@ -1,20 +1,434 @@
 <template>
   <style>
-    @font-face{font-family:"Sketch Serif";src:local("Georgia")}@font-face{font-family:"Sketch Sans";src:local("Arial")}
-    #root{position:relative;width:1920px;height:1080px;overflow:hidden}.frame-bg{position:absolute;inset:0;background:#f3f2f2}.sketch{position:absolute;inset:0;padding:68px 82px 184px;color:#201f1d;font-family:"Sketch Sans",sans-serif}.kicker{margin:0 0 12px;color:#6d28d9;font-size:22px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}h1{margin:0;font-family:"Sketch Serif",serif;font-size:82px;font-weight:400;line-height:1;letter-spacing:-.025em}h3{margin:0;font-size:26px}.canvas{height:610px;margin-top:44px}.block{padding:24px;border:2px solid rgba(32,31,29,.35);border-radius:10px;background:#f4e9d9}.stack{display:grid;gap:18px}.screen{display:flex;align-items:center;justify-content:center;min-height:210px;padding:26px;border:2px dashed rgba(32,31,29,.38);border-radius:10px;background:rgba(255,255,255,.42);color:#5e5a55;font-weight:700;font-size:22px;line-height:1.3;text-align:center;text-transform:uppercase}.accent{border-color:#6d28d9;background:rgba(109,40,217,.08)}.bottom-band{position:absolute;right:82px;bottom:54px;left:82px;height:92px;border-top:1px solid rgba(32,31,29,.18);color:#8b8782;font-size:16px;line-height:92px;letter-spacing:.08em;text-transform:uppercase}
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+    }
+
+    .f01-ground {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+    }
+
+    .f01-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      padding: 58px 82px 184px;
+      box-sizing: border-box;
+    }
+
+    .f01-header {
+      position: relative;
+      z-index: 8;
+      width: 920px;
+    }
+
+    .f01-kicker {
+      margin: 0 0 8px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .f01-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 4.3cqw;
+      font-weight: 400;
+      line-height: 0.98;
+      letter-spacing: -0.024em;
+    }
+
+    .f01-stage {
+      position: absolute;
+      z-index: 2;
+      top: 198px;
+      right: 82px;
+      bottom: 184px;
+      left: 82px;
+    }
+
+    .f01-chip {
+      position: absolute;
+      z-index: 6;
+      top: 50%;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 232px;
+      padding: 18px 22px;
+      box-sizing: border-box;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 12px;
+      background: #f4e9d9;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+      font-family: "EB Garamond", serif;
+      font-size: 1.52cqw;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+      will-change: transform, filter, opacity;
+    }
+
+    .f01-chip-index {
+      display: grid;
+      width: 31px;
+      height: 31px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 9999px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .f01-dashboard {
+      position: absolute;
+      z-index: 5;
+      top: 32px;
+      left: 50%;
+      width: 1320px;
+      height: 550px;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 12px;
+      background: #f3f2f2;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+      transform-origin: 50% 50%;
+      will-change: transform, clip-path, filter, opacity;
+    }
+
+    .f01-dashboard img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .f01-ready-focus {
+      position: absolute;
+      z-index: 8;
+      top: 121px;
+      left: 761px;
+      width: 220px;
+      height: 92px;
+      box-sizing: border-box;
+      border: 3px solid #6d28d9;
+      border-radius: 9px;
+      outline: 5px solid rgba(109, 40, 217, 0.12);
+      pointer-events: none;
+    }
+
+    .f01-connections {
+      position: absolute;
+      z-index: 7;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .f01-connection-path {
+      fill: none;
+      stroke: rgba(32, 31, 29, 0.46);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .f01-flow-label {
+      position: absolute;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 15px;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 9999px;
+      background: #f3f2f2;
+      font-family: "Inter", sans-serif;
+      font-size: 1.4cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      will-change: transform, opacity;
+    }
+
+    .f01-flow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      background: #201f1d;
+    }
+
+    .f01-label-discover { top: 86px; left: 18px; }
+    .f01-label-tailor { top: 422px; left: 30px; }
+    .f01-label-track { top: 86px; right: 16px; }
+    .f01-label-apply { top: 422px; right: 28px; }
+
+    .f01-promise {
+      position: absolute;
+      z-index: 10;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      border-top: 1px solid rgba(32, 31, 29, 0.18);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.4cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .f01-promise-count {
+      color: rgba(32, 31, 29, 0.58);
+      font-size: 15px;
+      letter-spacing: 0.14em;
+    }
   </style>
-  <div data-hf-id="hf-svyf" id="root" data-composition-id="01-guided-workflow" data-start="0" data-duration="6" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-z7yd" id="f01-guided-workflow-bg" class="clip frame-bg" data-start="0" data-duration="6" data-track-index="0"></div>
-    <main data-hf-id="hf-m3hs" id="f01-guided-workflow-scene" class="clip sketch" data-start="0" data-duration="6" data-track-index="1">
-      <p data-hf-id="hf-cmip" class="kicker">ResumeDB</p><h1 data-hf-id="hf-qonp">One guided internship workflow</h1>
-      <div data-hf-id="hf-muo1" class="canvas" style="display:grid;grid-template-columns:330px 1fr 330px;align-items:center;gap:34px">
-        <div data-hf-id="hf-d1zs" class="stack"><div data-hf-id="hf-rs4b" class="block"><h3 data-hf-id="hf-uoct">Find jobs</h3></div><div data-hf-id="hf-qusb" class="block"><h3 data-hf-id="hf-45m6">Track applications</h3></div></div>
-        <div data-hf-id="hf-erv3" class="screen accent" style="height:500px">ResumeDB dashboard<br data-hf-id="hf-x5px"><br data-hf-id="hf-rsrt">Earnestine's journey</div>
-        <div data-hf-id="hf-g2wg" class="stack"><div data-hf-id="hf-qgha" class="block"><h3 data-hf-id="hf-8vjw">Tailor artifacts</h3></div><div data-hf-id="hf-q269" class="block"><h3 data-hf-id="hf-r11g">Fill applications</h3></div></div>
-      </div>
-      <div data-hf-id="hf-lulq" class="bottom-band">Four disconnected tasks converge on one career command center</div>
+
+  <div id="root" data-composition-id="01-guided-workflow" data-start="0" data-duration="6.58" data-width="1920" data-height="1080">
+    <div class="clip f01-ground" data-start="0" data-duration="6.58" data-track-index="0"></div>
+
+    <main class="clip f01-scene" data-start="0" data-duration="6.58" data-track-index="1">
+      <header class="f01-header">
+        <p class="f01-kicker">ResumeDB</p>
+        <h1 class="f01-title">One guided internship workflow</h1>
+      </header>
+
+      <section class="f01-stage" aria-label="Disconnected internship tasks converge into the ResumeDB dashboard">
+        <div id="f01-chip-find" class="f01-chip" data-target-x="-670" data-target-y="-164">
+          <span class="f01-chip-index">01</span><span>Find jobs</span>
+        </div>
+        <div id="f01-chip-track" class="f01-chip" data-target-x="-622" data-target-y="116">
+          <span class="f01-chip-index">02</span><span>Track applications</span>
+        </div>
+        <div id="f01-chip-profile" class="f01-chip" data-target-x="-55" data-target-y="226">
+          <span class="f01-chip-index">03</span><span>Build profile</span>
+        </div>
+        <div id="f01-chip-tailor" class="f01-chip" data-target-x="486" data-target-y="-164">
+          <span class="f01-chip-index">04</span><span>Tailor artifacts</span>
+        </div>
+        <div id="f01-chip-fill" class="f01-chip" data-target-x="510" data-target-y="116">
+          <span class="f01-chip-index">05</span><span>Fill applications</span>
+        </div>
+
+        <figure id="f01-dashboard" class="f01-dashboard">
+          <img src="assets/01-dashboard.png" alt="ResumeDB career command center with a ready application and complete profile">
+          <div id="f01-ready-focus" class="f01-ready-focus" aria-hidden="true"></div>
+        </figure>
+
+        <svg class="f01-connections" viewBox="0 0 1756 698" aria-hidden="true">
+          <path id="f01-path-discover" class="f01-connection-path" d="M 520 164 C 414 128, 326 109, 205 109"></path>
+          <path id="f01-path-tailor" class="f01-connection-path" d="M 523 388 C 418 422, 318 447, 185 447"></path>
+          <path id="f01-path-track" class="f01-connection-path" d="M 1236 164 C 1336 128, 1460 109, 1601 109"></path>
+          <path id="f01-path-apply" class="f01-connection-path" d="M 1237 388 C 1342 422, 1464 447, 1591 447"></path>
+        </svg>
+
+        <div id="f01-label-discover" class="f01-flow-label f01-label-discover"><span class="f01-flow-dot"></span>Discover</div>
+        <div id="f01-label-tailor" class="f01-flow-label f01-label-tailor"><span class="f01-flow-dot"></span>Tailor</div>
+        <div id="f01-label-track" class="f01-flow-label f01-label-track"><span class="f01-flow-dot"></span>Track</div>
+        <div id="f01-label-apply" class="f01-flow-label f01-label-apply"><span class="f01-flow-dot"></span>Apply</div>
+
+        <div class="f01-promise">
+          <span>Four disconnected tasks converge on one career command center</span>
+          <span class="f01-promise-count">One workflow</span>
+        </div>
+      </section>
     </main>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script>window.__timelines=window.__timelines||{};window.__timelines["01-guided-workflow"]=gsap.timeline({paused:true});</script>
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const f01Root = document.querySelector('[data-composition-id="01-guided-workflow"]');
+    const f01Timeline = gsap.timeline({ paused: true });
+    const f01Chips = Array.from(f01Root.querySelectorAll('.f01-chip'));
+    const f01Paths = Array.from(f01Root.querySelectorAll('.f01-connection-path'));
+    const f01Labels = Array.from(f01Root.querySelectorAll('.f01-flow-label'));
+
+    f01Timeline.fromTo(
+      f01Root.querySelector('.f01-header'),
+      { y: -18, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.48, ease: 'power2.out' },
+      0
+    );
+
+    f01Chips.forEach((chip, index) => {
+      const targetX = Number(chip.dataset.targetX);
+      const targetY = Number(chip.dataset.targetY);
+      const entranceAt = 0.08 + index * 0.24;
+
+      f01Timeline.fromTo(
+        chip,
+        {
+          xPercent: -50,
+          yPercent: -50,
+          x: targetX * 0.86,
+          y: targetY * 0.86,
+          scale: 0.9,
+          opacity: 0
+        },
+        {
+          xPercent: -50,
+          yPercent: -50,
+          x: targetX,
+          y: targetY,
+          scale: 1,
+          opacity: 1,
+          duration: 0.72,
+          ease: 'power3.out'
+        },
+        entranceAt
+      );
+
+      f01Timeline.to(
+        chip,
+        {
+          x: 0,
+          y: 0,
+          scaleX: 0.76,
+          scaleY: 0.9,
+          filter: 'blur(7px)',
+          duration: 0.78,
+          ease: 'power3.in'
+        },
+        1.82 + index * 0.045
+      );
+      f01Timeline.to(
+        chip,
+        {
+          scale: 0.58,
+          opacity: 0,
+          filter: 'blur(0px)',
+          duration: 0.24,
+          ease: 'power1.out'
+        },
+        2.54 + index * 0.045
+      );
+    });
+
+    f01Timeline.fromTo(
+      '#f01-dashboard',
+      {
+        xPercent: -50,
+        scale: 0.86,
+        opacity: 0,
+        filter: 'blur(14px)',
+        clipPath: 'inset(18% 24% 18% 24% round 12px)'
+      },
+      {
+        xPercent: -50,
+        scale: 1,
+        opacity: 1,
+        filter: 'blur(0px)',
+        clipPath: 'inset(0% 0% 0% 0% round 12px)',
+        duration: 1.34,
+        ease: 'power3.out'
+      },
+      2.08
+    );
+
+    f01Paths.forEach((path) => {
+      const pathLength = path.getTotalLength();
+      gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
+    });
+
+    f01Paths.forEach((path, index) => {
+      f01Timeline.to(
+        path,
+        {
+          strokeDashoffset: 0,
+          duration: 0.62,
+          ease: 'power2.out'
+        },
+        4.2 + index * 0.22
+      );
+    });
+
+    f01Labels.forEach((label, index) => {
+      const direction = index < 2 ? -14 : 14;
+      f01Timeline.fromTo(
+        label,
+        { x: direction, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.4, ease: 'power2.out' },
+        4.4 + index * 0.22
+      );
+    });
+
+    f01Timeline.fromTo(
+      '#f01-ready-focus',
+      { scale: 0.94, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.54, ease: 'power2.out' },
+      5.38
+    );
+
+    f01Timeline.fromTo(
+      '.f01-promise',
+      { y: 12, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+      5.66
+    );
+
+    window.__timelines['01-guided-workflow'] = f01Timeline;
+  </script>
 </template>
