@@ -1,0 +1,798 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:03,200"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 3200
+			},
+			"text": " GPT 5.6 also became our engineering team.",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.93539,
+					"t_dtw": -1
+				},
+				{
+					"text": " G",
+					"timestamps": {
+						"from": "00:00:00,080",
+						"to": "00:00:00,080"
+					},
+					"offsets": {
+						"from": 80,
+						"to": 80
+					},
+					"id": 402,
+					"p": 0.938043,
+					"t_dtw": -1
+				},
+				{
+					"text": "PT",
+					"timestamps": {
+						"from": "00:00:00,130",
+						"to": "00:00:00,230"
+					},
+					"offsets": {
+						"from": 130,
+						"to": 230
+					},
+					"id": 11571,
+					"p": 0.985986,
+					"t_dtw": -1
+				},
+				{
+					"text": " 5",
+					"timestamps": {
+						"from": "00:00:00,230",
+						"to": "00:00:00,440"
+					},
+					"offsets": {
+						"from": 230,
+						"to": 440
+					},
+					"id": 642,
+					"p": 0.724766,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:00,490",
+						"to": "00:00:00,700"
+					},
+					"offsets": {
+						"from": 490,
+						"to": 700
+					},
+					"id": 13,
+					"p": 0.998946,
+					"t_dtw": -1
+				},
+				{
+					"text": "6",
+					"timestamps": {
+						"from": "00:00:00,700",
+						"to": "00:00:00,930"
+					},
+					"offsets": {
+						"from": 700,
+						"to": 930
+					},
+					"id": 21,
+					"p": 0.998275,
+					"t_dtw": -1
+				},
+				{
+					"text": " also",
+					"timestamps": {
+						"from": "00:00:00,930",
+						"to": "00:00:01,190"
+					},
+					"offsets": {
+						"from": 930,
+						"to": 1190
+					},
+					"id": 635,
+					"p": 0.991949,
+					"t_dtw": -1
+				},
+				{
+					"text": " became",
+					"timestamps": {
+						"from": "00:00:01,260",
+						"to": "00:00:01,690"
+					},
+					"offsets": {
+						"from": 1260,
+						"to": 1690
+					},
+					"id": 2627,
+					"p": 0.993136,
+					"t_dtw": -1
+				},
+				{
+					"text": " our",
+					"timestamps": {
+						"from": "00:00:01,740",
+						"to": "00:00:01,960"
+					},
+					"offsets": {
+						"from": 1740,
+						"to": 1960
+					},
+					"id": 674,
+					"p": 0.996094,
+					"t_dtw": -1
+				},
+				{
+					"text": " engineering",
+					"timestamps": {
+						"from": "00:00:01,960",
+						"to": "00:00:02,810"
+					},
+					"offsets": {
+						"from": 1960,
+						"to": 2810
+					},
+					"id": 8705,
+					"p": 0.918258,
+					"t_dtw": -1
+				},
+				{
+					"text": " team",
+					"timestamps": {
+						"from": "00:00:02,810",
+						"to": "00:00:03,040"
+					},
+					"offsets": {
+						"from": 2810,
+						"to": 3040
+					},
+					"id": 1074,
+					"p": 0.996643,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:03,170",
+						"to": "00:00:03,200"
+					},
+					"offsets": {
+						"from": 3170,
+						"to": 3200
+					},
+					"id": 13,
+					"p": 0.881225,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_160]",
+					"timestamps": {
+						"from": "00:00:03,200",
+						"to": "00:00:03,200"
+					},
+					"offsets": {
+						"from": 3200,
+						"to": 3200
+					},
+					"id": 50523,
+					"p": 0.0399824,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,200",
+				"to": "00:00:06,000"
+			},
+			"offsets": {
+				"from": 3200,
+				"to": 6000
+			},
+			"text": " It coordinated parallel sub-agents with the Codex app.",
+			"tokens": [
+				{
+					"text": " It",
+					"timestamps": {
+						"from": "00:00:03,310",
+						"to": "00:00:03,310"
+					},
+					"offsets": {
+						"from": 3310,
+						"to": 3310
+					},
+					"id": 632,
+					"p": 0.990282,
+					"t_dtw": -1
+				},
+				{
+					"text": " coordinated",
+					"timestamps": {
+						"from": "00:00:03,360",
+						"to": "00:00:03,940"
+					},
+					"offsets": {
+						"from": 3360,
+						"to": 3940
+					},
+					"id": 22080,
+					"p": 0.992208,
+					"t_dtw": -1
+				},
+				{
+					"text": " parallel",
+					"timestamps": {
+						"from": "00:00:03,940",
+						"to": "00:00:04,390"
+					},
+					"offsets": {
+						"from": 3940,
+						"to": 4390
+					},
+					"id": 10730,
+					"p": 0.981567,
+					"t_dtw": -1
+				},
+				{
+					"text": " sub",
+					"timestamps": {
+						"from": "00:00:04,460",
+						"to": "00:00:04,570"
+					},
+					"offsets": {
+						"from": 4460,
+						"to": 4570
+					},
+					"id": 850,
+					"p": 0.988763,
+					"t_dtw": -1
+				},
+				{
+					"text": "-",
+					"timestamps": {
+						"from": "00:00:04,570",
+						"to": "00:00:04,610"
+					},
+					"offsets": {
+						"from": 4570,
+						"to": 4610
+					},
+					"id": 12,
+					"p": 0.463945,
+					"t_dtw": -1
+				},
+				{
+					"text": "agents",
+					"timestamps": {
+						"from": "00:00:04,620",
+						"to": "00:00:05,000"
+					},
+					"offsets": {
+						"from": 4620,
+						"to": 5000
+					},
+					"id": 49638,
+					"p": 0.989984,
+					"t_dtw": -1
+				},
+				{
+					"text": " with",
+					"timestamps": {
+						"from": "00:00:05,000",
+						"to": "00:00:05,240"
+					},
+					"offsets": {
+						"from": 5000,
+						"to": 5240
+					},
+					"id": 351,
+					"p": 0.976233,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:05,240",
+						"to": "00:00:05,420"
+					},
+					"offsets": {
+						"from": 5240,
+						"to": 5420
+					},
+					"id": 262,
+					"p": 0.980838,
+					"t_dtw": -1
+				},
+				{
+					"text": " Codex",
+					"timestamps": {
+						"from": "00:00:05,420",
+						"to": "00:00:05,720"
+					},
+					"offsets": {
+						"from": 5420,
+						"to": 5720
+					},
+					"id": 41982,
+					"p": 0.716001,
+					"t_dtw": -1
+				},
+				{
+					"text": " app",
+					"timestamps": {
+						"from": "00:00:05,720",
+						"to": "00:00:05,910"
+					},
+					"offsets": {
+						"from": 5720,
+						"to": 5910
+					},
+					"id": 598,
+					"p": 0.702642,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:05,910",
+						"to": "00:00:06,000"
+					},
+					"offsets": {
+						"from": 5910,
+						"to": 6000
+					},
+					"id": 13,
+					"p": 0.887629,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_300]",
+					"timestamps": {
+						"from": "00:00:06,000",
+						"to": "00:00:06,000"
+					},
+					"offsets": {
+						"from": 6000,
+						"to": 6000
+					},
+					"id": 50663,
+					"p": 0.103864,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:06,000",
+				"to": "00:00:09,500"
+			},
+			"offsets": {
+				"from": 6000,
+				"to": 9500
+			},
+			"text": " Together, they built the web app, Chrome extension, and MCP server,",
+			"tokens": [
+				{
+					"text": " Together",
+					"timestamps": {
+						"from": "00:00:06,150",
+						"to": "00:00:06,350"
+					},
+					"offsets": {
+						"from": 6150,
+						"to": 6350
+					},
+					"id": 17083,
+					"p": 0.998679,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:06,370",
+						"to": "00:00:06,440"
+					},
+					"offsets": {
+						"from": 6370,
+						"to": 6440
+					},
+					"id": 11,
+					"p": 0.507722,
+					"t_dtw": -1
+				},
+				{
+					"text": " they",
+					"timestamps": {
+						"from": "00:00:06,490",
+						"to": "00:00:06,620"
+					},
+					"offsets": {
+						"from": 6490,
+						"to": 6620
+					},
+					"id": 484,
+					"p": 0.996763,
+					"t_dtw": -1
+				},
+				{
+					"text": " built",
+					"timestamps": {
+						"from": "00:00:06,690",
+						"to": "00:00:06,780"
+					},
+					"offsets": {
+						"from": 6690,
+						"to": 6780
+					},
+					"id": 3170,
+					"p": 0.994567,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:06,870",
+						"to": "00:00:06,940"
+					},
+					"offsets": {
+						"from": 6870,
+						"to": 6940
+					},
+					"id": 262,
+					"p": 0.993608,
+					"t_dtw": -1
+				},
+				{
+					"text": " web",
+					"timestamps": {
+						"from": "00:00:07,010",
+						"to": "00:00:07,110"
+					},
+					"offsets": {
+						"from": 7010,
+						"to": 7110
+					},
+					"id": 3992,
+					"p": 0.764972,
+					"t_dtw": -1
+				},
+				{
+					"text": " app",
+					"timestamps": {
+						"from": "00:00:07,110",
+						"to": "00:00:07,190"
+					},
+					"offsets": {
+						"from": 7110,
+						"to": 7190
+					},
+					"id": 598,
+					"p": 0.946203,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:07,260",
+						"to": "00:00:07,360"
+					},
+					"offsets": {
+						"from": 7260,
+						"to": 7360
+					},
+					"id": 11,
+					"p": 0.983616,
+					"t_dtw": -1
+				},
+				{
+					"text": " Chrome",
+					"timestamps": {
+						"from": "00:00:07,360",
+						"to": "00:00:07,640"
+					},
+					"offsets": {
+						"from": 7360,
+						"to": 7640
+					},
+					"id": 13282,
+					"p": 0.350643,
+					"t_dtw": -1
+				},
+				{
+					"text": " extension",
+					"timestamps": {
+						"from": "00:00:07,650",
+						"to": "00:00:08,070"
+					},
+					"offsets": {
+						"from": 7650,
+						"to": 8070
+					},
+					"id": 7552,
+					"p": 0.873818,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:08,130",
+						"to": "00:00:08,200"
+					},
+					"offsets": {
+						"from": 8130,
+						"to": 8200
+					},
+					"id": 11,
+					"p": 0.769297,
+					"t_dtw": -1
+				},
+				{
+					"text": " and",
+					"timestamps": {
+						"from": "00:00:08,200",
+						"to": "00:00:08,520"
+					},
+					"offsets": {
+						"from": 8200,
+						"to": 8520
+					},
+					"id": 290,
+					"p": 0.886341,
+					"t_dtw": -1
+				},
+				{
+					"text": " M",
+					"timestamps": {
+						"from": "00:00:08,520",
+						"to": "00:00:08,610"
+					},
+					"offsets": {
+						"from": 8520,
+						"to": 8610
+					},
+					"id": 337,
+					"p": 0.753331,
+					"t_dtw": -1
+				},
+				{
+					"text": "CP",
+					"timestamps": {
+						"from": "00:00:08,610",
+						"to": "00:00:08,810"
+					},
+					"offsets": {
+						"from": 8610,
+						"to": 8810
+					},
+					"id": 8697,
+					"p": 0.990625,
+					"t_dtw": -1
+				},
+				{
+					"text": " server",
+					"timestamps": {
+						"from": "00:00:08,810",
+						"to": "00:00:09,500"
+					},
+					"offsets": {
+						"from": 8810,
+						"to": 9500
+					},
+					"id": 4382,
+					"p": 0.946291,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:09,500",
+						"to": "00:00:09,500"
+					},
+					"offsets": {
+						"from": 9500,
+						"to": 9500
+					},
+					"id": 11,
+					"p": 0.782449,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_475]",
+					"timestamps": {
+						"from": "00:00:09,500",
+						"to": "00:00:09,500"
+					},
+					"offsets": {
+						"from": 9500,
+						"to": 9500
+					},
+					"id": 50838,
+					"p": 0.19772,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,500",
+				"to": "00:00:12,000"
+			},
+			"offsets": {
+				"from": 9500,
+				"to": 12000
+			},
+			"text": " then integrated every surface into one product.",
+			"tokens": [
+				{
+					"text": " then",
+					"timestamps": {
+						"from": "00:00:09,630",
+						"to": "00:00:09,730"
+					},
+					"offsets": {
+						"from": 9630,
+						"to": 9730
+					},
+					"id": 788,
+					"p": 0.979193,
+					"t_dtw": -1
+				},
+				{
+					"text": " integrated",
+					"timestamps": {
+						"from": "00:00:09,730",
+						"to": "00:00:10,280"
+					},
+					"offsets": {
+						"from": 9730,
+						"to": 10280
+					},
+					"id": 11521,
+					"p": 0.997025,
+					"t_dtw": -1
+				},
+				{
+					"text": " every",
+					"timestamps": {
+						"from": "00:00:10,370",
+						"to": "00:00:10,600"
+					},
+					"offsets": {
+						"from": 10370,
+						"to": 10600
+					},
+					"id": 790,
+					"p": 0.997375,
+					"t_dtw": -1
+				},
+				{
+					"text": " surface",
+					"timestamps": {
+						"from": "00:00:10,600",
+						"to": "00:00:11,000"
+					},
+					"offsets": {
+						"from": 10600,
+						"to": 11000
+					},
+					"id": 4417,
+					"p": 0.825829,
+					"t_dtw": -1
+				},
+				{
+					"text": " into",
+					"timestamps": {
+						"from": "00:00:11,000",
+						"to": "00:00:11,190"
+					},
+					"offsets": {
+						"from": 11000,
+						"to": 11190
+					},
+					"id": 656,
+					"p": 0.997185,
+					"t_dtw": -1
+				},
+				{
+					"text": " one",
+					"timestamps": {
+						"from": "00:00:11,240",
+						"to": "00:00:11,390"
+					},
+					"offsets": {
+						"from": 11240,
+						"to": 11390
+					},
+					"id": 530,
+					"p": 0.973246,
+					"t_dtw": -1
+				},
+				{
+					"text": " product",
+					"timestamps": {
+						"from": "00:00:11,410",
+						"to": "00:00:11,800"
+					},
+					"offsets": {
+						"from": 11410,
+						"to": 11800
+					},
+					"id": 1720,
+					"p": 0.999314,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:11,800",
+						"to": "00:00:12,000"
+					},
+					"offsets": {
+						"from": 11800,
+						"to": 12000
+					},
+					"id": 13,
+					"p": 0.96376,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_600]",
+					"timestamps": {
+						"from": "00:00:12,000",
+						"to": "00:00:12,000"
+					},
+					"offsets": {
+						"from": 12000,
+						"to": 12000
+					},
+					"id": 50963,
+					"p": 0.302213,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

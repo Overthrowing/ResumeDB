@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,11 +12,16 @@ const MODEL =
   join(homedir(), ".cache/hyperframes/whisper/models/ggml-small.en.bin");
 const VOICE_DIR = join(PROJECT, "assets/voice");
 const OUTPUT_DIR = join(PROJECT, "transcripts/voice");
+const SCRIPT = join(PROJECT, "SCRIPT.md");
 
 if (!existsSync(MODEL)) throw new Error(`Whisper model not found: ${MODEL}`);
 mkdirSync(OUTPUT_DIR, { recursive: true });
 
-for (let frame = 1; frame <= 11; frame += 1) {
+const frames = [...readFileSync(SCRIPT, "utf8").matchAll(/^## .*\(Frame (\d+)\)/gim)]
+  .map((match) => Number(match[1]));
+if (!frames.length) throw new Error("No narration frames found in SCRIPT.md");
+
+for (const frame of frames) {
   const filename = String(frame).padStart(2, "0");
   const input = join(VOICE_DIR, `${filename}.mp3`);
   const output = join(OUTPUT_DIR, filename);

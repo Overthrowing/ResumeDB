@@ -1,0 +1,361 @@
+<template>
+  <style>
+    @font-face { font-family: "EB Garamond"; src: url("assets/fonts/eb-garamond-400.woff2") format("woff2"); font-weight: 400; }
+    @font-face { font-family: "EB Garamond"; src: url("assets/fonts/eb-garamond-600.woff2") format("woff2"); font-weight: 600; }
+    @font-face { font-family: "Inter"; src: url("assets/fonts/inter-400.woff2") format("woff2"); font-weight: 400; }
+    @font-face { font-family: "Inter"; src: url("assets/fonts/inter-600.woff2") format("woff2"); font-weight: 600; }
+    @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2"); font-weight: 600; }
+
+    #f12-codex-inside-product-root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      color: #201f1d;
+      font-family: "Inter", sans-serif;
+    }
+    .f12-ground {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 47% 44%, rgba(109, 40, 217, 0.075), transparent 29%),
+        #f3f2f2;
+    }
+    .f12-scene { position: absolute; inset: 0; overflow: hidden; }
+    .f12-header {
+      position: absolute;
+      z-index: 8;
+      top: 48px;
+      right: 76px;
+      left: 76px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    .f12-kicker,
+    .f12-badge,
+    .f12-window-label,
+    .f12-runtime-label,
+    .f12-tool,
+    .f12-status,
+    .f12-mini-label {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .f12-kicker {
+      margin: 0 0 8px;
+      color: #6d28d9;
+      font-size: 16px;
+      letter-spacing: 0.16em;
+    }
+    .f12-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 72px;
+      font-weight: 600;
+      line-height: 0.92;
+      letter-spacing: -0.028em;
+    }
+    .f12-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 8px;
+      padding: 11px 15px;
+      border: 1px solid rgba(109, 40, 217, 0.28);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.86);
+      color: #5a25ae;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+    }
+    .f12-badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #6d28d9; box-shadow: 0 0 0 4px rgba(109,40,217,0.1); }
+    .f12-stage {
+      position: absolute;
+      top: 170px;
+      right: 76px;
+      left: 76px;
+      height: 696px;
+      overflow: hidden;
+      border: 1px solid rgba(32,31,29,0.16);
+      border-radius: 14px;
+      background: #eee5d9;
+      box-shadow: 0 18px 44px rgba(32,31,29,0.08);
+    }
+    .f12-grid {
+      position: absolute;
+      inset: 22px 22px 70px;
+      display: grid;
+      grid-template-columns: 530px 356px 1fr;
+      gap: 24px;
+    }
+    .f12-panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(32,31,29,0.16);
+      border-radius: 11px;
+      background: rgba(255,255,255,0.96);
+      box-shadow: 0 8px 22px rgba(32,31,29,0.055);
+    }
+    .f12-terminal { background: #24232c; color: #f7f1e8; }
+    .f12-terminal-top,
+    .f12-browser-top {
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 17px;
+      border-bottom: 1px solid rgba(255,255,255,0.11);
+      background: rgba(255,255,255,0.035);
+    }
+    .f12-browser-top { border-bottom-color: rgba(32,31,29,0.12); background: #f7f3ed; }
+    .f12-dots { display: flex; gap: 6px; }
+    .f12-dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+    .f12-browser-top .f12-dots i { background: rgba(32,31,29,0.2); }
+    .f12-window-label { font-size: 10px; letter-spacing: 0.12em; color: #c8bfb6; }
+    .f12-browser-top .f12-window-label { color: #6a645e; }
+    .f12-live { display: inline-flex; align-items: center; gap: 7px; color: #cfb8ff; font: 600 10px/1 "JetBrains Mono", monospace; letter-spacing: 0.1em; }
+    .f12-live i { width: 6px; height: 6px; border-radius: 50%; background: #a879ff; box-shadow: 0 0 0 3px rgba(168,121,255,0.13); }
+    .f12-terminal-capture { position: absolute; top: 46px; right: 0; left: 0; height: 122px; overflow: hidden; opacity: 0.22; }
+    .f12-terminal-capture img { width: 100%; height: 100%; object-fit: cover; object-position: center 27%; filter: grayscale(1) contrast(1.08); }
+    .f12-terminal-capture::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent, #24232c 94%); }
+    .f12-prompt {
+      position: absolute;
+      top: 132px;
+      right: 18px;
+      left: 18px;
+      padding: 14px 15px;
+      border: 1px solid rgba(168,121,255,0.25);
+      border-radius: 8px;
+      background: rgba(109,40,217,0.12);
+      font: 600 13px/1.4 "JetBrains Mono", monospace;
+      color: #fff;
+    }
+    .f12-prompt-prefix { color: #ad7cff; margin-right: 8px; }
+    .f12-prompt-text { display: inline-block; overflow: hidden; vertical-align: bottom; white-space: nowrap; }
+    .f12-log { position: absolute; top: 222px; right: 18px; left: 18px; display: grid; gap: 10px; }
+    .f12-log-row {
+      display: grid;
+      grid-template-columns: 82px 1fr 18px;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 7px;
+      background: rgba(255,255,255,0.035);
+      opacity: 0;
+    }
+    .f12-log-kind { color: #b999f6; font: 600 9px/1 "JetBrains Mono", monospace; letter-spacing: 0.09em; text-transform: uppercase; }
+    .f12-log-copy { color: #eee8df; font-size: 13px; line-height: 1.25; }
+    .f12-log-check { color: #79c6af; font-size: 15px; }
+    .f12-runtime {
+      align-self: center;
+      height: 364px;
+      padding: 24px;
+      overflow: visible;
+      border-color: rgba(109,40,217,0.28);
+      background: #f9f7f3;
+      box-shadow: 0 18px 50px rgba(109,40,217,0.13);
+    }
+    .f12-runtime-mark {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 24px;
+      place-items: center;
+      border-radius: 14px;
+      background: #6d28d9;
+      color: white;
+      font: 600 24px/1 "EB Garamond", serif;
+      box-shadow: 0 9px 20px rgba(109,40,217,0.23);
+    }
+    .f12-runtime-label { color: #6d28d9; font-size: 10px; letter-spacing: 0.12em; }
+    .f12-runtime-title { margin: 9px 0 8px; font: 600 44px/0.92 "EB Garamond", serif; letter-spacing: -0.025em; }
+    .f12-runtime-copy { margin: 0; color: #68615b; font-size: 13px; line-height: 1.45; }
+    .f12-runtime-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 24px; }
+    .f12-runtime-stat { padding: 12px 4px; border: 1px solid rgba(32,31,29,0.12); border-radius: 7px; background: white; text-align: center; color: #5e5852; font: 600 9px/1.3 "JetBrains Mono", monospace; letter-spacing: 0.06em; }
+    .f12-runtime-stat b { display: block; margin-bottom: 4px; color: #201f1d; font-size: 13px; }
+    .f12-runtime-pulse { position: absolute; right: -8px; bottom: -8px; width: 18px; height: 18px; border: 4px solid #eee5d9; border-radius: 50%; background: #6d28d9; opacity: 0; }
+    .f12-right { position: relative; display: grid; grid-template-rows: 318px 1fr; gap: 18px; }
+    .f12-browser { position: relative; }
+    .f12-address {
+      position: absolute;
+      top: 59px;
+      right: 18px;
+      left: 18px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 13px;
+      border: 1px solid rgba(32,31,29,0.13);
+      border-radius: 8px;
+      background: white;
+      color: #58524c;
+      font: 600 11px/1 "JetBrains Mono", monospace;
+    }
+    .f12-address span { display: inline-block; overflow: hidden; white-space: nowrap; }
+    .f12-results { position: absolute; top: 111px; right: 18px; left: 18px; display: grid; gap: 9px; }
+    .f12-result { position: relative; padding: 15px 16px; border: 1px solid rgba(32,31,29,0.12); border-radius: 8px; background: #fff; opacity: 0; }
+    .f12-result.active { border-color: rgba(109,40,217,0.36); background: #faf7ff; }
+    .f12-result-company { color: #6a645e; font-size: 11px; }
+    .f12-result-title { margin-top: 4px; font: 600 19px/1.05 "EB Garamond", serif; }
+    .f12-result-fit { position: absolute; top: 15px; right: 14px; color: #5a25ae; font: 600 10px/1 "JetBrains Mono", monospace; }
+    .f12-scan { position: absolute; z-index: 5; right: 10px; left: 10px; height: 2px; background: linear-gradient(90deg, transparent, #7c3aed, #c5a2ff, #7c3aed, transparent); box-shadow: 0 0 17px rgba(124,58,237,0.7); opacity: 0; }
+    .f12-mcp { padding: 20px 20px 18px; }
+    .f12-mcp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .f12-mcp-title { margin: 0; font: 600 29px/1 "EB Garamond", serif; }
+    .f12-mini-label { color: #6a645e; font-size: 9px; letter-spacing: 0.1em; }
+    .f12-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .f12-tool { display: flex; align-items: center; min-height: 44px; padding: 0 11px; border: 1px solid rgba(32,31,29,0.12); border-radius: 7px; background: #f7f3ed; color: #625c56; font-size: 9px; line-height: 1.25; letter-spacing: 0.025em; opacity: 0; }
+    .f12-tool::before { content: ""; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: #b68235; }
+    .f12-tool.done { color: #4c257c; border-color: rgba(109,40,217,0.25); background: #f7f1ff; }
+    .f12-tool.done::before { background: #6d28d9; }
+    .f12-application {
+      position: absolute;
+      z-index: 12;
+      right: 24px;
+      bottom: 83px;
+      width: 602px;
+      height: 118px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 20px;
+      padding: 21px 22px;
+      border: 1px solid rgba(109,40,217,0.32);
+      border-radius: 11px;
+      background: rgba(255,255,255,0.985);
+      box-shadow: 0 18px 44px rgba(32,31,29,0.14);
+      opacity: 0;
+    }
+    .f12-app-company { color: #6a645e; font-size: 12px; }
+    .f12-app-role { margin-top: 5px; font: 600 25px/1 "EB Garamond", serif; }
+    .f12-app-meta { display: flex; gap: 8px; margin-top: 10px; }
+    .f12-app-meta span { padding: 6px 8px; border-radius: 999px; background: #f4e9d9; color: #6c5b40; font: 600 9px/1 "JetBrains Mono", monospace; text-transform: uppercase; }
+    .f12-fit { display: grid; width: 76px; height: 76px; place-items: center; border: 2px solid #6d28d9; border-radius: 50%; color: #5a25ae; font: 600 20px/1 "EB Garamond", serif; }
+    .f12-status {
+      position: absolute;
+      right: 22px;
+      bottom: 18px;
+      left: 22px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: #201f1d;
+      color: #f8f3ea;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      opacity: 0;
+    }
+    .f12-status b { color: #b894f7; font-weight: 600; }
+    .f12-routes { position: absolute; z-index: 2; inset: 22px 22px 70px; width: calc(100% - 44px); height: calc(100% - 92px); pointer-events: none; }
+    .f12-route-base { fill: none; stroke: rgba(32,31,29,0.16); stroke-width: 2; }
+    .f12-route-live { fill: none; stroke: #7c3aed; stroke-width: 3; filter: drop-shadow(0 0 5px rgba(124,58,237,0.3)); }
+  </style>
+
+  <div data-hf-id="hf-f12-root" id="f12-codex-inside-product-root" data-composition-id="12-codex-inside-product" data-start="0" data-duration="15" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-f12-ground" id="f12-ground" class="clip f12-ground" data-start="0" data-duration="15" data-track-index="0"></div>
+    <main data-hf-id="hf-f12-scene" id="f12-scene" class="clip f12-scene" data-start="0" data-duration="15" data-track-index="1">
+      <header data-hf-id="hf-f12-header" class="f12-header">
+        <div data-hf-id="hf-f12-heading"><p data-hf-id="hf-f12-kicker" class="f12-kicker">Codex in the product</p><h1 data-hf-id="hf-f12-title" class="f12-title">The agent layer is real</h1></div>
+        <span data-hf-id="hf-f12-badge" class="f12-badge"><i data-hf-id="hf-f12-badge-dot" class="f12-badge-dot"></i>Codex SDK &middot; MCP &middot; Browser</span>
+      </header>
+
+      <section data-hf-id="hf-f12-stage" id="f12-stage" class="f12-stage">
+        <svg data-hf-id="hf-f12-routes" class="f12-routes" viewBox="0 0 1724 604" preserveAspectRatio="none" aria-hidden="true">
+          <path data-hf-id="hf-f12-route-a-base" class="f12-route-base" d="M530 302 C585 302 615 302 666 302"></path>
+          <path data-hf-id="hf-f12-route-a" id="f12-route-a" class="f12-route-live" d="M530 302 C585 302 615 302 666 302"></path>
+          <path data-hf-id="hf-f12-route-b-base" class="f12-route-base" d="M1022 302 C1080 302 1090 158 1118 158"></path>
+          <path data-hf-id="hf-f12-route-b" id="f12-route-b" class="f12-route-live" d="M1022 302 C1080 302 1090 158 1118 158"></path>
+          <path data-hf-id="hf-f12-route-c-base" class="f12-route-base" d="M1022 302 C1080 302 1090 468 1118 468"></path>
+          <path data-hf-id="hf-f12-route-c" id="f12-route-c" class="f12-route-live" d="M1022 302 C1080 302 1090 468 1118 468"></path>
+        </svg>
+
+        <div data-hf-id="hf-f12-grid" class="f12-grid">
+          <section data-hf-id="hf-f12-terminal" id="f12-terminal" class="f12-panel f12-terminal">
+            <div data-hf-id="hf-f12-terminal-top" class="f12-terminal-top"><div data-hf-id="hf-f12-terminal-dots" class="f12-dots"><i data-hf-id="hf-f12-dot-a"></i><i data-hf-id="hf-f12-dot-b"></i><i data-hf-id="hf-f12-dot-c"></i></div><span data-hf-id="hf-f12-terminal-label" class="f12-window-label">Career Agent / live run</span><span data-hf-id="hf-f12-live" class="f12-live"><i data-hf-id="hf-f12-live-dot"></i>streaming</span></div>
+            <div data-hf-id="hf-f12-terminal-capture" class="f12-terminal-capture"><img data-hf-id="hf-f12-career-image" src="assets/04-career-agent.png" alt="Real ResumeDB Career Agent view"></div>
+            <div data-hf-id="hf-f12-prompt" class="f12-prompt"><span data-hf-id="hf-f12-prompt-prefix" class="f12-prompt-prefix">›</span><span data-hf-id="hf-f12-prompt-text" id="f12-prompt-text" class="f12-prompt-text">Find robotics roles where my evidence is strongest</span></div>
+            <div data-hf-id="hf-f12-log" class="f12-log">
+              <div data-hf-id="hf-f12-log-1" class="f12-log-row"><span data-hf-id="hf-f12-kind-1" class="f12-log-kind">context</span><span data-hf-id="hf-f12-copy-1" class="f12-log-copy">Reading Sam's approved career evidence</span><span data-hf-id="hf-f12-check-1" class="f12-log-check">✓</span></div>
+              <div data-hf-id="hf-f12-log-2" class="f12-log-row"><span data-hf-id="hf-f12-kind-2" class="f12-log-kind">browser</span><span data-hf-id="hf-f12-copy-2" class="f12-log-copy">Searching official internship pages</span><span data-hf-id="hf-f12-check-2" class="f12-log-check">✓</span></div>
+              <div data-hf-id="hf-f12-log-3" class="f12-log-row"><span data-hf-id="hf-f12-kind-3" class="f12-log-kind">inspect</span><span data-hf-id="hf-f12-copy-3" class="f12-log-copy">Matching requirements to verified work</span><span data-hf-id="hf-f12-check-3" class="f12-log-check">✓</span></div>
+              <div data-hf-id="hf-f12-log-4" class="f12-log-row"><span data-hf-id="hf-f12-kind-4" class="f12-log-kind">artifact</span><span data-hf-id="hf-f12-copy-4" class="f12-log-copy">Creating draft and tailored resume</span><span data-hf-id="hf-f12-check-4" class="f12-log-check">✓</span></div>
+            </div>
+          </section>
+
+          <article data-hf-id="hf-f12-runtime" id="f12-runtime" class="f12-panel f12-runtime">
+            <div data-hf-id="hf-f12-runtime-mark" class="f12-runtime-mark">C</div>
+            <span data-hf-id="hf-f12-runtime-label" class="f12-runtime-label">OpenAI agent runtime</span>
+            <h2 data-hf-id="hf-f12-runtime-title" class="f12-runtime-title">Codex SDK</h2>
+            <p data-hf-id="hf-f12-runtime-copy" class="f12-runtime-copy">Persistent threads, streamed reasoning, and schema-validated agent work.</p>
+            <div data-hf-id="hf-f12-runtime-stats" class="f12-runtime-stats"><span data-hf-id="hf-f12-stat-thread" class="f12-runtime-stat"><b data-hf-id="hf-f12-stat-thread-b">01</b>thread</span><span data-hf-id="hf-f12-stat-stream" class="f12-runtime-stat"><b data-hf-id="hf-f12-stat-stream-b">live</b>stream</span><span data-hf-id="hf-f12-stat-schema" class="f12-runtime-stat"><b data-hf-id="hf-f12-stat-schema-b">strict</b>schema</span></div>
+            <i data-hf-id="hf-f12-runtime-pulse" id="f12-runtime-pulse" class="f12-runtime-pulse"></i>
+          </article>
+
+          <div data-hf-id="hf-f12-right" class="f12-right">
+            <section data-hf-id="hf-f12-browser" id="f12-browser" class="f12-panel f12-browser">
+              <div data-hf-id="hf-f12-browser-top" class="f12-browser-top"><div data-hf-id="hf-f12-browser-dots" class="f12-dots"><i data-hf-id="hf-f12-bdot-a"></i><i data-hf-id="hf-f12-bdot-b"></i><i data-hf-id="hf-f12-bdot-c"></i></div><span data-hf-id="hf-f12-browser-label" class="f12-window-label">Browser research / official pages</span><span data-hf-id="hf-f12-browser-safe" class="f12-mini-label">read only</span></div>
+              <div data-hf-id="hf-f12-address" class="f12-address"><span data-hf-id="hf-f12-address-text" id="f12-address-text">robotics software internship official careers</span></div>
+              <div data-hf-id="hf-f12-results" class="f12-results">
+                <article data-hf-id="hf-f12-result-1" class="f12-result active"><span data-hf-id="hf-f12-result-company-1" class="f12-result-company">Northstar Robotics</span><h3 data-hf-id="hf-f12-result-title-1" class="f12-result-title">Autonomy Software Intern</h3><span data-hf-id="hf-f12-result-fit-1" class="f12-result-fit">94% fit</span></article>
+                <article data-hf-id="hf-f12-result-2" class="f12-result"><span data-hf-id="hf-f12-result-company-2" class="f12-result-company">Atlas Mobility</span><h3 data-hf-id="hf-f12-result-title-2" class="f12-result-title">Robotics Platform Intern</h3><span data-hf-id="hf-f12-result-fit-2" class="f12-result-fit">89% fit</span></article>
+              </div>
+              <i data-hf-id="hf-f12-scan" id="f12-scan" class="f12-scan"></i>
+            </section>
+            <section data-hf-id="hf-f12-mcp" id="f12-mcp" class="f12-panel f12-mcp">
+              <div data-hf-id="hf-f12-mcp-head" class="f12-mcp-head"><h2 data-hf-id="hf-f12-mcp-title" class="f12-mcp-title">ResumeDB MCP</h2><span data-hf-id="hf-f12-mcp-label" class="f12-mini-label">bounded career tools</span></div>
+              <div data-hf-id="hf-f12-tools" class="f12-tools"><span data-hf-id="hf-f12-tool-1" class="f12-tool">get_candidate_context</span><span data-hf-id="hf-f12-tool-2" class="f12-tool">save_job_lead</span><span data-hf-id="hf-f12-tool-3" class="f12-tool">create_application_draft</span><span data-hf-id="hf-f12-tool-4" class="f12-tool">render_application_resume</span></div>
+            </section>
+          </div>
+        </div>
+
+        <article data-hf-id="hf-f12-application" id="f12-application" class="f12-application">
+          <div data-hf-id="hf-f12-app-copy"><span data-hf-id="hf-f12-app-company" class="f12-app-company">Northstar Robotics</span><h2 data-hf-id="hf-f12-app-role" class="f12-app-role">Autonomy Software Intern</h2><div data-hf-id="hf-f12-app-meta" class="f12-app-meta"><span data-hf-id="hf-f12-app-status">Draft created</span><span data-hf-id="hf-f12-app-resume">Resume rendered</span></div></div>
+          <span data-hf-id="hf-f12-fit" class="f12-fit">94%</span>
+        </article>
+        <div data-hf-id="hf-f12-status" id="f12-status" class="f12-status">Searched <b data-hf-id="hf-f12-status-dot-1">·</b> Read <b data-hf-id="hf-f12-status-dot-2">·</b> Verified <b data-hf-id="hf-f12-status-dot-3">·</b> Saved</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      ["#f12-route-a", "#f12-route-b", "#f12-route-c"].forEach(function (selector) {
+        var path = document.querySelector(selector);
+        var length = path.getTotalLength();
+        path.style.strokeDasharray = String(length);
+        path.style.strokeDashoffset = String(length);
+      });
+
+      tl.fromTo("#f12-scene .f12-header", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.54, ease: "power3.out" }, 0.06);
+      tl.fromTo("#f12-stage", { y: 28, scale: 0.985, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.62, ease: "power3.out" }, 0.2);
+      tl.fromTo("#f12-prompt-text", { width: 0 }, { width: "100%", duration: 1.15, ease: "steps(42)" }, 0.8);
+      tl.fromTo("#f12-runtime", { y: 24, scale: 0.94, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.58, ease: "power3.out", immediateRender: false }, 1.35);
+      tl.to("#f12-route-a", { strokeDashoffset: 0, duration: 0.68, ease: "power2.out" }, 1.65);
+      tl.fromTo("#f12-runtime-pulse", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.34, ease: "back.out(1.8)", immediateRender: false }, 2.05);
+      tl.fromTo("#f12-scene .f12-log-row", { x: -16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.38, stagger: 1.62, ease: "power3.out", immediateRender: false }, 2.05);
+      tl.fromTo("#f12-address-text", { width: 0 }, { width: "100%", duration: 0.84, ease: "steps(38)", immediateRender: false }, 2.35);
+      tl.to("#f12-route-b", { strokeDashoffset: 0, duration: 0.7, ease: "power2.out" }, 2.55);
+      tl.fromTo("#f12-scene .f12-result", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, stagger: 0.34, ease: "power3.out", immediateRender: false }, 3.18);
+      tl.fromTo("#f12-scan", { y: 92, opacity: 0 }, { y: 268, opacity: 1, duration: 0.92, ease: "power1.inOut", immediateRender: false }, 4.35);
+      tl.to("#f12-scan", { opacity: 0, duration: 0.24, ease: "power1.out" }, 5.27);
+      tl.to("#f12-route-c", { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" }, 5.42);
+      tl.fromTo("#f12-scene .f12-tool", { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.34, stagger: 0.62, ease: "power3.out", immediateRender: false }, 5.75);
+      tl.to("#f12-scene .f12-tool", { className: "+=done", duration: 0.2, stagger: 0.62 }, 6.18);
+      tl.fromTo("#f12-application", { y: 28, scale: 0.96, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.62, ease: "power3.out", immediateRender: false }, 9.18);
+      tl.fromTo("#f12-status", { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.48, ease: "power3.out", immediateRender: false }, 10.72);
+      tl.to("#f12-runtime", { borderColor: "rgba(109,40,217,0.58)", boxShadow: "0 18px 56px rgba(109,40,217,0.2)", duration: 0.55, ease: "power1.inOut" }, 10.78);
+      tl.to({}, { duration: 15 }, 0);
+      window.__timelines["12-codex-inside-product"] = tl;
+    })();
+  </script>
+</template>

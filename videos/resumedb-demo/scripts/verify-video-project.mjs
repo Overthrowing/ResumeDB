@@ -8,36 +8,36 @@ const project = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const index = readFileSync(join(project, "index.html"), "utf8");
 const audioMeta = JSON.parse(readFileSync(join(project, "audio_meta.json"), "utf8"));
 
-const frames = [
-  ["01-job-hunt-hook", 8.81],
-  ["02-career-memory", 8.26],
-  ["03-two-role-discovery", 9.26],
-  ["04-agent-timeline", 8.76],
-  ["05-application-lifecycle", 10],
-  ["06-evidence-tailoring", 7.87],
-  ["07-two-role-resumes", 11.08],
-  ["08-extension-autofill", 8.91],
-  ["09-application-funnel", 9.72],
-  ["10-own-agent-mcp", 9],
-  ["11-future-roadmap", 10.965],
-];
+function parseFrames(markdown) {
+  return [...markdown.matchAll(/^## Frame (\d+) - .*\n([\s\S]*?)(?=^## Frame |(?![\s\S]))/gm)].map((match) => {
+    const source = match[2].match(/^- src: `([^`]+)`/m)?.[1];
+    const duration = Number(match[2].match(/^- duration:\s*([0-9.]+)s/m)?.[1]);
+    if (!source || !duration) throw new Error(`Frame ${match[1]} is missing src or duration metadata`);
+    return {
+      number: Number(match[1]),
+      id: source.split("/").at(-1).replace(/\.html$/, ""),
+      source,
+      duration,
+    };
+  });
+}
+
+const frames = parseFrames(readFileSync(join(project, "STORYBOARD.md"), "utf8"));
 
 function fail(message) {
   throw new Error(message);
 }
 
-const expectedDuration = Number(frames.reduce((sum, [, duration]) => sum + duration, 0).toFixed(3));
+const expectedDuration = Number(frames.reduce((sum, frame) => sum + frame.duration, 0).toFixed(3));
 const audioDuration = Number(audioMeta.voices.reduce((sum, voice) => sum + voice.duration_s, 0).toFixed(3));
-if (expectedDuration !== 102.635 || audioDuration !== expectedDuration) {
+if (!frames.length || expectedDuration >= 180 || audioDuration !== expectedDuration) {
   fail(`Timeline mismatch: expected ${expectedDuration}, audio ${audioDuration}`);
 }
 
 if (!index.includes(`data-duration="${expectedDuration}"`)) fail("Root duration is not locked to narration");
 
 let start = 0;
-for (const [frameId, duration] of frames) {
-  const number = Number(frameId.slice(0, 2));
-  const source = `compositions/frames/${frameId}.html`;
+for (const { number, id: frameId, source, duration } of frames) {
   const framePath = join(project, source);
   if (!existsSync(framePath)) fail(`Missing frame composition: ${source}`);
   const html = readFileSync(framePath, "utf8");

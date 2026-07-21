@@ -47,9 +47,8 @@ function probeLoudness(path) {
   return { integrated, truePeak };
 }
 
-function boundedGain({ integrated, truePeak }) {
-  let gain = Math.max(-MAX_GAIN_CHANGE_DB, Math.min(MAX_GAIN_CHANGE_DB, TARGET_LUFS - integrated));
-  if (truePeak + gain > PEAK_CEILING_DBFS) gain = PEAK_CEILING_DBFS - truePeak;
+function boundedGain({ integrated }) {
+  const gain = Math.max(-MAX_GAIN_CHANGE_DB, Math.min(MAX_GAIN_CHANGE_DB, TARGET_LUFS - integrated));
   return Number(gain.toFixed(3));
 }
 
@@ -65,7 +64,7 @@ function levelClip(inputPath, outputPath, duration, gainDb) {
       "-i",
       inputPath,
       "-af",
-      `volume=${gainDb}dB,apad=whole_dur=${duration.toFixed(3)}`,
+      `volume=${gainDb}dB,alimiter=limit=0.891251:attack=5:release=50:level=false,apad=whole_dur=${duration.toFixed(3)}`,
       "-t",
       duration.toFixed(3),
       "-ar",
@@ -137,6 +136,7 @@ try {
     const alreadyLeveled =
       sameLevelingTarget &&
       previous &&
+      Math.abs(before.integrated - TARGET_LUFS) <= 0.8 &&
       Math.abs(before.integrated - Number(previous.after_lufs)) <= 0.08 &&
       Math.abs(before.truePeak - Number(previous.after_true_peak_dbfs)) <= 0.15;
     const gainDb = alreadyLeveled ? 0 : boundedGain(before);

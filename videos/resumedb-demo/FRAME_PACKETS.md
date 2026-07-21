@@ -307,5 +307,88 @@ brand lockup and deployed URL.
 
 ### Acceptance
 
-The roadmap is readable before it recedes. The final brand lockup is clean and
-still for at least one second.
+The roadmap is readable before it recedes. The bridge into the Codex section is
+clean and still for at least one second.
+
+## Frame 12 - Codex runs inside ResumeDB
+
+- File: `compositions/frames/12-codex-inside-product.html`
+- Composition ID: `12-codex-inside-product`
+- Duration: 15.000s
+- Assets: `assets/04-career-agent.png`, `assets/06-application-overview.png`
+- Focal: one observable Codex run that connects browser research to bounded MCP actions.
+
+### Layout
+
+Use a live-run terminal on the left, a compact Codex SDK runtime card in the
+center, and browser plus MCP work surfaces on the right. The browser performs
+research; MCP reads approved context and saves supported work. Do not imply the
+MCP server browses by itself.
+
+### Motion beats
+
+- 0.00-2.20: Establish the runtime and type the job-search request.
+- 2.20-5.40: Search official job pages, open one posting, and perform one finite scan.
+- 5.40-10.80: Stream context, lead, draft, and render tool calls through the SDK.
+- 10.80-15.00: Resolve the draft application and hold "Searched. Read. Verified. Saved."
+
+### Acceptance
+
+Codex SDK, browser research, and MCP are distinct but visibly connected. The
+capability claims match the implemented product and the final application card
+is legible above the caption band.
+
+## Frame 13 - GPT-5.6 became the engineering team
+
+- File: `compositions/frames/13-gpt56-engineering-team.html`
+- Composition ID: `13-gpt56-engineering-team`
+- Duration: 12.000s
+- Assets: `assets/01-dashboard.png`, `assets/13-extension-preflight-live.png`
+- Focal: one GPT-5.6 lead agent coordinating three parallel Codex build lanes.
+
+### Layout
+
+Place the GPT-5.6 lead card above three equal work cards: web app, Chrome
+extension, and MCP server. Each lane contains a recognizable product or code
+surface and a small verification strip. Reconnect them through one integration
+rail near the bottom.
+
+### Motion beats
+
+- 0.00-2.00: Land the lead agent and dispatch three paths.
+- 2.00-7.50: Build the three product surfaces in deterministic parallel phases.
+- 7.50-9.30: Verify each lane and reconverge paths into the integration rail.
+- 9.30-12.00: Resolve "Web app. Extension. MCP. Shipped as one."
+
+### Acceptance
+
+All three lanes are equally legible, the motion feels parallel without becoming
+chaotic, and no unsupported agent or bug count appears.
+
+## Frame 14 - Dogfood, verify, improve
+
+- File: `compositions/frames/14-codex-dogfood-meta.html`
+- Composition ID: `14-codex-dogfood-meta`
+- Duration: 21.000s
+- Assets: `assets/09-ats-empty.png`, `assets/13-extension-preflight-live.png`, `assets/favicon.svg`
+- Focal: real browser and computer-use QA transforming into the editing timeline for this video.
+
+### Layout
+
+Begin with a large QA workstation and a narrow step rail. Compress it into a
+three-track editor labeled Visuals, Voice, and Captions. Finish on the two-line
+Codex and GPT-5.6 statement, a finite four-step improvement loop, the ResumeDB
+mark, and the deployed URL.
+
+### Motion beats
+
+- 0.00-7.80: Run extension, MCP, edge-case, and end-to-end verification steps.
+- 7.80-13.20: Transform into the editor and verify visuals, narration, and captions.
+- 13.20-18.80: Resolve the Codex and GPT-5.6 statement and complete one improvement loop.
+- 18.80-21.00: Hold the final ResumeDB lockup completely still.
+
+### Acceptance
+
+Computer use, browser use, MCP calls, and the video-editing meta reference are
+unmistakable. The final hold is clean, sponsor names are readable, and the full
+video remains under three minutes.

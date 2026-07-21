@@ -21,6 +21,9 @@ const SPEED_BY_FRAME = new Map([
   [9, 1.02],
   [10, 1.1],
   [11, 1],
+  [12, 1.06],
+  [13, 1.06],
+  [14, 1.04],
 ]);
 
 function valueFor(flag, fallback) {
@@ -42,6 +45,22 @@ function parseNarrationLines(markdown) {
   }
   if (!lines.length) throw new Error("No indented narration lines found in SCRIPT.md");
   return lines;
+}
+
+function parseStoryboardDurations(markdown) {
+  const durations = new Map();
+  let frame = null;
+  for (const line of markdown.split(/\r?\n/)) {
+    const heading = line.match(/^## Frame (\d+)\b/i);
+    if (heading) {
+      frame = Number(heading[1]);
+      continue;
+    }
+    const duration = frame && line.match(/^- duration:\s*([0-9.]+)s\s*$/i);
+    if (duration) durations.set(frame, Number(duration[1]));
+  }
+  if (!durations.size) throw new Error("No frame durations found in STORYBOARD.md");
+  return durations;
 }
 
 function parseFrameSelection(value) {
@@ -175,14 +194,18 @@ const apiKey = process.env.FISH_API_KEY;
 if (!apiKey) throw new Error("FISH_API_KEY is required in the environment");
 
 const scriptPath = resolve(valueFor("--script", "SCRIPT.md"));
+const storyboardPath = resolve(valueFor("--storyboard", "STORYBOARD.md"));
 const outputPath = resolve(valueFor("--out", "assets/audio/narration.mp3"));
 const voiceDir = resolve(valueFor("--voice-dir", "assets/voice"));
 const targetMetaPath = resolve(valueFor("--target-meta", "audio_meta.json"));
 const referenceId = valueFor("--voice", DEFAULT_VOICE);
 const selectedFrames = parseFrameSelection(valueFor("--frames", ""));
 const narrationLines = parseNarrationLines(await readFile(scriptPath, "utf8"));
-const targetMeta = JSON.parse(await readFile(targetMetaPath, "utf8"));
-const targetByFrame = new Map(targetMeta.voices.map((voice) => [voice.frame, voice.duration_s]));
+const targetMeta = JSON.parse(await readFile(targetMetaPath, "utf8").catch(() => '{"voices":[]}'));
+const targetByFrame = new Map((targetMeta.voices ?? []).map((voice) => [voice.frame, voice.duration_s]));
+for (const [frame, duration] of parseStoryboardDurations(await readFile(storyboardPath, "utf8"))) {
+  targetByFrame.set(frame, duration);
+}
 const previousMetadata = selectedFrames
   ? JSON.parse(await readFile(`${outputPath}.json`, "utf8").catch(() => "{}"))
   : {};

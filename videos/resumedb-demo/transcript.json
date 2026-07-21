@@ -1,8 +1,8 @@
 {
   "provider": "fish-audio",
   "model": "s2.1-pro-free",
-  "duration_s": 102.635,
-  "source_duration_s": 102.635,
+  "duration_s": 150.635,
+  "source_duration_s": 150.635,
   "words": [
     {
       "text": "200",
@@ -1046,113 +1046,853 @@
     },
     {
       "text": "Our",
-      "start": 91.85,
-      "end": 91.86
+      "start": 91.82,
+      "end": 91.83
     },
     {
       "text": "other",
-      "start": 91.94,
-      "end": 92.17
+      "start": 91.83,
+      "end": 92.11
     },
     {
       "text": "features",
-      "start": 92.17,
-      "end": 92.64
+      "start": 92.11,
+      "end": 92.55
     },
     {
       "text": "include",
-      "start": 92.7,
-      "end": 93.05
+      "start": 92.55,
+      "end": 92.97
     },
     {
       "text": "email",
-      "start": 93.19,
-      "end": 93.47
+      "start": 93.03,
+      "end": 93.23
     },
     {
       "text": "tracking,",
-      "start": 93.47,
-      "end": 94.04
+      "start": 93.23,
+      "end": 93.74
     },
     {
       "text": "interview",
-      "start": 94.33,
-      "end": 94.71
+      "start": 93.82,
+      "end": 94.25
     },
     {
       "text": "prep,",
-      "start": 94.8,
-      "end": 95.05
+      "start": 94.31,
+      "end": 94.52
     },
     {
       "text": "campus",
-      "start": 95.36,
-      "end": 95.67
+      "start": 94.75,
+      "end": 94.99
     },
     {
       "text": "insights,",
-      "start": 95.67,
-      "end": 96.43
+      "start": 94.99,
+      "end": 95.58
     },
     {
       "text": "four-year",
-      "start": 96.51,
-      "end": 96.77
+      "start": 95.74,
+      "end": 96.1
     },
     {
       "text": "planning,",
-      "start": 96.77,
-      "end": 97.47
+      "start": 96.1,
+      "end": 96.7
     },
     {
       "text": "and",
-      "start": 97.51,
-      "end": 97.65
+      "start": 96.7,
+      "end": 96.86
     },
     {
       "text": "major",
-      "start": 97.65,
-      "end": 97.95
+      "start": 96.95,
+      "end": 97.18
     },
     {
       "text": "specific",
-      "start": 97.95,
-      "end": 98.4
+      "start": 97.18,
+      "end": 97.64
     },
     {
       "text": "portfolios.",
-      "start": 98.54,
-      "end": 99.2
+      "start": 97.66,
+      "end": 98.41
     },
     {
-      "text": "Resume",
-      "start": 99.52,
-      "end": 100.36
+      "text": "And",
+      "start": 98.62,
+      "end": 98.67
     },
     {
-      "text": "DB,",
-      "start": 100.47,
-      "end": 100.93
+      "text": "here",
+      "start": 98.67,
+      "end": 98.94
+    },
+    {
+      "text": "is",
+      "start": 98.94,
+      "end": 98.99
     },
     {
       "text": "the",
-      "start": 100.93,
-      "end": 101.06
+      "start": 99.07,
+      "end": 99.27
     },
     {
-      "text": "internship",
-      "start": 101.11,
-      "end": 101.58
+      "text": "best",
+      "start": 99.27,
+      "end": 99.46
     },
     {
-      "text": "operating",
-      "start": 101.91,
-      "end": 102.06
+      "text": "part,",
+      "start": 99.56,
+      "end": 99.99
     },
     {
-      "text": "system.",
-      "start": 102.06,
-      "end": 102.54
+      "text": "we",
+      "start": 99.99,
+      "end": 100.08
+    },
+    {
+      "text": "built",
+      "start": 100.14,
+      "end": 100.52
+    },
+    {
+      "text": "Resume",
+      "start": 100.52,
+      "end": 100.98
+    },
+    {
+      "text": "DB",
+      "start": 100.98,
+      "end": 101.13
+    },
+    {
+      "text": "with",
+      "start": 101.13,
+      "end": 101.29
+    },
+    {
+      "text": "the",
+      "start": 101.55,
+      "end": 101.67
+    },
+    {
+      "text": "same",
+      "start": 101.67,
+      "end": 101.98
+    },
+    {
+      "text": "agents.",
+      "start": 101.98,
+      "end": 102.47
+    },
+    {
+      "text": "Codex",
+      "start": 102.835,
+      "end": 103.035
+    },
+    {
+      "text": "is",
+      "start": 103.065,
+      "end": 103.235
+    },
+    {
+      "text": "not",
+      "start": 103.235,
+      "end": 103.485
+    },
+    {
+      "text": "just",
+      "start": 103.565,
+      "end": 103.755
+    },
+    {
+      "text": "how",
+      "start": 103.885,
+      "end": 104.105
+    },
+    {
+      "text": "we",
+      "start": 104.105,
+      "end": 104.275
+    },
+    {
+      "text": "built",
+      "start": 104.275,
+      "end": 104.705
+    },
+    {
+      "text": "ResumeDB.",
+      "start": 104.705,
+      "end": 105.635
+    },
+    {
+      "text": "It",
+      "start": 105.635,
+      "end": 105.765
+    },
+    {
+      "text": "runs",
+      "start": 105.765,
+      "end": 106.015
+    },
+    {
+      "text": "inside",
+      "start": 106.035,
+      "end": 106.435
+    },
+    {
+      "text": "it.",
+      "start": 106.435,
+      "end": 106.575
+    },
+    {
+      "text": "The",
+      "start": 106.995,
+      "end": 107.045
+    },
+    {
+      "text": "Codex",
+      "start": 107.045,
+      "end": 107.365
+    },
+    {
+      "text": "SDK",
+      "start": 107.475,
+      "end": 107.715
+    },
+    {
+      "text": "powers",
+      "start": 107.715,
+      "end": 108.235
+    },
+    {
+      "text": "hosted",
+      "start": 108.235,
+      "end": 108.635
+    },
+    {
+      "text": "agents,",
+      "start": 108.635,
+      "end": 109.035
+    },
+    {
+      "text": "while",
+      "start": 109.235,
+      "end": 109.345
+    },
+    {
+      "text": "our",
+      "start": 109.345,
+      "end": 109.435
+    },
+    {
+      "text": "MCP",
+      "start": 109.505,
+      "end": 109.675
+    },
+    {
+      "text": "server",
+      "start": 109.715,
+      "end": 110.075
+    },
+    {
+      "text": "lets",
+      "start": 110.075,
+      "end": 110.315
+    },
+    {
+      "text": "your",
+      "start": 110.315,
+      "end": 110.535
+    },
+    {
+      "text": "own",
+      "start": 110.585,
+      "end": 110.695
+    },
+    {
+      "text": "Codex",
+      "start": 110.765,
+      "end": 111.045
+    },
+    {
+      "text": "bring",
+      "start": 111.045,
+      "end": 111.355
+    },
+    {
+      "text": "browser",
+      "start": 111.355,
+      "end": 111.495
+    },
+    {
+      "text": "research",
+      "start": 111.985,
+      "end": 112.275
+    },
+    {
+      "text": "into",
+      "start": 112.275,
+      "end": 112.515
+    },
+    {
+      "text": "ResumeDB,",
+      "start": 112.515,
+      "end": 113.195
+    },
+    {
+      "text": "read",
+      "start": 113.365,
+      "end": 113.395
+    },
+    {
+      "text": "approved",
+      "start": 113.395,
+      "end": 113.805
+    },
+    {
+      "text": "career",
+      "start": 113.805,
+      "end": 114.035
+    },
+    {
+      "text": "context,",
+      "start": 114.125,
+      "end": 114.575
+    },
+    {
+      "text": "save",
+      "start": 114.575,
+      "end": 114.775
+    },
+    {
+      "text": "qualified",
+      "start": 114.775,
+      "end": 115.215
+    },
+    {
+      "text": "leads,",
+      "start": 115.255,
+      "end": 115.595
+    },
+    {
+      "text": "tailor",
+      "start": 115.595,
+      "end": 115.655
+    },
+    {
+      "text": "drafts,",
+      "start": 116.145,
+      "end": 116.305
+    },
+    {
+      "text": "and",
+      "start": 116.315,
+      "end": 116.465
+    },
+    {
+      "text": "render",
+      "start": 116.465,
+      "end": 116.705
+    },
+    {
+      "text": "resumes.",
+      "start": 116.805,
+      "end": 117.145
+    },
+    {
+      "text": "GPT",
+      "start": 117.715,
+      "end": 117.865
+    },
+    {
+      "text": "5.6",
+      "start": 117.865,
+      "end": 118.565
+    },
+    {
+      "text": "also",
+      "start": 118.565,
+      "end": 118.825
+    },
+    {
+      "text": "became",
+      "start": 118.895,
+      "end": 119.325
+    },
+    {
+      "text": "our",
+      "start": 119.375,
+      "end": 119.595
+    },
+    {
+      "text": "engineering",
+      "start": 119.595,
+      "end": 120.445
+    },
+    {
+      "text": "team.",
+      "start": 120.445,
+      "end": 120.835
+    },
+    {
+      "text": "It",
+      "start": 120.945,
+      "end": 120.945
+    },
+    {
+      "text": "coordinated",
+      "start": 120.995,
+      "end": 121.575
+    },
+    {
+      "text": "parallel",
+      "start": 121.575,
+      "end": 122.025
+    },
+    {
+      "text": "sub-agents",
+      "start": 122.095,
+      "end": 122.635
+    },
+    {
+      "text": "with",
+      "start": 122.635,
+      "end": 122.875
+    },
+    {
+      "text": "the",
+      "start": 122.875,
+      "end": 123.055
+    },
+    {
+      "text": "Codex",
+      "start": 123.055,
+      "end": 123.355
+    },
+    {
+      "text": "app.",
+      "start": 123.355,
+      "end": 123.635
+    },
+    {
+      "text": "Together,",
+      "start": 123.785,
+      "end": 124.075
+    },
+    {
+      "text": "they",
+      "start": 124.125,
+      "end": 124.255
+    },
+    {
+      "text": "built",
+      "start": 124.325,
+      "end": 124.415
+    },
+    {
+      "text": "the",
+      "start": 124.505,
+      "end": 124.575
+    },
+    {
+      "text": "web",
+      "start": 124.645,
+      "end": 124.745
+    },
+    {
+      "text": "app,",
+      "start": 124.745,
+      "end": 124.995
+    },
+    {
+      "text": "Chrome",
+      "start": 124.995,
+      "end": 125.275
+    },
+    {
+      "text": "extension,",
+      "start": 125.285,
+      "end": 125.835
+    },
+    {
+      "text": "and",
+      "start": 125.835,
+      "end": 126.155
+    },
+    {
+      "text": "MCP",
+      "start": 126.155,
+      "end": 126.445
+    },
+    {
+      "text": "server,",
+      "start": 126.445,
+      "end": 127.135
+    },
+    {
+      "text": "then",
+      "start": 127.265,
+      "end": 127.365
+    },
+    {
+      "text": "integrated",
+      "start": 127.365,
+      "end": 127.915
+    },
+    {
+      "text": "every",
+      "start": 128.005,
+      "end": 128.235
+    },
+    {
+      "text": "surface",
+      "start": 128.235,
+      "end": 128.635
+    },
+    {
+      "text": "into",
+      "start": 128.635,
+      "end": 128.825
+    },
+    {
+      "text": "one",
+      "start": 128.875,
+      "end": 129.025
+    },
+    {
+      "text": "product.",
+      "start": 129.045,
+      "end": 129.635
+    },
+    {
+      "text": "Codex",
+      "start": 129.815,
+      "end": 129.905
+    },
+    {
+      "text": "dogfooded",
+      "start": 129.905,
+      "end": 130.395
+    },
+    {
+      "text": "everything",
+      "start": 130.395,
+      "end": 130.945
+    },
+    {
+      "text": "with",
+      "start": 130.945,
+      "end": 131.065
+    },
+    {
+      "text": "real",
+      "start": 131.195,
+      "end": 131.385
+    },
+    {
+      "text": "browser",
+      "start": 131.385,
+      "end": 131.795
+    },
+    {
+      "text": "and",
+      "start": 131.795,
+      "end": 131.975
+    },
+    {
+      "text": "computer",
+      "start": 131.985,
+      "end": 132.505
+    },
+    {
+      "text": "use",
+      "start": 132.505,
+      "end": 132.575
+    },
+    {
+      "text": "the",
+      "start": 132.815,
+      "end": 132.865
+    },
+    {
+      "text": "hosted",
+      "start": 132.865,
+      "end": 133.155
+    },
+    {
+      "text": "app",
+      "start": 133.155,
+      "end": 133.315
+    },
+    {
+      "text": "extension",
+      "start": 133.315,
+      "end": 133.945
+    },
+    {
+      "text": "and",
+      "start": 133.955,
+      "end": 134.235
+    },
+    {
+      "text": "mcp",
+      "start": 134.235,
+      "end": 134.505
+    },
+    {
+      "text": "tools",
+      "start": 134.515,
+      "end": 134.915
+    },
+    {
+      "text": "catching",
+      "start": 135.145,
+      "end": 135.405
+    },
+    {
+      "text": "edge",
+      "start": 135.415,
+      "end": 135.585
+    },
+    {
+      "text": "cases",
+      "start": 135.625,
+      "end": 135.895
+    },
+    {
+      "text": "that",
+      "start": 135.895,
+      "end": 135.935
+    },
+    {
+      "text": "would",
+      "start": 135.985,
+      "end": 136.115
+    },
+    {
+      "text": "take",
+      "start": 136.125,
+      "end": 136.275
+    },
+    {
+      "text": "hours",
+      "start": 136.275,
+      "end": 136.595
+    },
+    {
+      "text": "to",
+      "start": 136.595,
+      "end": 136.715
+    },
+    {
+      "text": "find",
+      "start": 136.795,
+      "end": 136.915
+    },
+    {
+      "text": "by",
+      "start": 136.915,
+      "end": 137.075
+    },
+    {
+      "text": "hand",
+      "start": 137.075,
+      "end": 137.365
+    },
+    {
+      "text": "and",
+      "start": 137.575,
+      "end": 137.635
+    },
+    {
+      "text": "verifying",
+      "start": 137.635,
+      "end": 138.105
+    },
+    {
+      "text": "every",
+      "start": 138.105,
+      "end": 138.315
+    },
+    {
+      "text": "fix",
+      "start": 138.405,
+      "end": 138.585
+    },
+    {
+      "text": "end",
+      "start": 138.605,
+      "end": 138.825
+    },
+    {
+      "text": "to",
+      "start": 138.825,
+      "end": 138.985
+    },
+    {
+      "text": "end",
+      "start": 138.985,
+      "end": 139.135
+    },
+    {
+      "text": "and",
+      "start": 139.355,
+      "end": 139.515
+    },
+    {
+      "text": "yes",
+      "start": 139.515,
+      "end": 139.705
+    },
+    {
+      "text": "gpt",
+      "start": 139.915,
+      "end": 140.435
+    },
+    {
+      "text": "5.6",
+      "start": 140.435,
+      "end": 141.115
+    },
+    {
+      "text": "edited",
+      "start": 141.215,
+      "end": 141.595
+    },
+    {
+      "text": "this",
+      "start": 141.615,
+      "end": 141.905
+    },
+    {
+      "text": "video",
+      "start": 141.955,
+      "end": 142.185
+    },
+    {
+      "text": "to",
+      "start": 142.445,
+      "end": 142.485
+    },
+    {
+      "text": "build",
+      "start": 142.485,
+      "end": 142.875
+    },
+    {
+      "text": "inspect",
+      "start": 142.915,
+      "end": 143.425
+    },
+    {
+      "text": "verify",
+      "start": 143.505,
+      "end": 143.905
+    },
+    {
+      "text": "improve",
+      "start": 143.905,
+      "end": 144.135
+    },
+    {
+      "text": "codex",
+      "start": 144.655,
+      "end": 144.865
+    },
+    {
+      "text": "gave",
+      "start": 144.865,
+      "end": 145.145
+    },
+    {
+      "text": "it",
+      "start": 145.145,
+      "end": 145.265
+    },
+    {
+      "text": "the",
+      "start": 145.325,
+      "end": 145.495
+    },
+    {
+      "text": "tools",
+      "start": 145.495,
+      "end": 145.845
+    },
+    {
+      "text": "gpt",
+      "start": 145.845,
+      "end": 146.045
+    },
+    {
+      "text": "5.6",
+      "start": 146.055,
+      "end": 146.685
+    },
+    {
+      "text": "supplied",
+      "start": 146.685,
+      "end": 147.315
+    },
+    {
+      "text": "the",
+      "start": 147.315,
+      "end": 147.465
+    },
+    {
+      "text": "persistence",
+      "start": 147.475,
+      "end": 147.955
+    },
+    {
+      "text": "that",
+      "start": 148.215,
+      "end": 148.415
+    },
+    {
+      "text": "long",
+      "start": 148.415,
+      "end": 148.685
+    },
+    {
+      "text": "horizon",
+      "start": 148.685,
+      "end": 149.185
+    },
+    {
+      "text": "loop",
+      "start": 149.185,
+      "end": 149.465
+    },
+    {
+      "text": "made",
+      "start": 149.465,
+      "end": 149.745
+    },
+    {
+      "text": "resume",
+      "start": 149.745,
+      "end": 150.165
+    },
+    {
+      "text": "db",
+      "start": 150.165,
+      "end": 150.305
+    },
+    {
+      "text": "real.",
+      "start": 150.305,
+      "end": 150.625
     }
   ]
 }

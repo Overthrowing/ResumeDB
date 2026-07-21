@@ -1,5 +1,5 @@
 {
-  "total_duration_s": 102.635,
+  "total_duration_s": 150.635,
   "width": 1920,
   "height": 1080,
   "groups": [
@@ -2001,213 +2001,1569 @@
     {
       "id": "caption-group-83",
       "frame": 11,
-      "start": 91.85,
-      "end": 92.64,
+      "start": 91.82,
+      "end": 92.55,
       "text": "Our other features",
       "words": [
         {
           "id": "caption-word-83-0",
           "text": "Our",
-          "start": 91.85,
-          "end": 91.86
+          "start": 91.82,
+          "end": 91.83
         },
         {
           "id": "caption-word-83-1",
           "text": "other",
-          "start": 91.94,
-          "end": 92.17
+          "start": 91.83,
+          "end": 92.11
         },
         {
           "id": "caption-word-83-2",
           "text": "features",
-          "start": 92.17,
-          "end": 92.64
+          "start": 92.11,
+          "end": 92.55
         }
       ]
     },
     {
       "id": "caption-group-84",
       "frame": 11,
-      "start": 92.7,
-      "end": 94.04,
+      "start": 92.55,
+      "end": 93.74,
       "text": "include email tracking,",
       "words": [
         {
           "id": "caption-word-84-0",
           "text": "include",
-          "start": 92.7,
-          "end": 93.05
+          "start": 92.55,
+          "end": 92.97
         },
         {
           "id": "caption-word-84-1",
           "text": "email",
-          "start": 93.19,
-          "end": 93.47
+          "start": 93.03,
+          "end": 93.23
         },
         {
           "id": "caption-word-84-2",
           "text": "tracking,",
-          "start": 93.47,
-          "end": 94.04
+          "start": 93.23,
+          "end": 93.74
         }
       ]
     },
     {
       "id": "caption-group-85",
       "frame": 11,
-      "start": 94.33,
-      "end": 95.67,
+      "start": 93.82,
+      "end": 94.99,
       "text": "interview prep, campus",
       "words": [
         {
           "id": "caption-word-85-0",
           "text": "interview",
-          "start": 94.33,
-          "end": 94.71
+          "start": 93.82,
+          "end": 94.25
         },
         {
           "id": "caption-word-85-1",
           "text": "prep,",
-          "start": 94.8,
-          "end": 95.05
+          "start": 94.31,
+          "end": 94.52
         },
         {
           "id": "caption-word-85-2",
           "text": "campus",
-          "start": 95.36,
-          "end": 95.67
+          "start": 94.75,
+          "end": 94.99
         }
       ]
     },
     {
       "id": "caption-group-86",
       "frame": 11,
-      "start": 95.67,
-      "end": 96.77,
+      "start": 94.99,
+      "end": 96.1,
       "text": "insights, four-year",
       "words": [
         {
           "id": "caption-word-86-0",
           "text": "insights,",
-          "start": 95.67,
-          "end": 96.43
+          "start": 94.99,
+          "end": 95.58
         },
         {
           "id": "caption-word-86-1",
           "text": "four-year",
-          "start": 96.51,
-          "end": 96.77
+          "start": 95.74,
+          "end": 96.1
         }
       ]
     },
     {
       "id": "caption-group-87",
       "frame": 11,
-      "start": 96.77,
-      "end": 97.95,
+      "start": 96.1,
+      "end": 97.18,
       "text": "planning, and major",
       "words": [
         {
           "id": "caption-word-87-0",
           "text": "planning,",
-          "start": 96.77,
-          "end": 97.47
+          "start": 96.1,
+          "end": 96.7
         },
         {
           "id": "caption-word-87-1",
           "text": "and",
-          "start": 97.51,
-          "end": 97.65
+          "start": 96.7,
+          "end": 96.86
         },
         {
           "id": "caption-word-87-2",
           "text": "major",
-          "start": 97.65,
-          "end": 97.95
+          "start": 96.95,
+          "end": 97.18
         }
       ]
     },
     {
       "id": "caption-group-88",
       "frame": 11,
-      "start": 97.95,
-      "end": 99.2,
+      "start": 97.18,
+      "end": 98.41,
       "text": "specific portfolios.",
       "words": [
         {
           "id": "caption-word-88-0",
           "text": "specific",
-          "start": 97.95,
-          "end": 98.4
+          "start": 97.18,
+          "end": 97.64
         },
         {
           "id": "caption-word-88-1",
           "text": "portfolios.",
-          "start": 98.54,
-          "end": 99.2
+          "start": 97.66,
+          "end": 98.41
         }
       ]
     },
     {
       "id": "caption-group-89",
       "frame": 11,
-      "start": 99.52,
-      "end": 101.06,
-      "text": "Resume DB, the",
+      "start": 98.62,
+      "end": 98.99,
+      "text": "And here is",
       "words": [
         {
           "id": "caption-word-89-0",
-          "text": "Resume",
-          "start": 99.52,
-          "end": 100.36
+          "text": "And",
+          "start": 98.62,
+          "end": 98.67
         },
         {
           "id": "caption-word-89-1",
-          "text": "DB,",
-          "start": 100.47,
-          "end": 100.93
+          "text": "here",
+          "start": 98.67,
+          "end": 98.94
         },
         {
           "id": "caption-word-89-2",
-          "text": "the",
-          "start": 100.93,
-          "end": 101.06
+          "text": "is",
+          "start": 98.94,
+          "end": 98.99
         }
       ]
     },
     {
       "id": "caption-group-90",
       "frame": 11,
-      "start": 101.11,
-      "end": 102.06,
-      "text": "internship operating",
+      "start": 99.07,
+      "end": 99.99,
+      "text": "the best part,",
       "words": [
         {
           "id": "caption-word-90-0",
-          "text": "internship",
-          "start": 101.11,
-          "end": 101.58
+          "text": "the",
+          "start": 99.07,
+          "end": 99.27
         },
         {
           "id": "caption-word-90-1",
-          "text": "operating",
-          "start": 101.91,
-          "end": 102.06
+          "text": "best",
+          "start": 99.27,
+          "end": 99.46
+        },
+        {
+          "id": "caption-word-90-2",
+          "text": "part,",
+          "start": 99.56,
+          "end": 99.99
         }
       ]
     },
     {
       "id": "caption-group-91",
       "frame": 11,
-      "start": 102.06,
-      "end": 102.54,
-      "text": "system.",
+      "start": 99.99,
+      "end": 100.98,
+      "text": "we built Resume",
       "words": [
         {
           "id": "caption-word-91-0",
-          "text": "system.",
-          "start": 102.06,
-          "end": 102.54
+          "text": "we",
+          "start": 99.99,
+          "end": 100.08
+        },
+        {
+          "id": "caption-word-91-1",
+          "text": "built",
+          "start": 100.14,
+          "end": 100.52
+        },
+        {
+          "id": "caption-word-91-2",
+          "text": "Resume",
+          "start": 100.52,
+          "end": 100.98
+        }
+      ]
+    },
+    {
+      "id": "caption-group-92",
+      "frame": 11,
+      "start": 100.98,
+      "end": 101.67,
+      "text": "DB with the",
+      "words": [
+        {
+          "id": "caption-word-92-0",
+          "text": "DB",
+          "start": 100.98,
+          "end": 101.13
+        },
+        {
+          "id": "caption-word-92-1",
+          "text": "with",
+          "start": 101.13,
+          "end": 101.29
+        },
+        {
+          "id": "caption-word-92-2",
+          "text": "the",
+          "start": 101.55,
+          "end": 101.67
+        }
+      ]
+    },
+    {
+      "id": "caption-group-93",
+      "frame": 11,
+      "start": 101.67,
+      "end": 102.47,
+      "text": "same agents.",
+      "words": [
+        {
+          "id": "caption-word-93-0",
+          "text": "same",
+          "start": 101.67,
+          "end": 101.98
+        },
+        {
+          "id": "caption-word-93-1",
+          "text": "agents.",
+          "start": 101.98,
+          "end": 102.47
+        }
+      ]
+    },
+    {
+      "id": "caption-group-94",
+      "frame": 12,
+      "start": 102.835,
+      "end": 103.485,
+      "text": "Codex is not",
+      "words": [
+        {
+          "id": "caption-word-94-0",
+          "text": "Codex",
+          "start": 102.835,
+          "end": 103.035
+        },
+        {
+          "id": "caption-word-94-1",
+          "text": "is",
+          "start": 103.065,
+          "end": 103.235
+        },
+        {
+          "id": "caption-word-94-2",
+          "text": "not",
+          "start": 103.235,
+          "end": 103.485
+        }
+      ]
+    },
+    {
+      "id": "caption-group-95",
+      "frame": 12,
+      "start": 103.565,
+      "end": 104.275,
+      "text": "just how we",
+      "words": [
+        {
+          "id": "caption-word-95-0",
+          "text": "just",
+          "start": 103.565,
+          "end": 103.755
+        },
+        {
+          "id": "caption-word-95-1",
+          "text": "how",
+          "start": 103.885,
+          "end": 104.105
+        },
+        {
+          "id": "caption-word-95-2",
+          "text": "we",
+          "start": 104.105,
+          "end": 104.275
+        }
+      ]
+    },
+    {
+      "id": "caption-group-96",
+      "frame": 12,
+      "start": 104.275,
+      "end": 105.635,
+      "text": "built ResumeDB.",
+      "words": [
+        {
+          "id": "caption-word-96-0",
+          "text": "built",
+          "start": 104.275,
+          "end": 104.705
+        },
+        {
+          "id": "caption-word-96-1",
+          "text": "ResumeDB.",
+          "start": 104.705,
+          "end": 105.635
+        }
+      ]
+    },
+    {
+      "id": "caption-group-97",
+      "frame": 12,
+      "start": 105.635,
+      "end": 106.435,
+      "text": "It runs inside",
+      "words": [
+        {
+          "id": "caption-word-97-0",
+          "text": "It",
+          "start": 105.635,
+          "end": 105.765
+        },
+        {
+          "id": "caption-word-97-1",
+          "text": "runs",
+          "start": 105.765,
+          "end": 106.015
+        },
+        {
+          "id": "caption-word-97-2",
+          "text": "inside",
+          "start": 106.035,
+          "end": 106.435
+        }
+      ]
+    },
+    {
+      "id": "caption-group-98",
+      "frame": 12,
+      "start": 106.435,
+      "end": 106.575,
+      "text": "it.",
+      "words": [
+        {
+          "id": "caption-word-98-0",
+          "text": "it.",
+          "start": 106.435,
+          "end": 106.575
+        }
+      ]
+    },
+    {
+      "id": "caption-group-99",
+      "frame": 12,
+      "start": 106.995,
+      "end": 107.715,
+      "text": "The Codex SDK",
+      "words": [
+        {
+          "id": "caption-word-99-0",
+          "text": "The",
+          "start": 106.995,
+          "end": 107.045
+        },
+        {
+          "id": "caption-word-99-1",
+          "text": "Codex",
+          "start": 107.045,
+          "end": 107.365
+        },
+        {
+          "id": "caption-word-99-2",
+          "text": "SDK",
+          "start": 107.475,
+          "end": 107.715
+        }
+      ]
+    },
+    {
+      "id": "caption-group-100",
+      "frame": 12,
+      "start": 107.715,
+      "end": 109.035,
+      "text": "powers hosted agents,",
+      "words": [
+        {
+          "id": "caption-word-100-0",
+          "text": "powers",
+          "start": 107.715,
+          "end": 108.235
+        },
+        {
+          "id": "caption-word-100-1",
+          "text": "hosted",
+          "start": 108.235,
+          "end": 108.635
+        },
+        {
+          "id": "caption-word-100-2",
+          "text": "agents,",
+          "start": 108.635,
+          "end": 109.035
+        }
+      ]
+    },
+    {
+      "id": "caption-group-101",
+      "frame": 12,
+      "start": 109.235,
+      "end": 109.675,
+      "text": "while our MCP",
+      "words": [
+        {
+          "id": "caption-word-101-0",
+          "text": "while",
+          "start": 109.235,
+          "end": 109.345
+        },
+        {
+          "id": "caption-word-101-1",
+          "text": "our",
+          "start": 109.345,
+          "end": 109.435
+        },
+        {
+          "id": "caption-word-101-2",
+          "text": "MCP",
+          "start": 109.505,
+          "end": 109.675
+        }
+      ]
+    },
+    {
+      "id": "caption-group-102",
+      "frame": 12,
+      "start": 109.715,
+      "end": 110.535,
+      "text": "server lets your",
+      "words": [
+        {
+          "id": "caption-word-102-0",
+          "text": "server",
+          "start": 109.715,
+          "end": 110.075
+        },
+        {
+          "id": "caption-word-102-1",
+          "text": "lets",
+          "start": 110.075,
+          "end": 110.315
+        },
+        {
+          "id": "caption-word-102-2",
+          "text": "your",
+          "start": 110.315,
+          "end": 110.535
+        }
+      ]
+    },
+    {
+      "id": "caption-group-103",
+      "frame": 12,
+      "start": 110.585,
+      "end": 111.355,
+      "text": "own Codex bring",
+      "words": [
+        {
+          "id": "caption-word-103-0",
+          "text": "own",
+          "start": 110.585,
+          "end": 110.695
+        },
+        {
+          "id": "caption-word-103-1",
+          "text": "Codex",
+          "start": 110.765,
+          "end": 111.045
+        },
+        {
+          "id": "caption-word-103-2",
+          "text": "bring",
+          "start": 111.045,
+          "end": 111.355
+        }
+      ]
+    },
+    {
+      "id": "caption-group-104",
+      "frame": 12,
+      "start": 111.355,
+      "end": 112.515,
+      "text": "browser research into",
+      "words": [
+        {
+          "id": "caption-word-104-0",
+          "text": "browser",
+          "start": 111.355,
+          "end": 111.495
+        },
+        {
+          "id": "caption-word-104-1",
+          "text": "research",
+          "start": 111.985,
+          "end": 112.275
+        },
+        {
+          "id": "caption-word-104-2",
+          "text": "into",
+          "start": 112.275,
+          "end": 112.515
+        }
+      ]
+    },
+    {
+      "id": "caption-group-105",
+      "frame": 12,
+      "start": 112.515,
+      "end": 113.805,
+      "text": "ResumeDB, read approved",
+      "words": [
+        {
+          "id": "caption-word-105-0",
+          "text": "ResumeDB,",
+          "start": 112.515,
+          "end": 113.195
+        },
+        {
+          "id": "caption-word-105-1",
+          "text": "read",
+          "start": 113.365,
+          "end": 113.395
+        },
+        {
+          "id": "caption-word-105-2",
+          "text": "approved",
+          "start": 113.395,
+          "end": 113.805
+        }
+      ]
+    },
+    {
+      "id": "caption-group-106",
+      "frame": 12,
+      "start": 113.805,
+      "end": 114.775,
+      "text": "career context, save",
+      "words": [
+        {
+          "id": "caption-word-106-0",
+          "text": "career",
+          "start": 113.805,
+          "end": 114.035
+        },
+        {
+          "id": "caption-word-106-1",
+          "text": "context,",
+          "start": 114.125,
+          "end": 114.575
+        },
+        {
+          "id": "caption-word-106-2",
+          "text": "save",
+          "start": 114.575,
+          "end": 114.775
+        }
+      ]
+    },
+    {
+      "id": "caption-group-107",
+      "frame": 12,
+      "start": 114.775,
+      "end": 115.655,
+      "text": "qualified leads, tailor",
+      "words": [
+        {
+          "id": "caption-word-107-0",
+          "text": "qualified",
+          "start": 114.775,
+          "end": 115.215
+        },
+        {
+          "id": "caption-word-107-1",
+          "text": "leads,",
+          "start": 115.255,
+          "end": 115.595
+        },
+        {
+          "id": "caption-word-107-2",
+          "text": "tailor",
+          "start": 115.595,
+          "end": 115.655
+        }
+      ]
+    },
+    {
+      "id": "caption-group-108",
+      "frame": 12,
+      "start": 116.145,
+      "end": 116.705,
+      "text": "drafts, and render",
+      "words": [
+        {
+          "id": "caption-word-108-0",
+          "text": "drafts,",
+          "start": 116.145,
+          "end": 116.305
+        },
+        {
+          "id": "caption-word-108-1",
+          "text": "and",
+          "start": 116.315,
+          "end": 116.465
+        },
+        {
+          "id": "caption-word-108-2",
+          "text": "render",
+          "start": 116.465,
+          "end": 116.705
+        }
+      ]
+    },
+    {
+      "id": "caption-group-109",
+      "frame": 12,
+      "start": 116.805,
+      "end": 117.145,
+      "text": "resumes.",
+      "words": [
+        {
+          "id": "caption-word-109-0",
+          "text": "resumes.",
+          "start": 116.805,
+          "end": 117.145
+        }
+      ]
+    },
+    {
+      "id": "caption-group-110",
+      "frame": 13,
+      "start": 117.715,
+      "end": 118.825,
+      "text": "GPT 5.6 also",
+      "words": [
+        {
+          "id": "caption-word-110-0",
+          "text": "GPT",
+          "start": 117.715,
+          "end": 117.865
+        },
+        {
+          "id": "caption-word-110-1",
+          "text": "5.6",
+          "start": 117.865,
+          "end": 118.565
+        },
+        {
+          "id": "caption-word-110-2",
+          "text": "also",
+          "start": 118.565,
+          "end": 118.825
+        }
+      ]
+    },
+    {
+      "id": "caption-group-111",
+      "frame": 13,
+      "start": 118.895,
+      "end": 120.445,
+      "text": "became our engineering",
+      "words": [
+        {
+          "id": "caption-word-111-0",
+          "text": "became",
+          "start": 118.895,
+          "end": 119.325
+        },
+        {
+          "id": "caption-word-111-1",
+          "text": "our",
+          "start": 119.375,
+          "end": 119.595
+        },
+        {
+          "id": "caption-word-111-2",
+          "text": "engineering",
+          "start": 119.595,
+          "end": 120.445
+        }
+      ]
+    },
+    {
+      "id": "caption-group-112",
+      "frame": 13,
+      "start": 120.445,
+      "end": 120.835,
+      "text": "team.",
+      "words": [
+        {
+          "id": "caption-word-112-0",
+          "text": "team.",
+          "start": 120.445,
+          "end": 120.835
+        }
+      ]
+    },
+    {
+      "id": "caption-group-113",
+      "frame": 13,
+      "start": 120.945,
+      "end": 122.025,
+      "text": "It coordinated parallel",
+      "words": [
+        {
+          "id": "caption-word-113-0",
+          "text": "It",
+          "start": 120.945,
+          "end": 120.945
+        },
+        {
+          "id": "caption-word-113-1",
+          "text": "coordinated",
+          "start": 120.995,
+          "end": 121.575
+        },
+        {
+          "id": "caption-word-113-2",
+          "text": "parallel",
+          "start": 121.575,
+          "end": 122.025
+        }
+      ]
+    },
+    {
+      "id": "caption-group-114",
+      "frame": 13,
+      "start": 122.095,
+      "end": 123.055,
+      "text": "sub-agents with the",
+      "words": [
+        {
+          "id": "caption-word-114-0",
+          "text": "sub-agents",
+          "start": 122.095,
+          "end": 122.635
+        },
+        {
+          "id": "caption-word-114-1",
+          "text": "with",
+          "start": 122.635,
+          "end": 122.875
+        },
+        {
+          "id": "caption-word-114-2",
+          "text": "the",
+          "start": 122.875,
+          "end": 123.055
+        }
+      ]
+    },
+    {
+      "id": "caption-group-115",
+      "frame": 13,
+      "start": 123.055,
+      "end": 123.635,
+      "text": "Codex app.",
+      "words": [
+        {
+          "id": "caption-word-115-0",
+          "text": "Codex",
+          "start": 123.055,
+          "end": 123.355
+        },
+        {
+          "id": "caption-word-115-1",
+          "text": "app.",
+          "start": 123.355,
+          "end": 123.635
+        }
+      ]
+    },
+    {
+      "id": "caption-group-116",
+      "frame": 13,
+      "start": 123.785,
+      "end": 124.415,
+      "text": "Together, they built",
+      "words": [
+        {
+          "id": "caption-word-116-0",
+          "text": "Together,",
+          "start": 123.785,
+          "end": 124.075
+        },
+        {
+          "id": "caption-word-116-1",
+          "text": "they",
+          "start": 124.125,
+          "end": 124.255
+        },
+        {
+          "id": "caption-word-116-2",
+          "text": "built",
+          "start": 124.325,
+          "end": 124.415
+        }
+      ]
+    },
+    {
+      "id": "caption-group-117",
+      "frame": 13,
+      "start": 124.505,
+      "end": 124.995,
+      "text": "the web app,",
+      "words": [
+        {
+          "id": "caption-word-117-0",
+          "text": "the",
+          "start": 124.505,
+          "end": 124.575
+        },
+        {
+          "id": "caption-word-117-1",
+          "text": "web",
+          "start": 124.645,
+          "end": 124.745
+        },
+        {
+          "id": "caption-word-117-2",
+          "text": "app,",
+          "start": 124.745,
+          "end": 124.995
+        }
+      ]
+    },
+    {
+      "id": "caption-group-118",
+      "frame": 13,
+      "start": 124.995,
+      "end": 126.155,
+      "text": "Chrome extension, and",
+      "words": [
+        {
+          "id": "caption-word-118-0",
+          "text": "Chrome",
+          "start": 124.995,
+          "end": 125.275
+        },
+        {
+          "id": "caption-word-118-1",
+          "text": "extension,",
+          "start": 125.285,
+          "end": 125.835
+        },
+        {
+          "id": "caption-word-118-2",
+          "text": "and",
+          "start": 125.835,
+          "end": 126.155
+        }
+      ]
+    },
+    {
+      "id": "caption-group-119",
+      "frame": 13,
+      "start": 126.155,
+      "end": 127.365,
+      "text": "MCP server, then",
+      "words": [
+        {
+          "id": "caption-word-119-0",
+          "text": "MCP",
+          "start": 126.155,
+          "end": 126.445
+        },
+        {
+          "id": "caption-word-119-1",
+          "text": "server,",
+          "start": 126.445,
+          "end": 127.135
+        },
+        {
+          "id": "caption-word-119-2",
+          "text": "then",
+          "start": 127.265,
+          "end": 127.365
+        }
+      ]
+    },
+    {
+      "id": "caption-group-120",
+      "frame": 13,
+      "start": 127.365,
+      "end": 128.635,
+      "text": "integrated every surface",
+      "words": [
+        {
+          "id": "caption-word-120-0",
+          "text": "integrated",
+          "start": 127.365,
+          "end": 127.915
+        },
+        {
+          "id": "caption-word-120-1",
+          "text": "every",
+          "start": 128.005,
+          "end": 128.235
+        },
+        {
+          "id": "caption-word-120-2",
+          "text": "surface",
+          "start": 128.235,
+          "end": 128.635
+        }
+      ]
+    },
+    {
+      "id": "caption-group-121",
+      "frame": 13,
+      "start": 128.635,
+      "end": 129.635,
+      "text": "into one product.",
+      "words": [
+        {
+          "id": "caption-word-121-0",
+          "text": "into",
+          "start": 128.635,
+          "end": 128.825
+        },
+        {
+          "id": "caption-word-121-1",
+          "text": "one",
+          "start": 128.875,
+          "end": 129.025
+        },
+        {
+          "id": "caption-word-121-2",
+          "text": "product.",
+          "start": 129.045,
+          "end": 129.635
+        }
+      ]
+    },
+    {
+      "id": "caption-group-122",
+      "frame": 14,
+      "start": 129.815,
+      "end": 130.945,
+      "text": "Codex dogfooded everything",
+      "words": [
+        {
+          "id": "caption-word-122-0",
+          "text": "Codex",
+          "start": 129.815,
+          "end": 129.905
+        },
+        {
+          "id": "caption-word-122-1",
+          "text": "dogfooded",
+          "start": 129.905,
+          "end": 130.395
+        },
+        {
+          "id": "caption-word-122-2",
+          "text": "everything",
+          "start": 130.395,
+          "end": 130.945
+        }
+      ]
+    },
+    {
+      "id": "caption-group-123",
+      "frame": 14,
+      "start": 130.945,
+      "end": 131.795,
+      "text": "with real browser",
+      "words": [
+        {
+          "id": "caption-word-123-0",
+          "text": "with",
+          "start": 130.945,
+          "end": 131.065
+        },
+        {
+          "id": "caption-word-123-1",
+          "text": "real",
+          "start": 131.195,
+          "end": 131.385
+        },
+        {
+          "id": "caption-word-123-2",
+          "text": "browser",
+          "start": 131.385,
+          "end": 131.795
+        }
+      ]
+    },
+    {
+      "id": "caption-group-124",
+      "frame": 14,
+      "start": 131.795,
+      "end": 132.575,
+      "text": "and computer use",
+      "words": [
+        {
+          "id": "caption-word-124-0",
+          "text": "and",
+          "start": 131.795,
+          "end": 131.975
+        },
+        {
+          "id": "caption-word-124-1",
+          "text": "computer",
+          "start": 131.985,
+          "end": 132.505
+        },
+        {
+          "id": "caption-word-124-2",
+          "text": "use",
+          "start": 132.505,
+          "end": 132.575
+        }
+      ]
+    },
+    {
+      "id": "caption-group-125",
+      "frame": 14,
+      "start": 132.815,
+      "end": 133.315,
+      "text": "the hosted app",
+      "words": [
+        {
+          "id": "caption-word-125-0",
+          "text": "the",
+          "start": 132.815,
+          "end": 132.865
+        },
+        {
+          "id": "caption-word-125-1",
+          "text": "hosted",
+          "start": 132.865,
+          "end": 133.155
+        },
+        {
+          "id": "caption-word-125-2",
+          "text": "app",
+          "start": 133.155,
+          "end": 133.315
+        }
+      ]
+    },
+    {
+      "id": "caption-group-126",
+      "frame": 14,
+      "start": 133.315,
+      "end": 134.505,
+      "text": "extension and MCP",
+      "words": [
+        {
+          "id": "caption-word-126-0",
+          "text": "extension",
+          "start": 133.315,
+          "end": 133.945
+        },
+        {
+          "id": "caption-word-126-1",
+          "text": "and",
+          "start": 133.955,
+          "end": 134.235
+        },
+        {
+          "id": "caption-word-126-2",
+          "text": "MCP",
+          "start": 134.235,
+          "end": 134.505
+        }
+      ]
+    },
+    {
+      "id": "caption-group-127",
+      "frame": 14,
+      "start": 134.515,
+      "end": 135.585,
+      "text": "tools catching edge",
+      "words": [
+        {
+          "id": "caption-word-127-0",
+          "text": "tools",
+          "start": 134.515,
+          "end": 134.915
+        },
+        {
+          "id": "caption-word-127-1",
+          "text": "catching",
+          "start": 135.145,
+          "end": 135.405
+        },
+        {
+          "id": "caption-word-127-2",
+          "text": "edge",
+          "start": 135.415,
+          "end": 135.585
+        }
+      ]
+    },
+    {
+      "id": "caption-group-128",
+      "frame": 14,
+      "start": 135.625,
+      "end": 136.115,
+      "text": "cases that would",
+      "words": [
+        {
+          "id": "caption-word-128-0",
+          "text": "cases",
+          "start": 135.625,
+          "end": 135.895
+        },
+        {
+          "id": "caption-word-128-1",
+          "text": "that",
+          "start": 135.895,
+          "end": 135.935
+        },
+        {
+          "id": "caption-word-128-2",
+          "text": "would",
+          "start": 135.985,
+          "end": 136.115
+        }
+      ]
+    },
+    {
+      "id": "caption-group-129",
+      "frame": 14,
+      "start": 136.125,
+      "end": 136.715,
+      "text": "take hours to",
+      "words": [
+        {
+          "id": "caption-word-129-0",
+          "text": "take",
+          "start": 136.125,
+          "end": 136.275
+        },
+        {
+          "id": "caption-word-129-1",
+          "text": "hours",
+          "start": 136.275,
+          "end": 136.595
+        },
+        {
+          "id": "caption-word-129-2",
+          "text": "to",
+          "start": 136.595,
+          "end": 136.715
+        }
+      ]
+    },
+    {
+      "id": "caption-group-130",
+      "frame": 14,
+      "start": 136.795,
+      "end": 137.365,
+      "text": "find by hand",
+      "words": [
+        {
+          "id": "caption-word-130-0",
+          "text": "find",
+          "start": 136.795,
+          "end": 136.915
+        },
+        {
+          "id": "caption-word-130-1",
+          "text": "by",
+          "start": 136.915,
+          "end": 137.075
+        },
+        {
+          "id": "caption-word-130-2",
+          "text": "hand",
+          "start": 137.075,
+          "end": 137.365
+        }
+      ]
+    },
+    {
+      "id": "caption-group-131",
+      "frame": 14,
+      "start": 137.575,
+      "end": 138.315,
+      "text": "and verifying every",
+      "words": [
+        {
+          "id": "caption-word-131-0",
+          "text": "and",
+          "start": 137.575,
+          "end": 137.635
+        },
+        {
+          "id": "caption-word-131-1",
+          "text": "verifying",
+          "start": 137.635,
+          "end": 138.105
+        },
+        {
+          "id": "caption-word-131-2",
+          "text": "every",
+          "start": 138.105,
+          "end": 138.315
+        }
+      ]
+    },
+    {
+      "id": "caption-group-132",
+      "frame": 14,
+      "start": 138.405,
+      "end": 138.985,
+      "text": "fix end to",
+      "words": [
+        {
+          "id": "caption-word-132-0",
+          "text": "fix",
+          "start": 138.405,
+          "end": 138.585
+        },
+        {
+          "id": "caption-word-132-1",
+          "text": "end",
+          "start": 138.605,
+          "end": 138.825
+        },
+        {
+          "id": "caption-word-132-2",
+          "text": "to",
+          "start": 138.825,
+          "end": 138.985
+        }
+      ]
+    },
+    {
+      "id": "caption-group-133",
+      "frame": 14,
+      "start": 138.985,
+      "end": 139.705,
+      "text": "end and yes",
+      "words": [
+        {
+          "id": "caption-word-133-0",
+          "text": "end",
+          "start": 138.985,
+          "end": 139.135
+        },
+        {
+          "id": "caption-word-133-1",
+          "text": "and",
+          "start": 139.355,
+          "end": 139.515
+        },
+        {
+          "id": "caption-word-133-2",
+          "text": "yes",
+          "start": 139.515,
+          "end": 139.705
+        }
+      ]
+    },
+    {
+      "id": "caption-group-134",
+      "frame": 14,
+      "start": 139.915,
+      "end": 141.115,
+      "text": "GPT 5.6",
+      "words": [
+        {
+          "id": "caption-word-134-0",
+          "text": "GPT",
+          "start": 139.915,
+          "end": 140.435
+        },
+        {
+          "id": "caption-word-134-1",
+          "text": "5.6",
+          "start": 140.435,
+          "end": 141.115
+        }
+      ]
+    },
+    {
+      "id": "caption-group-135",
+      "frame": 14,
+      "start": 141.215,
+      "end": 142.185,
+      "text": "edited this video",
+      "words": [
+        {
+          "id": "caption-word-135-0",
+          "text": "edited",
+          "start": 141.215,
+          "end": 141.595
+        },
+        {
+          "id": "caption-word-135-1",
+          "text": "this",
+          "start": 141.615,
+          "end": 141.905
+        },
+        {
+          "id": "caption-word-135-2",
+          "text": "video",
+          "start": 141.955,
+          "end": 142.185
+        }
+      ]
+    },
+    {
+      "id": "caption-group-136",
+      "frame": 14,
+      "start": 142.445,
+      "end": 143.425,
+      "text": "to build inspect",
+      "words": [
+        {
+          "id": "caption-word-136-0",
+          "text": "to",
+          "start": 142.445,
+          "end": 142.485
+        },
+        {
+          "id": "caption-word-136-1",
+          "text": "build",
+          "start": 142.485,
+          "end": 142.875
+        },
+        {
+          "id": "caption-word-136-2",
+          "text": "inspect",
+          "start": 142.915,
+          "end": 143.425
+        }
+      ]
+    },
+    {
+      "id": "caption-group-137",
+      "frame": 14,
+      "start": 143.505,
+      "end": 144.865,
+      "text": "verify improve Codex",
+      "words": [
+        {
+          "id": "caption-word-137-0",
+          "text": "verify",
+          "start": 143.505,
+          "end": 143.905
+        },
+        {
+          "id": "caption-word-137-1",
+          "text": "improve",
+          "start": 143.905,
+          "end": 144.135
+        },
+        {
+          "id": "caption-word-137-2",
+          "text": "Codex",
+          "start": 144.655,
+          "end": 144.865
+        }
+      ]
+    },
+    {
+      "id": "caption-group-138",
+      "frame": 14,
+      "start": 144.865,
+      "end": 145.495,
+      "text": "gave it the",
+      "words": [
+        {
+          "id": "caption-word-138-0",
+          "text": "gave",
+          "start": 144.865,
+          "end": 145.145
+        },
+        {
+          "id": "caption-word-138-1",
+          "text": "it",
+          "start": 145.145,
+          "end": 145.265
+        },
+        {
+          "id": "caption-word-138-2",
+          "text": "the",
+          "start": 145.325,
+          "end": 145.495
+        }
+      ]
+    },
+    {
+      "id": "caption-group-139",
+      "frame": 14,
+      "start": 145.495,
+      "end": 146.685,
+      "text": "tools GPT 5.6",
+      "words": [
+        {
+          "id": "caption-word-139-0",
+          "text": "tools",
+          "start": 145.495,
+          "end": 145.845
+        },
+        {
+          "id": "caption-word-139-1",
+          "text": "GPT",
+          "start": 145.845,
+          "end": 146.045
+        },
+        {
+          "id": "caption-word-139-2",
+          "text": "5.6",
+          "start": 146.055,
+          "end": 146.685
+        }
+      ]
+    },
+    {
+      "id": "caption-group-140",
+      "frame": 14,
+      "start": 146.685,
+      "end": 147.955,
+      "text": "supplied the persistence",
+      "words": [
+        {
+          "id": "caption-word-140-0",
+          "text": "supplied",
+          "start": 146.685,
+          "end": 147.315
+        },
+        {
+          "id": "caption-word-140-1",
+          "text": "the",
+          "start": 147.315,
+          "end": 147.465
+        },
+        {
+          "id": "caption-word-140-2",
+          "text": "persistence",
+          "start": 147.475,
+          "end": 147.955
+        }
+      ]
+    },
+    {
+      "id": "caption-group-141",
+      "frame": 14,
+      "start": 148.215,
+      "end": 149.185,
+      "text": "that long horizon",
+      "words": [
+        {
+          "id": "caption-word-141-0",
+          "text": "that",
+          "start": 148.215,
+          "end": 148.415
+        },
+        {
+          "id": "caption-word-141-1",
+          "text": "long",
+          "start": 148.415,
+          "end": 148.685
+        },
+        {
+          "id": "caption-word-141-2",
+          "text": "horizon",
+          "start": 148.685,
+          "end": 149.185
+        }
+      ]
+    },
+    {
+      "id": "caption-group-142",
+      "frame": 14,
+      "start": 149.185,
+      "end": 150.165,
+      "text": "loop made Resume",
+      "words": [
+        {
+          "id": "caption-word-142-0",
+          "text": "loop",
+          "start": 149.185,
+          "end": 149.465
+        },
+        {
+          "id": "caption-word-142-1",
+          "text": "made",
+          "start": 149.465,
+          "end": 149.745
+        },
+        {
+          "id": "caption-word-142-2",
+          "text": "Resume",
+          "start": 149.745,
+          "end": 150.165
+        }
+      ]
+    },
+    {
+      "id": "caption-group-143",
+      "frame": 14,
+      "start": 150.165,
+      "end": 150.625,
+      "text": "DB real.",
+      "words": [
+        {
+          "id": "caption-word-143-0",
+          "text": "DB",
+          "start": 150.165,
+          "end": 150.305
+        },
+        {
+          "id": "caption-word-143-1",
+          "text": "real.",
+          "start": 150.305,
+          "end": 150.625
         }
       ]
     }

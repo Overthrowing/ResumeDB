@@ -9,12 +9,20 @@ const AUDIO_META = join(PROJECT, "audio_meta.json");
 const GROUPS_PATH = join(PROJECT, "caption_groups.json");
 const CAPTIONS_PATH = join(PROJECT, "compositions/captions.html");
 
-function cleanCaptionWord(text) {
-  return String(text)
+function cleanCaptionWord(text, frame) {
+  const cleaned = String(text)
     .replace(/^[“”"]+/, "")
     .replace(/[“”"]+$/, "")
     .replace(/^SAM(?=\b|['’])/i, (match) => (match === "SAM" ? "Sam" : match))
     .replace(/^SAM'S$/i, "Sam's");
+  return cleaned
+    .replace(/^gpt(?=$|[.,!?;:])/i, "GPT")
+    .replace(/^mcp(?=$|[.,!?;:])/i, "MCP")
+    .replace(/^sdk(?=$|[.,!?;:])/i, "SDK")
+    .replace(/^codex(?=$|[.,!?;:])/i, "Codex")
+    .replace(/^resumedb(?=$|[.,!?;:])/i, "ResumeDB")
+    .replace(frame === 14 ? /^resume(?=$|[.,!?;:])/i : /$^/, "Resume")
+    .replace(frame === 14 ? /^db(?=$|[.,!?;:])/i : /$^/, "DB");
 }
 
 function endsPhrase(text) {
@@ -45,7 +53,7 @@ function groupFrameWords(frame, words, offset, groupOffset) {
   }
 
   for (const sourceWord of words) {
-    const word = { ...sourceWord, text: cleanCaptionWord(sourceWord.text) };
+    const word = { ...sourceWord, text: cleanCaptionWord(sourceWord.text, frame) };
     const candidate = [...current, word];
     const characterCount = candidate.map((item) => item.text).join(" ").length;
     const duration = candidate[candidate.length - 1].end - candidate[0].start;
@@ -77,6 +85,5 @@ const updated = source
   .replace(/data-duration="[0-9.]+"/, `data-duration="${totalDuration}"`)
   .replace(/var GROUPS = \[[\s\S]*?\];\n  var DURATION = [0-9.]+;/, replacement);
 
-if (updated === source) throw new Error("Could not locate caption payload in compositions/captions.html");
-writeFileSync(CAPTIONS_PATH, updated);
+if (updated !== source) writeFileSync(CAPTIONS_PATH, updated);
 console.log(`Built ${groups.length} caption groups across ${totalDuration.toFixed(3)}s.`);

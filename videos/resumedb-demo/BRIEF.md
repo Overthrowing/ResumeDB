@@ -7,7 +7,7 @@ destination: youtube-embed
 aspect: 1920x1080
 language: en
 audience: online-hackathon-judges
-length: 103s
+length: 151s
 angle: transformation-pitch
 narration: yes
 voice: fish-reference-933563129e564b19a115bedd57b7406a
@@ -67,6 +67,7 @@ and turns scattered applications into a focused career campaign.
 4. Make evidence-backed strengthening feel like a competitive advantage.
 5. Show a complete application being typed, not covered by screenshot wipes.
 6. End on the MCP server and bring-your-own-agent advantage before future pacing.
+7. Prove how Codex and GPT-5.6 power both the product and the development loop.
 
 ## Product truth constraints
 
@@ -75,6 +76,10 @@ and turns scattered applications into a focused career campaign.
 - Do not present the illustrative Sankey numbers as measured customer outcomes.
 - Do not dwell on sensitive fields, unknown answers, manual submission, or five-stage semantics.
 - Do not claim that ResumeDB clicked a final employer submit button.
+- Keep Codex browser research distinct from ResumeDB MCP tools: the agent browses,
+  then uses MCP to read approved context and save supported work.
+- Describe GPT-5.6 self-improvement as an iterative build, inspect, verify, and
+  improve loop, not model-weight training.
 
 ## Visual standard
 
@@ -85,4 +90,5 @@ and turns scattered applications into a focused career campaign.
   selection, focus move, or data transformation.
 - No random focus rectangles, disconnected connector paths, or chunked overlay glitches.
 - The final render must be inspected at the hook, every scene midpoint, every
-  transition, the extension sequence, the two-resume comparison, and the close.
+  transition, the extension sequence, the two-resume comparison, the Codex
+  development sequence, and the close.

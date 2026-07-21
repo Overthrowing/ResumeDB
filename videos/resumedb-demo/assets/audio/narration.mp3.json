@@ -8,7 +8,7 @@
   "top_p": 0.6,
   "condition_on_previous_chunks": false,
   "scene_isolated": true,
-  "sha256": "df90088dd68b5697de35c3d487b8e52a9d80bdc87601b84a3ee129c8b9389609",
+  "sha256": "0fe2db9a6226ac281d078d138fa1e3f54604f650732aa1ae40124b6b6da6319c",
   "source_script": "/Users/nathanye/.treehouse/ResumeDB-1059f1/3/ResumeDB/videos/resumedb-demo/SCRIPT.md",
   "generated": [
     {
@@ -83,10 +83,31 @@
     },
     {
       "frame": 11,
-      "speed": 1.055,
-      "raw_duration_s": 11.781,
+      "speed": 1.135,
+      "raw_duration_s": 11.572,
       "target_duration_s": 10.965,
-      "source_sha256": "d6341dc73d7ac837c433f43ee0f5fb9e4781c5eb8e7edbe78df12ca3ac6811b5"
+      "source_sha256": "8f342724b7ed9122b2860d562a66f899da68d3eab66ca432057c57fe7d97b1a1"
+    },
+    {
+      "frame": 12,
+      "speed": 1.35,
+      "raw_duration_s": 14.864,
+      "target_duration_s": 15,
+      "source_sha256": "97cd76a5bf59502585969f352cb69ef9a23301b0a2ef09118de50394d18fb7e7"
+    },
+    {
+      "frame": 13,
+      "speed": 1.266,
+      "raw_duration_s": 12.513,
+      "target_duration_s": 12,
+      "source_sha256": "62b88de17ce8ad583931e7a2535615d3b2e2083d0681ce40d54acace82b83533"
+    },
+    {
+      "frame": 14,
+      "speed": 1.221,
+      "raw_duration_s": 21.786,
+      "target_duration_s": 21,
+      "source_sha256": "47a10550f06a9a5a08889ad87cbf08e8d3c3074f76a923e9029eb360f1749d5d"
     }
   ],
   "leveling": {
@@ -187,12 +208,39 @@
       },
       {
         "frame": 11,
-        "before_lufs": -22.56,
+        "before_lufs": -22.69,
         "gain_db": 0,
-        "after_lufs": -22.56,
-        "after_true_peak_dbfs": -3.21,
+        "after_lufs": -22.69,
+        "after_true_peak_dbfs": -1.27,
         "reused": true,
-        "output_sha256": "d8615566984ca7a380a45173d3e92529ff317169f3e32a55e061c7bafd39c3bf"
+        "output_sha256": "2cae437d79af6188135df3fdc4214170a8ddfbc8fff4a139587a3a04bfd2cce8"
+      },
+      {
+        "frame": 12,
+        "before_lufs": -22.58,
+        "gain_db": 0,
+        "after_lufs": -22.58,
+        "after_true_peak_dbfs": -5.23,
+        "reused": true,
+        "output_sha256": "2d722e131cdbdbb0f51404e22fc570a1aa2879cf8adf7a75ae65be9d340104cb"
+      },
+      {
+        "frame": 13,
+        "before_lufs": -22.57,
+        "gain_db": 0,
+        "after_lufs": -22.57,
+        "after_true_peak_dbfs": -2.21,
+        "reused": true,
+        "output_sha256": "ef8c962dce4ca8836f424c09b73f84fe449e30aace84b7f5a08e668038bd6c56"
+      },
+      {
+        "frame": 14,
+        "before_lufs": -23.46,
+        "gain_db": 1.16,
+        "after_lufs": -22.6,
+        "after_true_peak_dbfs": -1.22,
+        "reused": false,
+        "output_sha256": "044af889900aa1ebd6e00e6a25dced47ff4d86209699c1c2f7706c29d4b111fb"
       }
     ]
   }

@@ -9,6 +9,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const PROJECT = resolve(HERE, "..");
 const SOURCE_AUDIO = join(PROJECT, "assets/audio/narration.mp3");
 const SCRIPT = join(PROJECT, "SCRIPT.md");
+const STORYBOARD = join(PROJECT, "STORYBOARD.md");
 const VOICE_DIR = join(PROJECT, "assets/voice");
 const VOICE_TRANSCRIPT_DIR = join(PROJECT, "transcripts/voice");
 const OUTPUT_META = join(PROJECT, "audio_meta.json");
@@ -34,6 +35,22 @@ function parseScriptLines(markdown) {
     if (spoken) current.text += `${current.text ? " " : ""}${spoken[1].trim()}`;
   }
   return lines;
+}
+
+function parseStoryboardDurations(markdown) {
+  const durations = new Map();
+  let frame = null;
+  for (const line of markdown.split(/\r?\n/)) {
+    const heading = line.match(/^## Frame (\d+)\b/i);
+    if (heading) {
+      frame = Number(heading[1]);
+      continue;
+    }
+    const duration = frame && line.match(/^- duration:\s*([0-9.]+)s\s*$/i);
+    if (duration) durations.set(frame, Number(duration[1]));
+  }
+  if (!durations.size) throw new Error("No frame durations found in STORYBOARD.md");
+  return durations;
 }
 
 function normalizedWord(text) {
@@ -79,8 +96,7 @@ function probeDuration(path) {
 }
 
 const scriptLines = parseScriptLines(readFileSync(SCRIPT, "utf8"));
-const existingMeta = JSON.parse(readFileSync(OUTPUT_META, "utf8"));
-const targetByFrame = new Map(existingMeta.voices.map((voice) => [voice.frame, voice.duration_s]));
+const targetByFrame = parseStoryboardDurations(readFileSync(STORYBOARD, "utf8"));
 
 let offset = 0;
 const allWords = [];
