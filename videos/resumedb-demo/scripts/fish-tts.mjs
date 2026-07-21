@@ -5,7 +5,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 const MODEL = "s2.1-pro-free";
-const DEFAULT_VOICE = "802e3bc2b27e49c2995d23ef70e6ac89";
+const DEFAULT_VOICE = "933563129e564b19a115bedd57b7406a";
 
 function valueFor(flag, fallback) {
   const index = process.argv.indexOf(flag);
@@ -18,7 +18,7 @@ function extractNarration(markdown) {
     .filter((line) => /^ {4}\S/.test(line))
     .map((line) => line.trim());
   if (!lines.length) throw new Error("No indented narration lines found in SCRIPT.md");
-  return `[confident] ${lines.join("\n\n")}`;
+  return lines.join("\n\n");
 }
 
 const apiKey = process.env.FISH_API_KEY;

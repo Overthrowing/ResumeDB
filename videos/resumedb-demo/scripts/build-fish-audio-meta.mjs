@@ -20,8 +20,13 @@ function parseScriptLines(markdown) {
   for (const line of markdown.split(/\r?\n/)) {
     const heading = line.match(/^## .*\(Frame (\d+)\)/i);
     if (heading) {
-      current = { frame: Number(heading[1]), text: "" };
+      current = { frame: Number(heading[1]), text: "", captionText: "" };
       lines.push(current);
+      continue;
+    }
+    const captionText = current && line.match(/^\*\*Caption text:\*\*\s*(.+)/i);
+    if (captionText) {
+      current.captionText = captionText[1].trim();
       continue;
     }
     const spoken = current && line.match(/^\s{4}(.+)/);
@@ -30,8 +35,25 @@ function parseScriptLines(markdown) {
   return lines;
 }
 
-function scriptWordCount(text) {
-  return (text.match(/[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*/g) || []).length;
+function lexicalWords(text) {
+  return text.match(/[\p{L}\p{N}]+(?:['-][\p{L}\p{N}]+)*/gu) || [];
+}
+
+function normalizedWord(text) {
+  return String(text)
+    .normalize("NFKD")
+    .replace(/\p{M}/gu, "")
+    .replace(/[^\p{L}\p{N}]/gu, "")
+    .toLowerCase();
+}
+
+function findBoundary(words, phrase, fromIndex) {
+  const normalizedPhrase = phrase.map(normalizedWord).filter(Boolean);
+  for (let index = fromIndex; index <= words.length - normalizedPhrase.length; index += 1) {
+    const candidate = words.slice(index, index + normalizedPhrase.length).map((word) => normalizedWord(word.text));
+    if (candidate.every((word, offset) => word === normalizedPhrase[offset])) return index;
+  }
+  throw new Error(`Could not locate narration boundary phrase: ${phrase.join(" ")}`);
 }
 
 function whisperWords(payload) {
@@ -71,20 +93,23 @@ function probeDuration(path) {
 const scriptLines = parseScriptLines(readFileSync(SCRIPT, "utf8"));
 const words = whisperWords(JSON.parse(readFileSync(WHISPER_JSON, "utf8")));
 const sourceDuration = probeDuration(SOURCE_AUDIO);
-const counts = scriptLines.map((line) => scriptWordCount(line.text));
-const expectedBeforeLast = counts.slice(0, -1).reduce((sum, count) => sum + count, 0);
-if (expectedBeforeLast >= words.length) {
-  throw new Error(`Transcript is too short: ${words.length} words for ${expectedBeforeLast} required before the final frame.`);
+const boundaries = [0];
+let searchFrom = 1;
+for (const line of scriptLines.slice(1)) {
+  const phrase = lexicalWords(line.captionText || line.text).slice(0, 2);
+  const boundary = findBoundary(words, phrase, searchFrom);
+  boundaries.push(boundary);
+  searchFrom = boundary + phrase.length;
 }
 
 mkdirSync(VOICE_DIR, { recursive: true });
 
-let cursor = 0;
 const voices = scriptLines.map((line, index) => {
-  const count = index === scriptLines.length - 1 ? words.length - cursor : counts[index];
-  const frameWords = words.slice(cursor, cursor + count);
+  const startIndex = boundaries[index];
+  const endIndex = boundaries[index + 1] ?? words.length;
+  const frameWords = words.slice(startIndex, endIndex);
   const start = index === 0 ? 0 : frameWords[0].start;
-  const nextWord = words[cursor + count];
+  const nextWord = words[endIndex];
   const end = nextWord ? nextWord.start : sourceDuration;
   const duration = Number((end - start).toFixed(3));
   const filename = `${String(line.frame).padStart(2, "0")}.mp3`;
@@ -111,7 +136,6 @@ const voices = scriptLines.map((line, index) => {
     { stdio: "inherit" },
   );
 
-  cursor += count;
   return {
     frame: line.frame,
     path: `assets/voice/${filename}`,
@@ -124,10 +148,6 @@ const voices = scriptLines.map((line, index) => {
     })),
   };
 });
-
-if (cursor !== words.length) {
-  throw new Error(`Frame assignment consumed ${cursor} of ${words.length} transcript words.`);
-}
 
 writeFileSync(OUTPUT_META, `${JSON.stringify({ bgm: null, voices, sfx: [] }, null, 2)}\n`);
 writeFileSync(

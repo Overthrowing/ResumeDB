@@ -1,9 +1,9 @@
 {
   "provider": "fish-audio",
   "model": "s2.1-pro-free",
-  "reference_id": "802e3bc2b27e49c2995d23ef70e6ac89",
+  "reference_id": "933563129e564b19a115bedd57b7406a",
   "format": "mp3",
   "sample_rate": 44100,
-  "sha256": "1b4cfb84483ff49899e660b00dc2f338c130db5a36594b9b92addab9374f7b42",
+  "sha256": "f55622136438afd18ab42b5927b378b7f9df87830d04b362496453a60fff34aa",
   "source_script": "/Users/nathanye/.treehouse/ResumeDB-1059f1/3/ResumeDB/videos/resumedb-demo/SCRIPT.md"
 }
