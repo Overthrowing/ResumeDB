@@ -68,6 +68,7 @@ and turns scattered applications into a focused career campaign.
 5. Show a complete application being typed, not covered by screenshot wipes.
 6. End on the MCP server and bring-your-own-agent advantage before future pacing.
 7. Close the product pitch completely, then use a visually distinct judging appendix to prove how Codex and GPT-5.6 powered the development loop.
+8. Include the explicit judging aside that even the submitted video was created by Codex.
 
 ## Product truth constraints
 

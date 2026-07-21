@@ -1,8 +1,8 @@
 {
   "provider": "fish-audio",
   "model": "s2.1-pro-free",
-  "duration_s": 148.135,
-  "source_duration_s": 148.135,
+  "duration_s": 151.135,
+  "source_duration_s": 151.135,
   "words": [
     {
       "text": "200",
@@ -1556,173 +1556,208 @@
     },
     {
       "text": "Codex's",
-      "start": 131.815,
-      "end": 132.055
+      "start": 131.785,
+      "end": 132.075
     },
     {
       "text": "development",
       "start": 132.135,
-      "end": 132.885
+      "end": 132.825
     },
     {
       "text": "tooling",
-      "start": 132.885,
-      "end": 133.375
+      "start": 132.935,
+      "end": 133.385
     },
     {
       "text": "and",
       "start": 133.395,
-      "end": 133.675
+      "end": 134.035
     },
     {
-      "text": "GPT",
-      "start": 133.675,
-      "end": 133.945
-    },
-    {
-      "text": "5.6's",
-      "start": 133.945,
-      "end": 134.965
+      "text": "GPT-5.6's",
+      "start": 134.035,
+      "end": 135.675
     },
     {
       "text": "persistence",
-      "start": 134.965,
-      "end": 135.925
+      "start": 135.675,
+      "end": 136.475
     },
     {
       "text": "let",
-      "start": 136.165,
-      "end": 136.315
+      "start": 136.805,
+      "end": 136.915
     },
     {
       "text": "us",
-      "start": 136.315,
-      "end": 136.425
+      "start": 136.915,
+      "end": 137.015
     },
     {
       "text": "think",
-      "start": 136.425,
-      "end": 136.625
-    },
-    {
-      "text": "creatively",
-      "start": 136.685,
+      "start": 137.105,
       "end": 137.235
     },
     {
-      "text": "about",
+      "text": "creatively",
       "start": 137.235,
-      "end": 137.495
+      "end": 137.795
+    },
+    {
+      "text": "about",
+      "start": 137.795,
+      "end": 138.035
     },
     {
       "text": "features",
-      "start": 137.685,
-      "end": 138.125
+      "start": 138.185,
+      "end": 138.685
     },
     {
       "text": "and",
-      "start": 138.365,
-      "end": 138.395
+      "start": 138.685,
+      "end": 138.905
     },
     {
       "text": "real",
-      "start": 138.415,
-      "end": 138.645
+      "start": 138.925,
+      "end": 139.235
     },
     {
       "text": "user",
-      "start": 138.735,
-      "end": 138.945
+      "start": 139.235,
+      "end": 139.565
     },
     {
       "text": "workflows",
-      "start": 138.985,
-      "end": 139.605
+      "start": 139.565,
+      "end": 140.255
     },
     {
       "text": "while",
-      "start": 139.605,
-      "end": 139.965
+      "start": 140.285,
+      "end": 140.695
     },
     {
       "text": "agents",
-      "start": 139.965,
-      "end": 140.375
+      "start": 140.695,
+      "end": 141.115
     },
     {
       "text": "debugged,",
-      "start": 140.425,
-      "end": 140.995
+      "start": 141.255,
+      "end": 141.925
     },
     {
       "text": "verified,",
-      "start": 141.105,
-      "end": 141.875
+      "start": 141.965,
+      "end": 142.645
     },
     {
       "text": "and",
-      "start": 141.875,
-      "end": 142.035
+      "start": 142.645,
+      "end": 142.855
     },
     {
       "text": "tested",
-      "start": 142.085,
-      "end": 142.365
+      "start": 142.855,
+      "end": 143.275
     },
     {
       "text": "the",
-      "start": 142.415,
-      "end": 142.565
+      "start": 143.275,
+      "end": 143.415
     },
     {
-      "text": "app,",
-      "start": 142.725,
-      "end": 143.075
+      "text": "app.",
+      "start": 143.505,
+      "end": 143.955
     },
     {
-      "text": "human",
-      "start": 143.255,
-      "end": 143.395
+      "text": "Yes,",
+      "start": 144.105,
+      "end": 144.315
+    },
+    {
+      "text": "even",
+      "start": 144.315,
+      "end": 144.605
+    },
+    {
+      "text": "this",
+      "start": 144.605,
+      "end": 144.895
+    },
+    {
+      "text": "video",
+      "start": 144.895,
+      "end": 145.155
+    },
+    {
+      "text": "was",
+      "start": 145.255,
+      "end": 145.475
+    },
+    {
+      "text": "created",
+      "start": 145.475,
+      "end": 145.985
+    },
+    {
+      "text": "by",
+      "start": 145.985,
+      "end": 146.075
+    },
+    {
+      "text": "Codex.",
+      "start": 146.135,
+      "end": 146.755
+    },
+    {
+      "text": "Human",
+      "start": 146.905,
+      "end": 147.095
     },
     {
       "text": "innovation",
-      "start": 143.395,
-      "end": 144.045
+      "start": 147.105,
+      "end": 147.805
     },
     {
       "text": "and",
-      "start": 144.045,
-      "end": 144.185
+      "start": 147.805,
+      "end": 147.955
     },
     {
-      "text": "taste,",
-      "start": 144.305,
-      "end": 144.685
+      "text": "taste.",
+      "start": 148.055,
+      "end": 148.505
     },
     {
-      "text": "agent-grade",
-      "start": 144.685,
-      "end": 145.385
+      "text": "Agent-grade",
+      "start": 148.745,
+      "end": 149.035
     },
     {
       "text": "production",
-      "start": 145.385,
-      "end": 146.035
+      "start": 149.165,
+      "end": 149.695
     },
     {
       "text": "quality",
-      "start": 146.035,
-      "end": 146.485
+      "start": 149.695,
+      "end": 150.065
     },
     {
       "text": "and",
-      "start": 146.485,
-      "end": 146.675
+      "start": 150.065,
+      "end": 150.225
     },
     {
       "text": "hardening.",
-      "start": 146.675,
-      "end": 147.315
+      "start": 150.225,
+      "end": 150.915
     }
   ]
 }

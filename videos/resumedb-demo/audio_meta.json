@@ -1955,211 +1955,253 @@
     {
       "frame": 14,
       "path": "assets/voice/14.mp3",
-      "duration_s": 16.5,
+      "duration_s": 19.5,
       "words": [
         {
           "id": "fish-14-0",
           "text": "Codex's",
-          "start": 0.18,
-          "end": 0.42
+          "start": 0.15,
+          "end": 0.44
         },
         {
           "id": "fish-14-1",
           "text": "development",
           "start": 0.5,
-          "end": 1.25
+          "end": 1.19
         },
         {
           "id": "fish-14-2",
           "text": "tooling",
-          "start": 1.25,
-          "end": 1.74
+          "start": 1.3,
+          "end": 1.75
         },
         {
           "id": "fish-14-3",
           "text": "and",
           "start": 1.76,
-          "end": 2.04
+          "end": 2.4
         },
         {
           "id": "fish-14-4",
-          "text": "GPT",
-          "start": 2.04,
-          "end": 2.31
+          "text": "GPT-5.6's",
+          "start": 2.4,
+          "end": 4.04
         },
         {
           "id": "fish-14-5",
-          "text": "5.6's",
-          "start": 2.31,
-          "end": 3.33
+          "text": "persistence",
+          "start": 4.04,
+          "end": 4.84
         },
         {
           "id": "fish-14-6",
-          "text": "persistence",
-          "start": 3.33,
-          "end": 4.29
+          "text": "let",
+          "start": 5.17,
+          "end": 5.28
         },
         {
           "id": "fish-14-7",
-          "text": "let",
-          "start": 4.53,
-          "end": 4.68
+          "text": "us",
+          "start": 5.28,
+          "end": 5.38
         },
         {
           "id": "fish-14-8",
-          "text": "us",
-          "start": 4.68,
-          "end": 4.79
-        },
-        {
-          "id": "fish-14-9",
           "text": "think",
-          "start": 4.79,
-          "end": 4.99
-        },
-        {
-          "id": "fish-14-10",
-          "text": "creatively",
-          "start": 5.05,
+          "start": 5.47,
           "end": 5.6
         },
         {
-          "id": "fish-14-11",
-          "text": "about",
+          "id": "fish-14-9",
+          "text": "creatively",
           "start": 5.6,
-          "end": 5.86
+          "end": 6.16
+        },
+        {
+          "id": "fish-14-10",
+          "text": "about",
+          "start": 6.16,
+          "end": 6.4
+        },
+        {
+          "id": "fish-14-11",
+          "text": "features",
+          "start": 6.55,
+          "end": 7.05
         },
         {
           "id": "fish-14-12",
-          "text": "features",
-          "start": 6.05,
-          "end": 6.49
+          "text": "and",
+          "start": 7.05,
+          "end": 7.27
         },
         {
           "id": "fish-14-13",
-          "text": "and",
-          "start": 6.73,
-          "end": 6.76
+          "text": "real",
+          "start": 7.29,
+          "end": 7.6
         },
         {
           "id": "fish-14-14",
-          "text": "real",
-          "start": 6.78,
-          "end": 7.01
+          "text": "user",
+          "start": 7.6,
+          "end": 7.93
         },
         {
           "id": "fish-14-15",
-          "text": "user",
-          "start": 7.1,
-          "end": 7.31
+          "text": "workflows",
+          "start": 7.93,
+          "end": 8.62
         },
         {
           "id": "fish-14-16",
-          "text": "workflows",
-          "start": 7.35,
-          "end": 7.97
+          "text": "while",
+          "start": 8.65,
+          "end": 9.06
         },
         {
           "id": "fish-14-17",
-          "text": "while",
-          "start": 7.97,
-          "end": 8.33
+          "text": "agents",
+          "start": 9.06,
+          "end": 9.48
         },
         {
           "id": "fish-14-18",
-          "text": "agents",
-          "start": 8.33,
-          "end": 8.74
+          "text": "debugged,",
+          "start": 9.62,
+          "end": 10.29
         },
         {
           "id": "fish-14-19",
-          "text": "debugged,",
-          "start": 8.79,
-          "end": 9.36
+          "text": "verified,",
+          "start": 10.33,
+          "end": 11.01
         },
         {
           "id": "fish-14-20",
-          "text": "verified,",
-          "start": 9.47,
-          "end": 10.24
+          "text": "and",
+          "start": 11.01,
+          "end": 11.22
         },
         {
           "id": "fish-14-21",
-          "text": "and",
-          "start": 10.24,
-          "end": 10.4
+          "text": "tested",
+          "start": 11.22,
+          "end": 11.64
         },
         {
           "id": "fish-14-22",
-          "text": "tested",
-          "start": 10.45,
-          "end": 10.73
+          "text": "the",
+          "start": 11.64,
+          "end": 11.78
         },
         {
           "id": "fish-14-23",
-          "text": "the",
-          "start": 10.78,
-          "end": 10.93
+          "text": "app.",
+          "start": 11.87,
+          "end": 12.32
         },
         {
           "id": "fish-14-24",
-          "text": "app,",
-          "start": 11.09,
-          "end": 11.44
+          "text": "Yes,",
+          "start": 12.47,
+          "end": 12.68
         },
         {
           "id": "fish-14-25",
-          "text": "human",
-          "start": 11.62,
-          "end": 11.76
+          "text": "even",
+          "start": 12.68,
+          "end": 12.97
         },
         {
           "id": "fish-14-26",
-          "text": "innovation",
-          "start": 11.76,
-          "end": 12.41
+          "text": "this",
+          "start": 12.97,
+          "end": 13.26
         },
         {
           "id": "fish-14-27",
-          "text": "and",
-          "start": 12.41,
-          "end": 12.55
+          "text": "video",
+          "start": 13.26,
+          "end": 13.52
         },
         {
           "id": "fish-14-28",
-          "text": "taste,",
-          "start": 12.67,
-          "end": 13.05
+          "text": "was",
+          "start": 13.62,
+          "end": 13.84
         },
         {
           "id": "fish-14-29",
-          "text": "agent-grade",
-          "start": 13.05,
-          "end": 13.75
+          "text": "created",
+          "start": 13.84,
+          "end": 14.35
         },
         {
           "id": "fish-14-30",
-          "text": "production",
-          "start": 13.75,
-          "end": 14.4
+          "text": "by",
+          "start": 14.35,
+          "end": 14.44
         },
         {
           "id": "fish-14-31",
-          "text": "quality",
-          "start": 14.4,
-          "end": 14.85
+          "text": "Codex.",
+          "start": 14.5,
+          "end": 15.12
         },
         {
           "id": "fish-14-32",
-          "text": "and",
-          "start": 14.85,
-          "end": 15.04
+          "text": "Human",
+          "start": 15.27,
+          "end": 15.46
         },
         {
           "id": "fish-14-33",
+          "text": "innovation",
+          "start": 15.47,
+          "end": 16.17
+        },
+        {
+          "id": "fish-14-34",
+          "text": "and",
+          "start": 16.17,
+          "end": 16.32
+        },
+        {
+          "id": "fish-14-35",
+          "text": "taste.",
+          "start": 16.42,
+          "end": 16.87
+        },
+        {
+          "id": "fish-14-36",
+          "text": "Agent-grade",
+          "start": 17.11,
+          "end": 17.4
+        },
+        {
+          "id": "fish-14-37",
+          "text": "production",
+          "start": 17.53,
+          "end": 18.06
+        },
+        {
+          "id": "fish-14-38",
+          "text": "quality",
+          "start": 18.06,
+          "end": 18.43
+        },
+        {
+          "id": "fish-14-39",
+          "text": "and",
+          "start": 18.43,
+          "end": 18.59
+        },
+        {
+          "id": "fish-14-40",
           "text": "hardening.",
-          "start": 15.04,
-          "end": 15.68
+          "start": 18.59,
+          "end": 19.28
         }
       ]
     }

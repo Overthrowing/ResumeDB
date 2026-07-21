@@ -373,7 +373,7 @@ view is recognizable. No connector crosses text or UI.
 
 - File: `compositions/frames/14-codex-dogfood-meta.html`
 - Composition ID: `14-codex-dogfood-meta`
-- Duration: 16.500s
+- Duration: 19.500s
 - Focal: a restrained human-agent thesis for the judging appendix.
 
 ### Layout
@@ -388,10 +388,11 @@ show a product CTA, fake video editor, loop diagram, or connector paths.
 
 - 0.00-1.20: Establish the split thesis and appendix slug.
 - 1.20-6.40: Select the human decisions while agent outcomes lock in on the opposite side.
-- 6.40-8.10: Recede both columns with a decisive focus dip.
-- 8.10-11.60: Reveal `Human innovation and taste.`
-- 10.60-13.80: Reveal `Agent-grade production quality and hardening.`
-- 13.80-16.500: Hold the final judging thesis completely still.
+- 6.40-12.30: Hold the completed human and agent work while the narration reaches the knowing video-production aside.
+- 12.30-13.30: Recede both columns as `Yes, even this video was created by Codex` lands.
+- 13.30-15.20: Establish the centered build-story thesis.
+- 15.20-17.10: Reveal `Human innovation and taste.`
+- 17.10-19.500: Reveal `Agent-grade production quality and hardening.` and finish on the completed thesis.
 
 ### Acceptance
 

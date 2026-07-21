@@ -1,6 +1,6 @@
 ---
 format: 1920x1080
-duration: 148.135s
+duration: 151.135s
 message: "One verified experience bank becomes a complete internship operating system"
 arc: pain to proof to category ownership
 audience: online hackathon judges
@@ -216,11 +216,11 @@ Beat 3: The workstation shutters into a full-width matrix where every registered
 - persuasion: Human-agent complementarity
 - blueprint: split-thesis-to-statement
 - src: `compositions/frames/14-codex-dogfood-meta.html`
-- duration: 16.500s
-- poster: 14.3s
+- duration: 19.500s
+- poster: 17.3s
 
 Beat 1: The human side selects student empathy, product direction, user workflows, and creative taste while agent status stamps lock in build, debug, verify, test, and harden.
-Beat 2: Both columns recede, removing implementation detail and leaving the final judging thesis.
+Beat 2: The narrator lands the knowing aside, "Yes, even this video was created by Codex," while both columns recede.
 Beat 3: "Human innovation and taste" and "Agent-grade production quality and hardening" reveal separately, then hold without another product CTA.
 
 ## Illustrative Sankey data

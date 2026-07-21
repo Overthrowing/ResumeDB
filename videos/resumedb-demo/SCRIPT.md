@@ -100,7 +100,7 @@
 
 ## Line 14 - Human innovation, agent hardening (Frame 14)
 
-**Delivery:** Sincere and confident. Avoid a victory-lap tone. Give the final two sentences room and end with firm conviction.
-**Caption text:** Codex's development tooling and GPT-5.6's persistence let us think creatively about features and real user workflows while agents debugged, verified, and tested the app. Human innovation and taste. Agent-grade production quality and hardening.
+**Delivery:** Sincere and confident. Let the meta aside land lightly, then give the final two sentences room and end with firm conviction.
+**Caption text:** Codex's development tooling and GPT-5.6's persistence let us think creatively about features and real user workflows while agents debugged, verified, and tested the app. Yes, even this video was created by Codex. Human innovation and taste. Agent-grade production quality and hardening.
 
-    [confident, sincere] Codex's development tooling and G P T five point six's persistence let us think creatively about features and real user workflows while agents debugged, verified, and tested the app. [measured, proud] Human innovation and taste. [firm, resonant] Agent-grade production quality and hardening.
+    [confident, sincere] Codex's development tooling and G P T five point six's persistence let us think creatively about features and real user workflows while agents debugged, verified, and tested the app. [light, knowing] Yes, even this video was created by Codex. [measured, proud] Human innovation and taste. [firm, resonant] Agent-grade production quality and hardening.
