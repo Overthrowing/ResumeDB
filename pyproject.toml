@@ -2,6 +2,8 @@
 name = "resumedb"
 version = "0.1.0"
 description = "Agent-native internship discovery, tailoring, and application management"
+license = "AGPL-3.0-only"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.139.0",
