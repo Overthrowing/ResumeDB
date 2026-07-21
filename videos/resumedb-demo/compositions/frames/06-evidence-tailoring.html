@@ -1,15 +1,99 @@
 <template>
   <style>
-    @font-face{font-family:"Sketch Serif";src:local("Georgia")}@font-face{font-family:"Sketch Sans";src:local("Arial")}
-    #root{position:relative;width:1920px;height:1080px;overflow:hidden}.bg{position:absolute;inset:0;background:#f3f2f2}.scene{position:absolute;inset:0;padding:68px 82px 184px;color:#201f1d;font-family:"Sketch Sans",sans-serif}.k{margin:0 0 12px;color:#6d28d9;font-size:22px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}h1{margin:0;font:400 82px/1 "Sketch Serif",serif;letter-spacing:-.025em}h2{margin:0;font:600 34px/1.15 "Sketch Serif",serif}p{margin:0;font-size:23px;line-height:1.4}.canvas{display:grid;grid-template-rows:auto 1fr auto;gap:22px;height:610px;margin-top:44px}.card{padding:24px;border:2px solid rgba(32,31,29,.35);border-radius:10px;background:#f4e9d9}.split{display:grid;grid-template-columns:1fr 70px 1fr;align-items:stretch}.accent{border-color:#6d28d9;background:rgba(109,40,217,.08)}.label{color:#6d28d9;font-size:17px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.arrow{display:flex;align-items:center;justify-content:center;color:#6d28d9;font-size:40px;font-weight:700}.pill{display:inline-flex;padding:9px 16px;border:2px solid #6d28d9;border-radius:999px;color:#6d28d9;font-size:17px;font-weight:700;text-transform:uppercase}.band{position:absolute;right:82px;bottom:54px;left:82px;height:92px;border-top:1px solid rgba(32,31,29,.18);color:#8b8782;font-size:16px;line-height:92px;letter-spacing:.08em;text-transform:uppercase}
+    @font-face{font-family:"EB Garamond";src:url("assets/fonts/eb-garamond-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"EB Garamond";src:url("assets/fonts/eb-garamond-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:"Inter";src:url("assets/fonts/inter-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"Inter";src:url("assets/fonts/inter-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:"JetBrains Mono";src:url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    #root{position:relative;width:1920px;height:1080px;overflow:hidden;container-type:size}
+    .f06-bg{position:absolute;inset:0;background:#f3f2f2}
+    .f06-scene{position:absolute;inset:0;padding:58px 76px 185px;color:#201f1d;font-family:"Inter",sans-serif}
+    .f06-kicker{margin:0 0 8px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:20px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+    .f06-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:48px}
+    .f06-title{margin:0;font-family:"EB Garamond",serif;font-size:72px;font-weight:400;line-height:.98;letter-spacing:-.022em}
+    .f06-proof{margin-bottom:8px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+    .f06-stage{position:relative;overflow:hidden;height:650px;margin-top:28px;border:1px solid rgba(32,31,29,.18);border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(32,31,29,.08),0 12px 28px rgba(32,31,29,.06);perspective:1600px}
+    .f06-product{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;filter:saturate(.84) contrast(.94);opacity:.68}
+    .f06-product-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(243,242,242,.08) 0%,rgba(243,242,242,.24) 38%,rgba(243,242,242,.96) 72%,#f3f2f2 100%)}
+    .f06-browser{position:absolute;top:18px;right:18px;left:18px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid rgba(32,31,29,.12);border-radius:8px;background:rgba(243,242,242,.92);backdrop-filter:blur(9px);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .f06-browser-dots{display:flex;gap:7px}.f06-browser-dots i{display:block;width:8px;height:8px;border-radius:50%;background:rgba(32,31,29,.24)}
+    .f06-requirements{position:absolute;top:80px;right:32px;left:32px;display:flex;align-items:center;gap:12px}
+    .f06-role{margin-right:auto;padding:11px 14px;border:1px solid rgba(32,31,29,.16);border-radius:8px;background:rgba(243,242,242,.95);font-family:"EB Garamond",serif;font-size:26px;font-weight:600}
+    .f06-tag{padding:10px 14px;border:1px solid rgba(32,31,29,.16);border-radius:999px;background:#f4e9d9;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.04em}
+    .f06-compare{position:absolute;right:34px;bottom:62px;left:34px;display:grid;grid-template-columns:1fr 78px 1fr;align-items:stretch;height:330px;transform-style:preserve-3d}
+    .f06-card{position:relative;padding:22px 24px;border:1px solid rgba(32,31,29,.16);border-radius:10px;background:rgba(255,255,255,.97);box-shadow:0 12px 30px rgba(32,31,29,.08)}
+    .f06-card-before{transform-origin:right center}.f06-card-after{transform-origin:left center;border-color:rgba(109,40,217,.34)}
+    .f06-card-label{display:inline-flex;padding:6px 10px;border-radius:999px;background:#f4e9d9;color:#5e554a;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+    .f06-card-after .f06-card-label{background:rgba(109,40,217,.09);color:#6d28d9}
+    .f06-bullet{position:relative;margin:20px 0 0;font-family:"EB Garamond",serif;font-size:32px;font-weight:600;line-height:1.18;letter-spacing:-.008em}
+    .f06-body{margin:16px 0 0;color:#77716a;font-size:14px;line-height:1.45}
+    .f06-highlight{position:relative;z-index:1;white-space:nowrap}.f06-highlight i{position:absolute;right:-3px;bottom:1px;left:-3px;height:8px;border-radius:99px;background:rgba(182,130,53,.46);transform-origin:left center;z-index:-1}
+    .f06-arrow{display:grid;place-items:center;color:#6d28d9;font-family:"EB Garamond",serif;font-size:50px}
+    .f06-source{position:absolute;bottom:14px;display:flex;align-items:center;gap:8px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+    .f06-source::before{content:"✓";display:grid;width:19px;height:19px;place-items:center;border-radius:50%;background:#6d28d9;color:#fff;font-size:11px}
+    .f06-source-a{left:24px}.f06-source-b{left:228px}.f06-source-c{right:24px}
+    .f06-connectors{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
+    .f06-connectors path{fill:none;stroke:#6d28d9;stroke-width:2.5;stroke-linecap:round;opacity:.85}
+    .f06-evidence-badge{position:absolute;right:52px;bottom:23px;padding:9px 13px;border:1px solid rgba(109,40,217,.36);border-radius:999px;background:#f3f2f2;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;z-index:8}
   </style>
-  <div data-hf-id="hf-41b4" id="root" data-composition-id="06-evidence-tailoring" data-start="0" data-duration="12" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-o8au" id="f06-evidence-tailoring-bg" class="clip bg" data-start="0" data-duration="12" data-track-index="0"></div>
-    <main data-hf-id="hf-o1en" id="f06-evidence-tailoring-scene" class="clip scene" data-start="0" data-duration="12" data-track-index="1">
-      <p data-hf-id="hf-4tjh" class="k">Evidence-backed tailoring</p><h1 data-hf-id="hf-2zpk">Stronger language, grounded in truth</h1>
-      <div data-hf-id="hf-nq1o" class="canvas"><div data-hf-id="hf-vn2y" class="card"><span data-hf-id="hf-41qv" class="label">Northstar requirement</span><h2 data-hf-id="hf-tvny" style="margin-top:10px">Build reliable product experiences with React and TypeScript</h2></div><div data-hf-id="hf-hgc8" class="split"><div data-hf-id="hf-i08u" class="card"><span data-hf-id="hf-fmeu" class="label">Before</span><h2 data-hf-id="hf-6bcr" style="margin-top:22px">Built TypeScript and React workflows...</h2></div><div data-hf-id="hf-drib" class="arrow">→</div><div data-hf-id="hf-k1f8" class="card accent"><span data-hf-id="hf-zrkb" class="label">Tailored</span><h2 data-hf-id="hf-mk7d" style="margin-top:22px">Shipped reliable TypeScript and React product workflows...</h2></div></div><div data-hf-id="hf-iejv" class="card"><span data-hf-id="hf-rhmf" class="pill">Supported by canonical experience</span><p data-hf-id="hf-zztb" style="margin-top:14px">Every stronger phrase traces back to a verified student fact.</p></div></div>
-      <div data-hf-id="hf-nqug" class="band">Semantic fit with visible provenance - before and after</div>
+  <div id="root" data-composition-id="06-evidence-tailoring" data-start="0" data-duration="9.24" data-width="1920" data-height="1080">
+    <div id="f06-background" class="clip f06-bg" data-start="0" data-duration="9.24" data-track-index="0"></div>
+    <main id="f06-scene" class="clip f06-scene" data-start="0" data-duration="9.24" data-track-index="1">
+      <p class="f06-kicker">✱ Evidence-backed tailoring</p>
+      <div class="f06-heading"><h1 class="f06-title">Stronger language, grounded in truth</h1><span class="f06-proof">Northstar Robotics - live proof</span></div>
+      <section class="f06-stage" id="f06-stage">
+        <img class="f06-product" src="assets/07-evidence-tailoring.png" alt="ResumeDB evidence tailoring view">
+        <div class="f06-product-shade"></div>
+        <div class="f06-browser"><span class="f06-browser-dots"><i></i><i></i><i></i></span><span>Application workbench / evidence tailoring</span><span>Ready for review</span></div>
+        <div class="f06-requirements">
+          <strong class="f06-role">Software Engineering Intern</strong>
+          <span class="f06-tag">React</span><span class="f06-tag">TypeScript</span><span class="f06-tag">Python</span><span class="f06-tag">PostgreSQL</span>
+        </div>
+        <div class="f06-compare">
+          <article class="f06-card f06-card-before" id="f06-before">
+            <span class="f06-card-label">Before</span>
+            <p class="f06-bullet">Built React workflows for campus tools.</p>
+            <p class="f06-body">Accurate, but generic. The job-specific engineering signal is buried.</p>
+          </article>
+          <div class="f06-arrow">→</div>
+          <article class="f06-card f06-card-after" id="f06-after">
+            <span class="f06-card-label">Tailored</span>
+            <p class="f06-bullet">Shipped <span class="f06-highlight">reliable React + TypeScript<i></i></span> product workflows.</p>
+            <p class="f06-body">Role language improves while every claim stays tied to canonical evidence.</p>
+            <span class="f06-source f06-source-a">Experience</span>
+            <span class="f06-source f06-source-b">Project</span>
+            <span class="f06-source f06-source-c">Impact</span>
+          </article>
+        </div>
+        <svg class="f06-connectors" viewBox="0 0 1768 650" preserveAspectRatio="none" aria-hidden="true">
+          <path id="f06-path-a" d="M1014 568 C1030 505 1052 468 1118 438"></path>
+          <path id="f06-path-b" d="M1222 568 C1238 512 1284 480 1334 438"></path>
+          <path id="f06-path-c" d="M1646 568 C1624 510 1576 475 1518 438"></path>
+        </svg>
+        <span class="f06-evidence-badge" id="f06-evidence-badge">3 canonical sources linked</span>
+      </section>
     </main>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script><script>window.__timelines=window.__timelines||{};window.__timelines["06-evidence-tailoring"]=gsap.timeline({paused:true});</script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines=window.__timelines||{};
+      var tl=gsap.timeline({paused:true});
+      var paths=gsap.utils.toArray("#f06-scene .f06-connectors path");
+      paths.forEach(function(path){var length=path.getTotalLength();gsap.set(path,{strokeDasharray:length,strokeDashoffset:length});});
+      tl.fromTo("#f06-stage",{scale:.96,opacity:0},{scale:1,opacity:1,duration:.78,ease:"power3.out"},0);
+      tl.fromTo("#f06-scene .f06-role",{y:-18,opacity:0},{y:0,opacity:1,duration:.55,ease:"power3.out"},.85);
+      tl.fromTo("#f06-scene .f06-tag",{y:-18,opacity:0},{y:0,opacity:1,duration:.42,ease:"power3.out",stagger:.42},2.0);
+      tl.to("#f06-scene .f06-product",{filter:"saturate(.65) contrast(.92) blur(2px)",opacity:.46,duration:.65,ease:"power2.inOut"},3.55);
+      tl.fromTo("#f06-before",{x:-180,scale:.9,rotationY:9,opacity:0},{x:0,scale:1,rotationY:4,opacity:1,duration:.8,ease:"power3.out"},4.4);
+      tl.fromTo("#f06-after",{x:180,scale:.9,rotationY:-9,opacity:0},{x:0,scale:1,rotationY:-4,opacity:1,duration:.8,ease:"power3.out"},4.58);
+      tl.fromTo("#f06-scene .f06-arrow",{scale:.7,opacity:0},{scale:1,opacity:1,duration:.46,ease:"power3.out"},5.05);
+      tl.fromTo("#f06-scene .f06-highlight i",{scaleX:0},{scaleX:1,duration:.72,ease:"power2.out",transformOrigin:"left center"},5.55);
+      tl.to(paths,{strokeDashoffset:0,duration:.8,ease:"power2.inOut",stagger:.2},7.1);
+      tl.fromTo("#f06-scene .f06-source",{y:12,opacity:0},{y:0,opacity:1,duration:.42,ease:"power3.out",stagger:.18},7.18);
+      tl.fromTo("#f06-evidence-badge",{scale:.88,opacity:0},{scale:1,opacity:1,duration:.52,ease:"power3.out"},8.05);
+      tl.to("#f06-scene .f06-product",{filter:"saturate(.84) contrast(.94) blur(0px)",opacity:.68,duration:.6,ease:"power2.inOut"},8.35);
+      window.__timelines["06-evidence-tailoring"]=tl;
+    })();
+  </script>
 </template>
