@@ -594,6 +594,21 @@ class DataRepo:
                 })
         return out
 
+    def save_entry_proposal(self, entry_id: str, data: dict) -> dict:
+        """Persist a reviewable agent proposal without changing canonical facts."""
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", entry_id):
+            raise DataRepoError(f"bad entry id: {entry_id!r}")
+        if data.get("type") not in ENTRY_TYPES:
+            raise DataRepoError(f"type must be one of {sorted(ENTRY_TYPES)}")
+        if not str(data.get("title") or "").strip():
+            raise DataRepoError("title is required")
+        proposal_id = f"connected-agent-{entry_id}"
+        path = self.root / "proposals" / f"{proposal_id}.yaml"
+        payload = {"target": f"db/{entry_id}.yaml", **data}
+        _dump(payload, path)
+        gitops.checkpoint(self.root, "db", f"propose entry {entry_id}")
+        return {"name": proposal_id, "target": payload["target"], "data": payload, "error": None}
+
     def _proposal_path(self, name: str) -> Path:
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name):
             raise DataRepoError(f"bad proposal name: {name!r}")

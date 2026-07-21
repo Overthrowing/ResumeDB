@@ -5,6 +5,7 @@ description = "Agent-native internship discovery, tailoring, and application man
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.139.0",
+  "mcp>=1.28.1",
   "openai-codex==0.1.0b2",
   "pypdf>=6.7.0",
   "python-multipart>=0.0.22",

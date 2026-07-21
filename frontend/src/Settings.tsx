@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import AgentConnections from './AgentConnections'
 import { api, type Health, type ModelConfig, type Profile } from './api'
 import {
   DEMO_COMPANY,
@@ -219,6 +220,8 @@ export default function Settings({
           {demoStatus && <div className="demo-tools-status" role="status">{demoStatus}</div>}
         </section>
 
+        <AgentConnections />
+
         <div>
           <div className="card-kicker">Canonical facts</div>
           <h3 style={{ margin: '3px 0 var(--space-2)', fontSize: 24 }}>Application profile</h3>
@@ -380,19 +383,19 @@ function ModelSettings({ provider, onError }: { provider: string; onError: (e: s
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
         {MODEL_ROWS.map((r) => (
-          <div key={r.model} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 190, flex: 'none' }}>
+          <div className="model-config-row" key={r.model}>
+            <div className="model-config-label">
               <div style={{ fontSize: 13 }}>{r.label}</div>
               <div className="text-muted" style={{ fontSize: 11 }}>{r.hint}</div>
             </div>
-            <select className="input" style={{ width: 130 }} value={models[r.model] ?? ''} onChange={(e) => set(r.model, e.target.value)}>
+            <select className="input model-config-select" value={models[r.model] ?? ''} onChange={(e) => set(r.model, e.target.value)}>
               {modelOptions.map((m) => (
                 <option key={m} value={m}>
                   {m === '' ? 'default' : m}
                 </option>
               ))}
             </select>
-            <select className="input" style={{ width: 130 }} value={models[r.effort] ?? ''} onChange={(e) => set(r.effort, e.target.value)}>
+            <select className="input model-config-select" value={models[r.effort] ?? ''} onChange={(e) => set(r.effort, e.target.value)}>
               {EFFORT_OPTIONS.map((e) => (
                 <option key={e} value={e}>
                   {e === '' ? 'default effort' : e}

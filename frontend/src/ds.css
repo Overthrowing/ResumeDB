@@ -177,6 +177,10 @@ html, body, #root { height: 100%; }
 *::-webkit-scrollbar-track { background: transparent; }
 .rs-scroll { overflow-y: auto; }
 
+.model-config-row { display: flex; align-items: center; gap: 10px; }
+.model-config-label { width: 190px; flex: none; }
+.model-config-select { width: 130px; }
+
 .nav-item {
   display: flex; align-items: center; gap: 11px; padding: 9px 12px;
   border-radius: var(--radius-md); cursor: pointer; font-size: 14px;
@@ -184,6 +188,18 @@ html, body, #root { height: 100%; }
 }
 .nav-item:hover { background: color-mix(in srgb, var(--color-text) 5%, transparent); }
 .nav-item.active { color: var(--color-accent-800); background: var(--color-accent-100); }
+
+@media (max-width: 640px) {
+  .app-sidebar { width: 58px !important; padding: var(--space-3) 7px !important; }
+  .app-brand { justify-content: center; padding-inline: 0 !important; }
+  .app-brand-label, .app-user-copy, .nav-label, .nav-extra { display: none; }
+  .app-sidebar .nav-item { justify-content: center; gap: 0; min-height: 40px; padding: 9px 0; }
+  .app-user { justify-content: center; padding-inline: 0 !important; }
+  .app-main .rs-scroll { padding: var(--space-4) !important; }
+  .model-config-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .model-config-label { width: auto; grid-column: 1 / -1; }
+  .model-config-select { width: 100%; min-width: 0; }
+}
 
 .sec-item {
   padding: 8px 11px; border-radius: var(--radius-md); cursor: pointer; font-size: 14px;
@@ -523,6 +539,95 @@ html, body, #root { height: 100%; }
 .demo-tools-status {
   border-left: 2px solid var(--color-accent); padding: 7px 10px;
   background: color-mix(in srgb, var(--color-accent-100) 65%, transparent); font-size: 12px;
+}
+
+.agent-connect-card {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-divider));
+  background:
+    radial-gradient(circle at 96% 0%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 38%),
+    var(--color-surface);
+}
+.agent-connect-header { display: flex; justify-content: space-between; gap: var(--space-4); align-items: flex-start; }
+.agent-connect-header h3 { margin: 0; font-size: 24px; }
+.agent-connect-header .card-body { max-width: 540px; margin-bottom: 0; }
+.agent-connect-status {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: var(--color-neutral-600);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  font-size: 11px;
+  font-weight: 650;
+}
+.agent-connect-status span { width: 7px; height: 7px; border-radius: 50%; background: var(--color-neutral-400); }
+.agent-connect-status.is-connected { color: var(--color-accent-700); border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-divider)); }
+.agent-connect-status.is-connected span { background: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 14%, transparent); }
+.agent-connect-loading { margin-top: var(--space-3); color: var(--color-neutral-600); font-size: 13px; }
+.agent-connect-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-top: var(--space-4);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-divider);
+}
+.agent-connect-summary > div { display: flex; flex-direction: column; gap: 1px; padding: 12px 14px; background: var(--color-surface); }
+.agent-connect-summary strong { color: var(--color-neutral-900); font-size: 18px; line-height: 1; }
+.agent-connect-summary span { color: var(--color-neutral-600); font-size: 10px; }
+.agent-connect-empty {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: 13px 14px;
+  border: 1px dashed color-mix(in srgb, var(--color-accent) 35%, var(--color-divider));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-accent) 4%, var(--color-surface));
+}
+.agent-connect-empty strong, .agent-connect-step strong, .agent-connect-prompt strong { font-size: 13px; }
+.agent-connect-empty p, .agent-connect-step p, .agent-connect-prompt p { margin: 2px 0 0; color: var(--color-neutral-600); font-size: 11px; line-height: 1.45; }
+.agent-connect-setup { display: flex; flex-direction: column; gap: 8px; margin-top: var(--space-3); }
+.agent-connect-notice {
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  background: color-mix(in srgb, #f59e0b 12%, var(--color-surface));
+  color: color-mix(in srgb, #92400e 82%, var(--color-neutral-900));
+  font-size: 11px;
+}
+.agent-connect-step { display: grid; grid-template-columns: 25px 1fr auto; align-items: center; gap: 9px; margin-top: 3px; }
+.agent-connect-step-number { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--color-accent); color: white; font-size: 11px; font-weight: 750; }
+.agent-connect-code {
+  overflow-x: auto;
+  margin: 0;
+  border: 1px solid #202633;
+  border-radius: var(--radius-md);
+  padding: 11px 12px;
+  background: #10141d;
+  color: #e9edf5;
+  font: 11px/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.agent-connect-prompt { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); margin-top: 2px; border: 1px solid var(--color-divider); border-radius: var(--radius-md); padding: 10px 12px; }
+.agent-connect-footer { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); margin-top: var(--space-3); color: var(--color-neutral-600); font-size: 10px; }
+.agent-connect-revoke { color: #b42318; }
+.agent-connect-error { margin-top: var(--space-3); color: #b42318; font-size: 12px; }
+
+@media (max-width: 640px) {
+  .agent-connect-header, .agent-connect-empty, .agent-connect-footer { align-items: stretch; flex-direction: column; }
+  .agent-connect-status { align-self: flex-start; }
+  .agent-connect-summary { grid-template-columns: 1fr; }
+  .agent-connect-step { grid-template-columns: 25px 1fr; }
+  .agent-connect-step .btn { grid-column: 2; justify-self: start; }
+  .agent-connect-prompt { align-items: flex-start; flex-direction: column; }
 }
 
 /* Standalone fake applicant tracking system. */
