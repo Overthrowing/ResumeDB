@@ -14,12 +14,9 @@ type DemoStep = DemoDestination & {
 
 type TourPhase = 'navigation' | 'content'
 
-const NAVIGATION_CLICK_MS = 2200
-const NAV_LABELS: Record<DemoDestination['screen'], string> = {
-  dashboard: 'Home',
-  agent: 'Career Agent',
-  applications: 'Applications',
-}
+const NAVIGATION_TRANSITION_MS = 760
+const NAVIGATION_CURSOR_CLICK_MS = 540
+const CONTENT_CURSOR_CLICK_MS = 720
 
 const STEPS: DemoStep[] = [
   {
@@ -61,7 +58,15 @@ const STEPS: DemoStep[] = [
   },
 ]
 
-type FocusRect = { top: number; left: number; right: number; bottom: number; width: number; height: number }
+type FocusRect = {
+  selector: string
+  top: number
+  left: number
+  right: number
+  bottom: number
+  width: number
+  height: number
+}
 
 export default function GuidedDemo({
   onNavigate,
@@ -91,7 +96,7 @@ export default function GuidedDemo({
       currentScreen.current = step.screen
       onNavigate(destination)
       setPhase('content')
-    }, NAVIGATION_CLICK_MS)
+    }, NAVIGATION_TRANSITION_MS)
     return () => window.clearTimeout(timer)
   }, [index, onNavigate, step.screen, step.view])
 
@@ -102,7 +107,7 @@ export default function GuidedDemo({
       if (stopped) return
       const target = document.querySelector<HTMLElement>(targetSelector)
       if (!target) {
-        setFocus(null)
+        setFocus((current) => current?.selector === targetSelector ? null : current)
         return
       }
       if (!didScroll) {
@@ -111,6 +116,7 @@ export default function GuidedDemo({
       }
       const rect = target.getBoundingClientRect()
       const next = {
+        selector: targetSelector,
         top: rect.top,
         left: rect.left,
         right: rect.right,
@@ -121,6 +127,7 @@ export default function GuidedDemo({
       setFocus((current) => {
         if (
           current
+          && current.selector === next.selector
           && Math.abs(current.top - next.top) < 0.5
           && Math.abs(current.left - next.left) < 0.5
           && Math.abs(current.width - next.width) < 0.5
@@ -145,7 +152,8 @@ export default function GuidedDemo({
   useEffect(() => {
     setCursorClick(false)
     if (!focus) return
-    const timer = window.setTimeout(() => setCursorClick(true), 720)
+    const delay = phase === 'navigation' ? NAVIGATION_CURSOR_CLICK_MS : CONTENT_CURSOR_CLICK_MS
+    const timer = window.setTimeout(() => setCursorClick(true), delay)
     return () => window.clearTimeout(timer)
   }, [index, phase, focus])
 
@@ -168,33 +176,27 @@ export default function GuidedDemo({
     }
   }, [focus])
 
+  const contentPadded = phase === 'content' && focus?.selector === targetSelector ? padded : null
+
   const coachPosition = useMemo(() => {
     const width = Math.min(360, window.innerWidth - 32)
-    if (!padded) return { width, left: (window.innerWidth - width) / 2, top: window.innerHeight / 2 - 130 }
-    const rightSpace = window.innerWidth - padded.right
+    if (!contentPadded) return { width, left: (window.innerWidth - width) / 2, top: window.innerHeight / 2 - 130 }
+    const rightSpace = window.innerWidth - contentPadded.right
     const left = rightSpace >= width + 32
-      ? padded.right + 22
-      : padded.left >= width + 32
-        ? padded.left - width - 22
-        : Math.max(16, Math.min(window.innerWidth - width - 16, padded.left))
-    const below = padded.bottom + 18
+      ? contentPadded.right + 22
+      : contentPadded.left >= width + 32
+        ? contentPadded.left - width - 22
+        : Math.max(16, Math.min(window.innerWidth - width - 16, contentPadded.left))
+    const below = contentPadded.bottom + 18
     const top = below + 250 < window.innerHeight
       ? below
-      : Math.max(16, Math.min(window.innerHeight - 260, padded.top - 244))
+      : Math.max(16, Math.min(window.innerHeight - 260, contentPadded.top - 244))
     return { width, left, top }
-  }, [padded])
+  }, [contentPadded])
 
   const cursor = padded
     ? { left: padded.left + Math.min(Math.max(32, (padded.right - padded.left) * 0.7), padded.right - padded.left - 20), top: padded.top + Math.min(42, padded.bottom - padded.top - 16) }
     : { left: window.innerWidth / 2, top: window.innerHeight / 2 }
-
-  const coachCopy = phase === 'navigation'
-    ? {
-        eyebrow: 'Find it in the sidebar',
-        title: `Open ${NAV_LABELS[step.screen]}`,
-        body: `${NAV_LABELS[step.screen]} is always available in the main navigation. The demo will click it, then show what to do on that page.`,
-      }
-    : step
 
   const previous = () => {
     setIndex((value) => Math.max(0, value - 1))
@@ -206,28 +208,28 @@ export default function GuidedDemo({
 
   return (
     <div className="guided-demo" role="dialog" aria-modal="true" aria-label="ResumeDB guided demo">
-      {padded ? (
+      {phase === 'navigation' ? <div className="tour-navigation-guard" /> : contentPadded ? (
         <>
-          <div className="tour-shade tour-shade-top" style={{ height: padded.top }} />
-          <div className="tour-shade" style={{ top: padded.top, left: 0, width: padded.left, height: padded.bottom - padded.top }} />
-          <div className="tour-shade" style={{ top: padded.top, left: padded.right, right: 0, height: padded.bottom - padded.top }} />
-          <div className="tour-shade" style={{ top: padded.bottom, right: 0, bottom: 0, left: 0 }} />
-          <div className="tour-focus-ring" style={{ top: padded.top, left: padded.left, width: padded.right - padded.left, height: padded.bottom - padded.top }} />
+          <div className="tour-shade tour-shade-top" style={{ height: contentPadded.top }} />
+          <div className="tour-shade" style={{ top: contentPadded.top, left: 0, width: contentPadded.left, height: contentPadded.bottom - contentPadded.top }} />
+          <div className="tour-shade" style={{ top: contentPadded.top, left: contentPadded.right, right: 0, height: contentPadded.bottom - contentPadded.top }} />
+          <div className="tour-shade" style={{ top: contentPadded.bottom, right: 0, bottom: 0, left: 0 }} />
+          <div className="tour-focus-ring" style={{ top: contentPadded.top, left: contentPadded.left, width: contentPadded.right - contentPadded.left, height: contentPadded.bottom - contentPadded.top }} />
         </>
       ) : <div className="tour-shade tour-shade-full" />}
 
-      <div className={`tour-cursor${cursorClick ? ' is-clicking' : ''}`} style={cursor} aria-hidden="true">
+      <div className={`tour-cursor${phase === 'navigation' ? ' is-navigating' : ''}${cursorClick ? ' is-clicking' : ''}`} style={cursor} aria-hidden="true">
         <svg viewBox="0 0 28 34"><path d="M2 2 24 19l-10 2-5 10L2 2Z" /></svg>
         <span />
       </div>
 
-      <section className="tour-coach" style={coachPosition}>
+      {phase === 'content' && contentPadded && <section className="tour-coach" style={coachPosition}>
         <div className="tour-coach-topline">
-          <span>{coachCopy.eyebrow}</span>
+          <span>{step.eyebrow}</span>
           <button type="button" onClick={onClose} aria-label="Close guided demo">×</button>
         </div>
-        <h2>{coachCopy.title}</h2>
-        <p>{coachCopy.body}</p>
+        <h2>{step.title}</h2>
+        <p>{step.body}</p>
         <div className="tour-progress" aria-label={`Step ${index + 1} of ${STEPS.length}`}>
           {STEPS.map((item, itemIndex) => <span className={itemIndex <= index ? 'active' : ''} key={item.title} />)}
         </div>
@@ -237,7 +239,7 @@ export default function GuidedDemo({
             {index === STEPS.length - 1 ? 'Finish' : 'Next →'}
           </button>
         </div>
-      </section>
+      </section>}
     </div>
   )
 }

@@ -506,6 +506,7 @@ html, body, #root { height: 100%; }
 }
 .tour-shade-top { inset: 0 0 auto; }
 .tour-shade-full { inset: 0; }
+.tour-navigation-guard { position: fixed; inset: 0; z-index: 10000; pointer-events: auto; }
 .tour-focus-ring {
   position: fixed; z-index: 10001; pointer-events: none; border: 2px solid var(--color-demo-300); border-radius: 10px;
   box-shadow: 0 0 0 1px rgba(38, 13, 70, .58), 0 0 34px color-mix(in srgb, var(--color-demo-400) 45%, transparent);
@@ -516,6 +517,9 @@ html, body, #root { height: 100%; }
   position: fixed; z-index: 10004; width: 27px; height: 33px; pointer-events: none; transform: translate(-3px, -3px);
   transition: left .72s cubic-bezier(.22, 1, .36, 1), top .72s cubic-bezier(.22, 1, .36, 1);
   filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .42));
+}
+.tour-cursor.is-navigating {
+  transition-duration: .54s;
 }
 .tour-cursor svg { width: 100%; height: 100%; overflow: visible; }
 .tour-cursor path { fill: #fbf6ec; stroke: #27231e; stroke-width: 2.1; stroke-linejoin: round; }
