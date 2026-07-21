@@ -24,7 +24,7 @@ music: none
 - duration: 6.58s
 - poster: 4s
 - transition_in: cut
-- status: built
+- status: animated
 - src: compositions/frames/01-guided-workflow.html
 - type: hook
 - persuasion: Friction reduction
@@ -49,7 +49,7 @@ keyMessage: ResumeDB manages the whole job journey, not only a resume.
 - duration: 9.44s
 - poster: 6s
 - transition_in: zoom-through
-- status: built
+- status: animated
 - src: compositions/frames/02-career-memory.html
 - type: product_intro
 - persuasion: Risk reversal
@@ -75,7 +75,7 @@ keyMessage: The agent learns from verified user data and never invents factual a
 - duration: 9.76s
 - poster: 7s
 - transition_in: push-slide LEFT
-- status: built
+- status: animated
 - src: compositions/frames/03-discover-jobs.html
 - type: feature_showcase
 - persuasion: Show-don't-tell proof
@@ -101,7 +101,7 @@ keyMessage: A student can describe the goal or paste any posting and let the age
 - duration: 6.94s
 - poster: 6s
 - transition_in: push-slide LEFT
-- status: built
+- status: animated
 - src: compositions/frames/04-agent-timeline.html
 - type: benefit_highlight
 - persuasion: Transparency
@@ -128,7 +128,7 @@ keyMessage: ResumeDB shows what the agent is doing and why.
 - duration: 7.84s
 - poster: 6s
 - transition_in: squeeze
-- status: built
+- status: animated
 - src: compositions/frames/05-human-gates.html
 - type: benefit_highlight
 - persuasion: Risk reversal
@@ -154,7 +154,7 @@ keyMessage: The agent prepares; the student approves and submits.
 - duration: 9.24s
 - poster: 8s
 - transition_in: zoom-through
-- status: built
+- status: animated
 - src: compositions/frames/06-evidence-tailoring.html
 - type: feature_showcase
 - persuasion: Show-don't-tell proof
@@ -180,7 +180,7 @@ keyMessage: Stronger positioning is grounded in real student evidence.
 - duration: 7.1s
 - poster: 6s
 - transition_in: push-slide LEFT
-- status: built
+- status: animated
 - src: compositions/frames/07-application-artifacts.html
 - type: feature_showcase
 - persuasion: Value stacking
@@ -206,7 +206,7 @@ keyMessage: ResumeDB prepares every job-specific artifact from the same verified
 - duration: 8.8s
 - poster: 9s
 - transition_in: blur-crossfade
-- status: built
+- status: animated
 - src: compositions/frames/08-extension-autofill.html
 - type: feature_showcase
 - persuasion: Friction reduction plus risk reversal
@@ -233,7 +233,7 @@ keyMessage: ResumeDB automates form entry but never clicks Submit.
 - duration: 8.16s
 - poster: 6s
 - transition_in: squeeze
-- status: built
+- status: animated
 - src: compositions/frames/09-bring-your-own-agent.html
 - type: benefit_highlight
 - persuasion: Choice architecture
@@ -259,7 +259,7 @@ keyMessage: Most users can use hosted AI, while power users can connect their ow
 - duration: 8.008s
 - poster: 5s
 - transition_in: blur-crossfade
-- status: built
+- status: animated
 - src: compositions/frames/10-future-roadmap.html
 - type: branding
 - persuasion: Future pacing
