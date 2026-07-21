@@ -1,0 +1,1027 @@
+{
+  "provider": "fish-audio",
+  "model": "s2.1-pro-free",
+  "duration_s": 81.867708,
+  "words": [
+    {
+      "text": "Getting",
+      "start": 0.18,
+      "end": 0.42
+    },
+    {
+      "text": "an",
+      "start": 0.42,
+      "end": 0.54
+    },
+    {
+      "text": "internship",
+      "start": 0.54,
+      "end": 1.15
+    },
+    {
+      "text": "should",
+      "start": 1.15,
+      "end": 1.51
+    },
+    {
+      "text": "not",
+      "start": 1.51,
+      "end": 1.68
+    },
+    {
+      "text": "mean",
+      "start": 1.74,
+      "end": 1.93
+    },
+    {
+      "text": "running",
+      "start": 1.93,
+      "end": 2.27
+    },
+    {
+      "text": "five",
+      "start": 2.41,
+      "end": 2.59
+    },
+    {
+      "text": "disconnected",
+      "start": 2.59,
+      "end": 3.23
+    },
+    {
+      "text": "systems.",
+      "start": 3.34,
+      "end": 3.92
+    },
+    {
+      "text": "ResumeDB",
+      "start": 4.1,
+      "end": 4.48
+    },
+    {
+      "text": "makes",
+      "start": 4.48,
+      "end": 4.83
+    },
+    {
+      "text": "it",
+      "start": 4.83,
+      "end": 4.95
+    },
+    {
+      "text": "one",
+      "start": 4.97,
+      "end": 5.12
+    },
+    {
+      "text": "guided",
+      "start": 5.3,
+      "end": 5.6
+    },
+    {
+      "text": "workflow.",
+      "start": 5.6,
+      "end": 6.4
+    },
+    {
+      "text": "Earnestine",
+      "start": 6.58,
+      "end": 7.06
+    },
+    {
+      "text": "starts",
+      "start": 7.06,
+      "end": 7.4
+    },
+    {
+      "text": "with",
+      "start": 7.46,
+      "end": 7.6
+    },
+    {
+      "text": "one",
+      "start": 7.78,
+      "end": 7.92
+    },
+    {
+      "text": "verified",
+      "start": 7.92,
+      "end": 8.45
+    },
+    {
+      "text": "knowledge",
+      "start": 8.45,
+      "end": 9.04
+    },
+    {
+      "text": "base.",
+      "start": 9.05,
+      "end": 9.44
+    },
+    {
+      "text": "Experience,",
+      "start": 9.62,
+      "end": 10.17
+    },
+    {
+      "text": "preferences,",
+      "start": 10.17,
+      "end": 10.96
+    },
+    {
+      "text": "and",
+      "start": 10.96,
+      "end": 11.12
+    },
+    {
+      "text": "explicit",
+      "start": 11.18,
+      "end": 11.63
+    },
+    {
+      "text": "application",
+      "start": 11.63,
+      "end": 12.23
+    },
+    {
+      "text": "answers.",
+      "start": 12.36,
+      "end": 12.86
+    },
+    {
+      "text": "Missing",
+      "start": 13.14,
+      "end": 13.41
+    },
+    {
+      "text": "facts",
+      "start": 13.41,
+      "end": 13.73
+    },
+    {
+      "text": "trigger",
+      "start": 13.73,
+      "end": 14.15
+    },
+    {
+      "text": "a",
+      "start": 14.24,
+      "end": 14.24
+    },
+    {
+      "text": "question,",
+      "start": 14.34,
+      "end": 14.89
+    },
+    {
+      "text": "never",
+      "start": 14.89,
+      "end": 15.21
+    },
+    {
+      "text": "a",
+      "start": 15.21,
+      "end": 15.24
+    },
+    {
+      "text": "guess.",
+      "start": 15.37,
+      "end": 15.75
+    },
+    {
+      "text": "Then",
+      "start": 16.02,
+      "end": 16.17
+    },
+    {
+      "text": "she",
+      "start": 16.17,
+      "end": 16.41
+    },
+    {
+      "text": "simply",
+      "start": 16.41,
+      "end": 16.84
+    },
+    {
+      "text": "asks,",
+      "start": 16.96,
+      "end": 17.42
+    },
+    {
+      "text": "\"Find",
+      "start": 17.42,
+      "end": 17.77
+    },
+    {
+      "text": "internships",
+      "start": 17.77,
+      "end": 18.53
+    },
+    {
+      "text": "I",
+      "start": 18.56,
+      "end": 18.62
+    },
+    {
+      "text": "qualify",
+      "start": 18.62,
+      "end": 19.07
+    },
+    {
+      "text": "for,\"",
+      "start": 19.18,
+      "end": 19.49
+    },
+    {
+      "text": "or",
+      "start": 19.49,
+      "end": 19.56
+    },
+    {
+      "text": "pastes",
+      "start": 19.92,
+      "end": 20.15
+    },
+    {
+      "text": "any",
+      "start": 20.15,
+      "end": 20.43
+    },
+    {
+      "text": "job",
+      "start": 20.43,
+      "end": 20.71
+    },
+    {
+      "text": "URL.",
+      "start": 20.71,
+      "end": 21.28
+    },
+    {
+      "text": "The",
+      "start": 21.46,
+      "end": 21.48
+    },
+    {
+      "text": "agent",
+      "start": 21.48,
+      "end": 21.82
+    },
+    {
+      "text": "researches",
+      "start": 21.82,
+      "end": 22.48
+    },
+    {
+      "text": "the",
+      "start": 22.65,
+      "end": 22.69
+    },
+    {
+      "text": "role,",
+      "start": 22.69,
+      "end": 23.12
+    },
+    {
+      "text": "scores",
+      "start": 23.12,
+      "end": 23.55
+    },
+    {
+      "text": "fit,",
+      "start": 23.55,
+      "end": 23.91
+    },
+    {
+      "text": "and",
+      "start": 23.91,
+      "end": 24.07
+    },
+    {
+      "text": "creates",
+      "start": 24.2,
+      "end": 24.51
+    },
+    {
+      "text": "the",
+      "start": 24.62,
+      "end": 24.7
+    },
+    {
+      "text": "application.",
+      "start": 24.81,
+      "end": 25.6
+    },
+    {
+      "text": "Every",
+      "start": 25.78,
+      "end": 25.94
+    },
+    {
+      "text": "run",
+      "start": 25.94,
+      "end": 26.14
+    },
+    {
+      "text": "stays",
+      "start": 26.14,
+      "end": 26.48
+    },
+    {
+      "text": "observable.",
+      "start": 26.48,
+      "end": 27.35
+    },
+    {
+      "text": "Read",
+      "start": 27.35,
+      "end": 27.63
+    },
+    {
+      "text": "the",
+      "start": 27.63,
+      "end": 27.83
+    },
+    {
+      "text": "profile,",
+      "start": 27.83,
+      "end": 28.4
+    },
+    {
+      "text": "inspect",
+      "start": 28.52,
+      "end": 28.83
+    },
+    {
+      "text": "the",
+      "start": 28.94,
+      "end": 29.02
+    },
+    {
+      "text": "posting,",
+      "start": 29.12,
+      "end": 29.7
+    },
+    {
+      "text": "verify",
+      "start": 29.7,
+      "end": 30.16
+    },
+    {
+      "text": "evidence,",
+      "start": 30.16,
+      "end": 30.55
+    },
+    {
+      "text": "then",
+      "start": 30.66,
+      "end": 30.88
+    },
+    {
+      "text": "prepare",
+      "start": 31.06,
+      "end": 31.35
+    },
+    {
+      "text": "the",
+      "start": 31.35,
+      "end": 31.55
+    },
+    {
+      "text": "strongest",
+      "start": 31.55,
+      "end": 32.07
+    },
+    {
+      "text": "match.",
+      "start": 32.26,
+      "end": 32.72
+    },
+    {
+      "text": "Applications",
+      "start": 32.72,
+      "end": 33.44
+    },
+    {
+      "text": "move",
+      "start": 33.44,
+      "end": 33.67
+    },
+    {
+      "text": "through",
+      "start": 33.67,
+      "end": 34.1
+    },
+    {
+      "text": "five",
+      "start": 34.1,
+      "end": 34.3
+    },
+    {
+      "text": "clear",
+      "start": 34.41,
+      "end": 34.6
+    },
+    {
+      "text": "stages.",
+      "start": 34.96,
+      "end": 35.2
+    },
+    {
+      "text": "Draft",
+      "start": 35.2,
+      "end": 35.6
+    },
+    {
+      "text": "to",
+      "start": 35.6,
+      "end": 35.76
+    },
+    {
+      "text": "Ready",
+      "start": 35.76,
+      "end": 35.99
+    },
+    {
+      "text": "requires",
+      "start": 36.06,
+      "end": 36.48
+    },
+    {
+      "text": "Earnestine's",
+      "start": 36.66,
+      "end": 37.17
+    },
+    {
+      "text": "review.",
+      "start": 37.17,
+      "end": 37.68
+    },
+    {
+      "text": "Ready",
+      "start": 37.86,
+      "end": 37.98
+    },
+    {
+      "text": "to",
+      "start": 37.98,
+      "end": 38.09
+    },
+    {
+      "text": "submitted",
+      "start": 38.09,
+      "end": 38.62
+    },
+    {
+      "text": "still",
+      "start": 38.62,
+      "end": 38.91
+    },
+    {
+      "text": "requires",
+      "start": 38.91,
+      "end": 39.27
+    },
+    {
+      "text": "her",
+      "start": 39.4,
+      "end": 39.54
+    },
+    {
+      "text": "final",
+      "start": 39.63,
+      "end": 39.84
+    },
+    {
+      "text": "click.",
+      "start": 39.84,
+      "end": 40.22
+    },
+    {
+      "text": "For",
+      "start": 40.56,
+      "end": 40.6
+    },
+    {
+      "text": "this",
+      "start": 40.6,
+      "end": 40.88
+    },
+    {
+      "text": "Northstar",
+      "start": 40.88,
+      "end": 41.43
+    },
+    {
+      "text": "role,",
+      "start": 41.54,
+      "end": 41.92
+    },
+    {
+      "text": "ResumeDB",
+      "start": 42.1,
+      "end": 42.41
+    },
+    {
+      "text": "matches",
+      "start": 42.41,
+      "end": 42.85
+    },
+    {
+      "text": "the",
+      "start": 42.85,
+      "end": 42.95
+    },
+    {
+      "text": "description",
+      "start": 43.04,
+      "end": 43.73
+    },
+    {
+      "text": "semantically,",
+      "start": 43.73,
+      "end": 44.6
+    },
+    {
+      "text": "rewrites",
+      "start": 44.64,
+      "end": 45.13
+    },
+    {
+      "text": "each",
+      "start": 45.13,
+      "end": 45.34
+    },
+    {
+      "text": "bullet,",
+      "start": 45.45,
+      "end": 45.92
+    },
+    {
+      "text": "and",
+      "start": 46,
+      "end": 46.07
+    },
+    {
+      "text": "shows",
+      "start": 46.07,
+      "end": 46.32
+    },
+    {
+      "text": "the",
+      "start": 46.32,
+      "end": 46.47
+    },
+    {
+      "text": "evidence",
+      "start": 46.47,
+      "end": 46.87
+    },
+    {
+      "text": "behind",
+      "start": 47.06,
+      "end": 47.27
+    },
+    {
+      "text": "every",
+      "start": 47.27,
+      "end": 47.59
+    },
+    {
+      "text": "stronger",
+      "start": 47.59,
+      "end": 48.07
+    },
+    {
+      "text": "phrase,",
+      "start": 48.26,
+      "end": 48.62
+    },
+    {
+      "text": "before",
+      "start": 48.63,
+      "end": 49.02
+    },
+    {
+      "text": "and",
+      "start": 49.02,
+      "end": 49.16
+    },
+    {
+      "text": "after.",
+      "start": 49.29,
+      "end": 49.67
+    },
+    {
+      "text": "It",
+      "start": 49.8,
+      "end": 49.88
+    },
+    {
+      "text": "produces",
+      "start": 49.88,
+      "end": 50.3
+    },
+    {
+      "text": "the",
+      "start": 50.41,
+      "end": 50.57
+    },
+    {
+      "text": "tailored",
+      "start": 50.57,
+      "end": 51.07
+    },
+    {
+      "text": "resume,",
+      "start": 51.07,
+      "end": 51.6
+    },
+    {
+      "text": "cover",
+      "start": 51.6,
+      "end": 51.83
+    },
+    {
+      "text": "letter,",
+      "start": 51.94,
+      "end": 52.24
+    },
+    {
+      "text": "and",
+      "start": 52.42,
+      "end": 52.42
+    },
+    {
+      "text": "answers,",
+      "start": 52.42,
+      "end": 52.96
+    },
+    {
+      "text": "while",
+      "start": 52.96,
+      "end": 53.24
+    },
+    {
+      "text": "keeping",
+      "start": 53.27,
+      "end": 53.68
+    },
+    {
+      "text": "sensitive",
+      "start": 53.68,
+      "end": 54.23
+    },
+    {
+      "text": "facts",
+      "start": 54.23,
+      "end": 54.52
+    },
+    {
+      "text": "tied",
+      "start": 54.65,
+      "end": 54.77
+    },
+    {
+      "text": "to",
+      "start": 54.77,
+      "end": 54.85
+    },
+    {
+      "text": "the",
+      "start": 54.89,
+      "end": 55.04
+    },
+    {
+      "text": "profile",
+      "start": 55.16,
+      "end": 55.47
+    },
+    {
+      "text": "and",
+      "start": 55.58,
+      "end": 55.66
+    },
+    {
+      "text": "unknowns",
+      "start": 55.77,
+      "end": 56.12
+    },
+    {
+      "text": "blank.",
+      "start": 56.32,
+      "end": 56.7
+    },
+    {
+      "text": "After",
+      "start": 56.9,
+      "end": 57.02
+    },
+    {
+      "text": "approval,",
+      "start": 57.02,
+      "end": 57.63
+    },
+    {
+      "text": "the",
+      "start": 57.63,
+      "end": 57.75
+    },
+    {
+      "text": "extension",
+      "start": 57.84,
+      "end": 58.36
+    },
+    {
+      "text": "scans",
+      "start": 58.36,
+      "end": 58.66
+    },
+    {
+      "text": "the",
+      "start": 58.66,
+      "end": 58.84
+    },
+    {
+      "text": "application,",
+      "start": 58.84,
+      "end": 59.68
+    },
+    {
+      "text": "previews",
+      "start": 59.68,
+      "end": 60.14
+    },
+    {
+      "text": "each",
+      "start": 60.25,
+      "end": 60.43
+    },
+    {
+      "text": "mapping,",
+      "start": 60.8,
+      "end": 61.04
+    },
+    {
+      "text": "uploads",
+      "start": 61.22,
+      "end": 61.51
+    },
+    {
+      "text": "the",
+      "start": 61.51,
+      "end": 61.71
+    },
+    {
+      "text": "tailored",
+      "start": 61.71,
+      "end": 62.23
+    },
+    {
+      "text": "resume,",
+      "start": 62.42,
+      "end": 62.79
+    },
+    {
+      "text": "and",
+      "start": 62.79,
+      "end": 63
+    },
+    {
+      "text": "fills",
+      "start": 63,
+      "end": 63.32
+    },
+    {
+      "text": "the",
+      "start": 63.45,
+      "end": 63.54
+    },
+    {
+      "text": "ATS.",
+      "start": 63.54,
+      "end": 64
+    },
+    {
+      "text": "It",
+      "start": 64,
+      "end": 64.1
+    },
+    {
+      "text": "stops",
+      "start": 64.19,
+      "end": 64.46
+    },
+    {
+      "text": "before",
+      "start": 64.57,
+      "end": 64.76
+    },
+    {
+      "text": "submit.",
+      "start": 65.12,
+      "end": 65.5
+    },
+    {
+      "text": "Use",
+      "start": 65.7,
+      "end": 65.74
+    },
+    {
+      "text": "ResumeDB's",
+      "start": 65.74,
+      "end": 66.46
+    },
+    {
+      "text": "hosted",
+      "start": 66.46,
+      "end": 66.9
+    },
+    {
+      "text": "model,",
+      "start": 66.9,
+      "end": 67.44
+    },
+    {
+      "text": "or",
+      "start": 67.44,
+      "end": 67.58
+    },
+    {
+      "text": "connect",
+      "start": 67.58,
+      "end": 68.08
+    },
+    {
+      "text": "your",
+      "start": 68.08,
+      "end": 68.31
+    },
+    {
+      "text": "own",
+      "start": 68.44,
+      "end": 68.57
+    },
+    {
+      "text": "agent",
+      "start": 68.57,
+      "end": 68.93
+    },
+    {
+      "text": "with",
+      "start": 68.93,
+      "end": 69.21
+    },
+    {
+      "text": "no",
+      "start": 69.21,
+      "end": 69.3
+    },
+    {
+      "text": "shared",
+      "start": 69.6,
+      "end": 69.78
+    },
+    {
+      "text": "API",
+      "start": 69.78,
+      "end": 69.98
+    },
+    {
+      "text": "key.",
+      "start": 70,
+      "end": 70.47
+    },
+    {
+      "text": "Either",
+      "start": 70.66,
+      "end": 70.84
+    },
+    {
+      "text": "way,",
+      "start": 70.84,
+      "end": 71.14
+    },
+    {
+      "text": "the",
+      "start": 71.14,
+      "end": 71.26
+    },
+    {
+      "text": "student",
+      "start": 71.32,
+      "end": 71.68
+    },
+    {
+      "text": "keeps",
+      "start": 71.86,
+      "end": 72.04
+    },
+    {
+      "text": "the",
+      "start": 72.04,
+      "end": 72.16
+    },
+    {
+      "text": "same",
+      "start": 72.22,
+      "end": 72.46
+    },
+    {
+      "text": "memory",
+      "start": 72.46,
+      "end": 72.75
+    },
+    {
+      "text": "and",
+      "start": 72.89,
+      "end": 73
+    },
+    {
+      "text": "workflow.",
+      "start": 73,
+      "end": 73.68
+    },
+    {
+      "text": "Next,",
+      "start": 73.86,
+      "end": 74.13
+    },
+    {
+      "text": "email",
+      "start": 74.13,
+      "end": 74.45
+    },
+    {
+      "text": "tracking,",
+      "start": 74.52,
+      "end": 75.25
+    },
+    {
+      "text": "interview",
+      "start": 75.25,
+      "end": 75.92
+    },
+    {
+      "text": "prep,",
+      "start": 75.92,
+      "end": 76.36
+    },
+    {
+      "text": "progress",
+      "start": 76.4,
+      "end": 76.89
+    },
+    {
+      "text": "journals,",
+      "start": 76.89,
+      "end": 77.47
+    },
+    {
+      "text": "campus",
+      "start": 77.76,
+      "end": 77.94
+    },
+    {
+      "text": "insights,",
+      "start": 77.94,
+      "end": 78.63
+    },
+    {
+      "text": "four-year",
+      "start": 78.82,
+      "end": 79.21
+    },
+    {
+      "text": "planning,",
+      "start": 79.21,
+      "end": 79.85
+    },
+    {
+      "text": "and",
+      "start": 80.01,
+      "end": 80.04
+    },
+    {
+      "text": "major",
+      "start": 80.04,
+      "end": 80.32
+    },
+    {
+      "text": "specific",
+      "start": 80.32,
+      "end": 80.77
+    },
+    {
+      "text": "career",
+      "start": 80.77,
+      "end": 81.12
+    },
+    {
+      "text": "artifacts.",
+      "start": 81.12,
+      "end": 82
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+<template>
+  <style>
+    @font-face{font-family:"EB Garamond";src:url("assets/fonts/eb-garamond-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"EB Garamond";src:url("assets/fonts/eb-garamond-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:"Inter";src:url("assets/fonts/inter-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"Inter";src:url("assets/fonts/inter-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:"JetBrains Mono";src:url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    #root{position:relative;width:1920px;height:1080px;overflow:hidden;container-type:size}
+    .f06-bg{position:absolute;inset:0;background:#f3f2f2}
+    .f06-scene{position:absolute;inset:0;padding:58px 76px 185px;color:#201f1d;font-family:"Inter",sans-serif}
+    .f06-kicker{margin:0 0 8px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:20px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+    .f06-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:48px}
+    .f06-title{margin:0;font-family:"EB Garamond",serif;font-size:72px;font-weight:400;line-height:.98;letter-spacing:-.022em}
+    .f06-proof{margin-bottom:8px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+    .f06-stage{position:relative;overflow:hidden;height:650px;margin-top:28px;border:1px solid rgba(32,31,29,.18);border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(32,31,29,.08),0 12px 28px rgba(32,31,29,.06);perspective:1600px}
+    .f06-product{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;filter:saturate(.84) contrast(.94);opacity:.68}
+    .f06-product-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(243,242,242,.08) 0%,rgba(243,242,242,.24) 38%,rgba(243,242,242,.96) 72%,#f3f2f2 100%)}
+    .f06-browser{position:absolute;top:18px;right:18px;left:18px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid rgba(32,31,29,.12);border-radius:8px;background:rgba(243,242,242,.92);backdrop-filter:blur(9px);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .f06-browser-dots{display:flex;gap:7px}.f06-browser-dots i{display:block;width:8px;height:8px;border-radius:50%;background:rgba(32,31,29,.24)}
+    .f06-requirements{position:absolute;top:80px;right:32px;left:32px;display:flex;align-items:center;gap:12px}
+    .f06-role{margin-right:auto;padding:11px 14px;border:1px solid rgba(32,31,29,.16);border-radius:8px;background:rgba(243,242,242,.95);font-family:"EB Garamond",serif;font-size:26px;font-weight:600}
+    .f06-tag{padding:10px 14px;border:1px solid rgba(32,31,29,.16);border-radius:999px;background:#f4e9d9;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.04em}
+    .f06-compare{position:absolute;right:34px;bottom:62px;left:34px;display:grid;grid-template-columns:1fr 78px 1fr;align-items:stretch;height:330px;transform-style:preserve-3d}
+    .f06-card{position:relative;padding:22px 24px;border:1px solid rgba(32,31,29,.16);border-radius:10px;background:rgba(255,255,255,.97);box-shadow:0 12px 30px rgba(32,31,29,.08)}
+    .f06-card-before{transform-origin:right center}.f06-card-after{transform-origin:left center;border-color:rgba(109,40,217,.34)}
+    .f06-card-label{display:inline-flex;padding:6px 10px;border-radius:999px;background:#f4e9d9;color:#5e554a;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+    .f06-card-after .f06-card-label{background:rgba(109,40,217,.09);color:#6d28d9}
+    .f06-bullet{position:relative;margin:20px 0 0;font-family:"EB Garamond",serif;font-size:32px;font-weight:600;line-height:1.18;letter-spacing:-.008em}
+    .f06-body{margin:16px 0 0;color:#77716a;font-size:14px;line-height:1.45}
+    .f06-highlight{position:relative;z-index:1;white-space:nowrap}.f06-highlight i{position:absolute;right:-3px;bottom:1px;left:-3px;height:8px;border-radius:99px;background:rgba(182,130,53,.46);transform-origin:left center;z-index:-1}
+    .f06-arrow{display:grid;place-items:center;color:#6d28d9;font-family:"EB Garamond",serif;font-size:50px}
+    .f06-source{position:absolute;bottom:14px;display:flex;align-items:center;gap:8px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+    .f06-source::before{content:"✓";display:grid;width:19px;height:19px;place-items:center;border-radius:50%;background:#6d28d9;color:#fff;font-size:11px}
+    .f06-source-a{left:24px}.f06-source-b{left:228px}.f06-source-c{right:24px}
+    .f06-connectors{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
+    .f06-connectors path{fill:none;stroke:#6d28d9;stroke-width:2.5;stroke-linecap:round;opacity:.85}
+    .f06-evidence-badge{position:absolute;right:52px;bottom:23px;padding:9px 13px;border:1px solid rgba(109,40,217,.36);border-radius:999px;background:#f3f2f2;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;z-index:8}
+  </style>
+  <div data-hf-id="hf-rhja" id="root" data-composition-id="06-evidence-tailoring" data-start="0" data-duration="9.74" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-xbuq" id="f06-background" class="clip f06-bg" data-start="0" data-duration="9.74" data-track-index="0"></div>
+    <main data-hf-id="hf-sody" id="f06-scene" class="clip f06-scene" data-start="0" data-duration="9.74" data-track-index="1">
+      <p data-hf-id="hf-h0zj" class="f06-kicker">✱ Evidence-backed tailoring</p>
+      <div data-hf-id="hf-nibd" class="f06-heading"><h1 data-hf-id="hf-tydt" class="f06-title">Stronger language, grounded in truth</h1><span data-hf-id="hf-8r8v" class="f06-proof">Northstar Robotics - live proof</span></div>
+      <section data-hf-id="hf-x92w" class="f06-stage" id="f06-stage">
+        <img data-hf-id="hf-zes7" class="f06-product" src="assets/07-evidence-tailoring.png" alt="ResumeDB evidence tailoring view">
+        <div data-hf-id="hf-ipd6" class="f06-product-shade"></div>
+        <div data-hf-id="hf-zb2f" class="f06-browser"><span data-hf-id="hf-mu49" class="f06-browser-dots"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i><i data-hf-id="hf-y7e5"></i></span><span data-hf-id="hf-wqqf">Application workbench / evidence tailoring</span><span data-hf-id="hf-1rz5">Ready for review</span></div>
+        <div data-hf-id="hf-ua7d" class="f06-requirements">
+          <strong data-hf-id="hf-ctyv" class="f06-role">Software Engineering Intern</strong>
+          <span data-hf-id="hf-3qlj" class="f06-tag">React</span><span data-hf-id="hf-e7sz" class="f06-tag">TypeScript</span><span data-hf-id="hf-4j36" class="f06-tag">Python</span><span data-hf-id="hf-sa0i" class="f06-tag">PostgreSQL</span>
+        </div>
+        <div data-hf-id="hf-2q76" class="f06-compare">
+          <article data-hf-id="hf-t5xx" class="f06-card f06-card-before" id="f06-before">
+            <span data-hf-id="hf-aqmc" class="f06-card-label">Before</span>
+            <p data-hf-id="hf-bvuk" class="f06-bullet">Built React workflows for campus tools.</p>
+            <p data-hf-id="hf-0ch9" class="f06-body">Accurate, but generic. The job-specific engineering signal is buried.</p>
+          </article>
+          <div data-hf-id="hf-wftu" class="f06-arrow">→</div>
+          <article data-hf-id="hf-a37j" class="f06-card f06-card-after" id="f06-after">
+            <span data-hf-id="hf-lfi1" class="f06-card-label">Tailored</span>
+            <p data-hf-id="hf-82oo" class="f06-bullet">Shipped <span data-hf-id="hf-lno7" class="f06-highlight">reliable React + TypeScript<i data-hf-id="hf-ylp6"></i></span> product workflows.</p>
+            <p data-hf-id="hf-1lw9" class="f06-body">Role language improves while every claim stays tied to canonical evidence.</p>
+            <span data-hf-id="hf-75sd" class="f06-source f06-source-a">Experience</span>
+            <span data-hf-id="hf-c6qr" class="f06-source f06-source-b">Project</span>
+            <span data-hf-id="hf-qg95" class="f06-source f06-source-c">Impact</span>
+          </article>
+        </div>
+        <svg data-hf-id="hf-l12b" class="f06-connectors" viewBox="0 0 1768 650" preserveAspectRatio="none" aria-hidden="true">
+          <path data-hf-id="hf-b62h" id="f06-path-a" d="M1014 568 C1030 505 1052 468 1118 438" />
+          <path data-hf-id="hf-jjru" id="f06-path-b" d="M1222 568 C1238 512 1284 480 1334 438" />
+          <path data-hf-id="hf-oep4" id="f06-path-c" d="M1646 568 C1624 510 1576 475 1518 438" />
+        </svg>
+        <span data-hf-id="hf-2b2h" class="f06-evidence-badge" id="f06-evidence-badge">3 canonical sources linked</span>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines=window.__timelines||{};
+      var tl=gsap.timeline({paused:true});
+      var paths=gsap.utils.toArray("#f06-scene .f06-connectors path");
+      paths.forEach(function(path){var length=path.getTotalLength();gsap.set(path,{strokeDasharray:length,strokeDashoffset:length});});
+      tl.fromTo("#f06-stage",{scale:.96,opacity:0},{scale:1,opacity:1,duration:.78,ease:"power3.out"},0);
+      tl.fromTo("#f06-scene .f06-role",{y:-18,opacity:0},{y:0,opacity:1,duration:.55,ease:"power3.out"},.85);
+      tl.fromTo("#f06-scene .f06-tag",{y:-18,opacity:0},{y:0,opacity:1,duration:.42,ease:"power3.out",stagger:.42},2.0);
+      tl.to("#f06-scene .f06-product",{filter:"saturate(.65) contrast(.92) blur(2px)",opacity:.46,duration:.65,ease:"power2.inOut"},3.55);
+      tl.fromTo("#f06-before",{x:-180,scale:.9,rotationY:9,opacity:0},{x:0,scale:1,rotationY:4,opacity:1,duration:.8,ease:"power3.out"},4.4);
+      tl.fromTo("#f06-after",{x:180,scale:.9,rotationY:-9,opacity:0},{x:0,scale:1,rotationY:-4,opacity:1,duration:.8,ease:"power3.out"},4.58);
+      tl.fromTo("#f06-scene .f06-arrow",{scale:.7,opacity:0},{scale:1,opacity:1,duration:.46,ease:"power3.out"},5.05);
+      tl.fromTo("#f06-scene .f06-highlight i",{scaleX:0},{scaleX:1,duration:.72,ease:"power2.out",transformOrigin:"left center"},5.55);
+      tl.to(paths,{strokeDashoffset:0,duration:.8,ease:"power2.inOut",stagger:.2},7.1);
+      tl.fromTo("#f06-scene .f06-source",{y:12,opacity:0},{y:0,opacity:1,duration:.42,ease:"power3.out",stagger:.18},7.18);
+      tl.fromTo("#f06-evidence-badge",{scale:.88,opacity:0},{scale:1,opacity:1,duration:.52,ease:"power3.out"},8.05);
+      tl.to("#f06-scene .f06-product",{filter:"saturate(.84) contrast(.94) blur(0px)",opacity:.68,duration:.6,ease:"power2.inOut"},8.35);
+      window.__timelines["06-evidence-tailoring"]=tl;
+    })();
+  </script>
+</template>

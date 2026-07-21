@@ -1,0 +1,688 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+      font-family: "Inter";
+    }
+
+    [class~="f02-career-memory-bg"] {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+    }
+
+    [class~="f02-career-memory-scene"] {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    [class~="f02-career-memory-heading"] {
+      position: absolute;
+      top: 3.7cqh;
+      left: 4.2cqw;
+      z-index: 5;
+    }
+
+    [class~="f02-career-memory-kicker"] {
+      margin: 0 0 0.7cqh;
+      color: rgba(32, 31, 29, 0.64);
+      font-family: "JetBrains Mono";
+      font-size: 1.15cqw;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f02-career-memory-title"] {
+      margin: 0;
+      color: #201f1d;
+      font-family: "EB Garamond";
+      font-size: 4.6cqw;
+      font-weight: 400;
+      letter-spacing: -0.018em;
+      line-height: 0.96;
+    }
+
+    [class~="f02-career-memory-tour"] {
+      position: absolute;
+      top: 19.5cqh;
+      right: 4.2cqw;
+      left: 4.2cqw;
+      height: 57cqh;
+    }
+
+    [class~="f02-career-memory-settings"],
+    [class~="f02-career-memory-knowledge"] {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+      gap: 1.25cqw;
+    }
+
+    [class~="f02-career-memory-panel"] {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.16);
+      border-radius: 12px;
+      background: #f4e9d9;
+    }
+
+    [class~="f02-career-memory-primary-panel"] {
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+      transform-origin: 58% 68%;
+    }
+
+    [class~="f02-career-memory-panel-chrome"] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 4.6cqh;
+      padding: 0 1.25cqw;
+      border-bottom: 1px solid rgba(32, 31, 29, 0.12);
+      background: rgba(243, 242, 242, 0.95);
+    }
+
+    [class~="f02-career-memory-label"] {
+      color: rgba(32, 31, 29, 0.66);
+      font-family: "JetBrains Mono";
+      font-size: 0.88cqw;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f02-career-memory-status"] {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.7cqh;
+      padding: 0 0.72cqw;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 9999px;
+      background: #f3f2f2;
+      color: rgba(32, 31, 29, 0.68);
+      font-family: "JetBrains Mono";
+      font-size: 0.72cqw;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    [class~="f02-career-memory-capture"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    [class~="f02-career-memory-profile-capture"] {
+      object-position: 43% 88%;
+      opacity: 0.52;
+    }
+
+    [class~="f02-career-memory-field-grid"] {
+      position: absolute;
+      top: 7.1cqh;
+      right: 1.25cqw;
+      bottom: 1.45cqh;
+      left: 1.25cqw;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 1.05cqh 0.74cqw;
+    }
+
+    [class~="f02-career-memory-field"] {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      padding: 1.05cqh 2.35cqw 1.05cqh 1.05cqw;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 8px;
+      background: rgba(243, 242, 242, 0.94);
+    }
+
+    [class~="f02-career-memory-field-name"] {
+      margin-bottom: 0.6cqh;
+      color: rgba(32, 31, 29, 0.56);
+      font-family: "JetBrains Mono";
+      font-size: 0.76cqw;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f02-career-memory-field-value"] {
+      min-height: 1.4em;
+      overflow: hidden;
+      color: #201f1d;
+      font-family: "Inter";
+      font-size: 1.27cqw;
+      font-weight: 600;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    [class~="f02-career-memory-check"] {
+      position: absolute;
+      right: 0.83cqw;
+      bottom: 1.55cqh;
+      display: grid;
+      width: 1.4cqw;
+      height: 1.4cqw;
+      place-items: center;
+      border: 1px solid rgba(32, 31, 29, 0.28);
+      border-radius: 9999px;
+      color: #201f1d;
+      font-family: "Inter";
+      font-size: 0.75cqw;
+      font-weight: 600;
+      line-height: 1;
+      transform-origin: center;
+    }
+
+    [class~="f02-career-memory-agent-capture"] {
+      background-image: url("assets/02-settings-profile-agent.png");
+      background-position: 44% 41%;
+      background-size: cover;
+      opacity: 0.72;
+    }
+
+    [class~="f02-career-memory-agent-card"] {
+      position: absolute;
+      right: 1cqw;
+      bottom: 1.45cqh;
+      left: 1cqw;
+      z-index: 2;
+      padding: 1.25cqh 1cqw;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 8px;
+      background: rgba(244, 233, 217, 0.95);
+    }
+
+    [class~="f02-career-memory-agent-title"] {
+      margin: 0.75cqh 0 0;
+      font-family: "EB Garamond";
+      font-size: 1.7cqw;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      line-height: 1.05;
+    }
+
+    [class~="f02-career-memory-knowledge"] {
+      z-index: 2;
+    }
+
+    [class~="f02-career-memory-knowledge-window"] {
+      background: #f3f2f2;
+    }
+
+    [class~="f02-career-memory-knowledge-capture"] {
+      object-position: 30% 7%;
+    }
+
+    [class~="f02-career-memory-profile-source"] {
+      position: absolute;
+      right: 1.15cqw;
+      bottom: 1.55cqh;
+      z-index: 2;
+      padding: 0.78cqh 0.8cqw;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 9999px;
+      background: rgba(243, 242, 242, 0.94);
+      color: rgba(32, 31, 29, 0.72);
+      font-family: "JetBrains Mono";
+      font-size: 0.76cqw;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    [class~="f02-career-memory-evidence-stack"] {
+      position: relative;
+      display: grid;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 1.5cqh;
+      min-width: 0;
+    }
+
+    [class~="f02-career-memory-evidence-card"] {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      padding: 1.6cqh 1.35cqw;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.16);
+      border-radius: 12px;
+      background: #f4e9d9;
+    }
+
+    [class~="f02-career-memory-link-line"] {
+      position: absolute;
+      top: 50%;
+      left: -1.26cqw;
+      width: 1.26cqw;
+      height: 1px;
+      background: rgba(32, 31, 29, 0.5);
+      transform-origin: left center;
+    }
+
+    [class~="f02-career-memory-evidence-title"] {
+      margin: 0.85cqh 0 0;
+      font-family: "EB Garamond";
+      font-size: 2.05cqw;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      line-height: 1.06;
+    }
+
+    [class~="f02-career-memory-evidence-copy"] {
+      margin: 0.75cqh 0 0;
+      color: rgba(32, 31, 29, 0.68);
+      font-size: 1.02cqw;
+      line-height: 1.35;
+    }
+
+    [class~="f02-career-memory-missing"] {
+      position: absolute;
+      right: 1.35cqw;
+      bottom: 1.6cqh;
+      z-index: 8;
+      width: 25.5cqw;
+      min-height: 18.5cqh;
+      padding: 2.1cqh 1.6cqw;
+      border-radius: 8px;
+      background: #6d28d9;
+      color: #f3f2f2;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+      transform-origin: center bottom;
+    }
+
+    [class~="f02-career-memory-missing-label"] {
+      margin: 0;
+      font-family: "JetBrains Mono";
+      font-size: 0.9cqw;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f02-career-memory-missing-title"] {
+      margin: 1.2cqh 0 0;
+      font-family: "EB Garamond";
+      font-size: 2.65cqw;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.02;
+    }
+
+    [class~="f02-career-memory-cursor"] {
+      display: inline-block;
+      width: 1px;
+      height: 0.9em;
+      margin-left: 0.28cqw;
+      background: #f3f2f2;
+      vertical-align: -0.04em;
+    }
+
+    [class~="f02-career-memory-missing-copy"] {
+      margin: 1.25cqh 0 0;
+      color: rgba(243, 242, 242, 0.78);
+      font-size: 1.02cqw;
+      line-height: 1.3;
+    }
+
+    [class~="f02-career-memory-dof"] {
+      --dof: 0px;
+      filter: blur(var(--dof));
+      will-change: filter;
+    }
+
+    [class~="f02-career-memory-band"] {
+      position: absolute;
+      top: 79cqh;
+      right: 4.2cqw;
+      left: 4.2cqw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 3.7cqh;
+      border-top: 1px solid rgba(32, 31, 29, 0.16);
+      color: rgba(32, 31, 29, 0.57);
+      font-family: "JetBrains Mono";
+      font-size: 0.8cqw;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f02-career-memory-band-index"] {
+      color: rgba(32, 31, 29, 0.42);
+    }
+  </style>
+
+  <div data-hf-id="hf-rehz" id="root" data-composition-id="02-career-memory" data-start="0" data-duration="9.94" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-73m4" id="f02-career-memory-background" class="clip f02-career-memory-bg" data-start="0" data-duration="9.94" data-track-index="0"></div>
+
+    <main data-hf-id="hf-3wzi" id="f02-career-memory-scene" class="clip f02-career-memory-scene" data-start="0" data-duration="9.94" data-track-index="1">
+      <header data-hf-id="hf-jrwy" class="f02-career-memory-heading" id="f02-career-memory-heading">
+        <p data-hf-id="hf-azgq" class="f02-career-memory-kicker" id="f02-career-memory-kicker">Verified career memory</p>
+        <h1 data-hf-id="hf-l1f8" class="f02-career-memory-title" id="f02-career-memory-title">A memory that never guesses</h1>
+      </header>
+
+      <section data-hf-id="hf-v3di" class="f02-career-memory-tour" id="f02-career-memory-tour">
+        <div data-hf-id="hf-p9w4" class="f02-career-memory-settings" id="f02-career-memory-settings">
+          <div data-hf-id="hf-ra6o" class="f02-career-memory-panel f02-career-memory-primary-panel" id="f02-career-memory-primary-panel">
+            <img data-hf-id="hf-4ftq" class="f02-career-memory-capture f02-career-memory-profile-capture" id="f02-career-memory-profile-capture" src="assets/02-settings-profile-agent.png" alt="ResumeDB Profile and Settings view" data-layout-allow-overflow="">
+            <div data-hf-id="hf-zcfl" class="f02-career-memory-panel-chrome">
+              <span data-hf-id="hf-sneq" class="f02-career-memory-label">Profile and Settings</span>
+              <span data-hf-id="hf-nr91" class="f02-career-memory-status">Animated field fill</span>
+            </div>
+
+            <div data-hf-id="hf-m9pl" class="f02-career-memory-field-grid">
+              <div data-hf-id="hf-opt2" class="f02-career-memory-field" id="f02-career-memory-field-name">
+                <span data-hf-id="hf-21kx" class="f02-career-memory-field-name">Full name</span>
+                <strong data-hf-id="hf-r7ft" class="f02-career-memory-field-value" id="f02-career-memory-value-name"></strong>
+                <span data-hf-id="hf-vtaa" class="f02-career-memory-check" id="f02-career-memory-check-name">✓</span>
+              </div>
+              <div data-hf-id="hf-iyoi" class="f02-career-memory-field" id="f02-career-memory-field-college">
+                <span data-hf-id="hf-9au0" class="f02-career-memory-field-name">College</span>
+                <strong data-hf-id="hf-91l7" class="f02-career-memory-field-value" id="f02-career-memory-value-college"></strong>
+                <span data-hf-id="hf-1ysc" class="f02-career-memory-check" id="f02-career-memory-check-college">✓</span>
+              </div>
+              <div data-hf-id="hf-s8ky" class="f02-career-memory-field" id="f02-career-memory-field-major">
+                <span data-hf-id="hf-xit4" class="f02-career-memory-field-name">Major</span>
+                <strong data-hf-id="hf-3u8n" class="f02-career-memory-field-value" id="f02-career-memory-value-major"></strong>
+                <span data-hf-id="hf-lhy8" class="f02-career-memory-check" id="f02-career-memory-check-major">✓</span>
+              </div>
+              <div data-hf-id="hf-hri7" class="f02-career-memory-field" id="f02-career-memory-field-graduation">
+                <span data-hf-id="hf-5by7" class="f02-career-memory-field-name">Graduation</span>
+                <strong data-hf-id="hf-2078" class="f02-career-memory-field-value" id="f02-career-memory-value-graduation"></strong>
+                <span data-hf-id="hf-j5ht" class="f02-career-memory-check" id="f02-career-memory-check-graduation">✓</span>
+              </div>
+              <div data-hf-id="hf-7r7i" class="f02-career-memory-field" id="f02-career-memory-field-authorization">
+                <span data-hf-id="hf-fayr" class="f02-career-memory-field-name">Work authorization</span>
+                <strong data-hf-id="hf-7l0b" class="f02-career-memory-field-value" id="f02-career-memory-value-authorization"></strong>
+                <span data-hf-id="hf-8px8" class="f02-career-memory-check" id="f02-career-memory-check-authorization">✓</span>
+              </div>
+              <div data-hf-id="hf-7y9y" class="f02-career-memory-field" id="f02-career-memory-field-agent">
+                <span data-hf-id="hf-a1a0" class="f02-career-memory-field-name">Agent connection</span>
+                <strong data-hf-id="hf-vd5v" class="f02-career-memory-field-value" id="f02-career-memory-value-agent"></strong>
+                <span data-hf-id="hf-r8sk" class="f02-career-memory-check" id="f02-career-memory-check-agent">✓</span>
+              </div>
+            </div>
+          </div>
+
+          <aside data-hf-id="hf-vofl" class="f02-career-memory-panel" id="f02-career-memory-agent-panel">
+            <div data-hf-id="hf-ovgs" class="f02-career-memory-capture f02-career-memory-agent-capture" role="img" aria-label="ResumeDB connected agent settings"></div>
+            <div data-hf-id="hf-d1ut" class="f02-career-memory-panel-chrome">
+              <span data-hf-id="hf-ssxz" class="f02-career-memory-label">Connected agent</span>
+              <span data-hf-id="hf-7ez8" class="f02-career-memory-status">Settings</span>
+            </div>
+            <div data-hf-id="hf-gpcy" class="f02-career-memory-agent-card" id="f02-career-memory-agent-card">
+              <span data-hf-id="hf-828o" class="f02-career-memory-label">Agent connection</span>
+              <h2 data-hf-id="hf-mpz4" class="f02-career-memory-agent-title">Hosted or connected</h2>
+            </div>
+          </aside>
+        </div>
+
+        <div data-hf-id="hf-l5h1" class="f02-career-memory-knowledge f02-career-memory-dof" id="f02-career-memory-knowledge">
+          <div data-hf-id="hf-6fmf" class="f02-career-memory-panel f02-career-memory-knowledge-window">
+            <img data-hf-id="hf-ogxl" class="f02-career-memory-capture f02-career-memory-knowledge-capture" id="f02-career-memory-knowledge-capture" src="assets/03-knowledge.png" alt="ResumeDB Knowledge view" data-layout-allow-overflow="">
+            <div data-hf-id="hf-e8rw" class="f02-career-memory-panel-chrome">
+              <span data-hf-id="hf-8x89" class="f02-career-memory-label">Knowledge</span>
+              <span data-hf-id="hf-ahrj" class="f02-career-memory-status">Structured evidence</span>
+            </div>
+            <span data-hf-id="hf-w4sc" class="f02-career-memory-profile-source" id="f02-career-memory-profile-source">From profile</span>
+          </div>
+
+          <aside data-hf-id="hf-uf3l" class="f02-career-memory-evidence-stack">
+            <article data-hf-id="hf-vjx3" class="f02-career-memory-evidence-card" id="f02-career-memory-evidence-one">
+              <span data-hf-id="hf-ewj3" class="f02-career-memory-link-line" id="f02-career-memory-link-one"></span>
+              <span data-hf-id="hf-60iu" class="f02-career-memory-label">Knowledge base</span>
+              <h2 data-hf-id="hf-8bi2" class="f02-career-memory-evidence-title">Experience and preferences join the memory</h2>
+            </article>
+            <article data-hf-id="hf-6ow5" class="f02-career-memory-evidence-card" id="f02-career-memory-evidence-two">
+              <span data-hf-id="hf-ysel" class="f02-career-memory-link-line" id="f02-career-memory-link-two"></span>
+              <span data-hf-id="hf-l1q5" class="f02-career-memory-label">Answer bank</span>
+              <p data-hf-id="hf-3m1f" class="f02-career-memory-evidence-copy">Eligibility, demographic preferences, education, links</p>
+            </article>
+          </aside>
+        </div>
+
+        <article data-hf-id="hf-36e7" class="f02-career-memory-missing" id="f02-career-memory-missing">
+          <p data-hf-id="hf-sto1" class="f02-career-memory-missing-label">Missing fact?</p>
+          <h2 data-hf-id="hf-f5m6" class="f02-career-memory-missing-title"><span data-hf-id="hf-rwny" id="f02-career-memory-missing-text"></span><span data-hf-id="hf-1aun" class="f02-career-memory-cursor" id="f02-career-memory-cursor"></span></h2>
+          <p data-hf-id="hf-bapg" class="f02-career-memory-missing-copy" id="f02-career-memory-missing-copy">Never infer it.</p>
+        </article>
+      </section>
+
+      <div data-hf-id="hf-jaeg" class="f02-career-memory-band" id="f02-career-memory-band">
+        <span data-hf-id="hf-usqg">Fields type in, save, and become reusable career memory</span>
+        <span data-hf-id="hf-7h7a" class="f02-career-memory-band-index">02 / verified</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/TextPlugin.min.js"></script>
+  <script>
+    (() => {
+      gsap.registerPlugin(TextPlugin);
+      window.__timelines = window.__timelines || {};
+
+      const tl = gsap.timeline({ paused: true });
+      const byId = (suffix) => document.getElementById(`f02-career-memory-${suffix}`);
+
+    tl.fromTo(
+      byId("heading"),
+      { y: -12, opacity: 0.35 },
+      { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+      0,
+    );
+    tl.fromTo(
+      byId("settings"),
+      { y: 34, scale: 0.975, opacity: 0.18 },
+      { y: 0, scale: 1, opacity: 1, duration: 0.55, ease: "power3.out" },
+      0,
+    );
+    tl.fromTo(
+      byId("profile-capture"),
+      { y: -16, scale: 1.055 },
+      { y: 0, scale: 1, duration: 1.05, ease: "power2.inOut" },
+      0.55,
+    );
+    tl.fromTo(
+      byId("primary-panel"),
+      { scale: 0.992 },
+      { scale: 1.012, duration: 0.82, ease: "power2.inOut" },
+      0.82,
+    );
+    tl.to(
+      byId("primary-panel"),
+      { scale: 1, duration: 0.36, ease: "power2.out" },
+      1.64,
+    );
+    tl.fromTo(
+      byId("band"),
+      { y: 12, opacity: 0.2 },
+      { y: 0, opacity: 1, duration: 0.42, ease: "power2.out" },
+      1.58,
+    );
+
+    const verifiedFields = [
+      { key: "name", value: "Earnestine Braun", start: 2.0 },
+      { key: "college", value: "Carnegie Mellon", start: 2.58 },
+      { key: "major", value: "Computer Science", start: 3.16 },
+      { key: "graduation", value: "2028", start: 3.74 },
+      { key: "authorization", value: "Explicit answer", start: 4.32 },
+      { key: "agent", value: "Hosted or connected", start: 5.0 },
+    ];
+
+    verifiedFields.forEach(({ key, value, start }) => {
+      tl.fromTo(
+        byId(`field-${key}`),
+        { y: 9, opacity: 0.22 },
+        { y: 0, opacity: 1, duration: 0.24, ease: "power2.out" },
+        start,
+      );
+      tl.to(
+        byId(`value-${key}`),
+        { text: { value }, duration: 0.38, ease: "none" },
+        start + 0.06,
+      );
+      tl.fromTo(
+        byId(`check-${key}`),
+        { scale: 0.58, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.18, ease: "power2.out" },
+        start + 0.4,
+      );
+    });
+
+    tl.fromTo(
+      byId("agent-card"),
+      { y: 10, opacity: 0.52 },
+      { y: 0, opacity: 1, duration: 0.32, ease: "power2.out" },
+      5.02,
+    );
+
+    tl.to(
+      byId("settings"),
+      { x: -230, duration: 0.32, ease: "power4.in" },
+      5.9,
+    );
+    tl.to(
+      byId("settings"),
+      { opacity: 0, duration: 0.18, ease: "power1.in" },
+      6.02,
+    );
+    tl.set(byId("settings"), { opacity: 0 }, 6.22);
+    tl.fromTo(
+      byId("knowledge"),
+      { x: 230, opacity: 0.35 },
+      { x: 0, opacity: 1, duration: 0.32, ease: "power4.out" },
+      6.22,
+    );
+    tl.fromTo(
+      byId("knowledge-capture"),
+      { x: 18, scale: 1.015 },
+      { x: 0, scale: 1, duration: 0.72, ease: "power2.out" },
+      6.24,
+    );
+    tl.fromTo(
+      byId("profile-source"),
+      { x: -14, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.28, ease: "power2.out" },
+      6.48,
+    );
+    tl.fromTo(
+      byId("evidence-one"),
+      { x: 26, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.38, ease: "power3.out" },
+      6.58,
+    );
+    tl.fromTo(
+      byId("link-one"),
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 0.3, ease: "power2.out" },
+      6.82,
+    );
+    tl.fromTo(
+      byId("evidence-two"),
+      { x: 26, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.38, ease: "power3.out" },
+      6.92,
+    );
+    tl.fromTo(
+      byId("link-two"),
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 0.3, ease: "power2.out" },
+      7.12,
+    );
+
+    tl.to(
+      byId("knowledge"),
+      { "--dof": "6px", opacity: 0.55, duration: 0.75, ease: "power2.inOut" },
+      7.5,
+    );
+    tl.fromTo(
+      byId("missing"),
+      { y: 70, scale: 0.98, opacity: 0 },
+      { y: 0, scale: 1, opacity: 1, duration: 0.58, ease: "power3.out" },
+      7.5,
+    );
+    tl.to(
+      byId("missing-text"),
+      { text: { value: "Ask the student" }, duration: 0.62, ease: "none" },
+      7.86,
+    );
+    tl.fromTo(
+      byId("missing-copy"),
+      { y: 8, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" },
+      8.48,
+    );
+    tl.to(
+      byId("cursor"),
+      { opacity: 0.45, duration: 0.2, ease: "none" },
+      8.48,
+    );
+
+      window.__timelines["02-career-memory"] = tl;
+    })();
+  </script>
+</template>

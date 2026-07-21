@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "preferences": {
+    "destination": {
+      "value": "youtube-embed",
+      "confirmed_in": [
+        "resumedb-demo"
+      ],
+      "updated_at": "2026-07-21T07:48:09.728Z"
+    },
+    "aspect": {
+      "value": "1920x1080",
+      "confirmed_in": [
+        "resumedb-demo"
+      ],
+      "updated_at": "2026-07-21T07:48:09.857Z"
+    },
+    "flow": {
+      "value": "automation",
+      "confirmed_in": [
+        "resumedb-demo"
+      ],
+      "updated_at": "2026-07-21T07:48:09.991Z"
+    },
+    "storyboard": {
+      "value": "yes",
+      "confirmed_in": [
+        "resumedb-demo"
+      ],
+      "updated_at": "2026-07-21T07:48:10.126Z"
+    },
+    "style_preset.product-launch-video": {
+      "value": "claude",
+      "confirmed_in": [
+        "resumedb-demo"
+      ],
+      "updated_at": "2026-07-21T07:59:56.841Z"
+    }
+  },
+  "sightings": {}
+}

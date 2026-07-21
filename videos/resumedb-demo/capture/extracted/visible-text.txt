@@ -1,0 +1,34 @@
+[span] ResumeDB
+[span] Knowledge
+[span] Career Agent
+[span] Applications
+[span] Profile & Settings
+[span] Earnestine Braun
+[span] Demo
+[div] earnestine.braun14@example.net
+[div] Career command center
+[span] Synthetic profile active
+[h1] Welcome back, Earnestine
+[p] Your agent discovers, qualifies, and prepares applications. You review and submit.
+[button] Ask the career agent
+[button] Watch guided demo
+[div] Tracked
+[div] all applications
+[div] Drafts
+[div] waiting for review
+[div] Ready
+[div] approved to autofill
+[div] Submitted
+[div] completed applications
+[div] Application queue
+[h3] Keep the pipeline moving
+[button] View all
+[span] Software Engineering Intern
+[span] Demo
+[div] Northstar Robotics
+[span] ready
+[div] Knowledge readiness
+[h3] Profile ready
+[p] The agent uses everything you provide, but never guesses factual application answers.
+[div] Your core application facts are complete.
+[button] Complete profile
