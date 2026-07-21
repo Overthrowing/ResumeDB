@@ -1,0 +1,534 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:03,940"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 3940
+			},
+			"text": " Sam asks for robotics and bioinformatics internships.",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.92343,
+					"t_dtw": -1
+				},
+				{
+					"text": " Sam",
+					"timestamps": {
+						"from": "00:00:00,170",
+						"to": "00:00:00,240"
+					},
+					"offsets": {
+						"from": 170,
+						"to": 240
+					},
+					"id": 3409,
+					"p": 0.559416,
+					"t_dtw": -1
+				},
+				{
+					"text": " asks",
+					"timestamps": {
+						"from": "00:00:00,290",
+						"to": "00:00:00,550"
+					},
+					"offsets": {
+						"from": 290,
+						"to": 550
+					},
+					"id": 7893,
+					"p": 0.996481,
+					"t_dtw": -1
+				},
+				{
+					"text": " for",
+					"timestamps": {
+						"from": "00:00:00,570",
+						"to": "00:00:00,790"
+					},
+					"offsets": {
+						"from": 570,
+						"to": 790
+					},
+					"id": 329,
+					"p": 0.997607,
+					"t_dtw": -1
+				},
+				{
+					"text": " robotics",
+					"timestamps": {
+						"from": "00:00:00,800",
+						"to": "00:00:01,440"
+					},
+					"offsets": {
+						"from": 800,
+						"to": 1440
+					},
+					"id": 36359,
+					"p": 0.921125,
+					"t_dtw": -1
+				},
+				{
+					"text": " and",
+					"timestamps": {
+						"from": "00:00:01,440",
+						"to": "00:00:01,680"
+					},
+					"offsets": {
+						"from": 1440,
+						"to": 1680
+					},
+					"id": 290,
+					"p": 0.980052,
+					"t_dtw": -1
+				},
+				{
+					"text": " bio",
+					"timestamps": {
+						"from": "00:00:01,680",
+						"to": "00:00:01,900"
+					},
+					"offsets": {
+						"from": 1680,
+						"to": 1900
+					},
+					"id": 13401,
+					"p": 0.968608,
+					"t_dtw": -1
+				},
+				{
+					"text": "in",
+					"timestamps": {
+						"from": "00:00:01,920",
+						"to": "00:00:02,080"
+					},
+					"offsets": {
+						"from": 1920,
+						"to": 2080
+					},
+					"id": 259,
+					"p": 0.987735,
+					"t_dtw": -1
+				},
+				{
+					"text": "format",
+					"timestamps": {
+						"from": "00:00:02,080",
+						"to": "00:00:02,560"
+					},
+					"offsets": {
+						"from": 2080,
+						"to": 2560
+					},
+					"id": 18982,
+					"p": 0.970691,
+					"t_dtw": -1
+				},
+				{
+					"text": "ics",
+					"timestamps": {
+						"from": "00:00:02,560",
+						"to": "00:00:02,840"
+					},
+					"offsets": {
+						"from": 2560,
+						"to": 2840
+					},
+					"id": 873,
+					"p": 0.999977,
+					"t_dtw": -1
+				},
+				{
+					"text": " intern",
+					"timestamps": {
+						"from": "00:00:02,840",
+						"to": "00:00:03,310"
+					},
+					"offsets": {
+						"from": 2840,
+						"to": 3310
+					},
+					"id": 1788,
+					"p": 0.950841,
+					"t_dtw": -1
+				},
+				{
+					"text": "ships",
+					"timestamps": {
+						"from": "00:00:03,310",
+						"to": "00:00:03,600"
+					},
+					"offsets": {
+						"from": 3310,
+						"to": 3600
+					},
+					"id": 26313,
+					"p": 0.99988,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:03,740",
+						"to": "00:00:03,860"
+					},
+					"offsets": {
+						"from": 3740,
+						"to": 3860
+					},
+					"id": 13,
+					"p": 0.914053,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_197]",
+					"timestamps": {
+						"from": "00:00:03,940",
+						"to": "00:00:03,940"
+					},
+					"offsets": {
+						"from": 3940,
+						"to": 3940
+					},
+					"id": 50560,
+					"p": 0.0307387,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,940",
+				"to": "00:00:09,220"
+			},
+			"offsets": {
+				"from": 3940,
+				"to": 9220
+			},
+			"text": " The career agent searches, reads each posting, and finds the roles where Sam can genuinely win.",
+			"tokens": [
+				{
+					"text": " The",
+					"timestamps": {
+						"from": "00:00:04,090",
+						"to": "00:00:04,120"
+					},
+					"offsets": {
+						"from": 4090,
+						"to": 4120
+					},
+					"id": 383,
+					"p": 0.995816,
+					"t_dtw": -1
+				},
+				{
+					"text": " career",
+					"timestamps": {
+						"from": "00:00:04,230",
+						"to": "00:00:04,490"
+					},
+					"offsets": {
+						"from": 4230,
+						"to": 4490
+					},
+					"id": 3451,
+					"p": 0.937205,
+					"t_dtw": -1
+				},
+				{
+					"text": " agent",
+					"timestamps": {
+						"from": "00:00:04,490",
+						"to": "00:00:04,730"
+					},
+					"offsets": {
+						"from": 4490,
+						"to": 4730
+					},
+					"id": 5797,
+					"p": 0.986058,
+					"t_dtw": -1
+				},
+				{
+					"text": " searches",
+					"timestamps": {
+						"from": "00:00:04,810",
+						"to": "00:00:05,290"
+					},
+					"offsets": {
+						"from": 4810,
+						"to": 5290
+					},
+					"id": 15455,
+					"p": 0.994514,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:05,290",
+						"to": "00:00:05,440"
+					},
+					"offsets": {
+						"from": 5290,
+						"to": 5440
+					},
+					"id": 11,
+					"p": 0.98359,
+					"t_dtw": -1
+				},
+				{
+					"text": " reads",
+					"timestamps": {
+						"from": "00:00:05,440",
+						"to": "00:00:05,830"
+					},
+					"offsets": {
+						"from": 5440,
+						"to": 5830
+					},
+					"id": 9743,
+					"p": 0.935473,
+					"t_dtw": -1
+				},
+				{
+					"text": " each",
+					"timestamps": {
+						"from": "00:00:05,860",
+						"to": "00:00:06,160"
+					},
+					"offsets": {
+						"from": 5860,
+						"to": 6160
+					},
+					"id": 1123,
+					"p": 0.994495,
+					"t_dtw": -1
+				},
+				{
+					"text": " posting",
+					"timestamps": {
+						"from": "00:00:06,160",
+						"to": "00:00:06,680"
+					},
+					"offsets": {
+						"from": 6160,
+						"to": 6680
+					},
+					"id": 10754,
+					"p": 0.992932,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:06,720",
+						"to": "00:00:06,790"
+					},
+					"offsets": {
+						"from": 6720,
+						"to": 6790
+					},
+					"id": 11,
+					"p": 0.821555,
+					"t_dtw": -1
+				},
+				{
+					"text": " and",
+					"timestamps": {
+						"from": "00:00:06,850",
+						"to": "00:00:06,940"
+					},
+					"offsets": {
+						"from": 6850,
+						"to": 6940
+					},
+					"id": 290,
+					"p": 0.583377,
+					"t_dtw": -1
+				},
+				{
+					"text": " finds",
+					"timestamps": {
+						"from": "00:00:06,940",
+						"to": "00:00:07,200"
+					},
+					"offsets": {
+						"from": 6940,
+						"to": 7200
+					},
+					"id": 7228,
+					"p": 0.963006,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:07,200",
+						"to": "00:00:07,350"
+					},
+					"offsets": {
+						"from": 7200,
+						"to": 7350
+					},
+					"id": 262,
+					"p": 0.964954,
+					"t_dtw": -1
+				},
+				{
+					"text": " roles",
+					"timestamps": {
+						"from": "00:00:07,350",
+						"to": "00:00:07,540"
+					},
+					"offsets": {
+						"from": 7350,
+						"to": 7540
+					},
+					"id": 9176,
+					"p": 0.986532,
+					"t_dtw": -1
+				},
+				{
+					"text": " where",
+					"timestamps": {
+						"from": "00:00:07,700",
+						"to": "00:00:07,700"
+					},
+					"offsets": {
+						"from": 7700,
+						"to": 7700
+					},
+					"id": 810,
+					"p": 0.955474,
+					"t_dtw": -1
+				},
+				{
+					"text": " Sam",
+					"timestamps": {
+						"from": "00:00:08,010",
+						"to": "00:00:08,020"
+					},
+					"offsets": {
+						"from": 8010,
+						"to": 8020
+					},
+					"id": 3409,
+					"p": 0.979735,
+					"t_dtw": -1
+				},
+				{
+					"text": " can",
+					"timestamps": {
+						"from": "00:00:08,020",
+						"to": "00:00:08,190"
+					},
+					"offsets": {
+						"from": 8020,
+						"to": 8190
+					},
+					"id": 460,
+					"p": 0.958022,
+					"t_dtw": -1
+				},
+				{
+					"text": " genuinely",
+					"timestamps": {
+						"from": "00:00:08,190",
+						"to": "00:00:08,690"
+					},
+					"offsets": {
+						"from": 8190,
+						"to": 8690
+					},
+					"id": 17170,
+					"p": 0.980453,
+					"t_dtw": -1
+				},
+				{
+					"text": " win",
+					"timestamps": {
+						"from": "00:00:08,690",
+						"to": "00:00:09,130"
+					},
+					"offsets": {
+						"from": 8690,
+						"to": 9130
+					},
+					"id": 1592,
+					"p": 0.963738,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:09,150",
+						"to": "00:00:09,220"
+					},
+					"offsets": {
+						"from": 9150,
+						"to": 9220
+					},
+					"id": 13,
+					"p": 0.959596,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_461]",
+					"timestamps": {
+						"from": "00:00:09,220",
+						"to": "00:00:09,220"
+					},
+					"offsets": {
+						"from": 9220,
+						"to": 9220
+					},
+					"id": 50824,
+					"p": 0.0546167,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

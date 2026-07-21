@@ -1,0 +1,243 @@
+<template>
+  <style>
+    @font-face { font-family: "EB Garamond"; src: url("assets/fonts/eb-garamond-400.woff2") format("woff2"); font-weight: 400; }
+    @font-face { font-family: "EB Garamond"; src: url("assets/fonts/eb-garamond-600.woff2") format("woff2"); font-weight: 600; }
+    @font-face { font-family: "Inter"; src: url("assets/fonts/inter-400.woff2") format("woff2"); font-weight: 400; }
+    @font-face { font-family: "Inter"; src: url("assets/fonts/inter-600.woff2") format("woff2"); font-weight: 600; }
+    @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2"); font-weight: 600; }
+
+    #f14-codex-dogfood-meta-root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      color: #f3f2f2;
+      font-family: "Inter", sans-serif;
+    }
+    .f14-ground { position: absolute; inset: 0; background: #161518; }
+    .f14-ground::before,
+    .f14-ground::after {
+      position: absolute;
+      bottom: 54px;
+      color: #1d1b1f;
+      font: 600 390px/0.68 "EB Garamond", serif;
+      letter-spacing: -0.05em;
+    }
+    .f14-ground::before { content: "H"; left: 54px; }
+    .f14-ground::after { content: "A"; right: 54px; }
+    .f14-scene { position: absolute; inset: 0; overflow: hidden; }
+    .f14-header {
+      position: absolute;
+      z-index: 16;
+      top: 42px;
+      right: 80px;
+      left: 80px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(243,242,242,0.16);
+    }
+    .f14-slug,
+    .f14-index,
+    .f14-side-kicker,
+    .f14-row-meta,
+    .f14-agent-state,
+    .f14-thesis-kicker,
+    .f14-footer {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .f14-slug { color: #f4e9d9; font-size: 20px; letter-spacing: 0.14em; }
+    .f14-slug b { color: #b68235; font-weight: 600; }
+    .f14-index { color: rgba(243,242,242,0.48); font-size: 17px; letter-spacing: 0.11em; }
+    .f14-columns {
+      position: absolute;
+      top: 150px;
+      right: 80px;
+      left: 80px;
+      height: 684px;
+      display: grid;
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 0;
+    }
+    .f14-side {
+      position: relative;
+      min-width: 0;
+      padding: 38px 58px 36px;
+      border-top: 1px solid rgba(243,242,242,0.15);
+      border-bottom: 1px solid rgba(243,242,242,0.15);
+    }
+    .f14-human { border-right: 1px solid rgba(243,242,242,0.2); }
+    .f14-side-kicker { color: #b68235; font-size: 16px; letter-spacing: 0.13em; }
+    .f14-agent .f14-side-kicker { color: #cfb8ff; }
+    .f14-side-title {
+      margin: 16px 0 12px;
+      font: 400 92px/0.9 "EB Garamond", serif;
+      letter-spacing: -0.04em;
+    }
+    .f14-side-copy {
+      max-width: 640px;
+      margin: 0 0 28px;
+      color: rgba(243,242,242,0.65);
+      font-size: 23px;
+      line-height: 1.42;
+    }
+    .f14-list { border-top: 1px solid rgba(243,242,242,0.13); }
+    .f14-human-row,
+    .f14-agent-row {
+      position: relative;
+      display: grid;
+      min-height: 77px;
+      align-items: center;
+      border-bottom: 1px solid rgba(243,242,242,0.11);
+      opacity: 0;
+    }
+    .f14-human-row { grid-template-columns: 46px 1fr 28px; gap: 16px; }
+    .f14-agent-row { grid-template-columns: 44px 1fr 142px; gap: 18px; overflow: visible; }
+    .f14-row-number { color: rgba(243,242,242,0.55); font: 600 15px/1 "JetBrains Mono", monospace; }
+    .f14-row-title { color: #f3f2f2; font-size: 25px; line-height: 1.2; }
+    .f14-human-check {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 1px solid rgba(182,130,53,0.54);
+      border-radius: 50%;
+      color: #e8a55a;
+      font: 600 17px/1 "Inter", sans-serif;
+      opacity: 0;
+    }
+    .f14-agent-state {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 9px;
+      padding-right: 10px;
+      color: #5db872;
+      font-size: 13px;
+      letter-spacing: 0.07em;
+      opacity: 0;
+    }
+    .f14-agent-state i { width: 8px; height: 8px; border-radius: 50%; background: #5db872; }
+    .f14-agent-progress {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: #6d28d9;
+      transform-origin: left center;
+    }
+    .f14-side-note {
+      position: absolute;
+      right: 58px;
+      bottom: 28px;
+      left: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(243,242,242,0.48);
+      font: 600 14px/1 "JetBrains Mono", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .f14-side-note strong { color: #f4e9d9; font-weight: 600; }
+
+    .f14-thesis {
+      position: absolute;
+      top: 168px;
+      right: 110px;
+      left: 110px;
+      height: 650px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      opacity: 0;
+    }
+    .f14-thesis-kicker { color: #b68235; font-size: 18px; letter-spacing: 0.14em; }
+    .f14-thesis-rule {
+      display: block;
+      width: 180px;
+      height: 1px;
+      margin: 24px auto 30px;
+      background: rgba(243,242,242,0.22);
+      transform-origin: center;
+    }
+    .f14-thesis-line {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-weight: 400;
+      letter-spacing: -0.035em;
+    }
+    .f14-thesis-human { color: #f4e9d9; font-size: 108px; line-height: 0.94; }
+    .f14-thesis-agent { margin-top: 24px; color: #cfb8ff; font-size: 82px; line-height: 0.98; }
+    .f14-thesis-support {
+      max-width: 1200px;
+      margin: 34px auto 0;
+      color: rgba(243,242,242,0.62);
+      font-size: 23px;
+      line-height: 1.42;
+    }
+    .f14-footer {
+      position: absolute;
+      right: 80px;
+      bottom: 210px;
+      left: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(243,242,242,0.48);
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      opacity: 0;
+    }
+    .f14-footer strong { color: #f4e9d9; font-weight: 600; }
+  </style>
+
+  <div data-hf-id="hf-f14-root" id="f14-codex-dogfood-meta-root" data-composition-id="14-codex-dogfood-meta" data-start="0" data-duration="19.5" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-f14-ground" id="f14-ground" class="clip f14-ground" data-start="0" data-duration="19.5" data-track-index="0"></div>
+    <main data-hf-id="hf-f14-scene" id="f14-scene" class="clip f14-scene" data-start="0" data-duration="19.5" data-track-index="1">
+      <header data-hf-id="hf-f14-header" class="f14-header"><span data-hf-id="hf-f14-slug" class="f14-slug"><b data-hf-id="hf-f14-slug-b">Judging appendix</b> / Human + agent</span><span data-hf-id="hf-f14-index" class="f14-index">14 / 14</span></header>
+
+      <section data-hf-id="hf-f14-columns" id="f14-columns" class="f14-columns">
+        <article data-hf-id="hf-f14-human" class="f14-side f14-human"><span data-hf-id="hf-f14-human-kicker" class="f14-side-kicker">Human direction</span><h1 data-hf-id="hf-f14-human-title" class="f14-side-title">Humans</h1><p data-hf-id="hf-f14-human-copy" class="f14-side-copy">We chose the problem, the product bets, and what deserved to feel exceptional.</p><div data-hf-id="hf-f14-human-list" class="f14-list"><div data-hf-id="hf-f14-human-row-1" class="f14-human-row"><span data-hf-id="hf-f14-human-row-1-number" class="f14-row-number">01</span><span data-hf-id="hf-f14-human-row-1-title" class="f14-row-title">Student empathy</span><span data-hf-id="hf-f14-human-row-1-check" class="f14-human-check">✓</span></div><div data-hf-id="hf-f14-human-row-2" class="f14-human-row"><span data-hf-id="hf-f14-human-row-2-number" class="f14-row-number">02</span><span data-hf-id="hf-f14-human-row-2-title" class="f14-row-title">Product direction</span><span data-hf-id="hf-f14-human-row-2-check" class="f14-human-check">✓</span></div><div data-hf-id="hf-f14-human-row-3" class="f14-human-row"><span data-hf-id="hf-f14-human-row-3-number" class="f14-row-number">03</span><span data-hf-id="hf-f14-human-row-3-title" class="f14-row-title">Real user workflows</span><span data-hf-id="hf-f14-human-row-3-check" class="f14-human-check">✓</span></div><div data-hf-id="hf-f14-human-row-4" class="f14-human-row"><span data-hf-id="hf-f14-human-row-4-number" class="f14-row-number">04</span><span data-hf-id="hf-f14-human-row-4-title" class="f14-row-title">Creative taste</span><span data-hf-id="hf-f14-human-row-4-check" class="f14-human-check">✓</span></div></div><div data-hf-id="hf-f14-human-note" class="f14-side-note"><span data-hf-id="hf-f14-human-note-a">Set the vision</span><strong data-hf-id="hf-f14-human-note-b">Select the standard</strong></div></article>
+
+        <article data-hf-id="hf-f14-agent" class="f14-side f14-agent"><span data-hf-id="hf-f14-agent-kicker" class="f14-side-kicker">Codex + GPT-5.6</span><h2 data-hf-id="hf-f14-agent-title" class="f14-side-title">Agents</h2><p data-hf-id="hf-f14-agent-copy" class="f14-side-copy">Long-horizon persistence turned each decision into production code, verification, and resilient delivery.</p><div data-hf-id="hf-f14-agent-list" class="f14-list"><div data-hf-id="hf-f14-agent-row-1" class="f14-agent-row"><span data-hf-id="hf-f14-agent-row-1-number" class="f14-row-number">01</span><span data-hf-id="hf-f14-agent-row-1-title" class="f14-row-title">Build across the stack</span><span data-hf-id="hf-f14-agent-row-1-state" class="f14-agent-state"><i data-hf-id="hf-f14-agent-row-1-dot"></i>complete</span><i data-hf-id="hf-f14-agent-row-1-progress" class="f14-agent-progress"></i></div><div data-hf-id="hf-f14-agent-row-2" class="f14-agent-row"><span data-hf-id="hf-f14-agent-row-2-number" class="f14-row-number">02</span><span data-hf-id="hf-f14-agent-row-2-title" class="f14-row-title">Debug real surfaces</span><span data-hf-id="hf-f14-agent-row-2-state" class="f14-agent-state"><i data-hf-id="hf-f14-agent-row-2-dot"></i>complete</span><i data-hf-id="hf-f14-agent-row-2-progress" class="f14-agent-progress"></i></div><div data-hf-id="hf-f14-agent-row-3" class="f14-agent-row"><span data-hf-id="hf-f14-agent-row-3-number" class="f14-row-number">03</span><span data-hf-id="hf-f14-agent-row-3-title" class="f14-row-title">Verify and test</span><span data-hf-id="hf-f14-agent-row-3-state" class="f14-agent-state"><i data-hf-id="hf-f14-agent-row-3-dot"></i>complete</span><i data-hf-id="hf-f14-agent-row-3-progress" class="f14-agent-progress"></i></div><div data-hf-id="hf-f14-agent-row-4" class="f14-agent-row"><span data-hf-id="hf-f14-agent-row-4-number" class="f14-row-number">04</span><span data-hf-id="hf-f14-agent-row-4-title" class="f14-row-title">Harden the product</span><span data-hf-id="hf-f14-agent-row-4-state" class="f14-agent-state"><i data-hf-id="hf-f14-agent-row-4-dot"></i>complete</span><i data-hf-id="hf-f14-agent-row-4-progress" class="f14-agent-progress"></i></div></div><div data-hf-id="hf-f14-agent-note" class="f14-side-note"><span data-hf-id="hf-f14-agent-note-a">Persist through details</span><strong data-hf-id="hf-f14-agent-note-b">Prove the result</strong></div></article>
+      </section>
+
+      <section data-hf-id="hf-f14-thesis" id="f14-thesis" class="f14-thesis"><span data-hf-id="hf-f14-thesis-kicker" class="f14-thesis-kicker">The way we built ResumeDB</span><i data-hf-id="hf-f14-thesis-rule" id="f14-thesis-rule" class="f14-thesis-rule"></i><p data-hf-id="hf-f14-thesis-human" id="f14-thesis-human" class="f14-thesis-line f14-thesis-human">Human innovation and taste.</p><p data-hf-id="hf-f14-thesis-agent" id="f14-thesis-agent" class="f14-thesis-line f14-thesis-agent">Agent-grade production quality and hardening.</p><p data-hf-id="hf-f14-thesis-support" class="f14-thesis-support">Human creativity stayed focused on features and people while agents debugged, verified, tested, and hardened every implementation detail.</p></section>
+
+      <footer data-hf-id="hf-f14-footer" class="f14-footer"><span data-hf-id="hf-f14-footer-a">Online hackathon build story</span><strong data-hf-id="hf-f14-footer-b">Built with Codex + GPT-5.6</strong></footer>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#f14-scene .f14-header", { y: -18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 0.12);
+      tl.fromTo("#f14-columns", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.62, ease: "power3.out" }, 0.34);
+      tl.fromTo("#f14-scene .f14-human-row", { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.38, stagger: 0.72, ease: "power3.out" }, 1.05);
+      tl.fromTo("#f14-scene .f14-agent-row", { x: 28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.38, stagger: 0.72, ease: "power3.out" }, 1.28);
+      tl.fromTo("#f14-scene .f14-human-check", { scale: 0.52, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.24, stagger: 0.72, ease: "back.out(1.5)", immediateRender: false }, 1.34);
+      tl.fromTo("#f14-scene .f14-agent-progress", { scaleX: 0 }, { scaleX: 1, duration: 0.52, stagger: 0.72, ease: "power2.inOut", immediateRender: false }, 1.54);
+      tl.fromTo("#f14-scene .f14-agent-state", { x: 12, opacity: 0 }, { x: 0, opacity: 1, duration: 0.26, stagger: 0.72, ease: "power2.out", immediateRender: false }, 1.86);
+      tl.to("#f14-columns .f14-human", { x: -96, opacity: 0, duration: 0.72, ease: "power3.in" }, 12.18);
+      tl.to("#f14-columns .f14-agent", { x: 96, opacity: 0, duration: 0.72, ease: "power3.in" }, 12.18);
+      tl.to("#f14-columns", { opacity: 0, duration: 0.16, ease: "sine.in" }, 12.86);
+      tl.fromTo("#f14-thesis", { scale: 0.975, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.68, ease: "power3.out", immediateRender: false }, 13.02);
+      tl.fromTo("#f14-thesis-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.54, ease: "power2.inOut", immediateRender: false }, 13.42);
+      tl.fromTo("#f14-thesis-human", { y: 42, opacity: 0 }, { y: 0, opacity: 1, duration: 0.68, ease: "power4.out", immediateRender: false }, 15.04);
+      tl.fromTo("#f14-thesis-agent", { y: 42, opacity: 0 }, { y: 0, opacity: 1, duration: 0.74, ease: "power4.out", immediateRender: false }, 16.96);
+      tl.fromTo("#f14-scene .f14-thesis-support", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.48, ease: "power2.out", immediateRender: false }, 17.56);
+      tl.fromTo("#f14-scene .f14-footer", { opacity: 0 }, { opacity: 1, duration: 0.44, ease: "sine.out" }, 18.12);
+      tl.to({}, { duration: 19.5 }, 0);
+      window.__timelines["14-codex-dogfood-meta"] = tl;
+    })();
+  </script>
+</template>

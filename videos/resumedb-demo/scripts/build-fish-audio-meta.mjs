@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PROJECT = resolve(HERE, "..");
 const SOURCE_AUDIO = join(PROJECT, "assets/audio/narration.mp3");
-const WHISPER_JSON = join(PROJECT, "transcripts/narration.json");
 const SCRIPT = join(PROJECT, "SCRIPT.md");
+const STORYBOARD = join(PROJECT, "STORYBOARD.md");
 const VOICE_DIR = join(PROJECT, "assets/voice");
+const VOICE_TRANSCRIPT_DIR = join(PROJECT, "transcripts/voice");
 const OUTPUT_META = join(PROJECT, "audio_meta.json");
 const OUTPUT_TRANSCRIPT = join(PROJECT, "transcript.json");
+const FILLERS = new Set(["uh", "um", "uhm", "erm", "hmm"]);
 
 function parseScriptLines(markdown) {
   const lines = [];
@@ -20,8 +22,13 @@ function parseScriptLines(markdown) {
   for (const line of markdown.split(/\r?\n/)) {
     const heading = line.match(/^## .*\(Frame (\d+)\)/i);
     if (heading) {
-      current = { frame: Number(heading[1]), text: "" };
+      current = { frame: Number(heading[1]), text: "", captionText: "" };
       lines.push(current);
+      continue;
+    }
+    const captionText = current && line.match(/^\*\*Caption text:\*\*\s*(.+)/i);
+    if (captionText) {
+      current.captionText = captionText[1].trim();
       continue;
     }
     const spoken = current && line.match(/^\s{4}(.+)/);
@@ -30,8 +37,28 @@ function parseScriptLines(markdown) {
   return lines;
 }
 
-function scriptWordCount(text) {
-  return (text.match(/[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*/g) || []).length;
+function parseStoryboardDurations(markdown) {
+  const durations = new Map();
+  let frame = null;
+  for (const line of markdown.split(/\r?\n/)) {
+    const heading = line.match(/^## Frame (\d+)\b/i);
+    if (heading) {
+      frame = Number(heading[1]);
+      continue;
+    }
+    const duration = frame && line.match(/^- duration:\s*([0-9.]+)s\s*$/i);
+    if (duration) durations.set(frame, Number(duration[1]));
+  }
+  if (!durations.size) throw new Error("No frame durations found in STORYBOARD.md");
+  return durations;
+}
+
+function normalizedWord(text) {
+  return String(text)
+    .normalize("NFKD")
+    .replace(/\p{M}/gu, "")
+    .replace(/[^\p{L}\p{N}]/gu, "")
+    .toLowerCase();
 }
 
 function whisperWords(payload) {
@@ -69,70 +96,71 @@ function probeDuration(path) {
 }
 
 const scriptLines = parseScriptLines(readFileSync(SCRIPT, "utf8"));
-const words = whisperWords(JSON.parse(readFileSync(WHISPER_JSON, "utf8")));
-const sourceDuration = probeDuration(SOURCE_AUDIO);
-const counts = scriptLines.map((line) => scriptWordCount(line.text));
-const expectedBeforeLast = counts.slice(0, -1).reduce((sum, count) => sum + count, 0);
-if (expectedBeforeLast >= words.length) {
-  throw new Error(`Transcript is too short: ${words.length} words for ${expectedBeforeLast} required before the final frame.`);
-}
+const targetByFrame = parseStoryboardDurations(readFileSync(STORYBOARD, "utf8"));
 
-mkdirSync(VOICE_DIR, { recursive: true });
+let offset = 0;
+const allWords = [];
+const voices = scriptLines.map((line) => {
+  const duration = Number(targetByFrame.get(line.frame));
+  if (!duration) throw new Error(`Missing target duration for frame ${line.frame}`);
+  const clipPath = join(VOICE_DIR, `${String(line.frame).padStart(2, "0")}.mp3`);
+  if (!existsSync(clipPath)) throw new Error(`Missing narration clip: ${clipPath}`);
+  const clipDuration = probeDuration(clipPath);
+  if (Math.abs(clipDuration - duration) > 0.08) {
+    throw new Error(
+      `Frame ${line.frame} clip duration drifted: ${clipDuration.toFixed(3)}s, expected ${duration.toFixed(3)}s`,
+    );
+  }
 
-let cursor = 0;
-const voices = scriptLines.map((line, index) => {
-  const count = index === scriptLines.length - 1 ? words.length - cursor : counts[index];
-  const frameWords = words.slice(cursor, cursor + count);
-  const start = index === 0 ? 0 : frameWords[0].start;
-  const nextWord = words[cursor + count];
-  const end = nextWord ? nextWord.start : sourceDuration;
-  const duration = Number((end - start).toFixed(3));
-  const filename = `${String(line.frame).padStart(2, "0")}.mp3`;
-  const outputPath = join(VOICE_DIR, filename);
+  const transcriptPath = join(VOICE_TRANSCRIPT_DIR, `${String(line.frame).padStart(2, "0")}.json`);
+  if (!existsSync(transcriptPath)) throw new Error(`Missing narration transcript: ${transcriptPath}`);
+  const frameWords = whisperWords(JSON.parse(readFileSync(transcriptPath, "utf8")));
+  const fillerWords = frameWords.filter((word) => FILLERS.has(normalizedWord(word.text)));
+  if (fillerWords.length) {
+    throw new Error(
+      `Frame ${line.frame} contains filler speech: ${fillerWords.map((word) => `${word.text}@${word.start.toFixed(2)}s`).join(", ")}`,
+    );
+  }
 
-  execFileSync(
-    "ffmpeg",
-    [
-      "-y",
-      "-v",
-      "error",
-      "-ss",
-      start.toFixed(3),
-      "-t",
-      duration.toFixed(3),
-      "-i",
-      SOURCE_AUDIO,
-      "-codec:a",
-      "libmp3lame",
-      "-q:a",
-      "2",
-      outputPath,
-    ],
-    { stdio: "inherit" },
-  );
+  const start = offset;
+  for (const word of frameWords) {
+    allWords.push({
+      text: word.text,
+      start: Number((start + Math.max(0, word.start)).toFixed(3)),
+      end: Number((start + Math.min(duration, word.end)).toFixed(3)),
+    });
+  }
+  offset += duration;
 
-  cursor += count;
   return {
     frame: line.frame,
-    path: `assets/voice/${filename}`,
+    path: `assets/voice/${String(line.frame).padStart(2, "0")}.mp3`,
     duration_s: duration,
     words: frameWords.map((word, wordIndex) => ({
       id: `fish-${String(line.frame).padStart(2, "0")}-${wordIndex}`,
       text: word.text,
-      start: Number((word.start - start).toFixed(3)),
-      end: Number((word.end - start).toFixed(3)),
+      start: Number(Math.max(0, word.start).toFixed(3)),
+      end: Number(Math.min(duration, word.end).toFixed(3)),
     })),
   };
 });
 
-if (cursor !== words.length) {
-  throw new Error(`Frame assignment consumed ${cursor} of ${words.length} transcript words.`);
-}
-
+const timelineDuration = Number(offset.toFixed(3));
+const sourceDuration = probeDuration(SOURCE_AUDIO);
 writeFileSync(OUTPUT_META, `${JSON.stringify({ bgm: null, voices, sfx: [] }, null, 2)}\n`);
 writeFileSync(
   OUTPUT_TRANSCRIPT,
-  `${JSON.stringify({ provider: "fish-audio", model: "s2.1-pro-free", duration_s: sourceDuration, words }, null, 2)}\n`,
+  `${JSON.stringify(
+    {
+      provider: "fish-audio",
+      model: "s2.1-pro-free",
+      duration_s: timelineDuration,
+      source_duration_s: Number(sourceDuration.toFixed(3)),
+      words: allWords,
+    },
+    null,
+    2,
+  )}\n`,
 );
 
-console.log(`Built ${voices.length} Fish narration clips and ${words.length} word timings (${sourceDuration.toFixed(3)}s).`);
+console.log(`Built ${voices.length} Fish narration clips and ${allWords.length} word timings (${timelineDuration.toFixed(3)}s).`);

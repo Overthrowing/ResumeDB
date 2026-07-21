@@ -1,0 +1,1408 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+      font-family: "Inter";
+    }
+
+    [class~="f05-application-lifecycle-bg"] {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 92% 4%, rgba(109, 40, 217, 0.055), transparent 24%),
+        radial-gradient(circle at 6% 12%, rgba(184, 130, 42, 0.1), transparent 27%),
+        #f3f2f2;
+    }
+
+    [class~="f05-application-lifecycle-scene"] {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    [class~="f05-application-lifecycle-header"] {
+      position: absolute;
+      top: 3.8cqh;
+      right: 4.2cqw;
+      left: 4.2cqw;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 30cqw;
+      align-items: end;
+      gap: 2.2cqw;
+    }
+
+    [class~="f05-application-lifecycle-kicker"] {
+      margin: 0 0 0.85cqh;
+      color: #8b5f1d;
+      font-family: "JetBrains Mono";
+      font-size: 1.02cqw;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-title"] {
+      margin: 0;
+      color: #201f1d;
+      font-family: "EB Garamond";
+      font-size: 4.15cqw;
+      font-weight: 400;
+      letter-spacing: -0.024em;
+      line-height: 0.94;
+    }
+
+    [class~="f05-application-lifecycle-deck"] {
+      margin: 0 0 0.35cqh;
+      color: rgba(32, 31, 29, 0.64);
+      font-size: 1.18cqw;
+      line-height: 1.42;
+    }
+
+    [class~="f05-application-lifecycle-stage"] {
+      position: absolute;
+      top: 18.5cqh;
+      right: 4.2cqw;
+      left: 4.2cqw;
+      z-index: 2;
+      display: grid;
+      height: 61.2cqh;
+      grid-template-columns: minmax(0, 31fr) minmax(0, 69fr);
+      gap: 1.25cqw;
+    }
+
+    [class~="f05-application-lifecycle-panel"] {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.17);
+      border-radius: 14px;
+      background: #eee9e1;
+      box-shadow: 0 16px 42px rgba(32, 31, 29, 0.08);
+    }
+
+    [class~="f05-application-lifecycle-capture"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.48) contrast(0.86);
+      opacity: 0.14;
+    }
+
+    [class~="f05-application-lifecycle-list-capture"] {
+      object-position: 45% 5%;
+    }
+
+    [class~="f05-application-lifecycle-overview-capture"] {
+      object-position: 50% 4%;
+    }
+
+    [class~="f05-application-lifecycle-capture-wash"] {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(243, 242, 242, 0.36), rgba(243, 242, 242, 0.82)),
+        linear-gradient(90deg, rgba(243, 242, 242, 0.4), transparent 30%);
+    }
+
+    [class~="f05-application-lifecycle-persona-mask"] {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 14cqw;
+      height: 10cqh;
+      background: #eee9e1;
+    }
+
+    [class~="f05-application-lifecycle-chrome"] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 5.1cqh;
+      padding: 0 1.15cqw;
+      border-bottom: 1px solid rgba(32, 31, 29, 0.13);
+      background: rgba(243, 242, 242, 0.96);
+    }
+
+    [class~="f05-application-lifecycle-chrome-label"] {
+      color: rgba(32, 31, 29, 0.68);
+      font-family: "JetBrains Mono";
+      font-size: 0.8cqw;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-live"] {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45cqw;
+      color: #8b5f1d;
+      font-family: "JetBrains Mono";
+      font-size: 0.68cqw;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-live-dot"] {
+      width: 0.42cqw;
+      height: 0.42cqw;
+      border-radius: 99px;
+      background: #b8822a;
+      box-shadow: 0 0 0 5px rgba(184, 130, 42, 0.12);
+    }
+
+    [class~="f05-application-lifecycle-app-card"] {
+      position: absolute;
+      top: 7.2cqh;
+      right: 1.25cqw;
+      left: 1.25cqw;
+      z-index: 7;
+      min-height: 38.2cqh;
+      padding: 1.75cqh 1.3cqw;
+      border: 1px solid rgba(32, 31, 29, 0.17);
+      border-left: 5px solid #b8822a;
+      border-radius: 12px;
+      background: rgba(243, 242, 242, 0.98);
+      box-shadow: 0 12px 30px rgba(32, 31, 29, 0.08);
+    }
+
+    [class~="f05-application-lifecycle-card-kicker"] {
+      margin: 0 0 0.65cqh;
+      color: #8b5f1d;
+      font-family: "JetBrains Mono";
+      font-size: 0.7cqw;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-role"] {
+      margin: 0;
+      font-family: "EB Garamond";
+      font-size: 2.42cqw;
+      font-weight: 600;
+      letter-spacing: -0.022em;
+      line-height: 0.96;
+    }
+
+    [class~="f05-application-lifecycle-company"] {
+      margin: 0.62cqh 0 0;
+      color: rgba(32, 31, 29, 0.62);
+      font-family: "EB Garamond";
+      font-size: 1.38cqw;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-card-divider"] {
+      height: 1px;
+      margin: 1.7cqh 0;
+      background: rgba(32, 31, 29, 0.12);
+    }
+
+    [class~="f05-application-lifecycle-card-meta"] {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7cqw;
+    }
+
+    [class~="f05-application-lifecycle-meta-block"] {
+      min-width: 0;
+    }
+
+    [class~="f05-application-lifecycle-meta-label"] {
+      display: block;
+      margin-bottom: 0.42cqh;
+      color: #6f6c68;
+      font-family: "JetBrains Mono";
+      font-size: 0.64cqw;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-meta-value"] {
+      color: #201f1d;
+      font-size: 0.92cqw;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    [class~="f05-application-lifecycle-card-status-row"] {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1cqw;
+      margin-top: 2.15cqh;
+    }
+
+    [class~="f05-application-lifecycle-status-label"] {
+      color: #6f6c68;
+      font-family: "JetBrains Mono";
+      font-size: 0.64cqw;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-status-stack"] {
+      position: relative;
+      width: 8.8cqw;
+      height: 3.2cqh;
+    }
+
+    [class~="f05-application-lifecycle-status"] {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(32, 31, 29, 0.16);
+      border-radius: 999px;
+      background: #eee9e1;
+      color: rgba(32, 31, 29, 0.7);
+      font-family: "JetBrains Mono";
+      font-size: 0.69cqw;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-status-progress"] {
+      border-color: rgba(184, 130, 42, 0.42);
+      background: #f4e9d9;
+      color: #8b5f1d;
+    }
+
+    [class~="f05-application-lifecycle-status-submitted"] {
+      border-color: rgba(32, 31, 29, 0.32);
+      background: #201f1d;
+      color: #f3f2f2;
+    }
+
+    [class~="f05-application-lifecycle-start-button"] {
+      position: absolute;
+      right: 1.3cqw;
+      bottom: 1.55cqh;
+      z-index: 2;
+      display: grid;
+      width: 9.2cqw;
+      height: 5.1cqh;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid #8b5f1d;
+      border-radius: 9px;
+      background: #b8822a;
+      color: #201f1d;
+      font-family: "Inter";
+      font-size: 0.9cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-button-ripple"] {
+      position: absolute;
+      width: 3.3cqw;
+      height: 3.3cqw;
+      border: 2px solid rgba(243, 242, 242, 0.82);
+      border-radius: 999px;
+      transform-origin: center;
+    }
+
+    [class~="f05-application-lifecycle-button-label"] {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    [class~="f05-application-lifecycle-cursor"] {
+      position: absolute;
+      z-index: 18;
+      top: 49.6cqh;
+      left: 6.2cqw;
+      width: 2cqw;
+      height: 2.6cqw;
+      filter: drop-shadow(0 4px 6px rgba(32, 31, 29, 0.2));
+      transform-origin: 3px 3px;
+    }
+
+    [class~="f05-application-lifecycle-cursor-path"] {
+      fill: #f3f2f2;
+      stroke: #201f1d;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+
+    [class~="f05-application-lifecycle-connection"] {
+      position: absolute;
+      top: 50%;
+      left: calc(31% - 0.25cqw);
+      z-index: 15;
+      display: flex;
+      align-items: center;
+      width: 2.1cqw;
+      transform: translateY(-50%);
+    }
+
+    [class~="f05-application-lifecycle-connection-line"] {
+      width: 100%;
+      height: 2px;
+      background: #b8822a;
+      transform-origin: left center;
+    }
+
+    [class~="f05-application-lifecycle-connection-tip"] {
+      width: 0;
+      height: 0;
+      margin-left: -1px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 8px solid #b8822a;
+    }
+
+    [class~="f05-application-lifecycle-work-body"] {
+      position: absolute;
+      top: 6.7cqh;
+      right: 1.05cqw;
+      bottom: 1.35cqh;
+      left: 1.05cqw;
+      z-index: 6;
+      display: grid;
+      grid-template-columns: minmax(0, 32fr) minmax(0, 68fr);
+      gap: 0.85cqw;
+    }
+
+    [class~="f05-application-lifecycle-agent-rail"],
+    [class~="f05-application-lifecycle-document"] {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.15);
+      border-radius: 11px;
+      background: rgba(243, 242, 242, 0.97);
+    }
+
+    [class~="f05-application-lifecycle-agent-rail"] {
+      padding: 1.3cqh 0.9cqw;
+    }
+
+    [class~="f05-application-lifecycle-rail-kicker"],
+    [class~="f05-application-lifecycle-doc-kicker"] {
+      margin: 0 0 0.45cqh;
+      color: #8b5f1d;
+      font-family: "JetBrains Mono";
+      font-size: 0.67cqw;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-rail-title"] {
+      margin: 0 0 1.2cqh;
+      font-family: "EB Garamond";
+      font-size: 1.62cqw;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-doc-kicker"] {
+      line-height: 1.25;
+    }
+
+    [class~="f05-application-lifecycle-transcript"] {
+      display: grid;
+      gap: 0.72cqh;
+    }
+
+    [class~="f05-application-lifecycle-transcript-row"] {
+      display: grid;
+      grid-template-columns: 1.36cqw minmax(0, 1fr);
+      align-items: center;
+      gap: 0.56cqw;
+      min-height: 5.3cqh;
+      padding: 0.62cqh 0.62cqw;
+      border: 1px solid rgba(32, 31, 29, 0.12);
+      border-radius: 8px;
+      background: #eee9e1;
+    }
+
+    [class~="f05-application-lifecycle-transcript-icon"] {
+      display: grid;
+      width: 1.22cqw;
+      height: 1.22cqw;
+      place-items: center;
+      border: 1px solid rgba(32, 31, 29, 0.26);
+      border-radius: 99px;
+      color: #5f5a54;
+      font-size: 0.62cqw;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    [class~="f05-application-lifecycle-transcript-copy"] {
+      min-width: 0;
+    }
+
+    [class~="f05-application-lifecycle-transcript-title"] {
+      display: block;
+      color: #201f1d;
+      font-size: 0.76cqw;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    [class~="f05-application-lifecycle-transcript-detail"] {
+      display: block;
+      margin-top: 0.24cqh;
+      overflow: hidden;
+      color: #6c6861;
+      font-size: 0.63cqw;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    [class~="f05-application-lifecycle-answer-group"] {
+      display: grid;
+      gap: 0.7cqh;
+      margin-top: 1.25cqh;
+    }
+
+    [class~="f05-application-lifecycle-answer"] {
+      position: relative;
+      min-height: 6.1cqh;
+      overflow: hidden;
+      padding: 0.72cqh 0.62cqw;
+      border: 1px solid rgba(32, 31, 29, 0.13);
+      border-radius: 8px;
+      background: rgba(243, 242, 242, 0.98);
+    }
+
+    [class~="f05-application-lifecycle-answer-label"] {
+      display: block;
+      margin-bottom: 0.35cqh;
+      color: #6f6c68;
+      font-family: "JetBrains Mono";
+      font-size: 0.57cqw;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-answer-value"] {
+      display: block;
+      color: #201f1d;
+      font-size: 0.69cqw;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    [class~="f05-application-lifecycle-answer-reveal"] {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: #f3f2f2;
+      transform-origin: right center;
+    }
+
+    [class~="f05-application-lifecycle-document"] {
+      padding: 1.4cqh 1.15cqw;
+      background: rgba(251, 250, 247, 0.99);
+      box-shadow: 0 10px 26px rgba(32, 31, 29, 0.08);
+    }
+
+    [class~="f05-application-lifecycle-doc-topline"] {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1cqw;
+      padding-bottom: 1.1cqh;
+      border-bottom: 1px solid rgba(32, 31, 29, 0.13);
+    }
+
+    [class~="f05-application-lifecycle-doc-title"] {
+      margin: 0;
+      font-family: "EB Garamond";
+      font-size: 1.72cqw;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-doc-status-stack"] {
+      position: relative;
+      width: 6.3cqw;
+      height: 2.85cqh;
+    }
+
+    [class~="f05-application-lifecycle-doc-status"] {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(32, 31, 29, 0.16);
+      border-radius: 999px;
+      background: #eee9e1;
+      color: rgba(32, 31, 29, 0.67);
+      font-family: "JetBrains Mono";
+      font-size: 0.61cqw;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-doc-status-ready"] {
+      border-color: rgba(109, 40, 217, 0.34);
+      color: #6d28d9;
+    }
+
+    [class~="f05-application-lifecycle-doc-status-submitted"] {
+      border-color: #201f1d;
+      background: #201f1d;
+      color: #f3f2f2;
+    }
+
+    [class~="f05-application-lifecycle-resume-header"] {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1cqw;
+      padding: 1.35cqh 0 1.2cqh;
+    }
+
+    [class~="f05-application-lifecycle-resume-name"] {
+      margin: 0;
+      font-family: "EB Garamond";
+      font-size: 2.15cqw;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-resume-target"] {
+      margin: 0.42cqh 0 0;
+      color: #6f6b66;
+      font-size: 0.76cqw;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    [class~="f05-application-lifecycle-resume-contact"] {
+      color: #706d68;
+      font-family: "JetBrains Mono";
+      font-size: 0.58cqw;
+      font-weight: 600;
+      line-height: 1.45;
+      text-align: right;
+    }
+
+    [class~="f05-application-lifecycle-resume-contact-line"] {
+      display: block;
+    }
+
+    [class~="f05-application-lifecycle-section-label"] {
+      margin: 0;
+      padding-bottom: 0.48cqh;
+      border-bottom: 2px solid #201f1d;
+      color: #201f1d;
+      font-family: "JetBrains Mono";
+      font-size: 0.67cqw;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-experience"] {
+      padding-top: 1.05cqh;
+    }
+
+    [class~="f05-application-lifecycle-experience-top"] {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1cqw;
+    }
+
+    [class~="f05-application-lifecycle-experience-role"] {
+      font-family: "EB Garamond";
+      font-size: 1.28cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-experience-stack"] {
+      color: #706d68;
+      font-family: "JetBrains Mono";
+      font-size: 0.57cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-bullet"] {
+      margin: 1.1cqh 0 0;
+      color: #201f1d;
+      font-size: 1.04cqw;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    [class~="f05-application-lifecycle-bullet-mark"] {
+      margin-right: 0.42cqw;
+      color: #b8822a;
+    }
+
+    [class~="f05-application-lifecycle-word"] {
+      display: inline-block;
+      margin-right: 0.22em;
+    }
+
+    [class~="f05-application-lifecycle-secondary-bullet"] {
+      margin: 1cqh 0 0 1.08cqw;
+      color: rgba(32, 31, 29, 0.62);
+      font-size: 0.78cqw;
+      line-height: 1.4;
+    }
+
+    [class~="f05-application-lifecycle-review-checks"] {
+      position: absolute;
+      right: 1.05cqw;
+      bottom: 1.5cqh;
+      left: 1.05cqw;
+      display: flex;
+      justify-content: flex-start;
+      gap: 0.5cqw;
+    }
+
+    [class~="f05-application-lifecycle-review-check"] {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4cqw;
+      min-height: 3.35cqh;
+      padding: 0 0.62cqw;
+      border: 1px solid rgba(32, 31, 29, 0.14);
+      border-radius: 999px;
+      background: #eee9e1;
+      color: rgba(32, 31, 29, 0.66);
+      font-size: 0.64cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-review-check-dot"] {
+      display: grid;
+      width: 1.05cqw;
+      height: 1.05cqw;
+      place-items: center;
+      border-radius: 99px;
+      background: #6d28d9;
+      color: #f3f2f2;
+      font-size: 0.54cqw;
+      line-height: 1;
+    }
+
+    [class~="f05-application-lifecycle-review-laser"] {
+      position: absolute;
+      right: 0.72cqw;
+      left: 0.72cqw;
+      z-index: 12;
+      top: 8.4cqh;
+      height: 4px;
+      border-radius: 99px;
+      background: #6d28d9;
+      box-shadow:
+        0 0 0 1px rgba(109, 40, 217, 0.22),
+        0 0 18px 7px rgba(109, 40, 217, 0.2);
+    }
+
+    [class~="f05-application-lifecycle-review-label"] {
+      position: absolute;
+      right: 0;
+      bottom: 0.9cqh;
+      padding: 0.38cqh 0.52cqw;
+      border: 1px solid rgba(109, 40, 217, 0.28);
+      border-radius: 999px;
+      background: #f3f2f2;
+      color: #6d28d9;
+      font-family: "JetBrains Mono";
+      font-size: 0.58cqw;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-approval-stamp"] {
+      position: absolute;
+      right: 1.2cqw;
+      bottom: 5.8cqh;
+      z-index: 14;
+      display: grid;
+      width: 14.6cqw;
+      min-height: 11.2cqh;
+      place-items: center;
+      border: 4px double #8b5f1d;
+      border-radius: 12px;
+      background: rgba(244, 233, 217, 0.95);
+      color: #8b5f1d;
+      text-align: center;
+      transform-origin: center;
+    }
+
+    [class~="f05-application-lifecycle-stamp-check"] {
+      display: block;
+      margin-bottom: 0.38cqh;
+      font-size: 2.15cqw;
+      font-weight: 600;
+      line-height: 0.7;
+    }
+
+    [class~="f05-application-lifecycle-stamp-title"] {
+      display: block;
+      font-family: "JetBrains Mono";
+      font-size: 0.87cqw;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    [class~="f05-application-lifecycle-stamp-note"] {
+      display: block;
+      margin-top: 0.62cqh;
+      color: rgba(32, 31, 29, 0.62);
+      font-size: 0.7cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="05-application-lifecycle"
+    data-hf-id="f05-root"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      id="f05-application-lifecycle-bg"
+      class="clip f05-application-lifecycle-bg"
+      data-hf-id="f05-bg"
+      data-start="0"
+      data-duration="10.000"
+      data-track-index="0"
+    ></div>
+
+    <section
+      id="f05-application-lifecycle-scene"
+      class="clip f05-application-lifecycle-scene"
+      data-hf-id="f05-scene"
+      data-start="0"
+      data-duration="10.000"
+      data-track-index="1"
+    >
+      <header class="f05-application-lifecycle-header" data-hf-id="f05-header">
+        <div data-hf-id="f05-header-copy">
+          <p class="f05-application-lifecycle-kicker" data-hf-id="f05-kicker">
+            Visible work, real progress
+          </p>
+          <h1 class="f05-application-lifecycle-title" data-hf-id="f05-title">
+            From idea to application.
+          </h1>
+        </div>
+        <p class="f05-application-lifecycle-deck" data-hf-id="f05-deck">
+          ResumeDB researches, drafts, and prepares the package while Sam stays in control.
+        </p>
+      </header>
+
+      <main class="f05-application-lifecycle-stage" data-hf-id="f05-stage">
+        <section class="f05-application-lifecycle-panel f05-application-lifecycle-list-panel" data-hf-id="f05-list-panel">
+          <img
+            class="f05-application-lifecycle-capture f05-application-lifecycle-list-capture"
+            data-hf-id="f05-list-capture"
+            src="assets/05-applications.png"
+            alt=""
+          />
+          <div class="f05-application-lifecycle-capture-wash" data-hf-id="f05-list-wash"></div>
+          <div class="f05-application-lifecycle-persona-mask" data-hf-id="f05-list-persona-mask"></div>
+
+          <div class="f05-application-lifecycle-chrome" data-hf-id="f05-list-chrome">
+            <span class="f05-application-lifecycle-chrome-label" data-hf-id="f05-list-chrome-label">
+              Applications
+            </span>
+            <span class="f05-application-lifecycle-live" data-hf-id="f05-list-live">
+              <span class="f05-application-lifecycle-live-dot" data-hf-id="f05-list-live-dot"></span>
+              One active record
+            </span>
+          </div>
+
+          <article class="f05-application-lifecycle-app-card" data-hf-id="f05-app-card">
+            <p class="f05-application-lifecycle-card-kicker" data-hf-id="f05-card-kicker">
+              Application 01
+            </p>
+            <h2 class="f05-application-lifecycle-role" data-hf-id="f05-role">
+              Autonomy Software Intern
+            </h2>
+            <p class="f05-application-lifecycle-company" data-hf-id="f05-company">
+              Northstar Robotics
+            </p>
+            <div class="f05-application-lifecycle-card-divider" data-hf-id="f05-card-divider"></div>
+
+            <div class="f05-application-lifecycle-card-meta" data-hf-id="f05-card-meta">
+              <div class="f05-application-lifecycle-meta-block" data-hf-id="f05-meta-source">
+                <span class="f05-application-lifecycle-meta-label" data-hf-id="f05-meta-source-label">
+                  Source
+                </span>
+                <span class="f05-application-lifecycle-meta-value" data-hf-id="f05-meta-source-value">
+                  Career Agent
+                </span>
+              </div>
+              <div class="f05-application-lifecycle-meta-block" data-hf-id="f05-meta-fit">
+                <span class="f05-application-lifecycle-meta-label" data-hf-id="f05-meta-fit-label">
+                  Evidence fit
+                </span>
+                <span class="f05-application-lifecycle-meta-value" data-hf-id="f05-meta-fit-value">
+                  94% match
+                </span>
+              </div>
+            </div>
+
+            <div class="f05-application-lifecycle-card-status-row" data-hf-id="f05-card-status-row">
+              <span class="f05-application-lifecycle-status-label" data-hf-id="f05-card-status-label">
+                Current status
+              </span>
+              <div class="f05-application-lifecycle-status-stack" data-hf-id="f05-card-status-stack">
+                <span
+                  class="f05-application-lifecycle-status f05-application-lifecycle-status-not-started"
+                  data-hf-id="f05-card-status-not-started"
+                >
+                  Not started
+                </span>
+                <span
+                  class="f05-application-lifecycle-status f05-application-lifecycle-status-progress"
+                  data-hf-id="f05-card-status-progress"
+                >
+                  In progress
+                </span>
+                <span
+                  class="f05-application-lifecycle-status f05-application-lifecycle-status-draft"
+                  data-hf-id="f05-card-status-draft"
+                >
+                  Draft
+                </span>
+                <span
+                  class="f05-application-lifecycle-status f05-application-lifecycle-status-ready"
+                  data-hf-id="f05-card-status-ready"
+                >
+                  Ready
+                </span>
+                <span
+                  class="f05-application-lifecycle-status f05-application-lifecycle-status-submitted"
+                  data-hf-id="f05-card-status-submitted"
+                >
+                  Submitted
+                </span>
+              </div>
+            </div>
+
+            <div class="f05-application-lifecycle-start-button" data-hf-id="f05-start-button">
+              <span
+                class="f05-application-lifecycle-button-label f05-application-lifecycle-button-label-start"
+                data-hf-id="f05-start-button-label"
+              >
+                Start agent
+              </span>
+              <span
+                class="f05-application-lifecycle-button-label f05-application-lifecycle-button-label-running"
+                data-hf-id="f05-running-button-label"
+              >
+                Agent running
+              </span>
+              <span
+                class="f05-application-lifecycle-button-label f05-application-lifecycle-button-label-complete"
+                data-hf-id="f05-complete-button-label"
+              >
+                ✓ Agent complete
+              </span>
+              <span
+                class="f05-application-lifecycle-button-ripple"
+                data-hf-id="f05-button-ripple"
+                data-layout-allow-overflow
+              ></span>
+            </div>
+          </article>
+
+          <svg
+            class="f05-application-lifecycle-cursor"
+            data-hf-id="f05-cursor"
+            viewBox="0 0 34 44"
+            aria-hidden="true"
+          >
+            <path
+              class="f05-application-lifecycle-cursor-path"
+              data-hf-id="f05-cursor-path"
+              d="M4 3 L4 34 L12 27 L18 41 L25 37 L18 24 L29 24 Z"
+            ></path>
+          </svg>
+        </section>
+
+        <section class="f05-application-lifecycle-panel f05-application-lifecycle-work-panel" data-hf-id="f05-work-panel">
+          <img
+            class="f05-application-lifecycle-capture f05-application-lifecycle-overview-capture"
+            data-hf-id="f05-overview-capture"
+            src="assets/06-application-overview.png"
+            alt=""
+          />
+          <div class="f05-application-lifecycle-capture-wash" data-hf-id="f05-overview-wash"></div>
+          <div class="f05-application-lifecycle-persona-mask" data-hf-id="f05-overview-persona-mask"></div>
+
+          <div class="f05-application-lifecycle-chrome" data-hf-id="f05-work-chrome">
+            <span class="f05-application-lifecycle-chrome-label" data-hf-id="f05-work-chrome-label">
+              Application workbench
+            </span>
+            <span class="f05-application-lifecycle-live" data-hf-id="f05-work-live">
+              <span class="f05-application-lifecycle-live-dot" data-hf-id="f05-work-live-dot"></span>
+              Useful work in view
+            </span>
+          </div>
+
+          <div class="f05-application-lifecycle-work-body" data-hf-id="f05-work-body">
+            <aside class="f05-application-lifecycle-agent-rail" data-hf-id="f05-agent-rail">
+              <p class="f05-application-lifecycle-rail-kicker" data-hf-id="f05-rail-kicker">
+                Career Agent run
+              </p>
+              <h2 class="f05-application-lifecycle-rail-title" data-hf-id="f05-rail-title">
+                Building the package
+              </h2>
+
+              <div class="f05-application-lifecycle-transcript" data-hf-id="f05-transcript">
+                <div class="f05-application-lifecycle-transcript-row" data-hf-id="f05-transcript-research">
+                  <span class="f05-application-lifecycle-transcript-icon" data-hf-id="f05-transcript-research-icon">✓</span>
+                  <span class="f05-application-lifecycle-transcript-copy" data-hf-id="f05-transcript-research-copy">
+                    <span class="f05-application-lifecycle-transcript-title" data-hf-id="f05-transcript-research-title">
+                      Researching the role
+                    </span>
+                    <span class="f05-application-lifecycle-transcript-detail" data-hf-id="f05-transcript-research-detail">
+                      Requirements and team signals
+                    </span>
+                  </span>
+                </div>
+
+                <div class="f05-application-lifecycle-transcript-row" data-hf-id="f05-transcript-evidence">
+                  <span class="f05-application-lifecycle-transcript-icon" data-hf-id="f05-transcript-evidence-icon">✓</span>
+                  <span class="f05-application-lifecycle-transcript-copy" data-hf-id="f05-transcript-evidence-copy">
+                    <span class="f05-application-lifecycle-transcript-title" data-hf-id="f05-transcript-evidence-title">
+                      Matching Sam's evidence
+                    </span>
+                    <span class="f05-application-lifecycle-transcript-detail" data-hf-id="f05-transcript-evidence-detail">
+                      Waypoint Robotics selected
+                    </span>
+                  </span>
+                </div>
+
+                <div class="f05-application-lifecycle-transcript-row" data-hf-id="f05-transcript-draft">
+                  <span class="f05-application-lifecycle-transcript-icon" data-hf-id="f05-transcript-draft-icon">✓</span>
+                  <span class="f05-application-lifecycle-transcript-copy" data-hf-id="f05-transcript-draft-copy">
+                    <span class="f05-application-lifecycle-transcript-title" data-hf-id="f05-transcript-draft-title">
+                      Drafting application
+                    </span>
+                    <span class="f05-application-lifecycle-transcript-detail" data-hf-id="f05-transcript-draft-detail">
+                      Resume and answers created
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="f05-application-lifecycle-answer-group" data-hf-id="f05-answer-group">
+                <div class="f05-application-lifecycle-answer" data-hf-id="f05-answer-why">
+                  <span class="f05-application-lifecycle-answer-label" data-hf-id="f05-answer-why-label" data-layout-allow-occlusion>
+                    Why this role?
+                  </span>
+                  <span class="f05-application-lifecycle-answer-value" data-hf-id="f05-answer-why-value" data-layout-allow-occlusion>
+                    Production autonomy with measurable impact.
+                  </span>
+                  <span class="f05-application-lifecycle-answer-reveal" data-hf-id="f05-answer-why-reveal"></span>
+                </div>
+                <div class="f05-application-lifecycle-answer" data-hf-id="f05-answer-project">
+                  <span class="f05-application-lifecycle-answer-label" data-hf-id="f05-answer-project-label" data-layout-allow-occlusion>
+                    Best evidence
+                  </span>
+                  <span class="f05-application-lifecycle-answer-value" data-hf-id="f05-answer-project-value" data-layout-allow-occlusion>
+                    75% faster AMR replanning at Waypoint.
+                  </span>
+                  <span class="f05-application-lifecycle-answer-reveal" data-hf-id="f05-answer-project-reveal"></span>
+                </div>
+              </div>
+            </aside>
+
+            <article class="f05-application-lifecycle-document" data-hf-id="f05-document">
+              <div class="f05-application-lifecycle-doc-topline" data-hf-id="f05-doc-topline">
+                <div data-hf-id="f05-doc-title-copy">
+                  <p class="f05-application-lifecycle-doc-kicker" data-hf-id="f05-doc-kicker">
+                    Tailored resume
+                  </p>
+                  <h2 class="f05-application-lifecycle-doc-title" data-hf-id="f05-doc-title">
+                    Application document
+                  </h2>
+                </div>
+                <div class="f05-application-lifecycle-doc-status-stack" data-hf-id="f05-doc-status-stack">
+                  <span
+                    class="f05-application-lifecycle-doc-status f05-application-lifecycle-doc-status-progress"
+                    data-hf-id="f05-doc-status-progress"
+                  >
+                    In progress
+                  </span>
+                  <span
+                    class="f05-application-lifecycle-doc-status f05-application-lifecycle-doc-status-draft"
+                    data-hf-id="f05-doc-status-draft"
+                  >
+                    Draft
+                  </span>
+                  <span
+                    class="f05-application-lifecycle-doc-status f05-application-lifecycle-doc-status-ready"
+                    data-hf-id="f05-doc-status-ready"
+                  >
+                    Ready
+                  </span>
+                  <span
+                    class="f05-application-lifecycle-doc-status f05-application-lifecycle-doc-status-submitted"
+                    data-hf-id="f05-doc-status-submitted"
+                  >
+                    Submitted
+                  </span>
+                </div>
+              </div>
+
+              <div class="f05-application-lifecycle-resume-header" data-hf-id="f05-resume-header">
+                <div data-hf-id="f05-resume-identity">
+                  <h3 class="f05-application-lifecycle-resume-name" data-hf-id="f05-resume-name">
+                    Sam Rivera
+                  </h3>
+                  <p class="f05-application-lifecycle-resume-target" data-hf-id="f05-resume-target">
+                    Autonomy Software Intern
+                  </p>
+                </div>
+                <div class="f05-application-lifecycle-resume-contact" data-hf-id="f05-resume-contact">
+                  <span
+                    class="f05-application-lifecycle-resume-contact-line"
+                    data-hf-id="f05-resume-contact-email"
+                  >
+                    sam.rivera@example.com
+                  </span>
+                  <span
+                    class="f05-application-lifecycle-resume-contact-line"
+                    data-hf-id="f05-resume-contact-github"
+                  >
+                    github.com/samrivera-demo
+                  </span>
+                </div>
+              </div>
+
+              <p class="f05-application-lifecycle-section-label" data-hf-id="f05-section-label">
+                Experience
+              </p>
+              <div class="f05-application-lifecycle-experience" data-hf-id="f05-experience">
+                <div class="f05-application-lifecycle-experience-top" data-hf-id="f05-experience-top">
+                  <span class="f05-application-lifecycle-experience-role" data-hf-id="f05-experience-role">
+                    Robotics Software Engineer, Waypoint Robotics
+                  </span>
+                  <span class="f05-application-lifecycle-experience-stack" data-hf-id="f05-experience-stack">
+                    C++17 · ROS 2 · Python
+                  </span>
+                </div>
+                <p class="f05-application-lifecycle-bullet" data-hf-id="f05-resume-bullet">
+                  <span class="f05-application-lifecycle-bullet-mark" data-hf-id="f05-bullet-mark">•</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-01">Reduced</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-02">AMR</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-03">path-replanning</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-04">latency</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-05">75%,</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-06">from</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-07">180</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-08">ms</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-09">to</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-10">45</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-11">ms,</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-12">by</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-13">moving</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-14">costmap</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-15">updates</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-16">outside</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-17">the</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-18">C++</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-19">control</span>
+                  <span class="f05-application-lifecycle-word" data-hf-id="f05-word-20">loop.</span>
+                </p>
+                <p class="f05-application-lifecycle-secondary-bullet" data-hf-id="f05-secondary-bullet">
+                  Built deterministic replay tooling that turned intermittent field failures into reproducible tests.
+                </p>
+              </div>
+
+              <div class="f05-application-lifecycle-review-checks" data-hf-id="f05-review-checks">
+                <span class="f05-application-lifecycle-review-check" data-hf-id="f05-review-check-evidence">
+                  <span class="f05-application-lifecycle-review-check-dot" data-hf-id="f05-review-check-evidence-dot">✓</span>
+                  Evidence grounded
+                </span>
+                <span class="f05-application-lifecycle-review-check" data-hf-id="f05-review-check-metrics">
+                  <span class="f05-application-lifecycle-review-check-dot" data-hf-id="f05-review-check-metrics-dot">✓</span>
+                  Metrics verified
+                </span>
+                <span class="f05-application-lifecycle-review-check" data-hf-id="f05-review-check-role">
+                  <span class="f05-application-lifecycle-review-check-dot" data-hf-id="f05-review-check-role-dot">✓</span>
+                  Role language matched
+                </span>
+              </div>
+
+              <div class="f05-application-lifecycle-review-laser" data-hf-id="f05-review-laser">
+                <span class="f05-application-lifecycle-review-label" data-hf-id="f05-review-label">
+                  Sam reviewing
+                </span>
+              </div>
+
+              <div class="f05-application-lifecycle-approval-stamp" data-hf-id="f05-approval-stamp">
+                <span data-hf-id="f05-approval-stamp-copy">
+                  <span class="f05-application-lifecycle-stamp-check" data-hf-id="f05-stamp-check">✓</span>
+                  <span class="f05-application-lifecycle-stamp-title" data-hf-id="f05-stamp-title">
+                    Approved by Sam
+                  </span>
+                  <span class="f05-application-lifecycle-stamp-note" data-hf-id="f05-stamp-note">
+                    Record marked Submitted
+                  </span>
+                </span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <div class="f05-application-lifecycle-connection" data-hf-id="f05-connection">
+          <span class="f05-application-lifecycle-connection-line" data-hf-id="f05-connection-line"></span>
+          <span class="f05-application-lifecycle-connection-tip" data-hf-id="f05-connection-tip"></span>
+        </div>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const root = document.querySelector('[data-composition-id="05-application-lifecycle"]');
+    const q = (selector) => root.querySelector(selector);
+    const qa = (selector) => Array.from(root.querySelectorAll(selector));
+
+    const header = q(".f05-application-lifecycle-header");
+    const listPanel = q(".f05-application-lifecycle-list-panel");
+    const workPanel = q(".f05-application-lifecycle-work-panel");
+    const appCard = q(".f05-application-lifecycle-app-card");
+    const cursor = q(".f05-application-lifecycle-cursor");
+    const startButton = q(".f05-application-lifecycle-start-button");
+    const startButtonLabel = q(".f05-application-lifecycle-button-label-start");
+    const runningButtonLabel = q(".f05-application-lifecycle-button-label-running");
+    const completeButtonLabel = q(".f05-application-lifecycle-button-label-complete");
+    const buttonRipple = q(".f05-application-lifecycle-button-ripple");
+    const cardStatusNotStarted = q(".f05-application-lifecycle-status-not-started");
+    const cardStatusProgress = q(".f05-application-lifecycle-status-progress");
+    const cardStatusDraft = q(".f05-application-lifecycle-status-draft");
+    const cardStatusReady = q(".f05-application-lifecycle-status-ready");
+    const cardStatusSubmitted = q(".f05-application-lifecycle-status-submitted");
+    const connection = q(".f05-application-lifecycle-connection");
+    const connectionLine = q(".f05-application-lifecycle-connection-line");
+    const workBody = q(".f05-application-lifecycle-work-body");
+    const transcriptRows = qa(".f05-application-lifecycle-transcript-row");
+    const transcriptIcons = qa(".f05-application-lifecycle-transcript-icon");
+    const answerReveals = qa(".f05-application-lifecycle-answer-reveal");
+    const docStatusProgress = q(".f05-application-lifecycle-doc-status-progress");
+    const docStatusDraft = q(".f05-application-lifecycle-doc-status-draft");
+    const docStatusReady = q(".f05-application-lifecycle-doc-status-ready");
+    const docStatusSubmitted = q(".f05-application-lifecycle-doc-status-submitted");
+    const bulletMark = q(".f05-application-lifecycle-bullet-mark");
+    const bulletWords = qa(".f05-application-lifecycle-word");
+    const secondaryBullet = q(".f05-application-lifecycle-secondary-bullet");
+    const reviewLaser = q(".f05-application-lifecycle-review-laser");
+    const reviewChecks = qa(".f05-application-lifecycle-review-check");
+    const approvalStamp = q(".f05-application-lifecycle-approval-stamp");
+
+    const tl = gsap.timeline({ paused: true });
+
+    tl.set(header, { opacity: 0, y: 18 }, 0);
+    tl.set(listPanel, { opacity: 0, x: -24 }, 0);
+    tl.set(workPanel, { opacity: 0, x: 24 }, 0);
+    tl.set(appCard, { opacity: 0, y: 16 }, 0);
+    tl.set(cursor, { opacity: 0, x: 0, y: 0, scale: 1 }, 0);
+    tl.set(buttonRipple, { opacity: 0, scale: 0.4 }, 0);
+    tl.set(startButtonLabel, { opacity: 1 }, 0);
+    tl.set([runningButtonLabel, completeButtonLabel], { opacity: 0 }, 0);
+    tl.set(cardStatusNotStarted, { opacity: 1 }, 0);
+    tl.set([cardStatusProgress, cardStatusDraft, cardStatusReady, cardStatusSubmitted], { opacity: 0 }, 0);
+    tl.set(startButton, { scale: 1 }, 0);
+    tl.set(connection, { opacity: 0 }, 0);
+    tl.set(connectionLine, { scaleX: 0 }, 0);
+    tl.set(workBody, { opacity: 0.54 }, 0);
+    tl.set(transcriptRows, { opacity: 0, x: 12 }, 0);
+    tl.set(transcriptIcons, { backgroundColor: "#eee9e1", color: "#5f5a54", scale: 0.7 }, 0);
+    tl.set(answerReveals, { scaleX: 1 }, 0);
+    tl.set(docStatusProgress, { opacity: 1 }, 0);
+    tl.set([docStatusDraft, docStatusReady, docStatusSubmitted], { opacity: 0 }, 0);
+    tl.set(bulletMark, { opacity: 0 }, 0);
+    tl.set(bulletWords, { opacity: 0, y: 5 }, 0);
+    tl.set(secondaryBullet, { opacity: 0, y: 8 }, 0);
+    tl.set(reviewLaser, { opacity: 0, y: 0 }, 0);
+    tl.set(reviewChecks, { opacity: 0, y: 8, scale: 0.96 }, 0);
+    tl.set(approvalStamp, { opacity: 0, scale: 1.7, rotation: -12 }, 0);
+
+    tl.to(header, { opacity: 1, y: 0, duration: 0.58, ease: "power2.out" }, 0.04);
+    tl.to(listPanel, { opacity: 1, x: 0, duration: 0.66, ease: "power3.out" }, 0.12);
+    tl.to(workPanel, { opacity: 1, x: 0, duration: 0.66, ease: "power3.out" }, 0.2);
+    tl.to(appCard, { opacity: 1, y: 0, duration: 0.48, ease: "power2.out" }, 0.38);
+    tl.to(cursor, { opacity: 1, duration: 0.2, ease: "none" }, 0.48);
+    tl.to(cursor, { x: 225, y: -112, duration: 0.48, ease: "power2.inOut" }, 0.58);
+    tl.to(cursor, { scale: 0.88, duration: 0.08, ease: "power1.in" }, 1.06);
+    tl.to(startButton, { scale: 0.97, duration: 0.08, ease: "power1.in" }, 1.06);
+    tl.to(buttonRipple, { opacity: 0.82, scale: 1.65, duration: 0.26, ease: "power2.out" }, 1.06);
+    tl.to(cursor, { scale: 1, duration: 0.1, ease: "power1.out" }, 1.14);
+    tl.to(startButton, { scale: 1, duration: 0.1, ease: "power1.out" }, 1.14);
+    tl.to(buttonRipple, { opacity: 0, duration: 0.18, ease: "power1.out" }, 1.24);
+    tl.to(cardStatusNotStarted, { opacity: 0, duration: 0.08, ease: "none" }, 1.18);
+    tl.to(cardStatusProgress, { opacity: 1, duration: 0.1, ease: "none" }, 1.28);
+    tl.to(startButtonLabel, { opacity: 0, duration: 0.08, ease: "none" }, 1.18);
+    tl.to(runningButtonLabel, { opacity: 1, duration: 0.1, ease: "none" }, 1.28);
+    tl.to(
+      startButton,
+      {
+        backgroundColor: "#eee9e1",
+        borderColor: "rgba(184,130,42,0.42)",
+        color: "#8b5f1d",
+        duration: 0.22,
+        ease: "power1.out"
+      },
+      1.2
+    );
+    tl.to(cursor, { opacity: 0, x: 245, y: -124, duration: 0.25, ease: "power1.out" }, 1.28);
+    tl.to(workBody, { opacity: 1, duration: 0.38, ease: "power1.out" }, 1.28);
+    tl.to(connection, { opacity: 1, duration: 0.16, ease: "none" }, 1.34);
+    tl.to(connectionLine, { scaleX: 1, duration: 0.34, ease: "power2.out" }, 1.34);
+
+    transcriptRows.forEach((row, index) => {
+      const start = 1.62 + index * 0.58;
+      tl.to(row, { opacity: 1, x: 0, duration: 0.36, ease: "power2.out" }, start);
+      tl.to(
+        transcriptIcons[index],
+        {
+          backgroundColor: "#b8822a",
+          color: "#201f1d",
+          scale: 1,
+          duration: 0.28,
+          ease: "back.out(1.6)"
+        },
+        start + 0.3
+      );
+    });
+
+    answerReveals.forEach((reveal, index) => {
+      tl.to(
+        reveal,
+        { scaleX: 0, duration: 0.48, ease: "power2.inOut" },
+        2.76 + index * 0.58
+      );
+    });
+
+    tl.to(bulletMark, { opacity: 1, duration: 0.16, ease: "none" }, 3.38);
+    tl.to(
+      bulletWords,
+      { opacity: 1, y: 0, duration: 0.2, stagger: 0.071, ease: "power1.out" },
+      3.42
+    );
+    tl.to(secondaryBullet, { opacity: 1, y: 0, duration: 0.34, ease: "power2.out" }, 5.05);
+    tl.to(docStatusProgress, { opacity: 0, duration: 0.08, ease: "none" }, 5.28);
+    tl.to(docStatusDraft, { opacity: 1, duration: 0.1, ease: "none" }, 5.38);
+    tl.to(cardStatusProgress, { opacity: 0, duration: 0.08, ease: "none" }, 5.28);
+    tl.to(cardStatusDraft, { opacity: 1, duration: 0.1, ease: "none" }, 5.38);
+
+    tl.to(reviewLaser, { opacity: 1, duration: 0.18, ease: "none" }, 5.8);
+    tl.to(reviewLaser, { y: 405, duration: 1.4, ease: "power1.inOut" }, 5.92);
+    reviewChecks.forEach((check, index) => {
+      tl.to(
+        check,
+        { opacity: 1, y: 0, scale: 1, duration: 0.28, ease: "back.out(1.45)" },
+        6.14 + index * 0.48
+      );
+    });
+    tl.to(reviewLaser, { opacity: 0, duration: 0.24, ease: "power1.out" }, 7.32);
+    tl.to(docStatusDraft, { opacity: 0, duration: 0.08, ease: "none" }, 7.36);
+    tl.to(docStatusReady, { opacity: 1, duration: 0.1, ease: "none" }, 7.46);
+    tl.to(cardStatusDraft, { opacity: 0, duration: 0.08, ease: "none" }, 7.36);
+    tl.to(cardStatusReady, { opacity: 1, duration: 0.1, ease: "none" }, 7.46);
+
+    tl.to(
+      approvalStamp,
+      { opacity: 1, scale: 1, rotation: -4, duration: 0.48, ease: "back.out(1.5)" },
+      7.98
+    );
+    tl.to(docStatusReady, { opacity: 0, duration: 0.08, ease: "none" }, 8.54);
+    tl.to(docStatusSubmitted, { opacity: 1, duration: 0.1, ease: "none" }, 8.64);
+    tl.to(cardStatusReady, { opacity: 0, duration: 0.08, ease: "none" }, 8.54);
+    tl.to(cardStatusSubmitted, { opacity: 1, duration: 0.1, ease: "none" }, 8.64);
+    tl.to(runningButtonLabel, { opacity: 0, duration: 0.08, ease: "none" }, 8.54);
+    tl.to(completeButtonLabel, { opacity: 1, duration: 0.1, ease: "none" }, 8.64);
+    tl.to(
+      startButton,
+      {
+        backgroundColor: "#201f1d",
+        borderColor: "#201f1d",
+        color: "#f3f2f2",
+        duration: 0.2,
+        ease: "power1.out"
+      },
+      8.58
+    );
+
+    window.__timelines["05-application-lifecycle"] = tl;
+  </script>
+</template>

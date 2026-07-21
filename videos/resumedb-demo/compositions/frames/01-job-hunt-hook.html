@@ -1,0 +1,776 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    #f01-job-hunt-hook-root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+      font-family: "Inter", sans-serif;
+    }
+
+    .f01-job-hunt-hook-ground {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+    }
+
+    .f01-job-hunt-hook-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .f01-job-hunt-hook-pain {
+      position: absolute;
+      z-index: 12;
+      top: 72px;
+      left: 108px;
+      width: 770px;
+      height: 760px;
+    }
+
+    .f01-job-hunt-hook-kicker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0;
+      color: #686663;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .f01-job-hunt-hook-kicker-line {
+      width: 54px;
+      height: 2px;
+      background: #b8822a;
+    }
+
+    .f01-job-hunt-hook-metric {
+      position: absolute;
+      top: 112px;
+      left: 0;
+      width: 760px;
+      transform-origin: 0 50%;
+      will-change: transform, opacity;
+    }
+
+    .f01-job-hunt-hook-metric-hours,
+    .f01-job-hunt-hook-metric-zero {
+      opacity: 0;
+    }
+
+    .f01-job-hunt-hook-number-line {
+      display: flex;
+      align-items: flex-end;
+      min-height: 250px;
+    }
+
+    .f01-job-hunt-hook-number {
+      margin: 0;
+      color: #201f1d;
+      font-family: "EB Garamond", serif;
+      font-size: 250px;
+      font-weight: 600;
+      letter-spacing: -0.065em;
+      line-height: 0.78;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .f01-job-hunt-hook-number-plus {
+      margin: 0 0 22px 13px;
+      color: #b8822a;
+      font-family: "EB Garamond", serif;
+      font-size: 104px;
+      font-weight: 600;
+      line-height: 0.8;
+    }
+
+    .f01-job-hunt-hook-metric-label {
+      margin: 48px 0 0 9px;
+      color: #201f1d;
+      font-family: "EB Garamond", serif;
+      font-size: 58px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      line-height: 1;
+    }
+
+    .f01-job-hunt-hook-metric-detail {
+      width: 540px;
+      margin: 17px 0 0 10px;
+      color: #666461;
+      font-size: 22px;
+      line-height: 1.4;
+    }
+
+    .f01-job-hunt-hook-zero .f01-job-hunt-hook-number {
+      color: #6d28d9;
+      font-size: 280px;
+    }
+
+    .f01-job-hunt-hook-pain-rail {
+      position: absolute;
+      bottom: 22px;
+      left: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .f01-job-hunt-hook-rail-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 14px;
+      border: 1px solid rgba(32, 31, 29, 0.14);
+      border-radius: 9999px;
+      background: rgba(243, 242, 242, 0.86);
+      color: #666461;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .f01-job-hunt-hook-rail-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      background: #b8822a;
+    }
+
+    .f01-job-hunt-hook-clutter {
+      position: absolute;
+      z-index: 14;
+      top: 92px;
+      right: 72px;
+      width: 900px;
+      height: 680px;
+      perspective: 1200px;
+    }
+
+    .f01-job-hunt-hook-browser-bar {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      right: 12px;
+      width: 790px;
+      height: 54px;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.16);
+      border-radius: 12px 12px 0 0;
+      background: #e8e5e2;
+      box-shadow: 0 14px 34px rgba(32, 31, 29, 0.07);
+      will-change: transform, opacity;
+    }
+
+    .f01-job-hunt-hook-tabs {
+      display: flex;
+      gap: 7px;
+      padding: 9px 12px 0;
+    }
+
+    .f01-job-hunt-hook-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 35px;
+      padding: 0 15px;
+      border: 1px solid rgba(32, 31, 29, 0.12);
+      border-bottom-color: transparent;
+      border-radius: 7px 7px 0 0;
+      background: #f3f2f2;
+      color: rgba(32, 31, 29, 0.72);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .f01-job-hunt-hook-tab-count {
+      display: grid;
+      width: 20px;
+      height: 20px;
+      place-items: center;
+      border-radius: 9999px;
+      background: rgba(109, 40, 217, 0.1);
+      color: #6d28d9;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+    }
+
+    .f01-job-hunt-hook-card {
+      position: absolute;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      height: 94px;
+      padding: 0 20px;
+      box-sizing: border-box;
+      border: 1px solid rgba(32, 31, 29, 0.17);
+      border-radius: 11px;
+      background: #f3f2f2;
+      box-shadow: 0 14px 30px rgba(32, 31, 29, 0.09), 0 2px 5px rgba(32, 31, 29, 0.06);
+      opacity: 0;
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+    }
+
+    .f01-job-hunt-hook-card-01 { top: 58px; left: 20px; width: 438px; transform: rotate(-2.1deg); }
+    .f01-job-hunt-hook-card-02 { top: 96px; left: 414px; width: 422px; transform: rotate(2.7deg); }
+    .f01-job-hunt-hook-card-03 { top: 181px; left: 104px; width: 520px; transform: rotate(-0.7deg); }
+    .f01-job-hunt-hook-card-04 { top: 235px; left: 494px; width: 348px; transform: rotate(3.6deg); }
+    .f01-job-hunt-hook-card-05 { top: 325px; left: 34px; width: 466px; transform: rotate(1.4deg); }
+    .f01-job-hunt-hook-card-06 { top: 391px; left: 392px; width: 452px; transform: rotate(-2.5deg); }
+    .f01-job-hunt-hook-card-07 { top: 493px; left: 132px; width: 402px; transform: rotate(-3.1deg); }
+    .f01-job-hunt-hook-card-08 { top: 521px; left: 510px; width: 326px; transform: rotate(2deg); }
+
+    .f01-job-hunt-hook-company-mark {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border-radius: 10px;
+      background: #f4e9d9;
+      color: #201f1d;
+      font-family: "EB Garamond", serif;
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .f01-job-hunt-hook-card-copy {
+      min-width: 0;
+    }
+
+    .f01-job-hunt-hook-card-role {
+      overflow: hidden;
+      color: #201f1d;
+      font-family: "EB Garamond", serif;
+      min-height: 26px;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .f01-job-hunt-hook-card-company {
+      margin-top: 7px;
+      overflow: hidden;
+      color: #666461;
+      font-size: 13px;
+      line-height: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .f01-job-hunt-hook-card-tag {
+      padding: 7px 9px;
+      border: 1px solid rgba(32, 31, 29, 0.12);
+      border-radius: 9999px;
+      color: #666461;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .f01-job-hunt-hook-collapse-pulse {
+      position: absolute;
+      z-index: 2;
+      top: 306px;
+      left: 446px;
+      width: 34px;
+      height: 34px;
+      margin: -17px 0 0 -17px;
+      border: 3px solid #6d28d9;
+      border-radius: 9999px;
+      opacity: 0;
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+    }
+
+    .f01-job-hunt-hook-resolution {
+      position: absolute;
+      z-index: 6;
+      inset: 0;
+      opacity: 0;
+    }
+
+    .f01-job-hunt-hook-dashboard {
+      position: absolute;
+      top: 58px;
+      right: 76px;
+      left: 76px;
+      height: 678px;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 14px;
+      background: #f3f2f2;
+      box-shadow: 0 24px 70px rgba(32, 31, 29, 0.12), 0 4px 12px rgba(32, 31, 29, 0.06);
+      transform-origin: 50% 45%;
+      will-change: transform, clip-path, opacity;
+    }
+
+    .f01-job-hunt-hook-dashboard-capture {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .f01-job-hunt-hook-sam-patch {
+      position: absolute;
+      top: 41px;
+      left: 395px;
+      width: 620px;
+      height: 74px;
+      padding: 4px 0 0;
+      box-sizing: border-box;
+      background: #f3f2f2;
+    }
+
+    .f01-job-hunt-hook-sam-title {
+      margin: 0;
+      color: #201f1d;
+      font-family: "EB Garamond", serif;
+      font-size: 43px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .f01-job-hunt-hook-dashboard-fade {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 168px;
+      background: linear-gradient(180deg, rgba(243, 242, 242, 0), rgba(243, 242, 242, 0.96) 78%, #f3f2f2 100%);
+    }
+
+    .f01-job-hunt-hook-lockup {
+      position: absolute;
+      z-index: 8;
+      right: 108px;
+      bottom: 204px;
+      left: 108px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 40px;
+      min-height: 150px;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .f01-job-hunt-hook-lockup-main {
+      min-width: 0;
+    }
+
+    .f01-job-hunt-hook-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 9px;
+      color: #201f1d;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .f01-job-hunt-hook-brand-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    .f01-job-hunt-hook-promise {
+      margin: 0;
+      color: #201f1d;
+      font-family: "EB Garamond", serif;
+      font-size: 76px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 0.95;
+    }
+
+    .f01-job-hunt-hook-system {
+      margin: 0 0 5px;
+      color: #6d28d9;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      line-height: 1.35;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .f01-job-hunt-hook-system-line {
+      display: block;
+    }
+  </style>
+
+  <div
+    data-hf-id="f01-job-hunt-hook-root"
+    id="f01-job-hunt-hook-root"
+    data-composition-id="01-job-hunt-hook"
+    data-start="0"
+    data-duration="8.81"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      data-hf-id="f01-job-hunt-hook-background"
+      id="f01-job-hunt-hook-background"
+      class="clip f01-job-hunt-hook-ground"
+      data-start="0"
+      data-duration="8.81"
+      data-track-index="0"
+    ></div>
+
+    <main
+      data-hf-id="f01-job-hunt-hook-scene"
+      id="f01-job-hunt-hook-scene"
+      class="clip f01-job-hunt-hook-scene"
+      data-start="0"
+      data-duration="8.81"
+      data-track-index="1"
+    >
+      <section data-hf-id="f01-job-hunt-hook-pain" id="f01-job-hunt-hook-pain" class="f01-job-hunt-hook-pain" aria-label="The broken job search">
+        <p data-hf-id="f01-job-hunt-hook-kicker" class="f01-job-hunt-hook-kicker">
+          <span data-hf-id="f01-job-hunt-hook-kicker-line" class="f01-job-hunt-hook-kicker-line"></span>
+          The broken job hunt
+        </p>
+
+        <div data-hf-id="f01-job-hunt-hook-metric-apps" id="f01-job-hunt-hook-metric-apps" class="f01-job-hunt-hook-metric" data-layout-allow-overlap>
+          <div data-hf-id="f01-job-hunt-hook-apps-line" class="f01-job-hunt-hook-number-line">
+            <p data-hf-id="f01-job-hunt-hook-apps-number" id="f01-job-hunt-hook-apps-number" class="f01-job-hunt-hook-number">0</p>
+          </div>
+          <p data-hf-id="f01-job-hunt-hook-apps-label" class="f01-job-hunt-hook-metric-label">applications sent</p>
+          <p data-hf-id="f01-job-hunt-hook-apps-detail" class="f01-job-hunt-hook-metric-detail">The same details, rewritten and retyped for every portal.</p>
+        </div>
+
+        <div data-hf-id="f01-job-hunt-hook-metric-hours" id="f01-job-hunt-hook-metric-hours" class="f01-job-hunt-hook-metric f01-job-hunt-hook-metric-hours" data-layout-allow-overlap>
+          <div data-hf-id="f01-job-hunt-hook-hours-line" class="f01-job-hunt-hook-number-line">
+            <p data-hf-id="f01-job-hunt-hook-hours-number" class="f01-job-hunt-hook-number">100</p>
+            <span data-hf-id="f01-job-hunt-hook-hours-plus" class="f01-job-hunt-hook-number-plus">+</span>
+          </div>
+          <p data-hf-id="f01-job-hunt-hook-hours-label" class="f01-job-hunt-hook-metric-label">hours lost</p>
+          <p data-hf-id="f01-job-hunt-hook-hours-detail" class="f01-job-hunt-hook-metric-detail">Searching, tailoring, tracking, and starting over.</p>
+        </div>
+
+        <div data-hf-id="f01-job-hunt-hook-metric-zero" id="f01-job-hunt-hook-metric-zero" class="f01-job-hunt-hook-metric f01-job-hunt-hook-metric-zero f01-job-hunt-hook-zero" data-layout-allow-overlap>
+          <div data-hf-id="f01-job-hunt-hook-zero-line" class="f01-job-hunt-hook-number-line">
+            <p data-hf-id="f01-job-hunt-hook-zero-number" class="f01-job-hunt-hook-number">0</p>
+          </div>
+          <p data-hf-id="f01-job-hunt-hook-zero-label" class="f01-job-hunt-hook-metric-label">offers</p>
+          <p data-hf-id="f01-job-hunt-hook-zero-detail" class="f01-job-hunt-hook-metric-detail">All that effort, with no system learning from it.</p>
+        </div>
+
+        <div data-hf-id="f01-job-hunt-hook-pain-rail" id="f01-job-hunt-hook-pain-rail" class="f01-job-hunt-hook-pain-rail">
+          <span data-hf-id="f01-job-hunt-hook-rail-search" class="f01-job-hunt-hook-rail-item"><span data-hf-id="f01-job-hunt-hook-rail-search-dot" class="f01-job-hunt-hook-rail-dot"></span>Search</span>
+          <span data-hf-id="f01-job-hunt-hook-rail-tailor" class="f01-job-hunt-hook-rail-item"><span data-hf-id="f01-job-hunt-hook-rail-tailor-dot" class="f01-job-hunt-hook-rail-dot"></span>Tailor</span>
+          <span data-hf-id="f01-job-hunt-hook-rail-retype" class="f01-job-hunt-hook-rail-item"><span data-hf-id="f01-job-hunt-hook-rail-retype-dot" class="f01-job-hunt-hook-rail-dot"></span>Retype</span>
+          <span data-hf-id="f01-job-hunt-hook-rail-repeat" class="f01-job-hunt-hook-rail-item"><span data-hf-id="f01-job-hunt-hook-rail-repeat-dot" class="f01-job-hunt-hook-rail-dot"></span>Repeat</span>
+        </div>
+      </section>
+
+      <section data-hf-id="f01-job-hunt-hook-clutter" id="f01-job-hunt-hook-clutter" class="f01-job-hunt-hook-clutter" aria-label="A stack of internship applications" data-layout-allow-overlap data-layout-allow-occlusion>
+        <div data-hf-id="f01-job-hunt-hook-browser-bar" id="f01-job-hunt-hook-browser-bar" class="f01-job-hunt-hook-browser-bar">
+          <div data-hf-id="f01-job-hunt-hook-tabs" class="f01-job-hunt-hook-tabs">
+            <span data-hf-id="f01-job-hunt-hook-tab-workday" class="f01-job-hunt-hook-tab">Workday <span data-hf-id="f01-job-hunt-hook-tab-workday-count" class="f01-job-hunt-hook-tab-count">17</span></span>
+            <span data-hf-id="f01-job-hunt-hook-tab-greenhouse" class="f01-job-hunt-hook-tab">Greenhouse <span data-hf-id="f01-job-hunt-hook-tab-greenhouse-count" class="f01-job-hunt-hook-tab-count">9</span></span>
+            <span data-hf-id="f01-job-hunt-hook-tab-lever" class="f01-job-hunt-hook-tab">Lever <span data-hf-id="f01-job-hunt-hook-tab-lever-count" class="f01-job-hunt-hook-tab-count">6</span></span>
+          </div>
+        </div>
+
+        <article data-hf-id="f01-job-hunt-hook-card-01" id="f01-job-hunt-hook-card-01" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-01" data-mid-x="88" data-mid-y="124" data-end-x="207" data-end-y="201">
+          <span data-hf-id="f01-job-hunt-hook-card-01-mark" class="f01-job-hunt-hook-company-mark">N</span><div data-hf-id="f01-job-hunt-hook-card-01-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-01-role" class="f01-job-hunt-hook-card-role">Software Engineering Intern</div><div data-hf-id="f01-job-hunt-hook-card-01-company" class="f01-job-hunt-hook-card-company">Northstar Robotics</div></div><span data-hf-id="f01-job-hunt-hook-card-01-tag" class="f01-job-hunt-hook-card-tag">Applied</span>
+        </article>
+        <article data-hf-id="f01-job-hunt-hook-card-02" id="f01-job-hunt-hook-card-02" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-02" data-mid-x="-72" data-mid-y="88" data-end-x="-179" data-end-y="163">
+          <span data-hf-id="f01-job-hunt-hook-card-02-mark" class="f01-job-hunt-hook-company-mark">A</span><div data-hf-id="f01-job-hunt-hook-card-02-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-02-role" class="f01-job-hunt-hook-card-role">Product Intern</div><div data-hf-id="f01-job-hunt-hook-card-02-company" class="f01-job-hunt-hook-card-company">Aperture Labs</div></div><span data-hf-id="f01-job-hunt-hook-card-02-tag" class="f01-job-hunt-hook-card-tag">Resume v12</span>
+        </article>
+        <article data-hf-id="f01-job-hunt-hook-card-03" id="f01-job-hunt-hook-card-03" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-03" data-mid-x="56" data-mid-y="55" data-end-x="82" data-end-y="78">
+          <span data-hf-id="f01-job-hunt-hook-card-03-mark" class="f01-job-hunt-hook-company-mark">G</span><div data-hf-id="f01-job-hunt-hook-card-03-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-03-role" class="f01-job-hunt-hook-card-role">Bioinformatics Research Intern</div><div data-hf-id="f01-job-hunt-hook-card-03-company" class="f01-job-hunt-hook-card-company">Genome Dynamics Lab</div></div><span data-hf-id="f01-job-hunt-hook-card-03-tag" class="f01-job-hunt-hook-card-tag">32 fields</span>
+        </article>
+        <article data-hf-id="f01-job-hunt-hook-card-04" id="f01-job-hunt-hook-card-04" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-04" data-mid-x="-108" data-mid-y="28" data-end-x="-222" data-end-y="24">
+          <span data-hf-id="f01-job-hunt-hook-card-04-mark" class="f01-job-hunt-hook-company-mark">O</span><div data-hf-id="f01-job-hunt-hook-card-04-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-04-role" class="f01-job-hunt-hook-card-role">Operations Intern</div><div data-hf-id="f01-job-hunt-hook-card-04-company" class="f01-job-hunt-hook-card-company">Orbit Works</div></div><span data-hf-id="f01-job-hunt-hook-card-04-tag" class="f01-job-hunt-hook-card-tag">Login</span>
+        </article>
+        <article data-hf-id="f01-job-hunt-hook-card-05" id="f01-job-hunt-hook-card-05" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-05" data-mid-x="86" data-mid-y="-18" data-end-x="179" data-end-y="-66">
+          <span data-hf-id="f01-job-hunt-hook-card-05-mark" class="f01-job-hunt-hook-company-mark">M</span><div data-hf-id="f01-job-hunt-hook-card-05-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-05-role" class="f01-job-hunt-hook-card-role">Data Science Intern</div><div data-hf-id="f01-job-hunt-hook-card-05-company" class="f01-job-hunt-hook-card-company">Meridian Health</div></div><span data-hf-id="f01-job-hunt-hook-card-05-tag" class="f01-job-hunt-hook-card-tag">Essay 4/6</span>
+        </article>
+        <article data-hf-id="f01-job-hunt-hook-card-06" id="f01-job-hunt-hook-card-06" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-06" data-mid-x="-70" data-mid-y="-62" data-end-x="-172" data-end-y="-132">
+          <span data-hf-id="f01-job-hunt-hook-card-06-mark" class="f01-job-hunt-hook-company-mark">C</span><div data-hf-id="f01-job-hunt-hook-card-06-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-06-role" class="f01-job-hunt-hook-card-role">Business Analyst Intern</div><div data-hf-id="f01-job-hunt-hook-card-06-company" class="f01-job-hunt-hook-card-company">Crescent Strategy</div></div><span data-hf-id="f01-job-hunt-hook-card-06-tag" class="f01-job-hunt-hook-card-tag">Again</span>
+        </article>
+        <article data-hf-id="f01-job-hunt-hook-card-07" id="f01-job-hunt-hook-card-07" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-07" data-mid-x="45" data-mid-y="-108" data-end-x="113" data-end-y="-234">
+          <span data-hf-id="f01-job-hunt-hook-card-07-mark" class="f01-job-hunt-hook-company-mark">V</span><div data-hf-id="f01-job-hunt-hook-card-07-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-07-role" class="f01-job-hunt-hook-card-role">Design Intern</div><div data-hf-id="f01-job-hunt-hook-card-07-company" class="f01-job-hunt-hook-card-company">Vela Studio</div></div><span data-hf-id="f01-job-hunt-hook-card-07-tag" class="f01-job-hunt-hook-card-tag">Cover letter</span>
+        </article>
+        <article data-hf-id="f01-job-hunt-hook-card-08" id="f01-job-hunt-hook-card-08" class="f01-job-hunt-hook-card f01-job-hunt-hook-card-08" data-mid-x="-103" data-mid-y="-116" data-end-x="-227" data-end-y="-262">
+          <span data-hf-id="f01-job-hunt-hook-card-08-mark" class="f01-job-hunt-hook-company-mark">Q</span><div data-hf-id="f01-job-hunt-hook-card-08-copy" class="f01-job-hunt-hook-card-copy"><div data-hf-id="f01-job-hunt-hook-card-08-role" class="f01-job-hunt-hook-card-role">Research Intern</div><div data-hf-id="f01-job-hunt-hook-card-08-company" class="f01-job-hunt-hook-card-company">Quanta Bio</div></div><span data-hf-id="f01-job-hunt-hook-card-08-tag" class="f01-job-hunt-hook-card-tag">Draft 18</span>
+        </article>
+
+        <div data-hf-id="f01-job-hunt-hook-collapse-pulse" id="f01-job-hunt-hook-collapse-pulse" class="f01-job-hunt-hook-collapse-pulse" aria-hidden="true"></div>
+      </section>
+
+      <section data-hf-id="f01-job-hunt-hook-resolution" id="f01-job-hunt-hook-resolution" class="f01-job-hunt-hook-resolution" aria-label="ResumeDB dashboard and promise">
+        <figure data-hf-id="f01-job-hunt-hook-dashboard" id="f01-job-hunt-hook-dashboard" class="f01-job-hunt-hook-dashboard">
+          <img data-hf-id="f01-job-hunt-hook-dashboard-capture" class="f01-job-hunt-hook-dashboard-capture" src="assets/01-dashboard.png" alt="ResumeDB career command center dashboard">
+          <div data-hf-id="f01-job-hunt-hook-sam-patch" class="f01-job-hunt-hook-sam-patch">
+            <h2 data-hf-id="f01-job-hunt-hook-sam-title" class="f01-job-hunt-hook-sam-title">Welcome back, Sam</h2>
+          </div>
+          <div data-hf-id="f01-job-hunt-hook-dashboard-fade" class="f01-job-hunt-hook-dashboard-fade" aria-hidden="true"></div>
+        </figure>
+
+        <div data-hf-id="f01-job-hunt-hook-lockup" id="f01-job-hunt-hook-lockup" class="f01-job-hunt-hook-lockup">
+          <div data-hf-id="f01-job-hunt-hook-lockup-main" class="f01-job-hunt-hook-lockup-main">
+            <div data-hf-id="f01-job-hunt-hook-brand" class="f01-job-hunt-hook-brand">
+              <img data-hf-id="f01-job-hunt-hook-brand-icon" class="f01-job-hunt-hook-brand-icon" src="assets/favicon.svg" alt="">
+              ResumeDB
+            </div>
+            <p data-hf-id="f01-job-hunt-hook-promise" class="f01-job-hunt-hook-promise">Changes the job hunting game.</p>
+          </div>
+          <p data-hf-id="f01-job-hunt-hook-system" class="f01-job-hunt-hook-system"><span data-hf-id="f01-job-hunt-hook-system-line-one" class="f01-job-hunt-hook-system-line">The internship</span><span data-hf-id="f01-job-hunt-hook-system-line-two" class="f01-job-hunt-hook-system-line">operating system</span></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const f01JobHuntRoot = document.querySelector('[data-composition-id="01-job-hunt-hook"]');
+    const f01JobHuntTimeline = gsap.timeline({ paused: true });
+    const f01JobHuntCards = Array.from(f01JobHuntRoot.querySelectorAll('.f01-job-hunt-hook-card'));
+    const f01JobHuntCount = { value: 0 };
+    const f01JobHuntCountNode = f01JobHuntRoot.querySelector('#f01-job-hunt-hook-apps-number');
+
+    f01JobHuntTimeline.fromTo(
+      f01JobHuntRoot.querySelector('.f01-job-hunt-hook-kicker'),
+      { x: -18, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.42, ease: 'power2.out' },
+      0
+    );
+
+    f01JobHuntTimeline.fromTo(
+      f01JobHuntCount,
+      { value: 0 },
+      {
+        value: 200,
+        duration: 1.62,
+        ease: 'power3.out',
+        snap: { value: 1 },
+        onUpdate: () => {
+          f01JobHuntCountNode.textContent = String(Math.round(f01JobHuntCount.value));
+        }
+      },
+      0.06
+    );
+
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-metric-apps',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+      0.04
+    );
+
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-browser-bar',
+      { y: -26, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+      0.12
+    );
+
+    f01JobHuntCards.forEach((card, index) => {
+      const entranceY = -210 - index * 14;
+      const entranceX = index % 2 === 0 ? 36 : -26;
+      f01JobHuntTimeline.fromTo(
+        card,
+        { x: entranceX, y: entranceY, rotation: index % 2 === 0 ? -5 : 5, scale: 0.92, opacity: 0 },
+        { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, duration: 0.62, ease: 'power3.out' },
+        0.12 + index * 0.17
+      );
+    });
+
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-pain-rail',
+      { y: 10, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.34, ease: 'power2.out' },
+      1.3
+    );
+
+    f01JobHuntTimeline.to(
+      '#f01-job-hunt-hook-metric-apps',
+      { y: -28, opacity: 0, duration: 0.34, ease: 'power2.in' },
+      1.78
+    );
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-metric-hours',
+      { y: 32, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.44, ease: 'power3.out', immediateRender: false },
+      1.92
+    );
+
+    f01JobHuntTimeline.to(
+      '#f01-job-hunt-hook-metric-hours',
+      { y: -28, opacity: 0, duration: 0.34, ease: 'power2.in' },
+      3.03
+    );
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-metric-zero',
+      { y: 34, scale: 0.94, opacity: 0 },
+      { y: 0, scale: 1, opacity: 1, duration: 0.46, ease: 'power3.out', immediateRender: false },
+      3.18
+    );
+    f01JobHuntTimeline.to(
+      '#f01-job-hunt-hook-metric-zero',
+      { scale: 1.025, duration: 0.16, ease: 'power2.out' },
+      3.64
+    );
+    f01JobHuntTimeline.to(
+      '#f01-job-hunt-hook-metric-zero',
+      { scale: 1, duration: 0.22, ease: 'power2.inOut' },
+      3.81
+    );
+
+    f01JobHuntTimeline.to(
+      '#f01-job-hunt-hook-pain',
+      { x: -36, opacity: 0, duration: 0.62, ease: 'power2.in' },
+      4.6
+    );
+
+    f01JobHuntTimeline.to(
+      '#f01-job-hunt-hook-browser-bar',
+      { x: -338, y: 278, scale: 0.15, opacity: 0, duration: 0.86, ease: 'power3.in' },
+      4.62
+    );
+
+    f01JobHuntCards.forEach((card, index) => {
+      const midX = Number(card.dataset.midX);
+      const midY = Number(card.dataset.midY);
+      const endX = Number(card.dataset.endX);
+      const endY = Number(card.dataset.endY);
+      const collapseAt = 4.58 + index * 0.035;
+
+      f01JobHuntTimeline.to(
+        card,
+        {
+          x: midX,
+          y: midY,
+          rotation: index % 2 === 0 ? 7 : -7,
+          scale: 0.76,
+          duration: 0.46,
+          ease: 'power2.in'
+        },
+        collapseAt
+      );
+      f01JobHuntTimeline.to(
+        card,
+        {
+          x: endX,
+          y: endY,
+          rotation: 0,
+          scale: 0.08,
+          opacity: 0,
+          duration: 0.42,
+          ease: 'power4.in'
+        },
+        collapseAt + 0.46
+      );
+    });
+
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-collapse-pulse',
+      { scale: 0.2, opacity: 0 },
+      { scale: 1, opacity: 0.9, duration: 0.24, ease: 'power2.out' },
+      4.86
+    );
+    f01JobHuntTimeline.to(
+      '#f01-job-hunt-hook-collapse-pulse',
+      { scale: 3.4, opacity: 0, duration: 0.72, ease: 'power3.out' },
+      5.11
+    );
+
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-resolution',
+      { opacity: 0 },
+      { opacity: 1, duration: 0.24, ease: 'none', immediateRender: false },
+      5.05
+    );
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-dashboard',
+      { scale: 0.82, opacity: 0, clipPath: 'inset(31% 39% 31% 39% round 14px)' },
+      { scale: 1, opacity: 1, clipPath: 'inset(0% 0% 0% 0% round 14px)', duration: 1.44, ease: 'power3.out', immediateRender: false },
+      5.05
+    );
+
+    f01JobHuntTimeline.fromTo(
+      '#f01-job-hunt-hook-lockup',
+      { y: 24, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', immediateRender: false },
+      6.66
+    );
+
+    f01JobHuntTimeline.fromTo(
+      f01JobHuntRoot.querySelector('.f01-job-hunt-hook-brand-icon'),
+      { scale: 0.72, rotation: -8, opacity: 0 },
+      { scale: 1, rotation: 0, opacity: 1, duration: 0.42, ease: 'back.out(1.4)', immediateRender: false },
+      6.72
+    );
+
+    window.__timelines['01-job-hunt-hook'] = f01JobHuntTimeline;
+  </script>
+</template>

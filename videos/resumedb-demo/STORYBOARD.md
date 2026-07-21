@@ -1,278 +1,232 @@
 ---
 format: 1920x1080
-duration: 90s
-message: "ResumeDB is an agentic internship operating system, not merely a resume builder"
-arc: Demo Loop with a future-pacing close
+duration: 151.135s
+message: "One verified experience bank becomes a complete internship operating system"
+arc: pain to proof to category ownership
 audience: online hackathon judges
-mode: collaborative
+mode: automation
 music: none
 ---
 
 ## Video direction
 
-- palette: Warm cream canvas, ink typography, ochre support surfaces, and one restrained ResumeDB violet voltage moment per frame. Real product views retain their native UI colors and are framed as the primary evidence.
-- motion grammar: Smooth `power3` long-tail settles, sequential reveals on the spoken cue, and velocity-matched internal seams. No bounce, infinite loops, lazy breathing, or back-half camera drift.
-- product treatment: Use the captured production views at readable scale in every working-feature scene. Crop and layer them as live surfaces, then add simulated cursor movement, field entry, transcript rows, focus masks, scanner passes, and status changes above the real interface.
-- rhythm: Frames 1, 3, 4, 6, and 8 carry the strongest motion. Frames 2, 5, 7, and 9 resolve into short evidence reads. Frame 10 is the final held roadmap lockup.
-- camera: Establish the full product surface first, make one purposeful focus move, then lock. The screenshot itself never drifts continuously.
-- captions: Keep the lower caption band clear. All load-bearing interface evidence stays above the lower 15 percent of the canvas.
+- Palette: warm cream canvas, ink typography, ochre support surfaces, and one restrained ResumeDB violet voltage moment per frame.
+- Motion grammar: smooth `power3` settles, purposeful cursor action, cascading live data, laser scans, type-on fields, and decisive stamps. No idle drift or decorative looping.
+- Product treatment: use real ResumeDB views as recognizable anchors, then reconstruct the specific interaction layer at readable scale.
+- Rhythm: the hook is stark; frames 3 through 9 accelerate; the MCP frame opens the idea back up; the roadmap closes the product pitch; a hard color reset makes frames 12 through 14 an unmistakable Codex and GPT-5.6 judging appendix.
+- Camera: establish, make one focus move, then lock. No continuous screenshot zooming.
+- Captions: reserve the lower 17 percent of every frame.
 
-## Frame 1 - One guided workflow
+## Frame 1 - The broken job hunt
 
-- scene: Disconnected internship tasks collapse into the ResumeDB dashboard and one clear student journey.
-- voiceover: "Getting an internship should not mean running five disconnected systems. ResumeDB makes it one guided workflow."
-- duration: 6.58s
-- poster: 4s
-- transition_in: cut
-- status: animated
-- src: compositions/frames/01-guided-workflow.html
+- scene: A stark application counter races past 200 while hours burn away and rejection cards stack. The chaos collapses into the ResumeDB mark and category promise.
 - type: hook
-- persuasion: Friction reduction
-- beat: recognition to relief
-- blueprint: constellation-hub
-- asset_candidates: assets/01-dashboard.png - ResumeDB career command center with a Ready application and a complete synthetic profile
-- focal: assets/01-dashboard.png
-- roles: 01-dashboard = background product surface; task chips = supporting; ResumeDB promise = foreground
+- persuasion: Pain amplification, then relief
+- blueprint: kinetic-stat-collapse
+- src: `compositions/frames/01-job-hunt-hook.html`
+- duration: 8.810s
+- poster: 7.2s
+- product evidence: real dashboard appears in the final beat behind the mark
 
-Adapt: keep the constellation-to-hub signature, but let the real dashboard become the hub instead of an abstract symbol.
-Scene 1 (0.0-1.8s): Five disconnected task chips appear around an empty cream center on their spoken cues, arranged as a rule-of-thirds constellation with the headline held in the upper third; reveal them sequentially with smooth long-tail settles.
-Scene 2 (1.8-4.2s): The chips accelerate inward and collapse behind the captured dashboard as it resolves from a soft masked crop into a readable 70-percent product surface; use `center-outward-expansion` in reverse with a brief directional blur at peak velocity.
-Scene 3 (4.2-6.58s): Thin paths draw from the dashboard to Discover, Tailor, Track, and Apply labels while the Ready application receives the single violet highlight; use `svg-path-draw`, then hold the real product view still.
+Beat 1: Count from 0 to 200 applications as fragmented tabs, forms, and spreadsheet rows accumulate.
+Beat 2: A 100+ hours counter lands, followed by a quiet "0 offers" card and a short empty hold.
+Beat 3: The clutter snaps inward. ResumeDB resolves with "The internship operating system" and a violet path through the chaos.
 
-narrativeRole: Land the category-level value immediately: one operating system replaces a fragmented internship process.
-keyMessage: ResumeDB manages the whole job journey, not only a resume.
+## Frame 2 - A memory that compounds
 
-## Frame 2 - A memory that never guesses
+- scene: Real Profile and Knowledge views fill with Sam Rivera's canonical contact, education, experiences, metrics, and preferences.
+- type: product-intro
+- persuasion: Compounding personalization
+- blueprint: verified-memory-map
+- src: `compositions/frames/02-career-memory.html`
+- duration: 8.260s
+- poster: 6.8s
+- assets: `assets/02-settings-profile-agent.png`, `assets/03-knowledge.png`
 
-- scene: The Profile and Settings view fills itself field by field, then connects to the knowledge base and explicit answer bank while missing facts trigger a question.
-- voiceover: "Earnestine starts with one verified knowledge base: experience, preferences, and explicit application answers. Missing facts trigger a question, never a guess."
-- duration: 9.44s
-- poster: 6s
-- transition_in: zoom-through
-- status: animated
-- src: compositions/frames/02-career-memory.html
-- type: product_intro
-- persuasion: Risk reversal
-- beat: trust
-- blueprint: device-surface-showcase
-- asset_candidates: assets/02-settings-profile-agent.png - canonical applicant facts, explicit answers, and connected-agent settings; assets/03-knowledge.png - structured student career evidence
-- focal: assets/02-settings-profile-agent.png
-- roles: 02-settings-profile-agent = primary product surface; 03-knowledge = supporting evidence surface; missing-fact card = foreground
+Beat 1: The real profile view lands with Sam Rivera reconstructed cleanly over the relevant fields.
+Beat 2: Experience cards type on with Waypoint Robotics, Genome Dynamics Lab, and measurable results.
+Beat 3: Connections converge on one persistent "Sam Rivera experience bank" node and a small "learns with every application" pulse.
 
-Adapt: preserve the device-surface handoff, but reconstruct a real field-by-field setup pass over the captured Settings and Knowledge views.
-Scene 1 (0.0-2.0s): The captured Profile and Settings view lands as a large 70/30 editorial surface, with the profile column dominant and the connected-agent area visible at right; one purposeful focus move settles on the applicant fields.
-Scene 2 (2.0-5.9s): Name, college, major, graduation, authorization, and agent connection fill sequentially on the matching spoken facts; each row uses a measured type-on and checkmark reveal from `gsap-effects`, never simultaneous.
-Scene 3 (5.9-7.5s): A velocity-matched horizontal seam reveals the real Knowledge view, where two evidence cards draw on and link back to the profile.
-Scene 4 (7.5-9.44s): A violet Missing fact card rises above the surfaces and types “Ask the student”; the background softens with `depth-of-field-blur`, then the composition holds for “never a guess.”
+## Frame 3 - Any role, one request
 
-narrativeRole: Establish trustworthy personalization before showing automation.
-keyMessage: The agent learns from verified user data and never invents factual answers.
+- scene: The real Career Agent fills most of the frame. A simulated cursor types one request covering robotics and bioinformatics, then two role lanes populate.
+- type: feature-showcase
+- persuasion: Breadth from one interface
+- blueprint: cursor-ui-split-result
+- src: `compositions/frames/03-two-role-discovery.html`
+- duration: 9.260s
+- poster: 7.6s
+- assets: `assets/04-career-agent.png`
 
-## Frame 3 - Ask for the right opportunities
+Beat 1: Cursor clicks high in the composer and types "Find robotics and bioinformatics internships where my evidence is strongest."
+Beat 2: Live transcript rows show search and page inspection without shrinking the real product beyond readability.
+Beat 3: Two result cards land side by side: Autonomy and Robotics Software Intern, 94 percent fit; Bioinformatics Engineering Intern, 92 percent fit.
 
-- scene: A cursor enters the Career Agent, types a natural-language goal, and a live transcript streams through search, page inspection, evidence verification, and application creation.
-- voiceover: "Then she simply asks, 'Find internships I qualify for,' or pastes any job URL. The agent researches the role, scores fit, and creates the application."
-- duration: 9.76s
-- poster: 7s
-- transition_in: push-slide LEFT
-- status: animated
-- src: compositions/frames/03-discover-jobs.html
-- type: feature_showcase
-- persuasion: Show-don't-tell proof
-- beat: curiosity to control
-- blueprint: cursor-ui-demo
-- asset_candidates: assets/04-career-agent.png - natural-language Career Agent input and discovery inbox
-- focal: assets/04-career-agent.png
-- roles: 04-career-agent = primary product surface; prompt = foreground interaction; transcript = foreground proof
+## Frame 4 - Watch the agent think
 
-Adapt: keep the cursor-driven signature and extend the captured Career Agent into a living transcript without replacing the real page.
-Scene 1 (0.0-2.6s): The real Career Agent view fills 75 percent of the canvas. A simulated cursor glides into the prompt and clicks with `cursor-click-ripple`; a short focus move keeps the composer readable.
-Scene 2 (2.6-5.1s): “Find internships I qualify for” types into the real prompt on the quoted narration cue, followed by a smaller paste-URL chip; use seek-safe typewriter timing and a finite context cursor.
-Scene 3 (5.1-8.2s): A transcript rail widens beside the product and streams Searching sources, Inspecting Northstar Robotics, and Verifying factual support one row at a time with `waterfall-entry`; each active row owns the violet indicator.
-Scene 4 (8.2-9.76s): “Application created - 92% fit” locks in with a crisp progress fill; the cursor settles beside the result and the product view holds still.
+- scene: A wide Career Agent work surface dominates. A narrow proof rail streams actions while real job and experience snippets respond.
+- type: live-agent-proof
+- persuasion: Observable intelligence
+- blueprint: live-transcript-workbench
+- src: `compositions/frames/04-agent-timeline.html`
+- duration: 8.760s
+- poster: 7.2s
+- assets: `assets/04-career-agent.png`, `assets/03-knowledge.png`
 
-narrativeRole: Prove that discovery and arbitrary job ingestion share one simple agent interface.
-keyMessage: A student can describe the goal or paste any posting and let the agent do the research.
+Beat 1: Search events cascade: query internships, inspect role page, extract requirements.
+Beat 2: A violet laser scanner sweeps the evidence pane while requirement-to-evidence matches illuminate.
+Beat 3: Two application records are created and the transcript resolves to "ready to tailor."
 
-## Frame 4 - Watch the agent work
+## Frame 5 - From idea to application
 
-- scene: A wide Career Agent run dominates the frame while a narrow checklist advances through knowledge, research, verification, and preparation, including a laser scan across supporting evidence.
-- voiceover: "Every run stays observable: read the profile, inspect the posting, verify evidence, then prepare the strongest match."
-- duration: 6.94s
-- poster: 6s
-- transition_in: push-slide LEFT
-- status: animated
-- src: compositions/frames/04-agent-timeline.html
-- type: benefit_highlight
-- persuasion: Transparency
-- beat: confidence
-- blueprint: grid-card-assemble
-- asset_candidates: assets/04-career-agent.png - live agent run timeline with four named stages
-- focal: assets/04-career-agent.png
-- roles: 04-career-agent = wide primary agent surface; checklist = narrow supporting rail; evidence scanner = foreground proof
+- scene: One application card visibly advances as useful work happens, not as a static five-stage diagram.
+- type: workflow-proof
+- persuasion: Compression of effort
+- blueprint: stateful-agent-run
+- src: `compositions/frames/05-application-lifecycle.html`
+- duration: 10.000s
+- poster: 8.6s
+- assets: `assets/05-applications.png`, `assets/06-application-overview.png`
 
-Adapt: keep the four-stage accumulation, but give the wide Career Agent panel the action and compress the checklist into a narrow progress rail.
-Scene 1 (0.0-1.35s): The real Career Agent view expands into a 75/25 asymmetric layout while a narrow four-step rail draws on at right; the active Read profile row receives the only violet accent.
-Scene 2 (1.35-2.75s): Canonical profile facts slide into the left evidence pane and the checklist advances to Inspect posting sequentially; the real page remains readable behind the reconstructed live panel.
-Scene 3 (2.75-4.35s): Northstar requirements appear in the center pane, selected phrases receive hand-drawn marker sweeps from `css-marker-patterns`, and the rail advances to Verify evidence.
-Scene 4 (4.35-5.85s): A thin violet laser line travels top-to-bottom across both panes exactly once, leaving verified evidence rows sharp while unsupported space falls out of focus via `depth-of-field-blur`.
-Scene 5 (5.85-6.94s): The rail advances to Prepare match, a 92% match chip fills, and all four stages remain visible for a short held read.
+Beat 1: A cursor clicks "Start agent" and Not Started becomes In Progress.
+Beat 2: Fields populate, transcript rows complete, and resume bullets type while the record advances to Draft.
+Beat 3: A user scanner sweeps the document for review, the state moves to Ready, and a large approval check stamp lands as the application becomes Submitted.
 
-narrativeRole: Answer the judge's trust question by making autonomous work observable.
-keyMessage: ResumeDB shows what the agent is doing and why.
+## Frame 6 - Stronger, still true
 
-## Frame 5 - Automation with human gates
+- scene: A full before-and-after resume bullet becomes stronger while four aligned evidence sources prove each part of the rewrite.
+- type: differentiation
+- persuasion: Credibility with ambition
+- blueprint: evidence-backed-transformation
+- src: `compositions/frames/06-evidence-tailoring.html`
+- duration: 7.870s
+- poster: 6.5s
+- assets: `assets/07-evidence-tailoring.png`
 
-- scene: Five pipeline stages draw on from Not Started to Submitted, with Draft-to-Ready and Ready-to-Submitted called out as human gates.
-- voiceover: "Applications move through five clear stages. Draft to Ready requires Earnestine's review. Ready to Submitted still requires her final click."
-- duration: 7.84s
-- poster: 6s
-- transition_in: squeeze
-- status: animated
-- src: compositions/frames/05-human-gates.html
-- type: benefit_highlight
-- persuasion: Risk reversal
-- beat: control
-- blueprint: spatial-pan-stations
-- asset_candidates: assets/05-applications.png - five-stage applications table; assets/06-application-overview.png - Ready application with the manual submission instruction
-- focal: assets/05-applications.png
-- roles: 05-applications = primary pipeline surface; 06-application-overview = supporting Ready workbench; human-gate labels = foreground
+Beat 1: The original bullet appears: "Improved robot navigation performance."
+Beat 2: It rewrites into the specific 75 percent path-replanning result with C++, ROS 2, and the measured 180 ms to 45 ms improvement.
+Beat 3: Precisely aligned connector paths illuminate Waypoint role, measured result, C++ and ROS 2 stack, and shipped fleet outcome. Finish on "Every claim backed by what Sam already did."
 
-Adapt: keep the five-station journey, but travel across the actual applications table and finish inside the real Ready workbench.
-Scene 1 (0.0-1.7s): The captured Applications table seats full-width and the five states isolate as a foreground station strip above it.
-Scene 2 (1.7-4.0s): Not Started, In Progress, Draft, Ready, and Submitted illuminate sequentially as the voice names five stages; a compact cursor travels only between stations.
-Scene 3 (4.0-5.95s): The camera performs one `coordinate-target-zoom` into Ready, then swaps to the real application overview. A violet HUMAN REVIEW label draws between Draft and Ready with `css-marker-patterns`.
-Scene 4 (5.95-7.84s): A second USER SUBMITS label draws between Ready and Submitted. The cursor approaches the final button, stops above it, and the frame holds on the manual submission instruction.
+## Frame 7 - One person, two resumes
 
-narrativeRole: Show that high automation does not remove human review or final submission control.
-keyMessage: The agent prepares; the student approves and submits.
+- scene: Two real rendered one-page PDFs sit side by side and fill with different selected evidence, order, summary, and keywords.
+- type: product-proof
+- persuasion: Personalization breadth
+- blueprint: dual-document-reveal
+- src: `compositions/frames/07-two-role-resumes.html`
+- duration: 11.080s
+- poster: 9.4s
+- assets: generated robotics and bioinformatics resume PNGs rendered from verified PDFs
 
-## Frame 6 - Tailor with evidence
+Beat 1: Sam Rivera's shared identity header locks across both documents.
+Beat 2: The left page highlights autonomy, ROS 2, SLAM, and distributed systems. The right page highlights Nextflow, AWS Batch, variant calling, quality control, and WebGL.
+Beat 3: Role labels and fit chips land while a center badge reads "Same evidence bank. Different story."
 
-- scene: Northstar requirements slide into a before-and-after comparison where each stronger phrase remains visibly tied to a canonical source.
-- voiceover: "For this Northstar role, ResumeDB matches the description semantically, rewrites each bullet, and shows the evidence behind every stronger phrase - before and after."
-- duration: 9.24s
-- poster: 8s
-- transition_in: zoom-through
-- status: animated
-- src: compositions/frames/06-evidence-tailoring.html
-- type: feature_showcase
-- persuasion: Show-don't-tell proof
-- beat: skepticism to trust
-- blueprint: comparison-split
-- asset_candidates: assets/07-evidence-tailoring.png - three evidence-backed before and after tailoring cards
-- focal: assets/07-evidence-tailoring.png
-- roles: 07-evidence-tailoring = primary comparison surface; requirement tags = supporting; evidence links = foreground trust proof
+## Frame 8 - Autofill in motion
 
-Reproduce: use the comparison-split signature directly on the captured Northstar tailoring view, with each stronger phrase tied to its visible source.
-Scene 1 (0.0-2.0s): The real Northstar evidence-tailoring view arrives as a 70-percent surface with the job requirements held in the upper third; one clean focus move locks on the first requirement.
-Scene 2 (2.0-4.4s): React, TypeScript, Python, and PostgreSQL tags reveal sequentially on the matching narration beats; the rest of the page softens slightly.
-Scene 3 (4.4-7.1s): Original bullets open on the left and tailored bullets wipe in on the right with a velocity-matched split seam; changed keywords receive narrow marker highlights from `css-marker-patterns`.
-Scene 4 (7.1-9.24s): Evidence links draw upward into every stronger phrase using `svg-path-draw`, then Before and After labels settle as the full real surface returns to sharp focus.
+- scene: A clean extension preflight panel sits beside a reconstructed application form. Fields fill one by one with Sam's data.
+- type: automation-proof
+- persuasion: Time saved
+- blueprint: synchronized-form-fill
+- src: `compositions/frames/08-extension-autofill.html`
+- duration: 8.910s
+- poster: 7.6s
+- assets: `assets/09-ats-empty.png` as the real application-page anchor
 
-narrativeRole: Demonstrate the quality and defensibility of the AI's core tailoring work.
-keyMessage: Stronger positioning is grounded in real student evidence.
+Beat 1: Preflight maps name, email, location, college, degree, authorization, and the robotics resume.
+Beat 2: The cursor clicks Fill. First name, last name, email, phone, location, college, major, degree, and authorization type or select sequentially.
+Beat 3: The tailored resume upload locks with a success check and all mapped rows resolve cleanly. No duplicate extension screenshots and no bottom manual-submit explainer.
 
-## Frame 7 - Complete application artifacts
+## Frame 9 - A campaign, not chaos
 
-- scene: The tailored resume, sourced application answers, and cover letter rotate through one application workbench.
-- voiceover: "It produces the tailored resume, cover letter, and answers, while keeping sensitive facts tied to the profile and unknowns blank."
-- duration: 7.1s
-- poster: 6s
-- transition_in: push-slide LEFT
-- status: animated
-- src: compositions/frames/07-application-artifacts.html
-- type: feature_showcase
-- persuasion: Value stacking
-- beat: capability and trust
-- blueprint: device-surface-showcase
-- asset_candidates: assets/14-tailored-resume.png - rendered one-page tailored resume; assets/15-cover-qa.png - sourced application answers and tailored cover letter
-- focal: assets/14-tailored-resume.png
-- roles: 14-tailored-resume = primary artifact; 15-cover-qa = supporting answers and letter; source badges = foreground trust proof
+- scene: An animated Sankey turns 200 discovered opportunities into 88 strong matches, 64 tailored applications, 58 submitted applications, 14 interviews, and 3 offers.
+- type: data-story
+- persuasion: Focus and momentum
+- blueprint: sankey-campaign
+- src: `compositions/frames/09-application-funnel.html`
+- duration: 9.720s
+- poster: 8.4s
 
-Adapt: preserve the device-surface rotation but use two real product captures and a restrained document carousel rather than static screenshot holds.
-Scene 1 (0.0-2.1s): The real tailored resume rises from the application workbench into a large centered document surface; use `coordinate-target-zoom` to land on the role-specific skills and impact bullets.
-Scene 2 (2.1-4.35s): A cut-the-curve seam slides the resume left while the captured answers and cover-letter view enters from the right; Resume, Answers, and Cover letter labels sequence across the top.
-Scene 3 (4.35-5.95s): Canonical profile-source badges draw onto sensitive answers one by one, and an unknown answer remains visibly blank with a restrained marker outline.
-Scene 4 (5.95-7.1s): Both real captures settle into a clean two-up composition and hold without camera movement.
+Beat 1: "Illustrative application campaign" badge appears before the first number.
+Beat 2: Main flow bands draw left to right while filtered, skipped, awaiting, and decline branches peel away with smaller labels.
+Beat 3: The three-offer node lands with a restrained celebratory pulse. No guarantee language.
 
-narrativeRole: Broaden the proof from bullet rewriting to the complete approved application package.
-keyMessage: ResumeDB prepares every job-specific artifact from the same verified knowledge.
+## Frame 10 - Bring your own agent
 
-## Frame 8 - Autofill, then stop
+- scene: The real Settings view reveals ResumeDB's MCP server as a shared career-memory hub connected to the student's preferred agents and daily tools.
+- type: platform-advantage
+- persuasion: Ownership and extensibility
+- blueprint: mcp-agent-hub
+- src: `compositions/frames/10-own-agent-mcp.html`
+- duration: 9.000s
+- poster: 7.6s
+- assets: `assets/02-settings-profile-agent.png`
 
-- scene: Extension preflight maps eleven fields, then the empty synthetic ATS fills in before the cursor deliberately stops above Submit.
-- voiceover: "After approval, the extension scans the application, previews each mapping, uploads the tailored resume, and fills the ATS. It stops before Submit."
-- duration: 8.8s
-- poster: 9s
-- transition_in: blur-crossfade
-- status: animated
-- src: compositions/frames/08-extension-autofill.html
-- type: feature_showcase
-- persuasion: Friction reduction plus risk reversal
-- beat: momentum with control
-- blueprint: cursor-ui-demo
-- asset_candidates: assets/13-extension-preflight-live.png - extension with eleven mapped fields and zero blockers; assets/09-ats-empty.png - empty synthetic ATS; assets/10-ats-filled.png - ATS after approved fields are filled; assets/11-ats-profile-answers.png - explicit eligibility and demographic answers
-- focal: assets/13-extension-preflight-live.png
-- roles: 13-extension-preflight-live = foreground extension panel; 09-ats-empty = background starting state; 10-ats-filled = primary completion state; 11-ats-profile-answers = supporting explicit-answer proof
+Beat 1: The connected-agent settings area sharpens and an MCP endpoint card opens.
+Beat 2: Codex, Claude, and local-agent cards connect into one ResumeDB memory hub.
+Beat 3: Discovery, tailoring, application tracking, and profile updates flow back into the tools the user already lives in. Finish on "Your agent. Your workflow. One career memory."
 
-Adapt: keep the cursor-driven flow, mounting the real extension and synthetic ATS captures as one continuous approved handoff.
-Scene 1 (0.0-1.65s): The captured extension preflight panel slides over the real empty ATS, forming a 30/70 asymmetric product composition; 11 mapped and 0 blockers count in sequentially.
-Scene 2 (1.65-3.45s): Mapping rows illuminate sequentially while a scanner line traverses the ATS once; the cursor clicks Autofill with `cursor-click-ripple`.
-Scene 3 (3.45-5.4s): The real empty ATS fills field by field through stacked mask reveals, including the tailored resume upload; a compact progress rail advances in the extension.
-Scene 4 (5.4-7.15s): A `scale-swap-transition` seam replaces the empty ATS with the real filled capture, then the explicit eligibility and demographic-answer section receives one purposeful focus move.
-Scene 5 (7.15-8.8s): The cursor travels toward Submit, decelerates, and stops above it. A violet “Manual submit preserved” guard line draws between the pointer and button, then holds.
+## Frame 11 - Our other features include
 
-narrativeRole: Deliver the workflow payoff while preserving the student's final irreversible action.
-keyMessage: ResumeDB automates form entry but never clicks Submit.
+- scene: A concise roadmap resolves into a complete ResumeDB product close before the judging appendix begins.
+- type: future-pace-and-product-close
+- persuasion: Vision and category ownership
+- blueprint: roadmap-to-product-lockup
+- src: `compositions/frames/11-future-roadmap.html`
+- duration: 10.965s
+- poster: 9.5s
 
-## Frame 9 - Hosted or bring your own agent
+Beat 1: "A career operating system that grows with you" opens beside the product mark.
+Beat 2: Email tracking, interview prep, campus insights, four-year planning, and major-specific portfolios step on as readable rows.
+Beat 3: The roadmap recedes while ResumeDB, "The internship operating system," and the deployed URL hold as the finished product close.
 
-- scene: One ResumeDB memory core branches to Hosted model and Your agent, then rejoins the same workflow with a No shared API key badge.
-- voiceover: "Use ResumeDB's hosted model, or connect your own agent with no shared API key. Either way, the student keeps the same memory and workflow."
-- duration: 8.16s
-- poster: 6s
-- transition_in: squeeze
-- status: animated
-- src: compositions/frames/09-bring-your-own-agent.html
-- type: benefit_highlight
-- persuasion: Choice architecture
-- beat: freedom and confidence
-- blueprint: comparison-split
-- asset_candidates: assets/02-settings-profile-agent.png - hosted and connected-agent configuration inside Profile and Settings
-- focal: assets/02-settings-profile-agent.png
-- roles: 02-settings-profile-agent = real settings foundation; hosted agent = supporting branch; connected agent = supporting branch; shared memory = foreground anchor
+## Frame 12 - How we built it
 
-Adapt: retain equal choice architecture while anchoring both branches in the captured agent-settings section.
-Scene 1 (0.0-2.0s): The real Profile and Settings capture seats as a wide background surface and the agent-connection area sharpens while the remaining page softens.
-Scene 2 (2.0-4.45s): Hosted model and Your agent cards split from one central ResumeDB memory node using `center-outward-expansion`; each branch receives equal scale and weight.
-Scene 3 (4.45-6.45s): Thin data paths draw from the shared memory into both cards with `svg-path-draw`, then rejoin the same application workflow below.
-Scene 4 (6.45-8.16s): A “No shared API key” badge draws around the connected-agent branch; both choices hold together over the real settings view.
+- scene: A full warm-navy editorial interstitial clearly resets the video into a judging appendix and shows the three parallel build lanes.
+- type: judging-appendix-interstitial
+- persuasion: Parallel agent leverage under human direction
+- blueprint: appendix-title-and-build-lanes
+- src: `compositions/frames/12-codex-inside-product.html`
+- duration: 10.500s
+- poster: 8.9s
 
-narrativeRole: Resolve the cost and agent-preference objection without splitting the product experience.
-keyMessage: Most users can use hosted AI, while power users can connect their own agent.
+Beat 1: The warm cream product world cuts decisively to warm navy and types "Judging appendix / How we built it."
+Beat 2: "Codex + GPT-5.6" becomes the dominant title, followed by the conversational aside "And for the judges."
+Beat 3: Web app, Chrome extension, and MCP server lanes stamp verified and hold without product screenshots or connector paths.
 
-## Frame 10 - Future roadmap
+## Frame 13 - Codex dogfooded the product
 
-- scene: A clearly labeled Future roadmap slide builds six concise ideas in a clean two-column layout, then resolves on the ResumeDB mark.
-- voiceover: "Next: email tracking, interview prep, progress journals, campus insights, four-year planning, and major-specific career artifacts."
-- duration: 8.008s
-- poster: 5s
-- transition_in: blur-crossfade
-- status: animated
-- src: compositions/frames/10-future-roadmap.html
-- type: branding
-- persuasion: Future pacing
-- beat: aspiration
-- blueprint: grid-card-assemble
-- asset_candidates: assets/favicon.svg - official ResumeDB mark captured from the deployed product
-- focal: assets/favicon.svg
-- roles: favicon = final brand lockup; roadmap cards = primary future ideas; future label = foreground scope guard
+- scene: Codex drives the hosted product and extension, catches the real localhost-default bug, then a protocol audit verifies all thirteen MCP tools.
+- type: judging-appendix-proof
+- persuasion: Concrete dogfooding, debugging, and end-to-end verification
+- blueprint: qa-workstation-to-verification-matrix
+- src: `compositions/frames/13-gpt56-engineering-team.html`
+- duration: 18.500s
+- poster: 16.8s
+- assets: `assets/09-ats-empty.png`, `assets/13-extension-preflight-live.png`
 
-Adapt: keep the six-card assembly, pace one roadmap item per spoken cue, and close on a clear product mark without presenting future ideas as shipped.
-Scene 1 (0.0-0.95s): A large FUTURE ROADMAP scope label draws on above an empty two-column grid; the violet accent is reserved for this label.
-Scene 2 (0.95-6.35s): Email tracking, Interview prep, Progress journals, Campus insights, Four-year planning, and Major-specific artifacts arrive one by one on their exact narration cues with `waterfall-entry`, filling the two columns from top left to bottom right.
-Scene 3 (6.35-8.008s): The six cards nudge outward to reveal the ResumeDB mark and “The internship operating system” lockup at center; the result holds still through the end.
+Beat 1: A real hosted application view and reconstructed extension panel show browser and computer use driving the same surfaces a judge sees.
+Beat 2: A bug card records the real failure: fresh installs pointed to localhost instead of the Railway backend, followed by the hosted-default fix, preserved local fallbacks, and regression coverage.
+Beat 3: The workstation shutters into a full-width matrix where every registered MCP tool checks off and "13 / 13 verified through /mcp/" holds.
 
-narrativeRole: Close with the larger student-career platform vision while clearly separating future ideas from shipped MVP features.
-keyMessage: ResumeDB can grow with a student across college, applications, interviews, and career development.
+## Frame 14 - Human innovation, agent hardening
+
+- scene: Human product direction and creative taste sit beside agent build, debugging, verification, and hardening before resolving into one restrained thesis.
+- type: judging-appendix-close
+- persuasion: Human-agent complementarity
+- blueprint: split-thesis-to-statement
+- src: `compositions/frames/14-codex-dogfood-meta.html`
+- duration: 19.500s
+- poster: 17.3s
+
+Beat 1: The human side selects student empathy, product direction, user workflows, and creative taste while agent status stamps lock in build, debug, verify, test, and harden.
+Beat 2: The narrator lands the knowing aside, "Yes, even this video was created by Codex," while both columns recede.
+Beat 3: "Human innovation and taste" and "Agent-grade production quality and hardening" reveal separately, then hold without another product CTA.
+
+## Illustrative Sankey data
+
+- 200 discovered = 88 strong matches + 112 filtered
+- 88 strong matches = 64 tailored + 24 saved or skipped
+- 64 tailored = 58 submitted + 6 awaiting approval
+- 58 submitted = 14 interviews + 31 pre-interview declines + 13 awaiting response
+- 14 interviews = 3 offers + 7 post-interview declines + 4 active processes

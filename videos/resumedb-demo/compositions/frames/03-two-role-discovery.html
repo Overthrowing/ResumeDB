@@ -1,0 +1,625 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+      font-family: "Inter", sans-serif;
+    }
+
+    .f03-bg {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+      container-type: size;
+    }
+
+    .f03-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .f03-header {
+      position: absolute;
+      top: 28px;
+      left: 56px;
+      z-index: 9;
+    }
+
+    .f03-kicker {
+      margin: 0 0 8px;
+      color: rgba(32, 31, 29, 0.64);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .f03-kicker-mark {
+      color: #8b5f1d;
+    }
+
+    .f03-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 64px;
+      font-weight: 400;
+      letter-spacing: -0.022em;
+      line-height: 1;
+    }
+
+    .f03-header-note {
+      position: absolute;
+      top: 70px;
+      right: 56px;
+      z-index: 9;
+      margin: 0;
+      color: #6f6e6c;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .f03-product {
+      position: absolute;
+      top: 124px;
+      left: 54px;
+      z-index: 2;
+      width: 1306px;
+      height: 762px;
+      box-sizing: border-box;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 12px;
+      background: #f3f2f2;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+    }
+
+    .f03-product-image {
+      display: block;
+      width: 1306px;
+      height: auto;
+    }
+
+    .f03-product-wash {
+      position: absolute;
+      inset: 0;
+      background: rgba(243, 242, 242, 0.08);
+      pointer-events: none;
+    }
+
+    .f03-composer {
+      position: absolute;
+      top: 153px;
+      left: 204px;
+      display: flex;
+      width: 255px;
+      height: 119px;
+      box-sizing: border-box;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid rgba(32, 31, 29, 0.24);
+      border-radius: 6px;
+      background: rgba(243, 242, 242, 0.99);
+    }
+
+    .f03-prompt-text {
+      display: block;
+      width: 100%;
+      max-height: 95px;
+      overflow: hidden;
+      font-family: "Inter", sans-serif;
+      font-size: 19px;
+      font-weight: 400;
+      letter-spacing: -0.006em;
+      line-height: 1.24;
+      white-space: pre-wrap;
+    }
+
+    .f03-prompt-char {
+      opacity: 0;
+    }
+
+    .f03-type-caret {
+      display: inline-block;
+      width: 2px;
+      height: 19px;
+      margin-left: 2px;
+      background: #201f1d;
+      opacity: 0;
+      vertical-align: -3px;
+    }
+
+    .f03-focus-ring {
+      position: absolute;
+      top: 145px;
+      left: 196px;
+      width: 271px;
+      height: 135px;
+      box-sizing: border-box;
+      border: 2px solid #b8822a;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .f03-ripple {
+      position: absolute;
+      top: 214px;
+      left: 334px;
+      width: 70px;
+      height: 70px;
+      margin-top: -35px;
+      margin-left: -35px;
+      border: 2px solid #b8822a;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .f03-cursor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 12;
+      width: 34px;
+      height: 34px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .f03-cursor svg {
+      display: block;
+      width: 34px;
+      height: 34px;
+    }
+
+    .f03-rail {
+      position: absolute;
+      top: 124px;
+      right: 54px;
+      z-index: 4;
+      width: 472px;
+      height: 762px;
+      box-sizing: border-box;
+      overflow: hidden;
+      padding: 27px 25px;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 12px;
+      background: #f4e9d9;
+    }
+
+    .f03-rail-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(32, 31, 29, 0.14);
+    }
+
+    .f03-rail-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #6e6962;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .f03-rail-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 35px;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      line-height: 1;
+    }
+
+    .f03-running {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 9999px;
+      color: #6b6660;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .f03-rail-line {
+      width: 3px;
+      height: 488px;
+      margin: 23px 0 0 6px;
+      border-radius: 9999px;
+      background: #b8822a;
+      opacity: 0;
+      transform-origin: top center;
+    }
+
+    .f03-transcript-list {
+      position: absolute;
+      top: 126px;
+      right: 25px;
+      left: 51px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .f03-transcript-row {
+      display: grid;
+      min-height: 112px;
+      box-sizing: border-box;
+      grid-template-columns: 15px 1fr;
+      gap: 13px;
+      padding: 17px;
+      border: 1px solid rgba(32, 31, 29, 0.14);
+      border-radius: 8px;
+      background: rgba(243, 242, 242, 0.88);
+      opacity: 0;
+    }
+
+    .f03-transcript-dot {
+      width: 11px;
+      height: 11px;
+      margin-top: 6px;
+      border: 1px solid rgba(32, 31, 29, 0.25);
+      border-radius: 50%;
+      background: rgba(32, 31, 29, 0.12);
+    }
+
+    .f03-transcript-row strong {
+      display: block;
+      font-family: "Inter", sans-serif;
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .f03-transcript-row span {
+      display: block;
+      margin-top: 8px;
+      color: #6f6e6d;
+      font-family: "Inter", sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    .f03-result-label {
+      position: absolute;
+      top: 579px;
+      left: 0;
+      z-index: 14;
+      width: 100%;
+      margin: 0;
+      color: #6f6e6d;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      opacity: 0;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .f03-role-card {
+      position: absolute;
+      top: 618px;
+      z-index: 15;
+      width: 730px;
+      height: 218px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 1fr 150px;
+      gap: 28px;
+      align-items: center;
+      padding: 28px 31px;
+      border: 1px solid rgba(32, 31, 29, 0.22);
+      border-radius: 12px;
+      background: rgba(244, 233, 217, 0.985);
+      opacity: 0;
+    }
+
+    .f03-role-robotics {
+      left: 170px;
+    }
+
+    .f03-role-bioinformatics {
+      left: 1020px;
+    }
+
+    .f03-role-domain {
+      display: block;
+      margin-bottom: 10px;
+      color: #6e6962;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .f03-role-title {
+      margin: 0;
+      max-width: 500px;
+      font-family: "EB Garamond", serif;
+      font-size: 35px;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      line-height: 1.08;
+    }
+
+    .f03-fit {
+      padding-left: 26px;
+      border-left: 1px solid rgba(32, 31, 29, 0.18);
+      text-align: center;
+    }
+
+    .f03-fit-number {
+      display: block;
+      font-family: "EB Garamond", serif;
+      font-size: 68px;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+
+    .f03-fit-unit {
+      display: block;
+      margin-top: 7px;
+      color: #6d28d9;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+  </style>
+
+  <div id="root" data-hf-id="f03-root" data-composition-id="03-two-role-discovery" data-width="1920" data-height="1080" data-duration="9.260">
+    <div id="f03-bg" data-hf-id="f03-bg" class="clip f03-bg" data-start="0" data-duration="9.260" data-track-index="0"></div>
+    <main id="f03-scene" data-hf-id="f03-scene" class="clip f03-scene" data-start="0" data-duration="9.260" data-track-index="1">
+      <header id="f03-header" data-hf-id="f03-header" class="f03-header">
+        <p data-hf-id="f03-kicker" class="f03-kicker" data-layout-allow-overlap><span data-hf-id="f03-kicker-mark" class="f03-kicker-mark" data-layout-allow-overlap>✱</span> Two-role discovery</p>
+        <h1 data-hf-id="f03-title" class="f03-title">Any role, one request</h1>
+      </header>
+      <p id="f03-header-note" data-hf-id="f03-header-note" class="f03-header-note">One evidence bank, two directions</p>
+
+      <section id="f03-product" data-hf-id="f03-product" class="f03-product" aria-label="Career Agent product view">
+        <img data-hf-id="f03-product-image" class="f03-product-image" src="assets/04-career-agent.png" alt="ResumeDB Career Agent and discovery inbox" loading="eager" data-layout-allow-overflow />
+        <div data-hf-id="f03-product-wash" class="f03-product-wash"></div>
+        <div id="f03-composer" data-hf-id="f03-composer" class="f03-composer">
+          <span id="f03-prompt-text" data-hf-id="f03-prompt-text" class="f03-prompt-text" data-prompt="Find robotics and bioinformatics internships where my evidence is strongest." aria-label="Find robotics and bioinformatics internships where my evidence is strongest."></span><span id="f03-type-caret" data-hf-id="f03-type-caret" class="f03-type-caret"></span>
+        </div>
+        <div id="f03-focus-ring" data-hf-id="f03-focus-ring" class="f03-focus-ring"></div>
+        <div id="f03-ripple" data-hf-id="f03-ripple" class="f03-ripple"></div>
+      </section>
+
+      <aside id="f03-rail" data-hf-id="f03-rail" class="f03-rail" aria-label="Live agent transcript">
+        <div data-hf-id="f03-rail-header" class="f03-rail-header">
+          <div data-hf-id="f03-rail-heading">
+            <span data-hf-id="f03-rail-label" class="f03-rail-label">Live agent transcript</span>
+            <h2 data-hf-id="f03-rail-title" class="f03-rail-title">Discovery run</h2>
+          </div>
+          <span data-hf-id="f03-running" class="f03-running">Running</span>
+        </div>
+        <div id="f03-rail-line" data-hf-id="f03-rail-line" class="f03-rail-line"></div>
+        <div data-hf-id="f03-transcript-list" class="f03-transcript-list">
+          <div id="f03-row-1" data-hf-id="f03-row-1" class="f03-transcript-row">
+            <i id="f03-dot-1" data-hf-id="f03-dot-1" class="f03-transcript-dot"></i>
+            <div data-hf-id="f03-row-1-copy"><strong data-hf-id="f03-row-1-title">Searching internships</strong><span data-hf-id="f03-row-1-detail">Robotics and bioinformatics roles</span></div>
+          </div>
+          <div id="f03-row-2" data-hf-id="f03-row-2" class="f03-transcript-row">
+            <i id="f03-dot-2" data-hf-id="f03-dot-2" class="f03-transcript-dot"></i>
+            <div data-hf-id="f03-row-2-copy"><strong data-hf-id="f03-row-2-title">Inspecting role pages</strong><span data-hf-id="f03-row-2-detail">Requirements, location, and scope</span></div>
+          </div>
+          <div id="f03-row-3" data-hf-id="f03-row-3" class="f03-transcript-row">
+            <i id="f03-dot-3" data-hf-id="f03-dot-3" class="f03-transcript-dot"></i>
+            <div data-hf-id="f03-row-3-copy"><strong data-hf-id="f03-row-3-title">Matching Sam's evidence</strong><span data-hf-id="f03-row-3-detail">Experience scored against each role</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <div id="f03-cursor" data-hf-id="f03-cursor" class="f03-cursor" aria-hidden="true">
+        <svg data-hf-id="f03-cursor-svg" viewBox="0 0 34 34" role="presentation">
+          <path data-hf-id="f03-cursor-path" d="M5 3L27 18L17.8 19.4L13.2 29L5 3Z" fill="#f3f2f2" stroke="#201f1d" stroke-width="2.2" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <p id="f03-result-label" data-hf-id="f03-result-label" class="f03-result-label">Matched opportunities</p>
+      <article id="f03-role-robotics" data-hf-id="f03-role-robotics" class="f03-role-card f03-role-robotics">
+        <div data-hf-id="f03-role-robotics-copy">
+          <span data-hf-id="f03-role-robotics-domain" class="f03-role-domain">Robotics</span>
+          <h2 data-hf-id="f03-role-robotics-title" class="f03-role-title">Autonomy and Robotics Software Intern</h2>
+        </div>
+        <div data-hf-id="f03-role-robotics-fit" class="f03-fit">
+          <span data-hf-id="f03-role-robotics-number" class="f03-fit-number">94</span>
+          <span data-hf-id="f03-role-robotics-unit" class="f03-fit-unit">% fit</span>
+        </div>
+      </article>
+      <article id="f03-role-bioinformatics" data-hf-id="f03-role-bioinformatics" class="f03-role-card f03-role-bioinformatics">
+        <div data-hf-id="f03-role-bioinformatics-copy">
+          <span data-hf-id="f03-role-bioinformatics-domain" class="f03-role-domain">Bioinformatics</span>
+          <h2 data-hf-id="f03-role-bioinformatics-title" class="f03-role-title">Bioinformatics Engineering Intern</h2>
+        </div>
+        <div data-hf-id="f03-role-bioinformatics-fit" class="f03-fit">
+          <span data-hf-id="f03-role-bioinformatics-number" class="f03-fit-number">92</span>
+          <span data-hf-id="f03-role-bioinformatics-unit" class="f03-fit-unit">% fit</span>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const f03PromptNode = document.querySelector("#f03-prompt-text");
+    const f03PromptValue = f03PromptNode.dataset.prompt;
+    f03PromptNode.textContent = "";
+    Array.from(f03PromptValue).forEach(function (character, index) {
+      const span = document.createElement("span");
+      span.className = "f03-prompt-char";
+      span.dataset.hfId = "f03-prompt-char-" + String(index + 1).padStart(2, "0");
+      span.textContent = character;
+      f03PromptNode.appendChild(span);
+    });
+
+    const f03Timeline = gsap.timeline({ paused: true });
+    const f03PromptChars = gsap.utils.toArray("#f03-prompt-text .f03-prompt-char");
+
+    f03Timeline.fromTo(
+      "#f03-header",
+      { y: -16, opacity: 0.78 },
+      { y: 0, opacity: 1, duration: 0.48, ease: "power3.out", immediateRender: false },
+      0
+    );
+    f03Timeline.fromTo(
+      "#f03-product",
+      { scale: 0.99, opacity: 0.86 },
+      { scale: 1, opacity: 1, duration: 0.68, ease: "power2.out", immediateRender: false },
+      0
+    );
+    f03Timeline.fromTo(
+      "#f03-rail",
+      { x: 28, opacity: 0.84 },
+      { x: 0, opacity: 1, duration: 0.58, ease: "power3.out", immediateRender: false },
+      0.12
+    );
+    f03Timeline.fromTo(
+      "#f03-cursor",
+      { x: 1040, y: 680, opacity: 0 },
+      { x: 383, y: 335, opacity: 1, duration: 1.05, ease: "power2.inOut", immediateRender: false },
+      0.48
+    );
+    f03Timeline.fromTo(
+      "#f03-ripple",
+      { scale: 0, opacity: 0.5 },
+      { scale: 3.2, opacity: 0, duration: 0.72, ease: "power2.out", immediateRender: false },
+      1.68
+    );
+    f03Timeline.fromTo(
+      "#f03-focus-ring",
+      { scale: 0.985, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.34, ease: "power2.out", immediateRender: false },
+      1.68
+    );
+    f03Timeline.to("#f03-cursor", { x: 500, y: 364, duration: 0.44, ease: "power3.out" }, 1.96);
+
+    f03Timeline.set("#f03-type-caret", { opacity: 1 }, 2.4);
+    f03PromptChars.forEach(function (character, index) {
+      f03Timeline.set(character, { opacity: 1 }, 2.45 + index * 0.031);
+    });
+    [2.78, 3.08, 3.38, 3.68, 3.98, 4.28, 4.58, 4.88].forEach(function (time, index) {
+      f03Timeline.set("#f03-type-caret", { opacity: index % 2 === 0 ? 0 : 1 }, time);
+    });
+    f03Timeline.set("#f03-type-caret", { opacity: 0 }, 5);
+
+    f03Timeline.fromTo(
+      "#f03-rail-line",
+      { scaleY: 0, opacity: 0 },
+      { scaleY: 1, opacity: 1, duration: 0.52, ease: "power3.out", immediateRender: false },
+      5
+    );
+    f03Timeline.to("#f03-cursor", { x: 1410, y: 298, duration: 0.48, ease: "power3.out" }, 5);
+    f03Timeline.fromTo(
+      "#f03-row-1",
+      { y: 34, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.32, ease: "power4.out", immediateRender: false },
+      5.06
+    );
+    f03Timeline.set("#f03-dot-1", { backgroundColor: "#b8822a", borderColor: "#b8822a" }, 5.06);
+    f03Timeline.to("#f03-cursor", { x: 1410, y: 433, duration: 0.38, ease: "power3.out" }, 5.5);
+    f03Timeline.fromTo(
+      "#f03-row-2",
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.28, ease: "power4.out", immediateRender: false },
+      5.72
+    );
+    f03Timeline.set("#f03-dot-1", { backgroundColor: "rgba(32,31,29,0.12)", borderColor: "rgba(32,31,29,0.25)" }, 5.72);
+    f03Timeline.set("#f03-dot-2", { backgroundColor: "#b8822a", borderColor: "#b8822a" }, 5.72);
+    f03Timeline.to("#f03-cursor", { x: 1410, y: 566, duration: 0.36, ease: "power3.out" }, 6.18);
+    f03Timeline.fromTo(
+      "#f03-row-3",
+      { y: 26, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.25, ease: "power4.out", immediateRender: false },
+      6.42
+    );
+    f03Timeline.set("#f03-dot-2", { backgroundColor: "rgba(32,31,29,0.12)", borderColor: "rgba(32,31,29,0.25)" }, 6.42);
+    f03Timeline.set("#f03-dot-3", { backgroundColor: "#b8822a", borderColor: "#b8822a" }, 6.42);
+
+    f03Timeline.to("#f03-product", { opacity: 0.56, duration: 0.28, ease: "power2.out" }, 7.3);
+    f03Timeline.to("#f03-rail", { opacity: 0.3, duration: 0.28, ease: "power2.out" }, 7.3);
+    f03Timeline.to("#f03-cursor", { opacity: 0, duration: 0.2, ease: "power1.out" }, 7.3);
+    f03Timeline.fromTo(
+      "#f03-result-label",
+      { y: 14, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.28, ease: "power3.out", immediateRender: false },
+      7.32
+    );
+    f03Timeline.fromTo(
+      "#f03-role-robotics",
+      { x: 1360, scale: 0.62, opacity: 0 },
+      { x: 0, scale: 1, opacity: 1, duration: 0.68, ease: "power4.out", immediateRender: false },
+      7.38
+    );
+    f03Timeline.fromTo(
+      "#f03-role-bioinformatics",
+      { x: 510, scale: 0.62, opacity: 0 },
+      { x: 0, scale: 1, opacity: 1, duration: 0.68, ease: "power4.out", immediateRender: false },
+      7.5
+    );
+
+    window.__timelines["03-two-role-discovery"] = f03Timeline;
+  </script>
+</template>

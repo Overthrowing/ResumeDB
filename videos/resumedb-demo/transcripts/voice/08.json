@@ -1,0 +1,478 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:04,480"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 4480
+			},
+			"text": " On the application site, the extension types SAMS details, selects education,",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.970117,
+					"t_dtw": -1
+				},
+				{
+					"text": " On",
+					"timestamps": {
+						"from": "00:00:00,110",
+						"to": "00:00:00,110"
+					},
+					"offsets": {
+						"from": 110,
+						"to": 110
+					},
+					"id": 1550,
+					"p": 0.976405,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:00,180",
+						"to": "00:00:00,280"
+					},
+					"offsets": {
+						"from": 180,
+						"to": 280
+					},
+					"id": 262,
+					"p": 0.996193,
+					"t_dtw": -1
+				},
+				{
+					"text": " application",
+					"timestamps": {
+						"from": "00:00:00,280",
+						"to": "00:00:00,860"
+					},
+					"offsets": {
+						"from": 280,
+						"to": 860
+					},
+					"id": 3586,
+					"p": 0.867555,
+					"t_dtw": -1
+				},
+				{
+					"text": " site",
+					"timestamps": {
+						"from": "00:00:00,930",
+						"to": "00:00:01,120"
+					},
+					"offsets": {
+						"from": 930,
+						"to": 1120
+					},
+					"id": 2524,
+					"p": 0.981622,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:01,120",
+						"to": "00:00:01,140"
+					},
+					"offsets": {
+						"from": 1120,
+						"to": 1140
+					},
+					"id": 11,
+					"p": 0.892913,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:01,440",
+						"to": "00:00:01,460"
+					},
+					"offsets": {
+						"from": 1440,
+						"to": 1460
+					},
+					"id": 262,
+					"p": 0.942407,
+					"t_dtw": -1
+				},
+				{
+					"text": " extension",
+					"timestamps": {
+						"from": "00:00:01,460",
+						"to": "00:00:02,080"
+					},
+					"offsets": {
+						"from": 1460,
+						"to": 2080
+					},
+					"id": 7552,
+					"p": 0.737719,
+					"t_dtw": -1
+				},
+				{
+					"text": " types",
+					"timestamps": {
+						"from": "00:00:02,080",
+						"to": "00:00:02,420"
+					},
+					"offsets": {
+						"from": 2080,
+						"to": 2420
+					},
+					"id": 3858,
+					"p": 0.265576,
+					"t_dtw": -1
+				},
+				{
+					"text": " SAM",
+					"timestamps": {
+						"from": "00:00:02,420",
+						"to": "00:00:02,620"
+					},
+					"offsets": {
+						"from": 2420,
+						"to": 2620
+					},
+					"id": 28844,
+					"p": 0.782802,
+					"t_dtw": -1
+				},
+				{
+					"text": "S",
+					"timestamps": {
+						"from": "00:00:02,620",
+						"to": "00:00:02,680"
+					},
+					"offsets": {
+						"from": 2620,
+						"to": 2680
+					},
+					"id": 50,
+					"p": 0.513425,
+					"t_dtw": -1
+				},
+				{
+					"text": " details",
+					"timestamps": {
+						"from": "00:00:02,680",
+						"to": "00:00:03,050"
+					},
+					"offsets": {
+						"from": 2680,
+						"to": 3050
+					},
+					"id": 3307,
+					"p": 0.681487,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:03,320",
+						"to": "00:00:03,340"
+					},
+					"offsets": {
+						"from": 3320,
+						"to": 3340
+					},
+					"id": 11,
+					"p": 0.959937,
+					"t_dtw": -1
+				},
+				{
+					"text": " selects",
+					"timestamps": {
+						"from": "00:00:03,340",
+						"to": "00:00:03,830"
+					},
+					"offsets": {
+						"from": 3340,
+						"to": 3830
+					},
+					"id": 40573,
+					"p": 0.718551,
+					"t_dtw": -1
+				},
+				{
+					"text": " education",
+					"timestamps": {
+						"from": "00:00:03,830",
+						"to": "00:00:04,390"
+					},
+					"offsets": {
+						"from": 3830,
+						"to": 4390
+					},
+					"id": 3707,
+					"p": 0.839358,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:04,480",
+						"to": "00:00:04,480"
+					},
+					"offsets": {
+						"from": 4480,
+						"to": 4480
+					},
+					"id": 11,
+					"p": 0.980103,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_224]",
+					"timestamps": {
+						"from": "00:00:04,480",
+						"to": "00:00:04,480"
+					},
+					"offsets": {
+						"from": 4480,
+						"to": 4480
+					},
+					"id": 50587,
+					"p": 0.185992,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:04,480",
+				"to": "00:00:07,840"
+			},
+			"offsets": {
+				"from": 4480,
+				"to": 7840
+			},
+			"text": " answers questions, and uploads the right resume in seconds.",
+			"tokens": [
+				{
+					"text": " answers",
+					"timestamps": {
+						"from": "00:00:04,660",
+						"to": "00:00:04,920"
+					},
+					"offsets": {
+						"from": 4660,
+						"to": 4920
+					},
+					"id": 7429,
+					"p": 0.99493,
+					"t_dtw": -1
+				},
+				{
+					"text": " questions",
+					"timestamps": {
+						"from": "00:00:04,990",
+						"to": "00:00:05,530"
+					},
+					"offsets": {
+						"from": 4990,
+						"to": 5530
+					},
+					"id": 2683,
+					"p": 0.995782,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:05,530",
+						"to": "00:00:05,610"
+					},
+					"offsets": {
+						"from": 5530,
+						"to": 5610
+					},
+					"id": 11,
+					"p": 0.745607,
+					"t_dtw": -1
+				},
+				{
+					"text": " and",
+					"timestamps": {
+						"from": "00:00:05,850",
+						"to": "00:00:05,850"
+					},
+					"offsets": {
+						"from": 5850,
+						"to": 5850
+					},
+					"id": 290,
+					"p": 0.997887,
+					"t_dtw": -1
+				},
+				{
+					"text": " upload",
+					"timestamps": {
+						"from": "00:00:05,920",
+						"to": "00:00:06,240"
+					},
+					"offsets": {
+						"from": 5920,
+						"to": 6240
+					},
+					"id": 9516,
+					"p": 0.994898,
+					"t_dtw": -1
+				},
+				{
+					"text": "s",
+					"timestamps": {
+						"from": "00:00:06,240",
+						"to": "00:00:06,290"
+					},
+					"offsets": {
+						"from": 6240,
+						"to": 6290
+					},
+					"id": 82,
+					"p": 0.99489,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:06,310",
+						"to": "00:00:06,490"
+					},
+					"offsets": {
+						"from": 6310,
+						"to": 6490
+					},
+					"id": 262,
+					"p": 0.996858,
+					"t_dtw": -1
+				},
+				{
+					"text": " right",
+					"timestamps": {
+						"from": "00:00:06,490",
+						"to": "00:00:06,810"
+					},
+					"offsets": {
+						"from": 6490,
+						"to": 6810
+					},
+					"id": 826,
+					"p": 0.957765,
+					"t_dtw": -1
+				},
+				{
+					"text": " resume",
+					"timestamps": {
+						"from": "00:00:06,810",
+						"to": "00:00:07,170"
+					},
+					"offsets": {
+						"from": 6810,
+						"to": 7170
+					},
+					"id": 15294,
+					"p": 0.897165,
+					"t_dtw": -1
+				},
+				{
+					"text": " in",
+					"timestamps": {
+						"from": "00:00:07,230",
+						"to": "00:00:07,330"
+					},
+					"offsets": {
+						"from": 7230,
+						"to": 7330
+					},
+					"id": 287,
+					"p": 0.996147,
+					"t_dtw": -1
+				},
+				{
+					"text": " seconds",
+					"timestamps": {
+						"from": "00:00:07,330",
+						"to": "00:00:07,820"
+					},
+					"offsets": {
+						"from": 7330,
+						"to": 7820
+					},
+					"id": 4201,
+					"p": 0.999075,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:07,840",
+						"to": "00:00:07,840"
+					},
+					"offsets": {
+						"from": 7840,
+						"to": 7840
+					},
+					"id": 13,
+					"p": 0.979051,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_392]",
+					"timestamps": {
+						"from": "00:00:07,840",
+						"to": "00:00:07,840"
+					},
+					"offsets": {
+						"from": 7840,
+						"to": 7840
+					},
+					"id": 50755,
+					"p": 0.234511,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

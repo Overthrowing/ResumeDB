@@ -1,0 +1,220 @@
+<template>
+  <style>
+    @font-face { font-family: "EB Garamond"; src: url("assets/fonts/eb-garamond-400.woff2") format("woff2"); font-weight: 400; }
+    @font-face { font-family: "EB Garamond"; src: url("assets/fonts/eb-garamond-600.woff2") format("woff2"); font-weight: 600; }
+    @font-face { font-family: "Inter"; src: url("assets/fonts/inter-400.woff2") format("woff2"); font-weight: 400; }
+    @font-face { font-family: "Inter"; src: url("assets/fonts/inter-600.woff2") format("woff2"); font-weight: 600; }
+    @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2"); font-weight: 600; }
+
+    #f12-codex-inside-product-root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      color: #f3f2f2;
+      font-family: "Inter", sans-serif;
+    }
+    .f12-ground { position: absolute; inset: 0; background: #161518; }
+    .f12-ground::before {
+      content: "BUILD";
+      position: absolute;
+      top: 86px;
+      right: -34px;
+      color: #222025;
+      font: 600 330px/1 "EB Garamond", serif;
+      letter-spacing: -0.05em;
+    }
+    .f12-ground::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 540px;
+      height: 540px;
+      border: 1px solid rgba(244,233,217,0.08);
+      border-radius: 50%;
+      transform: translate(170px, 180px);
+    }
+    .f12-scene { position: absolute; inset: 0; overflow: hidden; }
+    .f12-top-rule {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 7px;
+      background: #b68235;
+      transform-origin: left center;
+    }
+    .f12-header {
+      position: absolute;
+      top: 54px;
+      right: 84px;
+      left: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(243,242,242,0.16);
+    }
+    .f12-slug,
+    .f12-index,
+    .f12-aside,
+    .f12-lane-label,
+    .f12-lane-status,
+    .f12-footer {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .f12-slug { color: #f4e9d9; font-size: 21px; letter-spacing: 0.15em; }
+    .f12-slug b { color: #b68235; font-weight: 600; }
+    .f12-index { color: rgba(243,242,242,0.48); font-size: 17px; letter-spacing: 0.12em; }
+    .f12-hero {
+      position: absolute;
+      top: 166px;
+      right: 86px;
+      left: 86px;
+    }
+    .f12-aside {
+      margin: 0 0 16px;
+      color: #b68235;
+      font-size: 20px;
+      letter-spacing: 0.14em;
+    }
+    .f12-title {
+      max-width: 1600px;
+      margin: 0;
+      padding-top: 20px;
+      font: 400 108px/1.05 "EB Garamond", serif;
+      letter-spacing: -0.045em;
+    }
+    .f12-title span { display: block; }
+    .f12-title span + span { margin-top: 32px; }
+    .f12-title-emphasis { color: #cfb8ff; }
+    .f12-lead {
+      max-width: 1250px;
+      margin: 28px 0 0;
+      color: rgba(243,242,242,0.76);
+      font-size: 29px;
+      line-height: 1.42;
+    }
+    .f12-lanes {
+      position: absolute;
+      top: 650px;
+      right: 84px;
+      left: 84px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid rgba(243,242,242,0.18);
+      border-bottom: 1px solid rgba(243,242,242,0.18);
+    }
+    .f12-lane {
+      position: relative;
+      min-height: 190px;
+      padding: 29px 34px 26px;
+      border-right: 1px solid rgba(243,242,242,0.18);
+      overflow: hidden;
+    }
+    .f12-lane:last-child { border-right: 0; }
+    .f12-lane::after {
+      content: "";
+      position: absolute;
+      right: 34px;
+      bottom: 27px;
+      left: 34px;
+      height: 2px;
+      background: rgba(243,242,242,0.12);
+    }
+    .f12-lane-progress {
+      position: absolute;
+      z-index: 1;
+      right: 34px;
+      bottom: 27px;
+      left: 34px;
+      height: 2px;
+      background: #6d28d9;
+      transform-origin: left center;
+    }
+    .f12-lane-number {
+      display: inline-grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      margin-bottom: 18px;
+      border: 1px solid rgba(243,242,242,0.2);
+      border-radius: 50%;
+      color: #f4e9d9;
+      font: 600 16px/1 "JetBrains Mono", monospace;
+    }
+    .f12-lane-label { display: block; color: #f3f2f2; font-size: 23px; letter-spacing: 0.1em; }
+    .f12-lane-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 18px;
+      color: #5db872;
+      font-size: 17px;
+      letter-spacing: 0.08em;
+      opacity: 0;
+    }
+    .f12-lane-status i { width: 9px; height: 9px; border-radius: 50%; background: #5db872; }
+    .f12-footer {
+      position: absolute;
+      right: 84px;
+      bottom: 210px;
+      left: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(243,242,242,0.55);
+      font-size: 17px;
+      letter-spacing: 0.11em;
+    }
+    .f12-footer strong { color: #f4e9d9; font-weight: 600; }
+  </style>
+
+  <div data-hf-id="hf-f12-root" id="f12-codex-inside-product-root" data-composition-id="12-codex-inside-product" data-start="0" data-duration="10.5" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-f12-ground" id="f12-ground" class="clip f12-ground" data-start="0" data-duration="10.5" data-track-index="0"></div>
+    <main data-hf-id="hf-f12-scene" id="f12-scene" class="clip f12-scene" data-start="0" data-duration="10.5" data-track-index="1">
+      <i data-hf-id="hf-f12-top-rule" id="f12-top-rule" class="f12-top-rule"></i>
+      <header data-hf-id="hf-f12-header" class="f12-header">
+        <span data-hf-id="hf-f12-slug" class="f12-slug"><b data-hf-id="hf-f12-slug-b">Judging appendix</b> / How we built it</span>
+        <span data-hf-id="hf-f12-index" class="f12-index">12 / 14</span>
+      </header>
+
+      <section data-hf-id="hf-f12-hero" class="f12-hero">
+        <p data-hf-id="hf-f12-aside" class="f12-aside">And for the judges</p>
+        <h1 data-hf-id="hf-f12-title" class="f12-title"><span data-hf-id="hf-f12-title-a">Codex + GPT-5.6</span><span data-hf-id="hf-f12-title-b" class="f12-title-emphasis">built ResumeDB with us.</span></h1>
+        <p data-hf-id="hf-f12-lead" class="f12-lead">Parallel agents moved across the stack while human product direction kept every surface pointed at the same student workflow.</p>
+      </section>
+
+      <section data-hf-id="hf-f12-lanes" class="f12-lanes" aria-label="Parallel product build lanes">
+        <article data-hf-id="hf-f12-lane-1" class="f12-lane"><span data-hf-id="hf-f12-lane-1-number" class="f12-lane-number">01</span><span data-hf-id="hf-f12-lane-1-label" class="f12-lane-label">Web app</span><span data-hf-id="hf-f12-lane-1-status" class="f12-lane-status"><i data-hf-id="hf-f12-lane-1-dot"></i>Integrated</span><i data-hf-id="hf-f12-lane-1-progress" class="f12-lane-progress"></i></article>
+        <article data-hf-id="hf-f12-lane-2" class="f12-lane"><span data-hf-id="hf-f12-lane-2-number" class="f12-lane-number">02</span><span data-hf-id="hf-f12-lane-2-label" class="f12-lane-label">Chrome extension</span><span data-hf-id="hf-f12-lane-2-status" class="f12-lane-status"><i data-hf-id="hf-f12-lane-2-dot"></i>Integrated</span><i data-hf-id="hf-f12-lane-2-progress" class="f12-lane-progress"></i></article>
+        <article data-hf-id="hf-f12-lane-3" class="f12-lane"><span data-hf-id="hf-f12-lane-3-number" class="f12-lane-number">03</span><span data-hf-id="hf-f12-lane-3-label" class="f12-lane-label">MCP server</span><span data-hf-id="hf-f12-lane-3-status" class="f12-lane-status"><i data-hf-id="hf-f12-lane-3-dot"></i>Integrated</span><i data-hf-id="hf-f12-lane-3-progress" class="f12-lane-progress"></i></article>
+      </section>
+
+      <div data-hf-id="hf-f12-footer" class="f12-footer"><span data-hf-id="hf-f12-footer-a">Parallel GPT-5.6 sub-agents</span><strong data-hf-id="hf-f12-footer-b">One coordinated system</strong></div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#f12-top-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.28, ease: "power4.out" }, 0.08);
+      tl.fromTo("#f12-scene .f12-header", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.54, ease: "expo.out" }, 0.18);
+      tl.fromTo("#f12-scene .f12-aside", { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.46, ease: "power3.out" }, 0.82);
+      tl.fromTo("#f12-scene .f12-title span", { y: 76, opacity: 0 }, { y: 0, opacity: 1, duration: 0.74, stagger: 0.3, ease: "power4.out" }, 1.05);
+      tl.fromTo("#f12-scene .f12-lead", { x: -22, opacity: 0 }, { x: 0, opacity: 1, duration: 0.56, ease: "power2.out" }, 2.45);
+      tl.fromTo("#f12-scene .f12-lane", { y: 42, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.24, ease: "power3.out" }, 3.6);
+      tl.fromTo("#f12-scene .f12-lane-progress", { scaleX: 0 }, { scaleX: 1, duration: 0.72, stagger: 0.42, ease: "power2.inOut", immediateRender: false }, 4.48);
+      tl.fromTo("#f12-scene .f12-lane-status", { x: -12, opacity: 0 }, { x: 0, opacity: 1, duration: 0.34, stagger: 0.42, ease: "power3.out", immediateRender: false }, 5.12);
+      tl.fromTo("#f12-scene .f12-footer", { opacity: 0 }, { opacity: 1, duration: 0.48, ease: "sine.out" }, 6.62);
+      tl.to("#f12-scene .f12-lane-progress", { backgroundColor: "#b68235", duration: 0.3, stagger: 0.09, ease: "sine.inOut" }, 7.18);
+      tl.to({}, { duration: 10.5 }, 0);
+      window.__timelines["12-codex-inside-product"] = tl;
+    })();
+  </script>
+</template>

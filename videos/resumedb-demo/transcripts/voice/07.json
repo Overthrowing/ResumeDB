@@ -1,0 +1,576 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:05,560"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 5560
+			},
+			"text": " Same person, two completely different resumes, autonomy depth for robotics, and research",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.923684,
+					"t_dtw": -1
+				},
+				{
+					"text": " Same",
+					"timestamps": {
+						"from": "00:00:00,210",
+						"to": "00:00:00,370"
+					},
+					"offsets": {
+						"from": 210,
+						"to": 370
+					},
+					"id": 16766,
+					"p": 0.776674,
+					"t_dtw": -1
+				},
+				{
+					"text": " person",
+					"timestamps": {
+						"from": "00:00:00,370",
+						"to": "00:00:00,930"
+					},
+					"offsets": {
+						"from": 370,
+						"to": 930
+					},
+					"id": 1048,
+					"p": 0.992693,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:00,930",
+						"to": "00:00:01,020"
+					},
+					"offsets": {
+						"from": 930,
+						"to": 1020
+					},
+					"id": 11,
+					"p": 0.778048,
+					"t_dtw": -1
+				},
+				{
+					"text": " two",
+					"timestamps": {
+						"from": "00:00:01,310",
+						"to": "00:00:01,310"
+					},
+					"offsets": {
+						"from": 1310,
+						"to": 1310
+					},
+					"id": 734,
+					"p": 0.870389,
+					"t_dtw": -1
+				},
+				{
+					"text": " completely",
+					"timestamps": {
+						"from": "00:00:01,320",
+						"to": "00:00:01,970"
+					},
+					"offsets": {
+						"from": 1320,
+						"to": 1970
+					},
+					"id": 3190,
+					"p": 0.992625,
+					"t_dtw": -1
+				},
+				{
+					"text": " different",
+					"timestamps": {
+						"from": "00:00:01,970",
+						"to": "00:00:02,560"
+					},
+					"offsets": {
+						"from": 1970,
+						"to": 2560
+					},
+					"id": 1180,
+					"p": 0.996293,
+					"t_dtw": -1
+				},
+				{
+					"text": " resumes",
+					"timestamps": {
+						"from": "00:00:02,560",
+						"to": "00:00:02,840"
+					},
+					"offsets": {
+						"from": 2560,
+						"to": 2840
+					},
+					"id": 42626,
+					"p": 0.97733,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:03,030",
+						"to": "00:00:03,060"
+					},
+					"offsets": {
+						"from": 3030,
+						"to": 3060
+					},
+					"id": 11,
+					"p": 0.847003,
+					"t_dtw": -1
+				},
+				{
+					"text": " autonomy",
+					"timestamps": {
+						"from": "00:00:03,200",
+						"to": "00:00:03,600"
+					},
+					"offsets": {
+						"from": 3200,
+						"to": 3600
+					},
+					"id": 21851,
+					"p": 0.638202,
+					"t_dtw": -1
+				},
+				{
+					"text": " depth",
+					"timestamps": {
+						"from": "00:00:03,600",
+						"to": "00:00:03,840"
+					},
+					"offsets": {
+						"from": 3600,
+						"to": 3840
+					},
+					"id": 6795,
+					"p": 0.924609,
+					"t_dtw": -1
+				},
+				{
+					"text": " for",
+					"timestamps": {
+						"from": "00:00:04,090",
+						"to": "00:00:04,270"
+					},
+					"offsets": {
+						"from": 4090,
+						"to": 4270
+					},
+					"id": 329,
+					"p": 0.97457,
+					"t_dtw": -1
+				},
+				{
+					"text": " robotics",
+					"timestamps": {
+						"from": "00:00:04,270",
+						"to": "00:00:04,760"
+					},
+					"offsets": {
+						"from": 4270,
+						"to": 4760
+					},
+					"id": 36359,
+					"p": 0.988866,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:05,080",
+						"to": "00:00:05,080"
+					},
+					"offsets": {
+						"from": 5080,
+						"to": 5080
+					},
+					"id": 11,
+					"p": 0.473238,
+					"t_dtw": -1
+				},
+				{
+					"text": " and",
+					"timestamps": {
+						"from": "00:00:05,100",
+						"to": "00:00:05,200"
+					},
+					"offsets": {
+						"from": 5100,
+						"to": 5200
+					},
+					"id": 290,
+					"p": 0.618054,
+					"t_dtw": -1
+				},
+				{
+					"text": " research",
+					"timestamps": {
+						"from": "00:00:05,200",
+						"to": "00:00:05,550"
+					},
+					"offsets": {
+						"from": 5200,
+						"to": 5550
+					},
+					"id": 2267,
+					"p": 0.926919,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_278]",
+					"timestamps": {
+						"from": "00:00:05,560",
+						"to": "00:00:05,560"
+					},
+					"offsets": {
+						"from": 5560,
+						"to": 5560
+					},
+					"id": 50641,
+					"p": 0.142322,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:05,560",
+				"to": "00:00:10,720"
+			},
+			"offsets": {
+				"from": 5560,
+				"to": 10720
+			},
+			"text": " pipelines for bioinformatics, one experience bank, perfectly reframed for each role.",
+			"tokens": [
+				{
+					"text": " pipelines",
+					"timestamps": {
+						"from": "00:00:05,840",
+						"to": "00:00:06,200"
+					},
+					"offsets": {
+						"from": 5840,
+						"to": 6200
+					},
+					"id": 31108,
+					"p": 0.984496,
+					"t_dtw": -1
+				},
+				{
+					"text": " for",
+					"timestamps": {
+						"from": "00:00:06,200",
+						"to": "00:00:06,410"
+					},
+					"offsets": {
+						"from": 6200,
+						"to": 6410
+					},
+					"id": 329,
+					"p": 0.995634,
+					"t_dtw": -1
+				},
+				{
+					"text": " bio",
+					"timestamps": {
+						"from": "00:00:06,410",
+						"to": "00:00:06,580"
+					},
+					"offsets": {
+						"from": 6410,
+						"to": 6580
+					},
+					"id": 13401,
+					"p": 0.968536,
+					"t_dtw": -1
+				},
+				{
+					"text": "in",
+					"timestamps": {
+						"from": "00:00:06,620",
+						"to": "00:00:06,640"
+					},
+					"offsets": {
+						"from": 6620,
+						"to": 6640
+					},
+					"id": 259,
+					"p": 0.987136,
+					"t_dtw": -1
+				},
+				{
+					"text": "format",
+					"timestamps": {
+						"from": "00:00:06,880",
+						"to": "00:00:07,180"
+					},
+					"offsets": {
+						"from": 6880,
+						"to": 7180
+					},
+					"id": 18982,
+					"p": 0.974868,
+					"t_dtw": -1
+				},
+				{
+					"text": "ics",
+					"timestamps": {
+						"from": "00:00:07,180",
+						"to": "00:00:07,380"
+					},
+					"offsets": {
+						"from": 7180,
+						"to": 7380
+					},
+					"id": 873,
+					"p": 0.999992,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:07,410",
+						"to": "00:00:07,530"
+					},
+					"offsets": {
+						"from": 7410,
+						"to": 7530
+					},
+					"id": 11,
+					"p": 0.513656,
+					"t_dtw": -1
+				},
+				{
+					"text": " one",
+					"timestamps": {
+						"from": "00:00:07,560",
+						"to": "00:00:07,760"
+					},
+					"offsets": {
+						"from": 7560,
+						"to": 7760
+					},
+					"id": 530,
+					"p": 0.967226,
+					"t_dtw": -1
+				},
+				{
+					"text": " experience",
+					"timestamps": {
+						"from": "00:00:07,760",
+						"to": "00:00:08,400"
+					},
+					"offsets": {
+						"from": 7760,
+						"to": 8400
+					},
+					"id": 1998,
+					"p": 0.679601,
+					"t_dtw": -1
+				},
+				{
+					"text": " bank",
+					"timestamps": {
+						"from": "00:00:08,510",
+						"to": "00:00:08,590"
+					},
+					"offsets": {
+						"from": 8510,
+						"to": 8590
+					},
+					"id": 3331,
+					"p": 0.98878,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:08,750",
+						"to": "00:00:08,800"
+					},
+					"offsets": {
+						"from": 8750,
+						"to": 8800
+					},
+					"id": 11,
+					"p": 0.494806,
+					"t_dtw": -1
+				},
+				{
+					"text": " perfectly",
+					"timestamps": {
+						"from": "00:00:08,850",
+						"to": "00:00:09,400"
+					},
+					"offsets": {
+						"from": 8850,
+						"to": 9400
+					},
+					"id": 7138,
+					"p": 0.986372,
+					"t_dtw": -1
+				},
+				{
+					"text": " ref",
+					"timestamps": {
+						"from": "00:00:09,610",
+						"to": "00:00:09,610"
+					},
+					"offsets": {
+						"from": 9610,
+						"to": 9610
+					},
+					"id": 1006,
+					"p": 0.814994,
+					"t_dtw": -1
+				},
+				{
+					"text": "ram",
+					"timestamps": {
+						"from": "00:00:09,650",
+						"to": "00:00:09,810"
+					},
+					"offsets": {
+						"from": 9650,
+						"to": 9810
+					},
+					"id": 859,
+					"p": 0.995924,
+					"t_dtw": -1
+				},
+				{
+					"text": "ed",
+					"timestamps": {
+						"from": "00:00:09,810",
+						"to": "00:00:09,940"
+					},
+					"offsets": {
+						"from": 9810,
+						"to": 9940
+					},
+					"id": 276,
+					"p": 0.999445,
+					"t_dtw": -1
+				},
+				{
+					"text": " for",
+					"timestamps": {
+						"from": "00:00:09,940",
+						"to": "00:00:10,140"
+					},
+					"offsets": {
+						"from": 9940,
+						"to": 10140
+					},
+					"id": 329,
+					"p": 0.992129,
+					"t_dtw": -1
+				},
+				{
+					"text": " each",
+					"timestamps": {
+						"from": "00:00:10,140",
+						"to": "00:00:10,330"
+					},
+					"offsets": {
+						"from": 10140,
+						"to": 10330
+					},
+					"id": 1123,
+					"p": 0.993019,
+					"t_dtw": -1
+				},
+				{
+					"text": " role",
+					"timestamps": {
+						"from": "00:00:10,660",
+						"to": "00:00:10,700"
+					},
+					"offsets": {
+						"from": 10660,
+						"to": 10700
+					},
+					"id": 2597,
+					"p": 0.990645,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:10,700",
+						"to": "00:00:10,720"
+					},
+					"offsets": {
+						"from": 10700,
+						"to": 10720
+					},
+					"id": 13,
+					"p": 0.968114,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_536]",
+					"timestamps": {
+						"from": "00:00:10,720",
+						"to": "00:00:10,720"
+					},
+					"offsets": {
+						"from": 10720,
+						"to": 10720
+					},
+					"id": 50899,
+					"p": 0.168371,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

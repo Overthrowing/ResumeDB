@@ -1,0 +1,677 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+    }
+
+    .f09-application-funnel-ground {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+    }
+
+    .f09-application-funnel-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Inter", sans-serif;
+    }
+
+    .f09-application-funnel-header {
+      position: absolute;
+      z-index: 5;
+      top: 48px;
+      right: 80px;
+      left: 80px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 48px;
+    }
+
+    .f09-application-funnel-kicker {
+      margin: 0 0 8px;
+      color: #6a645e;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .f09-application-funnel-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 74px;
+      font-weight: 400;
+      line-height: 0.96;
+      letter-spacing: -0.024em;
+    }
+
+    .f09-application-funnel-badge {
+      display: flex;
+      margin-bottom: 6px;
+      padding: 13px 16px;
+      align-items: center;
+      gap: 11px;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 999px;
+      background: #f4e9d9;
+      color: #4f4943;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      text-transform: uppercase;
+      transform: scale(0.94);
+      transform-origin: right center;
+      will-change: transform, opacity;
+    }
+
+    .f09-application-funnel-badge-mark {
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: #b68235;
+    }
+
+    .f09-application-funnel-stage {
+      position: absolute;
+      top: 176px;
+      right: 76px;
+      left: 76px;
+      height: 676px;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 12px;
+      background: #f4e9d9;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+    }
+
+    .f09-application-funnel-stage-meta {
+      position: absolute;
+      z-index: 4;
+      right: 24px;
+      bottom: 20px;
+      color: #6a645e;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .f09-application-funnel-flow-body {
+      position: absolute;
+      inset: 0;
+      will-change: opacity;
+    }
+
+    .f09-application-funnel-svg {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .f09-application-funnel-band {
+      fill: none;
+      stroke-linecap: butt;
+      stroke-linejoin: round;
+    }
+
+    .f09-application-funnel-band-main {
+      stroke: #b68235;
+      stroke-opacity: 0.88;
+    }
+
+    .f09-application-funnel-band-muted {
+      stroke: #201f1d;
+      stroke-opacity: 0.17;
+    }
+
+    .f09-application-funnel-node,
+    .f09-application-funnel-sink {
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .f09-application-funnel-node {
+      fill: #201f1d;
+    }
+
+    .f09-application-funnel-sink {
+      fill: rgba(32, 31, 29, 0.28);
+    }
+
+    .f09-application-funnel-node-card {
+      position: absolute;
+      top: 28px;
+      display: flex;
+      width: 220px;
+      height: 120px;
+      padding: 16px 18px 14px;
+      box-sizing: border-box;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(32, 31, 29, 0.16);
+      border-radius: 9px;
+      background: #f3f2f2;
+      opacity: 0;
+      transform: translateY(12px);
+      will-change: transform, opacity;
+    }
+
+    .f09-application-funnel-node-discovered {
+      left: 32px;
+    }
+
+    .f09-application-funnel-node-matches {
+      left: 322px;
+    }
+
+    .f09-application-funnel-node-tailored {
+      left: 612px;
+    }
+
+    .f09-application-funnel-node-submitted {
+      left: 902px;
+    }
+
+    .f09-application-funnel-node-interviews {
+      left: 1192px;
+    }
+
+    .f09-application-funnel-node-index {
+      color: #6f6861;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .f09-application-funnel-node-copy {
+      display: flex;
+      align-items: flex-end;
+      gap: 9px;
+    }
+
+    .f09-application-funnel-node-value {
+      font-family: "EB Garamond", serif;
+      font-size: 60px;
+      font-weight: 400;
+      line-height: 0.78;
+      letter-spacing: -0.025em;
+    }
+
+    .f09-application-funnel-node-label {
+      padding-bottom: 3px;
+      color: #4f4943;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .f09-application-funnel-side-card {
+      position: absolute;
+      display: flex;
+      height: 76px;
+      padding: 13px 15px;
+      box-sizing: border-box;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(32, 31, 29, 0.12);
+      border-radius: 8px;
+      background: rgba(243, 242, 242, 0.84);
+      color: rgba(32, 31, 29, 0.64);
+      opacity: 0;
+      transform: translateY(10px);
+      will-change: transform, opacity;
+    }
+
+    .f09-application-funnel-side-filtered {
+      top: 552px;
+      left: 182px;
+      width: 238px;
+    }
+
+    .f09-application-funnel-side-saved {
+      top: 500px;
+      left: 486px;
+      width: 214px;
+    }
+
+    .f09-application-funnel-side-awaiting {
+      top: 462px;
+      left: 756px;
+      width: 220px;
+    }
+
+    .f09-application-funnel-side-declined {
+      top: 536px;
+      left: 1260px;
+      width: 276px;
+    }
+
+    .f09-application-funnel-side-value {
+      font-family: "EB Garamond", serif;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.012em;
+      white-space: nowrap;
+    }
+
+    .f09-application-funnel-side-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .f09-application-funnel-final {
+      position: absolute;
+      z-index: 5;
+      top: 90px;
+      right: 34px;
+      display: flex;
+      width: 240px;
+      height: 232px;
+      padding: 22px 22px 18px;
+      box-sizing: border-box;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(109, 40, 217, 0.48);
+      border-radius: 12px;
+      background: #6d28d9;
+      color: #f3f2f2;
+      opacity: 0;
+      transform: scale(0.9);
+      transform-origin: left center;
+      will-change: transform, opacity;
+    }
+
+    .f09-application-funnel-final-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .f09-application-funnel-final-copy {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .f09-application-funnel-final-value {
+      font-family: "EB Garamond", serif;
+      font-size: 130px;
+      font-weight: 400;
+      line-height: 0.7;
+      letter-spacing: -0.032em;
+    }
+
+    .f09-application-funnel-final-unit {
+      padding-bottom: 6px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+  </style>
+  <div data-hf-id="hf-f09-funnel-root" id="root" data-composition-id="09-application-funnel" data-start="0" data-duration="9.72" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-f09-funnel-ground" id="f09-application-funnel-ground" class="clip f09-application-funnel-ground" data-start="0" data-duration="9.72" data-track-index="0"></div>
+    <main data-hf-id="hf-f09-funnel-scene" id="f09-application-funnel-scene" class="clip f09-application-funnel-scene" data-start="0" data-duration="9.72" data-track-index="1">
+      <header data-hf-id="hf-f09-funnel-header" class="f09-application-funnel-header">
+        <div data-hf-id="hf-f09-funnel-heading">
+          <p data-hf-id="hf-f09-funnel-kicker" class="f09-application-funnel-kicker">Application funnel</p>
+          <h1 data-hf-id="hf-f09-funnel-title" class="f09-application-funnel-title">A campaign, not chaos</h1>
+        </div>
+        <div data-hf-id="hf-f09-funnel-badge" id="f09-application-funnel-badge" class="f09-application-funnel-badge">
+          <i data-hf-id="hf-f09-funnel-badge-mark" class="f09-application-funnel-badge-mark"></i>
+          <span data-hf-id="hf-f09-funnel-badge-copy">Illustrative application campaign</span>
+        </div>
+      </header>
+      <section data-hf-id="hf-f09-funnel-stage" class="f09-application-funnel-stage">
+        <div data-hf-id="hf-f09-funnel-flow-body" id="f09-application-funnel-flow-body" class="f09-application-funnel-flow-body">
+          <svg data-hf-id="hf-f09-funnel-svg" class="f09-application-funnel-svg" viewBox="0 0 1768 676" preserveAspectRatio="none" role="img" aria-label="Illustrative application campaign Sankey from 200 discovered opportunities to 3 offers">
+            <path data-hf-id="hf-f09-funnel-main-200-88" id="f09-application-funnel-main-200-88" class="f09-application-funnel-band f09-application-funnel-band-main" d="M92 240.2 C205 240.2 279 240.2 392 240.2" stroke-width="70.4" />
+            <path data-hf-id="hf-f09-funnel-main-88-64" id="f09-application-funnel-main-88-64" class="f09-application-funnel-band f09-application-funnel-band-main" d="M410 230.6 C500 230.6 592 230.6 682 230.6" stroke-width="51.2" />
+            <path data-hf-id="hf-f09-funnel-main-64-58" id="f09-application-funnel-main-64-58" class="f09-application-funnel-band f09-application-funnel-band-main" d="M700 228.2 C790 228.2 882 228.2 972 228.2" stroke-width="46.4" />
+            <path data-hf-id="hf-f09-funnel-main-58-14" id="f09-application-funnel-main-58-14" class="f09-application-funnel-band f09-application-funnel-band-main" d="M990 210.6 C1080 210.6 1172 210.6 1262 210.6" stroke-width="11.2" />
+            <path data-hf-id="hf-f09-funnel-main-14-3" id="f09-application-funnel-main-14-3" class="f09-application-funnel-band f09-application-funnel-band-main" d="M1280 206.2 C1360 206.2 1414 206.2 1494 206.2" stroke-width="2.4" />
+            <path data-hf-id="hf-f09-funnel-branch-filtered" id="f09-application-funnel-branch-filtered" class="f09-application-funnel-band f09-application-funnel-band-muted" d="M92 320.2 C174 320.2 224 500 300 500" stroke-width="89.6" />
+            <path data-hf-id="hf-f09-funnel-branch-saved" id="f09-application-funnel-branch-saved" class="f09-application-funnel-band f09-application-funnel-band-muted" d="M410 265.8 C480 265.8 510 463 580 463" stroke-width="19.2" />
+            <path data-hf-id="hf-f09-funnel-branch-awaiting" id="f09-application-funnel-branch-awaiting" class="f09-application-funnel-band f09-application-funnel-band-muted" d="M700 253.8 C770 253.8 785 430 855 430" stroke-width="4.8" />
+            <path data-hf-id="hf-f09-funnel-branch-declined-44" id="f09-application-funnel-branch-declined-44" class="f09-application-funnel-band f09-application-funnel-band-muted" d="M990 233.8 C1120 233.8 1280 472.6 1420 472.6" stroke-width="35.2" />
+            <path data-hf-id="hf-f09-funnel-branch-declined-11" id="f09-application-funnel-branch-declined-11" class="f09-application-funnel-band f09-application-funnel-band-muted" d="M1280 211.8 C1340 211.8 1360 459.4 1420 459.4" stroke-width="8.8" />
+            <rect data-hf-id="hf-f09-funnel-node-200" id="f09-application-funnel-node-200" class="f09-application-funnel-node" x="74" y="205" width="18" height="160" rx="4" />
+            <rect data-hf-id="hf-f09-funnel-node-88" id="f09-application-funnel-node-88" class="f09-application-funnel-node" x="392" y="205" width="18" height="70.4" rx="4" />
+            <rect data-hf-id="hf-f09-funnel-node-64" id="f09-application-funnel-node-64" class="f09-application-funnel-node" x="682" y="205" width="18" height="51.2" rx="4" />
+            <rect data-hf-id="hf-f09-funnel-node-58" id="f09-application-funnel-node-58" class="f09-application-funnel-node" x="972" y="205" width="18" height="46.4" rx="4" />
+            <rect data-hf-id="hf-f09-funnel-node-14" id="f09-application-funnel-node-14" class="f09-application-funnel-node" x="1262" y="205" width="18" height="11.2" rx="4" />
+            <rect data-hf-id="hf-f09-funnel-node-3" id="f09-application-funnel-node-3" class="f09-application-funnel-node" x="1494" y="205" width="18" height="2.4" rx="1.2" />
+            <rect data-hf-id="hf-f09-funnel-sink-filtered" id="f09-application-funnel-sink-filtered" class="f09-application-funnel-sink" x="300" y="455.2" width="18" height="89.6" rx="4" />
+            <rect data-hf-id="hf-f09-funnel-sink-saved" id="f09-application-funnel-sink-saved" class="f09-application-funnel-sink" x="580" y="453.4" width="18" height="19.2" rx="4" />
+            <rect data-hf-id="hf-f09-funnel-sink-awaiting" id="f09-application-funnel-sink-awaiting" class="f09-application-funnel-sink" x="855" y="427.6" width="18" height="4.8" rx="2.4" />
+            <rect data-hf-id="hf-f09-funnel-sink-declined" id="f09-application-funnel-sink-declined" class="f09-application-funnel-sink" x="1420" y="455" width="18" height="44" rx="4" />
+          </svg>
+          <article data-hf-id="hf-f09-funnel-card-200" id="f09-application-funnel-card-200" class="f09-application-funnel-node-card f09-application-funnel-node-discovered">
+            <span data-hf-id="hf-f09-funnel-index-200" class="f09-application-funnel-node-index">01 / discovered</span>
+            <div data-hf-id="hf-f09-funnel-copy-200" class="f09-application-funnel-node-copy">
+              <strong data-hf-id="hf-f09-funnel-value-200" id="f09-application-funnel-value-200" class="f09-application-funnel-node-value">200</strong>
+              <span data-hf-id="hf-f09-funnel-label-200" class="f09-application-funnel-node-label">opportunities</span>
+            </div>
+          </article>
+          <article data-hf-id="hf-f09-funnel-card-88" id="f09-application-funnel-card-88" class="f09-application-funnel-node-card f09-application-funnel-node-matches">
+            <span data-hf-id="hf-f09-funnel-index-88" class="f09-application-funnel-node-index">02 / matched</span>
+            <div data-hf-id="hf-f09-funnel-copy-88" class="f09-application-funnel-node-copy">
+              <strong data-hf-id="hf-f09-funnel-value-88" id="f09-application-funnel-value-88" class="f09-application-funnel-node-value">88</strong>
+              <span data-hf-id="hf-f09-funnel-label-88" class="f09-application-funnel-node-label">strong<br data-hf-id="hf-x5px">matches</span>
+            </div>
+          </article>
+          <article data-hf-id="hf-f09-funnel-card-64" id="f09-application-funnel-card-64" class="f09-application-funnel-node-card f09-application-funnel-node-tailored">
+            <span data-hf-id="hf-f09-funnel-index-64" class="f09-application-funnel-node-index">03 / tailored</span>
+            <div data-hf-id="hf-f09-funnel-copy-64" class="f09-application-funnel-node-copy">
+              <strong data-hf-id="hf-f09-funnel-value-64" id="f09-application-funnel-value-64" class="f09-application-funnel-node-value">64</strong>
+              <span data-hf-id="hf-f09-funnel-label-64" class="f09-application-funnel-node-label">tailored</span>
+            </div>
+          </article>
+          <article data-hf-id="hf-f09-funnel-card-58" id="f09-application-funnel-card-58" class="f09-application-funnel-node-card f09-application-funnel-node-submitted">
+            <span data-hf-id="hf-f09-funnel-index-58" class="f09-application-funnel-node-index">04 / submitted</span>
+            <div data-hf-id="hf-f09-funnel-copy-58" class="f09-application-funnel-node-copy">
+              <strong data-hf-id="hf-f09-funnel-value-58" id="f09-application-funnel-value-58" class="f09-application-funnel-node-value">58</strong>
+              <span data-hf-id="hf-f09-funnel-label-58" class="f09-application-funnel-node-label">submitted</span>
+            </div>
+          </article>
+          <article data-hf-id="hf-f09-funnel-card-14" id="f09-application-funnel-card-14" class="f09-application-funnel-node-card f09-application-funnel-node-interviews">
+            <span data-hf-id="hf-f09-funnel-index-14" class="f09-application-funnel-node-index">05 / interviews</span>
+            <div data-hf-id="hf-f09-funnel-copy-14" class="f09-application-funnel-node-copy">
+              <strong data-hf-id="hf-f09-funnel-value-14" id="f09-application-funnel-value-14" class="f09-application-funnel-node-value">14</strong>
+              <span data-hf-id="hf-f09-funnel-label-14" class="f09-application-funnel-node-label">interviews</span>
+            </div>
+          </article>
+          <div data-hf-id="hf-f09-funnel-side-filtered" id="f09-application-funnel-side-filtered" class="f09-application-funnel-side-card f09-application-funnel-side-filtered">
+            <strong data-hf-id="hf-f09-funnel-side-filtered-value" class="f09-application-funnel-side-value">112</strong>
+            <span data-hf-id="hf-f09-funnel-side-filtered-label" class="f09-application-funnel-side-label">filtered</span>
+          </div>
+          <div data-hf-id="hf-f09-funnel-side-saved" id="f09-application-funnel-side-saved" class="f09-application-funnel-side-card f09-application-funnel-side-saved">
+            <strong data-hf-id="hf-f09-funnel-side-saved-value" class="f09-application-funnel-side-value">24</strong>
+            <span data-hf-id="hf-f09-funnel-side-saved-label" class="f09-application-funnel-side-label">saved</span>
+          </div>
+          <div data-hf-id="hf-f09-funnel-side-awaiting" id="f09-application-funnel-side-awaiting" class="f09-application-funnel-side-card f09-application-funnel-side-awaiting">
+            <strong data-hf-id="hf-f09-funnel-side-awaiting-value" class="f09-application-funnel-side-value">6</strong>
+            <span data-hf-id="hf-f09-funnel-side-awaiting-label" class="f09-application-funnel-side-label">awaiting</span>
+          </div>
+          <div data-hf-id="hf-f09-funnel-side-declined" id="f09-application-funnel-side-declined" class="f09-application-funnel-side-card f09-application-funnel-side-declined">
+            <strong data-hf-id="hf-f09-funnel-side-declined-value" class="f09-application-funnel-side-value">44 + 11</strong>
+            <span data-hf-id="hf-f09-funnel-side-declined-label" class="f09-application-funnel-side-label">declined</span>
+          </div>
+        </div>
+        <article data-hf-id="hf-f09-funnel-final" id="f09-application-funnel-final" class="f09-application-funnel-final">
+          <span data-hf-id="hf-f09-funnel-final-label" class="f09-application-funnel-final-label">Final outcome</span>
+          <div data-hf-id="hf-f09-funnel-final-copy" class="f09-application-funnel-final-copy">
+            <strong data-hf-id="hf-f09-funnel-final-value" id="f09-application-funnel-final-value" class="f09-application-funnel-final-value">3</strong>
+            <span data-hf-id="hf-f09-funnel-final-unit" class="f09-application-funnel-final-unit">offers</span>
+          </div>
+        </article>
+        <span data-hf-id="hf-f09-funnel-stage-meta" class="f09-application-funnel-stage-meta">Static width scale / 0.8 px per opportunity</span>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var bands = gsap.utils.toArray("#f09-application-funnel-scene .f09-application-funnel-band");
+      bands.forEach(function (band) {
+        var length = band.getTotalLength();
+        band.style.strokeDasharray = String(length);
+        band.style.strokeDashoffset = String(length);
+      });
+      tl.addLabel("illustrative", 0.18);
+      tl.fromTo(
+        "#f09-application-funnel-badge",
+        { scale: 0.94, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.54, ease: "power3.out" },
+        0.18
+      );
+      tl.addLabel("discovered", 0.8);
+      tl.fromTo(
+        "#f09-application-funnel-node-200",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.42, ease: "power3.out", immediateRender: false },
+        0.8
+      );
+      tl.fromTo(
+        "#f09-application-funnel-card-200",
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.48, ease: "power2.out", immediateRender: false },
+        0.84
+      );
+      tl.fromTo(
+        "#f09-application-funnel-value-200",
+        { innerText: 0 },
+        { innerText: 200, snap: { innerText: 1 }, duration: 0.68, ease: "power1.out", immediateRender: false },
+        0.88
+      );
+      tl.to("#f09-application-funnel-main-200-88", { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" }, 1.25);
+      tl.fromTo(
+        "#f09-application-funnel-node-88",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.36, ease: "power3.out", immediateRender: false },
+        1.78
+      );
+      tl.fromTo(
+        "#f09-application-funnel-card-88",
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.44, ease: "power2.out", immediateRender: false },
+        1.82
+      );
+      tl.fromTo(
+        "#f09-application-funnel-value-88",
+        { innerText: 0 },
+        { innerText: 88, snap: { innerText: 1 }, duration: 0.56, ease: "power1.out", immediateRender: false },
+        1.84
+      );
+      tl.to("#f09-application-funnel-branch-filtered", { strokeDashoffset: 0, duration: 0.54, ease: "power2.out" }, 2.18);
+      tl.fromTo(
+        "#f09-application-funnel-sink-filtered",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.28, ease: "power3.out", immediateRender: false },
+        2.54
+      );
+      tl.fromTo(
+        "#f09-application-funnel-side-filtered",
+        { y: 10, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.34, ease: "power1.out", immediateRender: false },
+        2.58
+      );
+      tl.to("#f09-application-funnel-main-88-64", { strokeDashoffset: 0, duration: 0.65, ease: "power2.out" }, 2.3);
+      tl.fromTo(
+        "#f09-application-funnel-node-64",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.34, ease: "power3.out", immediateRender: false },
+        2.78
+      );
+      tl.fromTo(
+        "#f09-application-funnel-card-64",
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.42, ease: "power2.out", immediateRender: false },
+        2.82
+      );
+      tl.fromTo(
+        "#f09-application-funnel-value-64",
+        { innerText: 0 },
+        { innerText: 64, snap: { innerText: 1 }, duration: 0.48, ease: "power1.out", immediateRender: false },
+        2.84
+      );
+      tl.to("#f09-application-funnel-branch-saved", { strokeDashoffset: 0, duration: 0.48, ease: "power2.out" }, 3.12);
+      tl.fromTo(
+        "#f09-application-funnel-sink-saved",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.25, ease: "power3.out", immediateRender: false },
+        3.44
+      );
+      tl.fromTo(
+        "#f09-application-funnel-side-saved",
+        { y: 10, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.31, ease: "power1.out", immediateRender: false },
+        3.48
+      );
+      tl.to("#f09-application-funnel-main-64-58", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 3.28);
+      tl.fromTo(
+        "#f09-application-funnel-node-58",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.32, ease: "power3.out", immediateRender: false },
+        3.72
+      );
+      tl.fromTo(
+        "#f09-application-funnel-card-58",
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false },
+        3.76
+      );
+      tl.fromTo(
+        "#f09-application-funnel-value-58",
+        { innerText: 0 },
+        { innerText: 58, snap: { innerText: 1 }, duration: 0.44, ease: "power1.out", immediateRender: false },
+        3.78
+      );
+      tl.to("#f09-application-funnel-branch-awaiting", { strokeDashoffset: 0, duration: 0.42, ease: "power2.out" }, 4.08);
+      tl.fromTo(
+        "#f09-application-funnel-sink-awaiting",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.22, ease: "power3.out", immediateRender: false },
+        4.36
+      );
+      tl.fromTo(
+        "#f09-application-funnel-side-awaiting",
+        { y: 10, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.28, ease: "power1.out", immediateRender: false },
+        4.38
+      );
+      tl.to("#f09-application-funnel-main-58-14", { strokeDashoffset: 0, duration: 0.7, ease: "power2.out" }, 4.22);
+      tl.fromTo(
+        "#f09-application-funnel-node-14",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: "power3.out", immediateRender: false },
+        4.72
+      );
+      tl.fromTo(
+        "#f09-application-funnel-card-14",
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.38, ease: "power2.out", immediateRender: false },
+        4.76
+      );
+      tl.fromTo(
+        "#f09-application-funnel-value-14",
+        { innerText: 0 },
+        { innerText: 14, snap: { innerText: 1 }, duration: 0.4, ease: "power1.out", immediateRender: false },
+        4.78
+      );
+      tl.to("#f09-application-funnel-branch-declined-44", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 5.05);
+      tl.to("#f09-application-funnel-main-14-3", { strokeDashoffset: 0, duration: 0.8, ease: "none" }, 5.4);
+      tl.fromTo(
+        "#f09-application-funnel-node-3",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.24, ease: "power3.out", immediateRender: false },
+        6.0
+      );
+      tl.to("#f09-application-funnel-branch-declined-11", { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 6.0);
+      tl.fromTo(
+        "#f09-application-funnel-sink-declined",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: "power3.out", immediateRender: false },
+        6.32
+      );
+      tl.fromTo(
+        "#f09-application-funnel-side-declined",
+        { y: 10, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.34, ease: "power1.out", immediateRender: false },
+        6.38
+      );
+      tl.addLabel("offers", 7.8);
+      tl.to("#f09-application-funnel-flow-body", { opacity: 0.5, duration: 0.52, ease: "power1.out" }, 7.8);
+      tl.fromTo(
+        "#f09-application-funnel-final",
+        { scale: 0.9, opacity: 0 },
+        { scale: 1.04, opacity: 1, duration: 0.52, ease: "power3.out", immediateRender: false },
+        7.8
+      );
+      tl.fromTo(
+        "#f09-application-funnel-final-value",
+        { innerText: 0 },
+        { innerText: 3, snap: { innerText: 1 }, duration: 0.36, ease: "power1.out", immediateRender: false },
+        7.92
+      );
+      tl.to("#f09-application-funnel-final", { scale: 1, duration: 0.36, ease: "power2.inOut" }, 8.32);
+      window.__timelines["09-application-funnel"] = tl;
+    })();
+  </script>
+</template>

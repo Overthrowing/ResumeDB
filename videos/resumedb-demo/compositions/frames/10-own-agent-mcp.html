@@ -1,0 +1,615 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+    }
+
+    .f10-own-agent-mcp-ground {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+    }
+
+    .f10-own-agent-mcp-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Inter", sans-serif;
+    }
+
+    .f10-own-agent-mcp-header {
+      position: absolute;
+      z-index: 10;
+      top: 48px;
+      right: 80px;
+      left: 80px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .f10-own-agent-mcp-kicker {
+      margin: 0 0 8px;
+      color: #6a645e;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .f10-own-agent-mcp-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 74px;
+      font-weight: 400;
+      line-height: 0.96;
+      letter-spacing: -0.024em;
+    }
+
+    .f10-own-agent-mcp-header-note {
+      margin-bottom: 8px;
+      color: #6a645e;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: 0.09em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .f10-own-agent-mcp-stage {
+      position: absolute;
+      top: 170px;
+      right: 76px;
+      left: 76px;
+      height: 696px;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 12px;
+      background: #f4e9d9;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+    }
+
+    .f10-own-agent-mcp-capture,
+    .f10-own-agent-mcp-network {
+      position: absolute;
+      inset: 0;
+    }
+
+    .f10-own-agent-mcp-capture {
+      z-index: 2;
+      background: #f3f2f2;
+    }
+
+    .f10-own-agent-mcp-capture-image {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 50%;
+    }
+
+    .f10-own-agent-mcp-capture-soft {
+      background-image: url("assets/02-settings-profile-agent.png");
+      background-position: center 50%;
+      background-size: cover;
+      opacity: 0.58;
+      filter: blur(2.2px) saturate(0.75);
+      transform: scale(1.01);
+    }
+
+    .f10-own-agent-mcp-capture-sharp {
+      clip-path: inset(160px 718px 186px 300px);
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .f10-own-agent-mcp-focus-frame {
+      position: absolute;
+      top: 160px;
+      left: 300px;
+      width: 750px;
+      height: 350px;
+      box-sizing: border-box;
+      border: 2px solid #b68235;
+      border-radius: 9px;
+      box-shadow: 0 0 0 999px rgba(243, 242, 242, 0.16);
+      opacity: 0;
+      transform: scale(0.985);
+      will-change: transform, opacity;
+    }
+
+    .f10-own-agent-mcp-endpoint {
+      position: absolute;
+      z-index: 4;
+      top: 230px;
+      right: 72px;
+      width: 530px;
+      height: 224px;
+      padding: 24px 26px;
+      box-sizing: border-box;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 10px;
+      background: rgba(243, 242, 242, 0.97);
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+      opacity: 0;
+      transform: translateX(34px) scale(0.96);
+      transform-origin: right center;
+      will-change: transform, opacity;
+    }
+
+    .f10-own-agent-mcp-endpoint-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .f10-own-agent-mcp-endpoint-label,
+    .f10-own-agent-mcp-endpoint-status,
+    .f10-own-agent-mcp-endpoint-detail {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .f10-own-agent-mcp-endpoint-label {
+      color: #6a645e;
+      font-size: 13px;
+      letter-spacing: 0.11em;
+    }
+
+    .f10-own-agent-mcp-endpoint-status {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #f4e9d9;
+      color: #6c5b40;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+    }
+
+    .f10-own-agent-mcp-endpoint-title {
+      margin: 25px 0 10px;
+      font-family: "EB Garamond", serif;
+      font-size: 42px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.012em;
+    }
+
+    .f10-own-agent-mcp-endpoint-detail {
+      color: #6a645e;
+      font-size: 13px;
+      line-height: 1.35;
+      letter-spacing: 0.04em;
+    }
+
+    .f10-own-agent-mcp-network {
+      z-index: 3;
+      background: #f4e9d9;
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .f10-own-agent-mcp-network-svg {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      will-change: opacity;
+    }
+
+    .f10-own-agent-mcp-path {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .f10-own-agent-mcp-path-base {
+      stroke: rgba(32, 31, 29, 0.22);
+      stroke-width: 3;
+    }
+
+    .f10-own-agent-mcp-path-route {
+      stroke: #b68235;
+      stroke-width: 5;
+    }
+
+    .f10-own-agent-mcp-periphery {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      will-change: opacity;
+    }
+
+    .f10-own-agent-mcp-card {
+      position: absolute;
+      display: flex;
+      width: 310px;
+      height: 120px;
+      padding: 17px 18px;
+      box-sizing: border-box;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(32, 31, 29, 0.17);
+      border-radius: 10px;
+      background: #f3f2f2;
+      opacity: 0;
+      will-change: transform, opacity, border-color;
+    }
+
+    .f10-own-agent-mcp-agent {
+      left: 60px;
+      transform: translateX(-28px);
+    }
+
+    .f10-own-agent-mcp-capability {
+      left: 1395px;
+      transform: translateX(28px);
+    }
+
+    .f10-own-agent-mcp-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .f10-own-agent-mcp-card-index,
+    .f10-own-agent-mcp-card-note {
+      color: #6a645e;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .f10-own-agent-mcp-card-note {
+      text-align: right;
+    }
+
+    .f10-own-agent-mcp-card-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 0.96;
+      letter-spacing: -0.01em;
+      will-change: opacity;
+    }
+
+    .f10-own-agent-mcp-capability-copy {
+      margin: 0;
+      color: #665f58;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .f10-own-agent-mcp-card-codex,
+    .f10-own-agent-mcp-card-memory {
+      top: 70px;
+    }
+
+    .f10-own-agent-mcp-card-claude,
+    .f10-own-agent-mcp-card-applications {
+      top: 240px;
+    }
+
+    .f10-own-agent-mcp-card-local,
+    .f10-own-agent-mcp-card-artifacts {
+      top: 410px;
+    }
+
+    .f10-own-agent-mcp-prompt {
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      left: 14px;
+      padding: 8px 10px;
+      border: 1px solid rgba(182, 130, 53, 0.48);
+      border-radius: 6px;
+      background: #f4e9d9;
+      color: #4f463a;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: translateY(8px);
+      will-change: transform, opacity;
+    }
+
+    .f10-own-agent-mcp-capability-check {
+      color: #8b6324;
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .f10-own-agent-mcp-hub {
+      position: absolute;
+      z-index: 4;
+      top: 190px;
+      left: 704px;
+      display: flex;
+      width: 360px;
+      height: 300px;
+      padding: 30px 30px 24px;
+      box-sizing: border-box;
+      flex-direction: column;
+      border: 1px solid rgba(32, 31, 29, 0.26);
+      border-radius: 12px;
+      background: #f3f2f2;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+      opacity: 0;
+      transform: scale(0.92);
+      will-change: transform, opacity;
+    }
+
+    .f10-own-agent-mcp-hub-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #6a645e;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .f10-own-agent-mcp-hub-mark {
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: #b68235;
+    }
+
+    .f10-own-agent-mcp-hub-title {
+      margin: 26px 0 8px;
+      font-family: "EB Garamond", serif;
+      font-size: 58px;
+      font-weight: 600;
+      line-height: 0.92;
+      letter-spacing: -0.025em;
+    }
+
+    .f10-own-agent-mcp-hub-subtitle {
+      margin: 0;
+      color: #645d56;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .f10-own-agent-mcp-hub-stats {
+      display: grid;
+      margin-top: auto;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border: 1px solid rgba(32, 31, 29, 0.13);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+
+    .f10-own-agent-mcp-hub-stat {
+      padding: 12px 8px 10px;
+      color: #5f5851;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: 0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .f10-own-agent-mcp-hub-stat + .f10-own-agent-mcp-hub-stat {
+      border-left: 1px solid rgba(32, 31, 29, 0.13);
+    }
+
+    .f10-own-agent-mcp-hosted {
+      position: absolute;
+      top: 564px;
+      left: 60px;
+      display: flex;
+      padding: 9px 12px;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(32, 31, 29, 0.12);
+      border-radius: 999px;
+      background: rgba(243, 242, 242, 0.68);
+      color: #6a645e;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.06em;
+      opacity: 0;
+      text-transform: uppercase;
+    }
+
+    .f10-own-agent-mcp-final {
+      position: absolute;
+      z-index: 7;
+      right: 28px;
+      bottom: 18px;
+      left: 28px;
+      display: flex;
+      height: 66px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: #6d28d9;
+      color: #f3f2f2;
+      font-family: "EB Garamond", serif;
+      font-size: 42px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.008em;
+      opacity: 0;
+      transform: translateY(14px);
+      will-change: transform, opacity;
+    }
+  </style>
+  <div data-hf-id="hf-f10-root" id="root" data-composition-id="10-own-agent-mcp" data-start="0" data-duration="9" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-f10-ground" id="f10-own-agent-mcp-ground" class="clip f10-own-agent-mcp-ground" data-start="0" data-duration="9" data-track-index="0"></div>
+    <main data-hf-id="hf-f10-scene" id="f10-own-agent-mcp-scene" class="clip f10-own-agent-mcp-scene" data-start="0" data-duration="9" data-track-index="1">
+      <header data-hf-id="hf-f10-header" class="f10-own-agent-mcp-header">
+        <div data-hf-id="hf-f10-heading"><p data-hf-id="hf-f10-kicker" class="f10-own-agent-mcp-kicker">Connected workflows</p><h1 data-hf-id="hf-f10-title" class="f10-own-agent-mcp-title">Bring your own agent</h1></div>
+        <span data-hf-id="hf-f10-header-note" class="f10-own-agent-mcp-header-note">ResumeDB supplies the approved context<br data-hf-id="hf-x5px">Your agent does the reasoning</span>
+      </header>
+      <section data-hf-id="hf-f10-stage" class="f10-own-agent-mcp-stage">
+        <div data-hf-id="hf-f10-capture" id="f10-own-agent-mcp-capture" class="f10-own-agent-mcp-capture">
+          <div data-hf-id="hf-f10-capture-soft" class="f10-own-agent-mcp-capture-image f10-own-agent-mcp-capture-soft" role="img" aria-label="ResumeDB connected-agent settings"></div>
+          <img data-hf-id="hf-f10-capture-sharp" id="f10-own-agent-mcp-capture-sharp" class="f10-own-agent-mcp-capture-image f10-own-agent-mcp-capture-sharp" src="assets/02-settings-profile-agent.png" alt="Focused ResumeDB agent connection settings">
+          <div data-hf-id="hf-f10-focus" id="f10-own-agent-mcp-focus" class="f10-own-agent-mcp-focus-frame"></div>
+          <article data-hf-id="hf-f10-endpoint" id="f10-own-agent-mcp-endpoint" class="f10-own-agent-mcp-endpoint">
+            <div data-hf-id="hf-f10-endpoint-row" class="f10-own-agent-mcp-endpoint-row"><span data-hf-id="hf-f10-endpoint-label" class="f10-own-agent-mcp-endpoint-label">MCP endpoint</span><span data-hf-id="hf-f10-endpoint-status" class="f10-own-agent-mcp-endpoint-status">Ready to connect</span></div>
+            <h2 data-hf-id="hf-f10-endpoint-title" class="f10-own-agent-mcp-endpoint-title">ResumeDB career memory</h2>
+            <span data-hf-id="hf-f10-endpoint-detail" class="f10-own-agent-mcp-endpoint-detail">Revocable connection · 13 bounded career tools</span>
+          </article>
+        </div>
+        <div data-hf-id="hf-f10-network" id="f10-own-agent-mcp-network" class="f10-own-agent-mcp-network">
+          <svg data-hf-id="hf-f10-network-svg" id="f10-own-agent-mcp-network-svg" class="f10-own-agent-mcp-network-svg" viewBox="0 0 1768 696" preserveAspectRatio="none" aria-hidden="true">
+            <path data-hf-id="hf-f10-base-codex" id="f10-own-agent-mcp-base-codex" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-base" d="M370 130 C520 130 554 250 704 250" />
+            <path data-hf-id="hf-f10-base-claude" id="f10-own-agent-mcp-base-claude" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-base" d="M370 300 C520 300 554 340 704 340" />
+            <path data-hf-id="hf-f10-base-local" id="f10-own-agent-mcp-base-local" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-base" d="M370 470 C520 470 554 430 704 430" />
+            <path data-hf-id="hf-f10-base-memory" id="f10-own-agent-mcp-base-memory" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-base" d="M1064 250 C1214 250 1245 130 1395 130" />
+            <path data-hf-id="hf-f10-base-applications" id="f10-own-agent-mcp-base-applications" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-base" d="M1064 340 C1214 340 1245 300 1395 300" />
+            <path data-hf-id="hf-f10-base-artifacts" id="f10-own-agent-mcp-base-artifacts" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-base" d="M1064 430 C1214 430 1245 470 1395 470" />
+            <path data-hf-id="hf-f10-route-codex" id="f10-own-agent-mcp-route-codex" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-route" d="M370 130 C520 130 554 250 704 250" />
+            <path data-hf-id="hf-f10-route-memory" id="f10-own-agent-mcp-route-memory" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-route" d="M1064 250 C1214 250 1245 130 1395 130" />
+            <path data-hf-id="hf-f10-route-claude" id="f10-own-agent-mcp-route-claude" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-route" d="M370 300 C520 300 554 340 704 340" />
+            <path data-hf-id="hf-f10-route-artifacts" id="f10-own-agent-mcp-route-artifacts" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-route" d="M1064 430 C1214 430 1245 470 1395 470" />
+            <path data-hf-id="hf-f10-route-local" id="f10-own-agent-mcp-route-local" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-route" d="M370 470 C520 470 554 430 704 430" />
+            <path data-hf-id="hf-f10-route-applications" id="f10-own-agent-mcp-route-applications" class="f10-own-agent-mcp-path f10-own-agent-mcp-path-route" d="M1064 340 C1214 340 1245 300 1395 300" />
+          </svg>
+          <div data-hf-id="hf-f10-periphery" id="f10-own-agent-mcp-periphery" class="f10-own-agent-mcp-periphery">
+            <article data-hf-id="hf-f10-card-codex" id="f10-own-agent-mcp-card-codex" class="f10-own-agent-mcp-card f10-own-agent-mcp-agent f10-own-agent-mcp-card-codex"><div data-hf-id="hf-f10-codex-top" class="f10-own-agent-mcp-card-top"><span data-hf-id="hf-f10-codex-index" class="f10-own-agent-mcp-card-index">01 / agent</span><span data-hf-id="hf-f10-codex-note" class="f10-own-agent-mcp-card-note">preferred</span></div><h3 data-hf-id="hf-f10-codex-title" id="f10-own-agent-mcp-title-codex" class="f10-own-agent-mcp-card-title">Codex</h3><span data-hf-id="hf-f10-prompt-codex" id="f10-own-agent-mcp-prompt-codex" class="f10-own-agent-mcp-prompt">“Find internships”</span></article>
+            <article data-hf-id="hf-f10-card-claude" id="f10-own-agent-mcp-card-claude" class="f10-own-agent-mcp-card f10-own-agent-mcp-agent f10-own-agent-mcp-card-claude"><div data-hf-id="hf-f10-claude-top" class="f10-own-agent-mcp-card-top"><span data-hf-id="hf-f10-claude-index" class="f10-own-agent-mcp-card-index">02 / agent</span><span data-hf-id="hf-f10-claude-note" class="f10-own-agent-mcp-card-note">preferred</span></div><h3 data-hf-id="hf-f10-claude-title" id="f10-own-agent-mcp-title-claude" class="f10-own-agent-mcp-card-title">Claude</h3><span data-hf-id="hf-f10-prompt-claude" id="f10-own-agent-mcp-prompt-claude" class="f10-own-agent-mcp-prompt">“Tailor this URL”</span></article>
+            <article data-hf-id="hf-f10-card-local" id="f10-own-agent-mcp-card-local" class="f10-own-agent-mcp-card f10-own-agent-mcp-agent f10-own-agent-mcp-card-local"><div data-hf-id="hf-f10-local-top" class="f10-own-agent-mcp-card-top"><span data-hf-id="hf-f10-local-index" class="f10-own-agent-mcp-card-index">03 / agent</span><span data-hf-id="hf-f10-local-note" class="f10-own-agent-mcp-card-note">on device</span></div><h3 data-hf-id="hf-f10-local-title" id="f10-own-agent-mcp-title-local" class="f10-own-agent-mcp-card-title">Local agent</h3><span data-hf-id="hf-f10-prompt-local" id="f10-own-agent-mcp-prompt-local" class="f10-own-agent-mcp-prompt">“What is ready?”</span></article>
+            <article data-hf-id="hf-f10-card-memory" id="f10-own-agent-mcp-card-memory" class="f10-own-agent-mcp-card f10-own-agent-mcp-capability f10-own-agent-mcp-card-memory"><div data-hf-id="hf-f10-memory-top" class="f10-own-agent-mcp-card-top"><span data-hf-id="hf-f10-memory-index" class="f10-own-agent-mcp-card-index">01 / capability</span><span data-hf-id="hf-f10-memory-check" id="f10-own-agent-mcp-check-memory" class="f10-own-agent-mcp-card-note f10-own-agent-mcp-capability-check">routed ✓</span></div><h3 data-hf-id="hf-f10-memory-title" class="f10-own-agent-mcp-card-title">Career memory</h3><p data-hf-id="hf-f10-memory-copy" class="f10-own-agent-mcp-capability-copy">Verified profile + experience</p></article>
+            <article data-hf-id="hf-f10-card-applications" id="f10-own-agent-mcp-card-applications" class="f10-own-agent-mcp-card f10-own-agent-mcp-capability f10-own-agent-mcp-card-applications"><div data-hf-id="hf-f10-applications-top" class="f10-own-agent-mcp-card-top"><span data-hf-id="hf-f10-applications-index" class="f10-own-agent-mcp-card-index">02 / capability</span><span data-hf-id="hf-f10-applications-check" id="f10-own-agent-mcp-check-applications" class="f10-own-agent-mcp-card-note f10-own-agent-mcp-capability-check">routed ✓</span></div><h3 data-hf-id="hf-f10-applications-title" class="f10-own-agent-mcp-card-title">Applications</h3><p data-hf-id="hf-f10-applications-copy" class="f10-own-agent-mcp-capability-copy">Pipeline + human gates</p></article>
+            <article data-hf-id="hf-f10-card-artifacts" id="f10-own-agent-mcp-card-artifacts" class="f10-own-agent-mcp-card f10-own-agent-mcp-capability f10-own-agent-mcp-card-artifacts"><div data-hf-id="hf-f10-artifacts-top" class="f10-own-agent-mcp-card-top"><span data-hf-id="hf-f10-artifacts-index" class="f10-own-agent-mcp-card-index">03 / capability</span><span data-hf-id="hf-f10-artifacts-check" id="f10-own-agent-mcp-check-artifacts" class="f10-own-agent-mcp-card-note f10-own-agent-mcp-capability-check">routed ✓</span></div><h3 data-hf-id="hf-f10-artifacts-title" class="f10-own-agent-mcp-card-title">Artifacts</h3><p data-hf-id="hf-f10-artifacts-copy" class="f10-own-agent-mcp-capability-copy">Resume + cover + answers</p></article>
+            <span data-hf-id="hf-f10-hosted" id="f10-own-agent-mcp-hosted" class="f10-own-agent-mcp-hosted">Hosted AI · secondary option</span>
+          </div>
+          <article data-hf-id="hf-f10-hub" id="f10-own-agent-mcp-hub" class="f10-own-agent-mcp-hub">
+            <span data-hf-id="hf-f10-hub-label" class="f10-own-agent-mcp-hub-label"><i data-hf-id="hf-f10-hub-mark" class="f10-own-agent-mcp-hub-mark"></i>Career-memory server</span>
+            <h2 data-hf-id="hf-f10-hub-title" class="f10-own-agent-mcp-hub-title">ResumeDB MCP</h2>
+            <p data-hf-id="hf-f10-hub-subtitle" class="f10-own-agent-mcp-hub-subtitle">Approved context for any preferred agent.</p>
+            <div data-hf-id="hf-f10-hub-stats" class="f10-own-agent-mcp-hub-stats"><span data-hf-id="hf-f10-hub-tools" class="f10-own-agent-mcp-hub-stat">13<br data-hf-id="hf-rsrt">tools</span><span data-hf-id="hf-f10-hub-keys" class="f10-own-agent-mcp-hub-stat">0 model<br data-hf-id="hf-szow">keys</span><span data-hf-id="hf-f10-hub-gates" class="f10-own-agent-mcp-hub-stat">2 human<br data-hf-id="hf-sldv">checkpoints</span></div>
+          </article>
+          <div data-hf-id="hf-f10-final" id="f10-own-agent-mcp-final" class="f10-own-agent-mcp-final">Your agent. Your workflow. One career memory.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var paths = gsap.utils.toArray("#f10-own-agent-mcp-scene .f10-own-agent-mcp-path");
+      paths.forEach(function (path) { var length = path.getTotalLength(); path.style.strokeDasharray = String(length); path.style.strokeDashoffset = String(length); });
+      tl.addLabel("settings", 0.18);
+      tl.fromTo("#f10-own-agent-mcp-capture-sharp", { opacity: 0 }, { opacity: 1, duration: 0.58, ease: "power1.out" }, 0.18);
+      tl.fromTo("#f10-own-agent-mcp-focus", { scale: 0.985, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.52, ease: "power3.out" }, 0.28);
+      tl.fromTo("#f10-own-agent-mcp-endpoint", { x: 34, scale: 0.96, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.58, ease: "power3.out", immediateRender: false }, 0.96);
+      tl.addLabel("topology", 1.8);
+      tl.to("#f10-own-agent-mcp-capture", { opacity: 0, duration: 0.44, ease: "power2.in" }, 1.8);
+      tl.fromTo("#f10-own-agent-mcp-network", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out", immediateRender: false }, 1.8);
+      tl.fromTo("#f10-own-agent-mcp-hub", { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.52, ease: "power3.out", immediateRender: false }, 1.96);
+      tl.fromTo("#f10-own-agent-mcp-card-codex", { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.42, ease: "power3.out", immediateRender: false }, 2.34);
+      tl.to("#f10-own-agent-mcp-base-codex", { strokeDashoffset: 0, duration: 0.58, ease: "power2.out" }, 2.62);
+      tl.fromTo("#f10-own-agent-mcp-card-claude", { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out", immediateRender: false }, 3.0);
+      tl.to("#f10-own-agent-mcp-base-claude", { strokeDashoffset: 0, duration: 0.55, ease: "power2.out" }, 3.28);
+      tl.fromTo("#f10-own-agent-mcp-card-local", { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.38, ease: "power3.out", immediateRender: false }, 3.64);
+      tl.to("#f10-own-agent-mcp-base-local", { strokeDashoffset: 0, duration: 0.52, ease: "power2.out" }, 3.92);
+      tl.fromTo("#f10-own-agent-mcp-scene .f10-own-agent-mcp-capability", { x: 28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out", stagger: 0.12, immediateRender: false }, 4.18);
+      tl.fromTo("#f10-own-agent-mcp-hosted", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power1.out", immediateRender: false }, 4.48);
+      tl.to("#f10-own-agent-mcp-base-memory", { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 4.4);
+      tl.to("#f10-own-agent-mcp-base-applications", { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 4.65);
+      tl.to("#f10-own-agent-mcp-base-artifacts", { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 4.9);
+      tl.addLabel("findInternships", 5.5);
+      tl.fromTo("#f10-own-agent-mcp-prompt-codex", { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.32, ease: "power2.out", immediateRender: false }, "findInternships");
+      tl.to("#f10-own-agent-mcp-title-codex", { opacity: 0, duration: 0.16, ease: "power1.out" }, "findInternships");
+      tl.to("#f10-own-agent-mcp-route-codex", { strokeDashoffset: 0, duration: 0.34, ease: "power1.inOut" }, "findInternships");
+      tl.to("#f10-own-agent-mcp-route-memory", { strokeDashoffset: 0, duration: 0.38, ease: "power1.inOut" }, 5.78);
+      tl.to("#f10-own-agent-mcp-card-memory", { borderColor: "#b68235", duration: 0.38, ease: "power1.inOut" }, 5.78);
+      tl.fromTo("#f10-own-agent-mcp-check-memory", { opacity: 0 }, { opacity: 1, duration: 0.24, ease: "power1.out", immediateRender: false }, 6.0);
+      tl.addLabel("tailorUrl", 6.18);
+      tl.fromTo("#f10-own-agent-mcp-prompt-claude", { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, "tailorUrl");
+      tl.to("#f10-own-agent-mcp-title-claude", { opacity: 0, duration: 0.16, ease: "power1.out" }, "tailorUrl");
+      tl.to("#f10-own-agent-mcp-route-claude", { strokeDashoffset: 0, duration: 0.32, ease: "power1.inOut" }, "tailorUrl");
+      tl.to("#f10-own-agent-mcp-route-artifacts", { strokeDashoffset: 0, duration: 0.36, ease: "power1.inOut" }, 6.44);
+      tl.to("#f10-own-agent-mcp-card-artifacts", { borderColor: "#b68235", duration: 0.36, ease: "power1.inOut" }, 6.44);
+      tl.fromTo("#f10-own-agent-mcp-check-artifacts", { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "power1.out", immediateRender: false }, 6.66);
+      tl.addLabel("ready", 6.86);
+      tl.fromTo("#f10-own-agent-mcp-prompt-local", { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: "power2.out", immediateRender: false }, "ready");
+      tl.to("#f10-own-agent-mcp-title-local", { opacity: 0, duration: 0.15, ease: "power1.out" }, "ready");
+      tl.to("#f10-own-agent-mcp-route-local", { strokeDashoffset: 0, duration: 0.3, ease: "power1.inOut" }, "ready");
+      tl.to("#f10-own-agent-mcp-route-applications", { strokeDashoffset: 0, duration: 0.34, ease: "power1.inOut" }, 7.1);
+      tl.to("#f10-own-agent-mcp-card-applications", { borderColor: "#b68235", duration: 0.34, ease: "power1.inOut" }, 7.1);
+      tl.fromTo("#f10-own-agent-mcp-check-applications", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.out", immediateRender: false }, 7.3);
+      tl.addLabel("resolve", 7.6);
+      tl.to("#f10-own-agent-mcp-network-svg", { opacity: 0.34, duration: 0.5, ease: "power1.out" }, "resolve");
+      tl.fromTo("#f10-own-agent-mcp-final", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.52, ease: "power3.out", immediateRender: false }, "resolve");
+      window.__timelines["10-own-agent-mcp"] = tl;
+    })();
+  </script>
+</template>
