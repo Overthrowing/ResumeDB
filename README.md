@@ -33,6 +33,21 @@ inspectable and recoverable.
 - Revocable bring-your-own-agent connections over Streamable HTTP MCP
 - Full API access for external agents through the generated OpenAPI interface
 
+## How Codex and GPT-5.6 were used
+
+Codex was the primary engineering agent for implementation, debugging,
+end-to-end dogfooding, deployment checks, test coverage, and the submission
+workflow. GPT-5.6 supplied the reasoning for that Codex work, including the
+final judge-path audit.
+
+ResumeDB also treats Codex as a product surface, not only a development tool.
+The hosted **Bring your own agent** card creates a revocable Streamable HTTP
+MCP connection without asking ResumeDB to store an OpenAI API key. In the
+verified judge flow, a fresh GPT-5.6 Codex session connected to the hosted MCP
+server, invoked `get_candidate_context` and `list_applications`, and read the
+synthetic Ready application. The same bounded tool set can save job leads and
+create or tailor drafts, while approval and submission remain human-only.
+
 ## Requirements
 
 - Python 3.12 or newer and [uv](https://docs.astral.sh/uv/)
