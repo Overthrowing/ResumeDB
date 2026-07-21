@@ -1,6 +1,6 @@
 ---
 format: 1920x1080
-duration: 150.635s
+duration: 148.135s
 message: "One verified experience bank becomes a complete internship operating system"
 arc: pain to proof to category ownership
 audience: online hackathon judges
@@ -13,7 +13,7 @@ music: none
 - Palette: warm cream canvas, ink typography, ochre support surfaces, and one restrained ResumeDB violet voltage moment per frame.
 - Motion grammar: smooth `power3` settles, purposeful cursor action, cascading live data, laser scans, type-on fields, and decisive stamps. No idle drift or decorative looping.
 - Product treatment: use real ResumeDB views as recognizable anchors, then reconstruct the specific interaction layer at readable scale.
-- Rhythm: the hook is stark; frames 3 through 9 accelerate; the MCP frame opens the idea back up; the roadmap holds long enough to read; frames 12 through 14 become the Codex and GPT-5.6 climax.
+- Rhythm: the hook is stark; frames 3 through 9 accelerate; the MCP frame opens the idea back up; the roadmap closes the product pitch; a hard color reset makes frames 12 through 14 an unmistakable Codex and GPT-5.6 judging appendix.
 - Camera: establish, make one focus move, then lock. No continuous screenshot zooming.
 - Captions: reserve the lower 17 percent of every frame.
 
@@ -168,62 +168,60 @@ Beat 3: Discovery, tailoring, application tracking, and profile updates flow bac
 
 ## Frame 11 - Our other features include
 
-- scene: A clean two-column future roadmap becomes a handoff to the agents that built the product.
-- type: future-pace-and-bridge
-- persuasion: Vision, then sponsor intrigue
-- blueprint: roadmap-to-agent-bridge
+- scene: A concise roadmap resolves into a complete ResumeDB product close before the judging appendix begins.
+- type: future-pace-and-product-close
+- persuasion: Vision and category ownership
+- blueprint: roadmap-to-product-lockup
 - src: `compositions/frames/11-future-roadmap.html`
 - duration: 10.965s
 - poster: 9.5s
 
-Beat 1: "Our other features include" opens with a readable hold.
-Beat 2: Email status tracking, interview prep, campus insights, four-year planning, progress journals, and major-specific portfolios appear in two columns.
-Beat 3: The roadmap recedes into the ResumeDB mark and "We built it with the same agents," creating a direct handoff into the Codex finale.
+Beat 1: "A career operating system that grows with you" opens beside the product mark.
+Beat 2: Email tracking, interview prep, campus insights, four-year planning, and major-specific portfolios step on as readable rows.
+Beat 3: The roadmap recedes while ResumeDB, "The internship operating system," and the deployed URL hold as the finished product close.
 
-## Frame 12 - Codex runs inside ResumeDB
+## Frame 12 - How we built it
 
-- scene: A live Codex agent run streams at left while a browser inspects a real job page and MCP tools turn the result into a tailored application.
-- type: sponsor-product-proof
-- persuasion: Codex is core product infrastructure
-- blueprint: codex-runtime-workbench
+- scene: A full warm-navy editorial interstitial clearly resets the video into a judging appendix and shows the three parallel build lanes.
+- type: judging-appendix-interstitial
+- persuasion: Parallel agent leverage under human direction
+- blueprint: appendix-title-and-build-lanes
 - src: `compositions/frames/12-codex-inside-product.html`
-- duration: 15.000s
-- poster: 12.8s
-- assets: `assets/04-career-agent.png`, `assets/06-application-overview.png`
+- duration: 10.500s
+- poster: 8.9s
 
-Beat 1: The Codex SDK runtime opens a thread and streams career-agent reasoning against Sam's approved context.
-Beat 2: A browser searches official job pages, opens a robotics role, and scans the requirements once.
-Beat 3: MCP calls read context, save the qualified lead, create a draft, and render the resume. Finish on "Searched. Read. Verified. Saved."
+Beat 1: The warm cream product world cuts decisively to warm navy and types "Judging appendix / How we built it."
+Beat 2: "Codex + GPT-5.6" becomes the dominant title, followed by the conversational aside "And for the judges."
+Beat 3: Web app, Chrome extension, and MCP server lanes stamp verified and hold without product screenshots or connector paths.
 
-## Frame 13 - GPT-5.6 became the engineering team
+## Frame 13 - Codex dogfooded the product
 
-- scene: One GPT-5.6 lead agent fans work into parallel web-app, Chrome-extension, and MCP-server build lanes, then integrates them into one checked system.
-- type: sponsor-development-proof
-- persuasion: Parallel agent leverage
-- blueprint: subagent-build-orchestration
+- scene: Codex drives the hosted product and extension, catches the real localhost-default bug, then a protocol audit verifies all thirteen MCP tools.
+- type: judging-appendix-proof
+- persuasion: Concrete dogfooding, debugging, and end-to-end verification
+- blueprint: qa-workstation-to-verification-matrix
 - src: `compositions/frames/13-gpt56-engineering-team.html`
-- duration: 12.000s
-- poster: 10.1s
-- assets: `assets/01-dashboard.png`, `assets/13-extension-preflight-live.png`
+- duration: 18.500s
+- poster: 16.8s
+- assets: `assets/09-ats-empty.png`, `assets/13-extension-preflight-live.png`
 
-Beat 1: GPT-5.6 appears as the lead agent and dispatches three parallel Codex sub-agents.
-Beat 2: The web app, Chrome extension, and MCP server visibly build and verify in independent lanes.
-Beat 3: The lanes reconnect into one integration rail and resolve to "Web app. Extension. MCP. Shipped as one."
+Beat 1: A real hosted application view and reconstructed extension panel show browser and computer use driving the same surfaces a judge sees.
+Beat 2: A bug card records the real failure: fresh installs pointed to localhost instead of the Railway backend, followed by the hosted-default fix, preserved local fallbacks, and regression coverage.
+Beat 3: The workstation shutters into a full-width matrix where every registered MCP tool checks off and "13 / 13 verified through /mcp/" holds.
 
-## Frame 14 - Dogfood, verify, improve
+## Frame 14 - Human innovation, agent hardening
 
-- scene: Codex drives an end-to-end QA workstation, catches edge cases, then the workstation transforms into the editing timeline for the video itself before the final brand lockup.
-- type: sponsor-meta-close
-- persuasion: Long-horizon persistence and self-dogfooding
-- blueprint: dogfood-to-meta-editor
+- scene: Human product direction and creative taste sit beside agent build, debugging, verification, and hardening before resolving into one restrained thesis.
+- type: judging-appendix-close
+- persuasion: Human-agent complementarity
+- blueprint: split-thesis-to-statement
 - src: `compositions/frames/14-codex-dogfood-meta.html`
-- duration: 21.000s
-- poster: 19.2s
-- assets: `assets/09-ats-empty.png`, `assets/13-extension-preflight-live.png`, `assets/favicon.svg`
+- duration: 16.500s
+- poster: 14.3s
 
-Beat 1: Codex opens the hosted product, runs the extension, calls MCP tools, reproduces edge cases, and checks the fixes end to end.
-Beat 2: The QA workstation compresses into a three-track video editor where visuals, Fish narration, and captions verify in sequence. A badge confirms "Yes, GPT-5.6 edited this video."
-Beat 3: The editor recedes into "Codex gave it the tools. GPT-5.6 supplied the persistence." A finite build, inspect, verify, improve loop completes once, followed by the ResumeDB URL and a still closing hold.
+Beat 1: The human side selects student empathy, product direction, user workflows, and creative taste while agent status stamps lock in build, debug, verify, test, and harden.
+Beat 2: Both columns recede, removing implementation detail and leaving the final judging thesis.
+Beat 3: "Human innovation and taste" and "Agent-grade production quality and hardening" reveal separately, then hold without another product CTA.
 
 ## Illustrative Sankey data
 

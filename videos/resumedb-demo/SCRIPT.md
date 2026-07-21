@@ -2,7 +2,7 @@
 
 **Voice:** Fish Audio reference `933563129e564b19a115bedd57b7406a`
 **Voice settings:** Model header `s2.1-pro-free`, MP3 at 44.1 kHz, scene-specific pacing, normal latency, temperature 0.45, and top-p 0.6
-**Voice direction:** Persuasive, energetic, and human. Begin frustrated, pivot decisively into optimism, accelerate through the live product proof, and finish with confident Codex and GPT-5.6 category ownership. Generate every scene independently. Never add hesitation sounds, filler words, breaths, sighs, or improvised speech.
+**Voice direction:** Persuasive, energetic, and human. Begin frustrated, pivot decisively into optimism, accelerate through the live product proof, close the ResumeDB pitch cleanly, then reset into a grounded judging appendix about Codex and GPT-5.6. Generate every scene independently. Never add hesitation sounds, filler words, breaths, sighs, or improvised speech.
 **Brand pronunciation:** Use Fish ARPAbet for "résumé DB": `<|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|>`
 
 ---
@@ -77,30 +77,30 @@
 
     [visionary] With the M C P server, your [emphasis] own agent can use <|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|> from the tools you already live in, discovering, tailoring, and tracking [emphasis] without breaking your flow.
 
-## Line 11 - Roadmap to agent-built bridge (Frame 11)
+## Line 11 - Product roadmap and close (Frame 11)
 
-**Delivery:** Aspirational through the roadmap, then land the final sentence with intrigue and momentum.
-**Caption text:** Our other features include email tracking, interview prep, campus insights, four-year planning, and major-specific portfolios. And here is the best part: we built Résumé DB with the same agents.
+**Delivery:** Aspirational through the roadmap, then slow down and finish the product pitch with calm category ownership.
+**Caption text:** Our other features include email tracking, interview prep, campus insights, four-year planning, and major-specific portfolios. Résumé DB. The internship operating system.
 
-    [uplifting] Our other features include email tracking, interview prep, campus insights, four-year planning, and major-specific portfolios. [building excitement] And here is the [emphasis] best part: we built <|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|> with the same agents.
+    [uplifting] Our other features include email tracking, interview prep, campus insights, four-year planning, and major-specific portfolios. [proud, grounded] <|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|>. [confident] The internship operating system.
 
-## Line 12 - Codex runs inside ResumeDB (Frame 12)
+## Line 12 - Judging appendix reset (Frame 12)
 
-**Delivery:** Confident and concrete. Accelerate slightly through the capability list.
-**Caption text:** Codex is not just how we built Résumé DB. It runs inside it. The Codex SDK powers hosted agents, while our MCP server lets your own Codex bring browser research into Résumé DB, read approved career context, save qualified leads, tailor drafts, and render resumes.
+**Delivery:** Make a clear conversational reset. This is an aside for the judges, not another product feature.
+**Caption text:** And for the judges, here is how we used the Codex app and GPT-5.6. Parallel agents built the web app, Chrome extension, and MCP server as one coordinated system.
 
-    [confident] Codex is not just how we built <|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|>. [excited] It runs inside it. [proud] The Codex S D K powers hosted agents, while our M C P server lets your own Codex bring browser research into <|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|>, read approved career context, save qualified leads, tailor drafts, and render resumes.
+    [clear, conversational reset] And for the judges, here is how we used the Codex app and G P T five point six. [confident] Parallel agents built the web app, Chrome extension, and model context protocol server as one coordinated system.
 
-## Line 13 - GPT-5.6 became the engineering team (Frame 13)
+## Line 13 - Codex dogfooding and verification (Frame 13)
 
-**Delivery:** Energized and proud. Make the three product surfaces feel like a rapid sequence of wins.
-**Caption text:** GPT-5.6 also became our engineering team. It coordinated parallel sub-agents with the Codex app. Together, they built the web app, Chrome extension, and MCP server, then integrated every surface into one product.
+**Delivery:** Grounded, specific, and credible. Let the bug example land as proof, then finish firmly on the regression coverage.
+**Caption text:** Codex then dogfooded Résumé DB with browser and computer use. It tested the hosted app, debugged the extension, and verified all thirteen MCP tools. One run caught fresh installs still calling localhost instead of Railway, so Codex fixed the hosted defaults, preserved local fallbacks, and added regression tests.
 
-    [energized] G P T five point six also became our [emphasis] engineering team. [energetic] It coordinated parallel sub-agents with the Codex app. Together, they built the web app, Chrome extension, and M C P server, then integrated every surface into [emphasis] one product.
+    [focused] Codex then dogfooded <|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|> with browser and computer use. [precise] It tested the hosted app, debugged the extension, and verified all thirteen M C P tools. [matter-of-fact] One run caught fresh installs still calling localhost instead of Railway, so Codex fixed the hosted defaults, preserved local fallbacks, and added regression tests.
 
-## Line 14 - Dogfood, verify, improve (Frame 14)
+## Line 14 - Human innovation, agent hardening (Frame 14)
 
-**Delivery:** Begin determined, turn playful for the meta-video line, then finish with a controlled, triumphant cadence.
-**Caption text:** Codex dogfooded everything with real browser and computer use: the hosted app, extension, and MCP tools, catching edge cases that would take hours to find by hand and verifying every fix end to end. And yes, GPT-5.6 edited this video too. Build, inspect, verify, improve. Codex gave it the tools. GPT-5.6 supplied the persistence. That long-horizon loop made Résumé DB real.
+**Delivery:** Sincere and confident. Avoid a victory-lap tone. Give the final two sentences room and end with firm conviction.
+**Caption text:** Codex's development tooling and GPT-5.6's persistence let us think creatively about features and real user workflows while agents debugged, verified, and tested the app. Human innovation and taste. Agent-grade production quality and hardening.
 
-    [determined] Codex dogfooded everything with real browser and computer use: the hosted app, extension, and M C P tools, catching edge cases that would take hours to find by hand and verifying every fix end to end. [playful] And yes, G P T five point six edited this video too. [triumphant] Build, inspect, verify, improve. [proud] Codex gave it the tools. G P T five point six supplied the persistence. That long-horizon loop made <|phoneme_start|>R EH1 Z AH0 M EY2<|phoneme_end|> <|phoneme_start|>D IY1<|phoneme_end|> <|phoneme_start|>B IY1<|phoneme_end|> real.
+    [confident, sincere] Codex's development tooling and G P T five point six's persistence let us think creatively about features and real user workflows while agents debugged, verified, and tested the app. [measured, proud] Human innovation and taste. [firm, resonant] Agent-grade production quality and hardening.

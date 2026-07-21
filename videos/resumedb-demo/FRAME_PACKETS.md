@@ -290,105 +290,111 @@ workflow advantage rather than a settings explanation.
 - Composition ID: `11-future-roadmap`
 - Duration: 10.965s
 - Assets: `assets/favicon.svg`
-- Focal: future roadmap, then ResumeDB category ownership.
+- Focal: the finished ResumeDB product close, supported by a concise roadmap.
 
 ### Layout
 
-Open with the exact heading "Our other features include". Use two balanced
-columns with three roadmap cards each. Leave enough room for a final centered
-brand lockup and deployed URL.
+Use the left 44 percent for the ResumeDB mark, a large product thesis, the
+category tagline, and the deployed URL. Use the right 52 percent for five
+readable roadmap rows rather than six dense equal cards. Keep every load-bearing
+line at least 21px and all content above the caption band.
 
 ### Motion beats
 
-- 0.00-1.40: Reveal the heading and hold.
-- 1.40-7.80: Add email status tracking, interview prep, campus insights, four-year planning, progress journals, and major-specific portfolios in two waves.
-- 7.80-9.20: Recede the roadmap into the background.
-- 9.20-10.965: Resolve ResumeDB, "The internship operating system," and `resumedb-ai.vercel.app`.
+- 0.00-1.20: Reveal the mark, thesis, and first roadmap rule.
+- 1.20-6.40: Step in email tracking, interview prep, campus insights, four-year planning, and major-specific portfolios.
+- 6.40-8.10: Recede the roadmap to secondary emphasis while the product lockup expands.
+- 8.10-10.965: Hold ResumeDB, "The internship operating system," and `resumedb-ai.vercel.app` as the complete product close.
 
 ### Acceptance
 
-The roadmap is readable before it recedes. The bridge into the Codex section is
-clean and still for at least one second.
+The roadmap is readable before it recedes. There is no mention of Codex, agents,
+or a next section. The product close is clean and still for at least two seconds.
 
-## Frame 12 - Codex runs inside ResumeDB
+## Frame 12 - How we built it
 
 - File: `compositions/frames/12-codex-inside-product.html`
 - Composition ID: `12-codex-inside-product`
-- Duration: 15.000s
-- Assets: `assets/04-career-agent.png`, `assets/06-application-overview.png`
-- Focal: one observable Codex run that connects browser research to bounded MCP actions.
+- Duration: 10.500s
+- Focal: an unmistakable editorial reset into the judging appendix.
 
 ### Layout
 
-Use a live-run terminal on the left, a compact Codex SDK runtime card in the
-center, and browser plus MCP work surfaces on the right. The browser performs
-research; MCP reads approved context and saves supported work. Do not imply the
-MCP server browses by itself.
+Switch to a full warm-navy canvas with a persistent `JUDGING APPENDIX / HOW WE
+BUILT IT` slug and one ochre rule. Make `Codex + GPT-5.6` the dominant display.
+Use three wide build lanes separated by hairlines for WEB APP, CHROME EXTENSION,
+and MCP SERVER. Do not show product screenshots, diagrams, or connector paths.
 
 ### Motion beats
 
-- 0.00-2.20: Establish the runtime and type the job-search request.
-- 2.20-5.40: Search official job pages, open one posting, and perform one finite scan.
-- 5.40-10.80: Stream context, lead, draft, and render tool calls through the SDK.
-- 10.80-15.00: Resolve the draft application and hold "Searched. Read. Verified. Saved."
+- 0.00-1.20: Hard-reset from cream to navy and type the appendix slug.
+- 1.00-4.20: Reveal the conversational aside, then wipe on `Codex + GPT-5.6`.
+- 4.00-7.80: Stamp the three build lanes left to right with verified states.
+- 7.80-10.500: Hold the separated appendix identity and coordinated-system proof.
 
 ### Acceptance
 
-Codex SDK, browser research, and MCP are distinct but visibly connected. The
-capability claims match the implemented product and the final application card
-is legible above the caption band.
+The frame cannot be mistaken for another product capability scene. All text is
+at video scale, the palette is visibly different, and there are no crossing
+lines, route diagrams, or product UI fragments.
 
-## Frame 13 - GPT-5.6 became the engineering team
+## Frame 13 - Codex dogfooded the product
 
 - File: `compositions/frames/13-gpt56-engineering-team.html`
 - Composition ID: `13-gpt56-engineering-team`
-- Duration: 12.000s
-- Assets: `assets/01-dashboard.png`, `assets/13-extension-preflight-live.png`
-- Focal: one GPT-5.6 lead agent coordinating three parallel Codex build lanes.
+- Duration: 18.500s
+- Assets: `assets/09-ats-empty.png`, `assets/13-extension-preflight-live.png`
+- Focal: real dogfooding proof, one concrete caught bug, and a 13-tool protocol verification.
 
 ### Layout
 
-Place the GPT-5.6 lead card above three equal work cards: web app, Chrome
-extension, and MCP server. Each lane contains a recognizable product or code
-surface and a small verification strip. Reconnect them through one integration
-rail near the bottom.
+Keep the appendix slug at top. Phase one uses a large QA workstation with the
+real hosted application view and a clean reconstructed extension overlay. A
+right rail shows browser, computer-use, reproduce, and verify steps plus the
+real localhost-default bug. Phase two shutters into a full-width three-column
+MCP tool matrix with every exact tool name and a large `13 / 13` result.
 
 ### Motion beats
 
-- 0.00-2.00: Land the lead agent and dispatch three paths.
-- 2.00-7.50: Build the three product surfaces in deterministic parallel phases.
-- 7.50-9.30: Verify each lane and reconverge paths into the integration rail.
-- 9.30-12.00: Resolve "Web app. Extension. MCP. Shipped as one."
+- 0.00-1.10: Establish the appendix header and QA workstation.
+- 1.10-4.80: Drive the extension with a simulated cursor while fields and assertions resolve one by one.
+- 4.80-8.20: Reveal `CAUGHT: fresh install -> localhost:8000`, then `FIXED: Railway default + local fallbacks` and `REGRESSION TESTS: 3 / 3`.
+- 8.20-9.10: Shutter from the workstation into the protocol verification matrix.
+- 9.10-15.80: Check all thirteen tool rows in three quick waves while the counter advances to thirteen.
+- 15.80-18.500: Hold `13 / 13 MCP tools verified through /mcp/` with the finite scan gone.
 
 ### Acceptance
 
-All three lanes are equally legible, the motion feels parallel without becoming
-chaotic, and no unsupported agent or bug count appears.
+The real bug wording matches commit `fc6fcca`. The tool names match the thirteen
+registered MCP tools, the protocol audit claim is truthful, and the real browser
+view is recognizable. No connector crosses text or UI.
 
-## Frame 14 - Dogfood, verify, improve
+## Frame 14 - Human innovation, agent hardening
 
 - File: `compositions/frames/14-codex-dogfood-meta.html`
 - Composition ID: `14-codex-dogfood-meta`
-- Duration: 21.000s
-- Assets: `assets/09-ats-empty.png`, `assets/13-extension-preflight-live.png`, `assets/favicon.svg`
-- Focal: real browser and computer-use QA transforming into the editing timeline for this video.
+- Duration: 16.500s
+- Focal: a restrained human-agent thesis for the judging appendix.
 
 ### Layout
 
-Begin with a large QA workstation and a narrow step rail. Compress it into a
-three-track editor labeled Visuals, Voice, and Captions. Finish on the two-line
-Codex and GPT-5.6 statement, a finite four-step improvement loop, the ResumeDB
-mark, and the deployed URL.
+Use the warm-navy appendix canvas split 44/56 by one hairline. The human side
+shows student empathy, product direction, real user workflows, and creative
+taste. The agent side shows build, debug, verify, test, and harden as precise
+status rows. Then both columns recede into one centered two-line thesis. Do not
+show a product CTA, fake video editor, loop diagram, or connector paths.
 
 ### Motion beats
 
-- 0.00-7.80: Run extension, MCP, edge-case, and end-to-end verification steps.
-- 7.80-13.20: Transform into the editor and verify visuals, narration, and captions.
-- 13.20-18.80: Resolve the Codex and GPT-5.6 statement and complete one improvement loop.
-- 18.80-21.00: Hold the final ResumeDB lockup completely still.
+- 0.00-1.20: Establish the split thesis and appendix slug.
+- 1.20-6.40: Select the human decisions while agent outcomes lock in on the opposite side.
+- 6.40-8.10: Recede both columns with a decisive focus dip.
+- 8.10-11.60: Reveal `Human innovation and taste.`
+- 10.60-13.80: Reveal `Agent-grade production quality and hardening.`
+- 13.80-16.500: Hold the final judging thesis completely still.
 
 ### Acceptance
 
-Computer use, browser use, MCP calls, and the video-editing meta reference are
-unmistakable. The final hold is clean, sponsor names are readable, and the full
-video remains under three minutes.
+The ending is sincere and specific, not self-congratulatory. Codex and GPT-5.6
+remain readable, the final two-line thesis is the only dominant focal, and the
+full video remains under three minutes.

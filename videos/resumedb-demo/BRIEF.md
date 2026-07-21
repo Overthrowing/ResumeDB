@@ -7,7 +7,7 @@ destination: youtube-embed
 aspect: 1920x1080
 language: en
 audience: online-hackathon-judges
-length: 151s
+length: 148s
 angle: transformation-pitch
 narration: yes
 voice: fish-reference-933563129e564b19a115bedd57b7406a
@@ -67,7 +67,7 @@ and turns scattered applications into a focused career campaign.
 4. Make evidence-backed strengthening feel like a competitive advantage.
 5. Show a complete application being typed, not covered by screenshot wipes.
 6. End on the MCP server and bring-your-own-agent advantage before future pacing.
-7. Prove how Codex and GPT-5.6 power both the product and the development loop.
+7. Close the product pitch completely, then use a visually distinct judging appendix to prove how Codex and GPT-5.6 powered the development loop.
 
 ## Product truth constraints
 
@@ -80,15 +80,25 @@ and turns scattered applications into a focused career campaign.
   then uses MCP to read approved context and save supported work.
 - Describe GPT-5.6 self-improvement as an iterative build, inspect, verify, and
   improve loop, not model-weight training.
+- Ground the Codex dogfooding example in the hosted-extension fix from commit
+  `fc6fcca`: fresh installs pointed to localhost, the fix selected Railway and
+  Vercel by default, local fallbacks remained available, and regression tests
+  were added.
+- Describe the MCP result as thirteen tools verified through the `/mcp/`
+  transport. Do not call the tools thirteen separate endpoints.
 
 ## Visual standard
 
 - Warm editorial cream, ink, ochre, and restrained ResumeDB violet.
+- Use warm navy for the judging appendix so it reads as an editorial afterword,
+  not as another product feature.
 - One dominant focal idea per frame.
 - Real views must be readable, aligned, and free of duplicate screenshot fragments.
 - Every screenshot gets purposeful motion: cursor action, field typing, scan,
   selection, focus move, or data transformation.
 - No random focus rectangles, disconnected connector paths, or chunked overlay glitches.
+- Do not use connector paths in the judging appendix. Favor cuts, shutters,
+  stamps, and verification matrices.
 - The final render must be inspected at the hook, every scene midpoint, every
   transition, the extension sequence, the two-resume comparison, the Codex
   development sequence, and the close.

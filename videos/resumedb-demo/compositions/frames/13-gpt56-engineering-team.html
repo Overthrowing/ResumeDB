@@ -11,162 +11,402 @@
       width: 1920px;
       height: 1080px;
       overflow: hidden;
-      color: #201f1d;
+      color: #f3f2f2;
       font-family: "Inter", sans-serif;
     }
-    .f13-ground {
+    .f13-ground { position: absolute; inset: 0; background: #161518; }
+    .f13-ground::before {
+      content: "QA";
       position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 35%, rgba(184,130,42,0.09), transparent 25%),
-        radial-gradient(circle at 50% 48%, rgba(109,40,217,0.055), transparent 44%),
-        #f3f2f2;
+      right: 76px;
+      bottom: 80px;
+      color: #1d1b1f;
+      font: 600 360px/0.7 "EB Garamond", serif;
+      letter-spacing: -0.06em;
     }
     .f13-scene { position: absolute; inset: 0; overflow: hidden; }
     .f13-header {
       position: absolute;
-      top: 45px;
-      right: 76px;
-      left: 76px;
+      z-index: 20;
+      top: 42px;
+      right: 80px;
+      left: 80px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      gap: 36px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(243,242,242,0.16);
     }
-    .f13-kicker,
-    .f13-badge,
-    .f13-lead-label,
-    .f13-card-kicker,
-    .f13-file,
-    .f13-status,
-    .f13-rail-label,
-    .f13-live-row,
-    .f13-code-row,
-    .f13-final-band {
+    .f13-slug,
+    .f13-index,
+    .f13-window-label,
+    .f13-window-state,
+    .f13-panel-label,
+    .f13-step-label,
+    .f13-bug-kicker,
+    .f13-bug-state strong,
+    .f13-matrix-kicker,
+    .f13-tool-name,
+    .f13-matrix-status,
+    .f13-chip {
       font-family: "JetBrains Mono", monospace;
       font-weight: 600;
       text-transform: uppercase;
     }
-    .f13-kicker { margin: 0 0 7px; color: #855c19; font-size: 15px; letter-spacing: 0.16em; }
-    .f13-title { margin: 0; font: 600 68px/0.92 "EB Garamond", serif; letter-spacing: -0.028em; }
-    .f13-badge { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 8px; padding: 11px 15px; border: 1px solid rgba(109,40,217,0.28); border-radius: 999px; background: rgba(255,255,255,0.9); color: #5a25ae; font-size: 11px; letter-spacing: 0.1em; }
-    .f13-badge i { width: 8px; height: 8px; border-radius: 50%; background: #6d28d9; box-shadow: 0 0 0 4px rgba(109,40,217,0.1); }
-    .f13-stage { position: absolute; top: 163px; right: 76px; left: 76px; height: 708px; }
-    .f13-lead {
+    .f13-slug { color: #f4e9d9; font-size: 20px; letter-spacing: 0.14em; }
+    .f13-slug b { color: #b68235; font-weight: 600; }
+    .f13-index { color: rgba(243,242,242,0.48); font-size: 17px; letter-spacing: 0.11em; }
+    .f13-title {
       position: absolute;
-      z-index: 6;
-      top: 0;
-      left: 50%;
-      width: 530px;
-      height: 116px;
-      margin-left: -265px;
-      display: grid;
-      grid-template-columns: 68px 1fr auto;
-      align-items: center;
-      gap: 18px;
-      padding: 18px 22px;
-      border: 1px solid rgba(109,40,217,0.3);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.98);
-      box-shadow: 0 16px 42px rgba(109,40,217,0.13);
+      z-index: 18;
+      top: 106px;
+      left: 80px;
+      margin: 0;
+      font: 400 61px/1 "EB Garamond", serif;
+      letter-spacing: -0.025em;
     }
-    .f13-lead-mark { display: grid; width: 62px; height: 62px; place-items: center; border-radius: 16px; background: #6d28d9; color: white; font: 600 24px/1 "EB Garamond", serif; }
-    .f13-lead-label { color: #6d28d9; font-size: 9px; letter-spacing: 0.12em; }
-    .f13-lead-title { margin: 5px 0 0; font: 600 31px/0.95 "EB Garamond", serif; }
-    .f13-lead-state { display: inline-flex; align-items: center; gap: 6px; color: #5b5752; font: 600 9px/1 "JetBrains Mono", monospace; text-transform: uppercase; }
-    .f13-lead-state i { width: 7px; height: 7px; border-radius: 50%; background: #6d28d9; }
-    .f13-routes { position: absolute; z-index: 2; top: 92px; left: 0; width: 100%; height: 156px; overflow: visible; }
-    .f13-route-base { fill: none; stroke: rgba(32,31,29,0.17); stroke-width: 2; }
-    .f13-route-live { fill: none; stroke: #b68235; stroke-width: 3; filter: drop-shadow(0 0 4px rgba(184,130,42,0.24)); }
-    .f13-cards { position: absolute; z-index: 4; top: 146px; right: 0; left: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; height: 468px; }
-    .f13-card {
+
+    .f13-qa-phase {
+      position: absolute;
+      top: 182px;
+      right: 80px;
+      left: 80px;
+      height: 660px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 505px;
+      gap: 24px;
+    }
+    .f13-workstation,
+    .f13-rail,
+    .f13-stat-panel,
+    .f13-matrix {
       position: relative;
       overflow: hidden;
-      border: 1px solid rgba(32,31,29,0.16);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.97);
-      box-shadow: 0 12px 30px rgba(32,31,29,0.07);
+      border: 1px solid rgba(243,242,242,0.16);
+      border-radius: 10px;
+      background: #222025;
     }
-    .f13-card-head { height: 75px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; border-bottom: 1px solid rgba(32,31,29,0.12); background: #f7f3ed; }
-    .f13-card-kicker { margin: 0 0 5px; color: #6d28d9; font-size: 9px; letter-spacing: 0.13em; }
-    .f13-card-title { margin: 0; font: 600 29px/0.95 "EB Garamond", serif; }
-    .f13-file { color: #746d66; font-size: 8px; letter-spacing: 0.07em; text-align: right; }
-    .f13-view { position: absolute; top: 75px; right: 0; left: 0; height: 298px; overflow: hidden; background: #f4e9d9; }
-    .f13-view img { display: block; width: 100%; height: 100%; object-fit: cover; }
-    .f13-web-view img { object-position: center 12%; transform: scale(1.015); }
-    .f13-extension-view img { object-position: center 28%; transform: scale(1.02); }
-    .f13-view-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(32,31,29,0.12)); }
-    .f13-nav-chips { position: absolute; right: 16px; bottom: 15px; left: 16px; display: flex; gap: 8px; }
-    .f13-nav-chip { padding: 7px 9px; border: 1px solid rgba(109,40,217,0.24); border-radius: 999px; background: rgba(255,255,255,0.93); color: #5a25ae; font: 600 8px/1 "JetBrains Mono", monospace; text-transform: uppercase; opacity: 0; }
-    .f13-extension-steps { position: absolute; top: 13px; right: 14px; left: 14px; display: grid; gap: 8px; }
-    .f13-live-row { min-height: 47px; display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 9px; padding: 0 11px; border: 1px solid rgba(32,31,29,0.12); border-radius: 7px; background: rgba(255,255,255,0.95); color: #5f5953; font-size: 8px; letter-spacing: 0.06em; opacity: 0; }
-    .f13-live-row b { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 50%; background: #f4e9d9; color: #855c19; font-size: 9px; }
-    .f13-live-row em { color: #6d28d9; font-style: normal; }
-    .f13-code { background: #24232c; color: #f7f1e8; padding: 17px; }
-    .f13-code-top { display: flex; justify-content: space-between; margin-bottom: 14px; color: #bdb4aa; font: 600 8px/1 "JetBrains Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; }
-    .f13-code-list { display: grid; gap: 9px; }
-    .f13-code-row { min-height: 44px; display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; background: rgba(255,255,255,0.035); color: #e9e1d7; font-size: 8px; letter-spacing: 0.025em; opacity: 0; }
-    .f13-code-row b { color: #b894f7; font-size: 10px; }
-    .f13-code-row em { color: #79c6af; font-style: normal; }
-    .f13-card-status { position: absolute; right: 16px; bottom: 14px; left: 16px; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border: 1px solid rgba(32,31,29,0.12); border-radius: 8px; background: #fff; }
-    .f13-status { color: #6a645e; font-size: 9px; letter-spacing: 0.1em; }
-    .f13-check { display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid rgba(109,40,217,0.28); border-radius: 50%; color: #6d28d9; font-size: 13px; opacity: 0; transform: scale(0.5); }
-    .f13-integration {
+    .f13-workstation { min-width: 0; }
+    .f13-window-head {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(243,242,242,0.12);
+      background: #1d1b1f;
+    }
+    .f13-window-label { color: #d8d0c6; font-size: 14px; letter-spacing: 0.12em; }
+    .f13-window-state { display: inline-flex; align-items: center; gap: 9px; color: #79c6af; font-size: 13px; letter-spacing: 0.08em; }
+    .f13-window-state i { width: 8px; height: 8px; border-radius: 50%; background: #5db872; }
+    .f13-browser {
       position: absolute;
-      z-index: 7;
+      top: 48px;
       right: 0;
       bottom: 0;
       left: 0;
-      height: 70px;
       overflow: hidden;
-      border: 1px solid rgba(32,31,29,0.15);
-      border-radius: 10px;
-      background: rgba(255,255,255,0.96);
-      box-shadow: 0 10px 30px rgba(32,31,29,0.07);
+      background: #f3f2f2;
     }
-    .f13-rail-label { position: absolute; top: 13px; left: 18px; color: #6a645e; font-size: 8px; letter-spacing: 0.12em; }
-    .f13-rail { position: absolute; right: 18px; bottom: 13px; left: 18px; height: 22px; overflow: hidden; border-radius: 999px; background: #eee7df; }
-    .f13-rail-fill { width: 100%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #b68235, #8b5fd4, #6d28d9); transform-origin: left center; }
-    .f13-final-band { position: absolute; z-index: 9; right: 0; bottom: 0; left: 0; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #201f1d; color: #f7f1e8; font-size: 12px; letter-spacing: 0.14em; opacity: 0; }
-    .f13-final-band b { color: #b894f7; font-weight: 600; }
+    .f13-browser-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: saturate(0.7) contrast(0.92);
+      opacity: 0.72;
+      transform-origin: center top;
+    }
+    .f13-browser-wash { position: absolute; inset: 0; background: rgba(243,242,242,0.18); }
+    .f13-extension {
+      position: absolute;
+      z-index: 6;
+      top: 74px;
+      left: 32px;
+      width: 342px;
+      height: 548px;
+      overflow: hidden;
+      border: 1px solid rgba(32,31,29,0.22);
+      border-radius: 9px;
+      background: #f3f2f2;
+      color: #201f1d;
+      box-shadow: 0 18px 38px rgba(22,21,24,0.28);
+    }
+    .f13-extension-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(32,31,29,0.14);
+      background: #f4e9d9;
+    }
+    .f13-extension-brand { font: 600 25px/1 "EB Garamond", serif; }
+    .f13-extension-ready { color: #5a25ae; font: 600 12px/1 "JetBrains Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .f13-extension-body { padding: 18px; }
+    .f13-panel-label { color: #6d28d9; font-size: 12px; letter-spacing: 0.11em; }
+    .f13-extension-title { margin: 10px 0 4px; font: 600 25px/1.05 "EB Garamond", serif; }
+    .f13-extension-company { color: rgba(32,31,29,0.76); font-size: 16px; }
+    .f13-preflight {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 17px 0;
+    }
+    .f13-preflight-item {
+      padding: 12px 7px;
+      border: 1px solid rgba(32,31,29,0.13);
+      border-radius: 6px;
+      text-align: center;
+      background: #f4e9d9;
+    }
+    .f13-preflight-item b { display: block; font: 600 24px/1 "EB Garamond", serif; }
+    .f13-preflight-item span { display: block; margin-top: 5px; color: rgba(32,31,29,0.72); font-size: 12px; text-transform: uppercase; }
+    .f13-fill-list { border-top: 1px solid rgba(32,31,29,0.14); }
+    .f13-fill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 54px;
+      border-bottom: 1px solid rgba(32,31,29,0.12);
+      font-size: 17px;
+      opacity: 0;
+    }
+    .f13-fill-row b { color: #6d28d9; font: 600 12px/1 "JetBrains Mono", monospace; text-transform: uppercase; }
+    .f13-fill-button {
+      display: grid;
+      height: 55px;
+      margin-top: 19px;
+      place-items: center;
+      border-radius: 7px;
+      background: #6d28d9;
+      color: #f3f2f2;
+      font: 600 17px/1 "Inter", sans-serif;
+    }
+    .f13-form-proof {
+      position: absolute;
+      z-index: 5;
+      top: 100px;
+      right: 34px;
+      width: 470px;
+      display: grid;
+      gap: 15px;
+    }
+    .f13-proof-field {
+      min-height: 72px;
+      padding: 13px 18px;
+      border: 2px solid rgba(109,40,217,0.26);
+      border-radius: 8px;
+      background: rgba(243,242,242,0.94);
+      color: #201f1d;
+      box-shadow: 0 8px 20px rgba(32,31,29,0.08);
+      opacity: 0;
+    }
+    .f13-proof-field span { display: block; margin-bottom: 6px; color: #6f665f; font-size: 13px; text-transform: uppercase; }
+    .f13-proof-field b { font: 600 21px/1.15 "Inter", sans-serif; }
+    .f13-cursor {
+      position: absolute;
+      z-index: 12;
+      top: 442px;
+      left: 742px;
+      width: 26px;
+      height: 34px;
+      opacity: 0;
+      filter: drop-shadow(0 2px 2px rgba(22,21,24,0.35));
+    }
+    .f13-cursor::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(0 0, 100% 73%, 58% 79%, 43% 100%);
+      background: #201f1d;
+    }
+    .f13-click {
+      position: absolute;
+      z-index: 11;
+      top: 548px;
+      left: 170px;
+      width: 42px;
+      height: 42px;
+      border: 2px solid #6d28d9;
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    .f13-rail { padding: 28px 26px; }
+    .f13-rail-title { margin: 0; font: 600 35px/1 "EB Garamond", serif; letter-spacing: -0.016em; }
+    .f13-rail-copy { margin: 13px 0 18px; color: rgba(243,242,242,0.65); font-size: 19px; line-height: 1.4; }
+    .f13-steps { border-top: 1px solid rgba(243,242,242,0.14); }
+    .f13-step {
+      display: grid;
+      grid-template-columns: 34px 1fr 28px;
+      align-items: center;
+      gap: 12px;
+      min-height: 57px;
+      border-bottom: 1px solid rgba(243,242,242,0.12);
+      opacity: 0;
+    }
+    .f13-step-number { color: #b68235; font: 600 14px/1 "JetBrains Mono", monospace; }
+    .f13-step-label { color: #f3f2f2; font-size: 16px; letter-spacing: 0.07em; }
+    .f13-step-check { display: grid; width: 26px; height: 26px; place-items: center; border: 1px solid rgba(93,184,114,0.5); border-radius: 50%; color: #5db872; font-size: 15px; }
+    .f13-bug {
+      position: absolute;
+      right: 26px;
+      bottom: 26px;
+      left: 26px;
+      padding: 19px 20px 17px;
+      border: 1px solid rgba(182,130,53,0.48);
+      border-radius: 8px;
+      background: #1d1b1f;
+    }
+    .f13-bug-kicker { color: #e8a55a; font-size: 13px; letter-spacing: 0.11em; }
+    .f13-bug-title { margin: 11px 0 13px; color: #f4e9d9; font: 600 25px/1.12 "EB Garamond", serif; }
+    .f13-bug-state {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-height: 39px;
+      border-top: 1px solid rgba(243,242,242,0.1);
+      color: rgba(243,242,242,0.67);
+      font-size: 17px;
+      opacity: 0;
+    }
+    .f13-bug-state strong { color: #f3f2f2; font-size: 12px; letter-spacing: 0.06em; }
+    .f13-bug-state.is-caught strong { color: #e8a55a; }
+    .f13-bug-state.is-fixed strong { color: #5db872; }
+
+    .f13-mcp-phase {
+      position: absolute;
+      top: 182px;
+      right: 80px;
+      left: 80px;
+      height: 660px;
+      display: grid;
+      grid-template-columns: 410px 1fr;
+      gap: 24px;
+      opacity: 0;
+    }
+    .f13-stat-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 34px;
+    }
+    .f13-matrix-kicker { color: #b68235; font-size: 15px; letter-spacing: 0.11em; }
+    .f13-count-lockup { margin-top: 8px; }
+    .f13-count {
+      display: inline-block;
+      color: #f4e9d9;
+      font: 400 154px/0.82 "EB Garamond", serif;
+      letter-spacing: -0.05em;
+    }
+    .f13-count-denom { color: #cfb8ff; font: 600 52px/1 "EB Garamond", serif; }
+    .f13-count-copy { margin: 20px 0 0; color: rgba(243,242,242,0.7); font-size: 24px; line-height: 1.35; }
+    .f13-matrix-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #5db872;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      opacity: 0;
+    }
+    .f13-matrix-status i { width: 10px; height: 10px; border-radius: 50%; background: #5db872; }
+    .f13-stat-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .f13-chip {
+      padding: 9px 11px;
+      border: 1px solid rgba(243,242,242,0.15);
+      border-radius: 999px;
+      color: rgba(243,242,242,0.66);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+    .f13-matrix { padding: 28px 26px 24px; }
+    .f13-matrix-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(243,242,242,0.14);
+    }
+    .f13-matrix-title { margin: 0; font: 600 34px/1 "EB Garamond", serif; }
+    .f13-transport { color: rgba(243,242,242,0.55); font: 600 13px/1 "JetBrains Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .f13-tool-columns {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 19px;
+    }
+    .f13-tool-column { border-top: 1px solid rgba(243,242,242,0.08); }
+    .f13-tool-row {
+      display: grid;
+      min-height: 84px;
+      grid-template-columns: 1fr 30px;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(243,242,242,0.1);
+      opacity: 0;
+    }
+    .f13-tool-name {
+      color: #f3f2f2;
+      font-size: 17px;
+      line-height: 1.26;
+      letter-spacing: -0.01em;
+      text-transform: none;
+      overflow-wrap: anywhere;
+    }
+    .f13-tool-check {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 1px solid rgba(93,184,114,0.48);
+      border-radius: 50%;
+      color: #5db872;
+      font-size: 15px;
+      opacity: 0;
+    }
+    .f13-scan {
+      position: absolute;
+      z-index: 8;
+      top: 78px;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #6d28d9;
+      box-shadow: 0 0 18px rgba(109,40,217,0.5);
+      opacity: 0;
+    }
   </style>
 
-  <div data-hf-id="hf-f13-root" id="f13-gpt56-engineering-team-root" data-composition-id="13-gpt56-engineering-team" data-start="0" data-duration="12" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-f13-ground" id="f13-ground" class="clip f13-ground" data-start="0" data-duration="12" data-track-index="0"></div>
-    <main data-hf-id="hf-f13-scene" id="f13-scene" class="clip f13-scene" data-start="0" data-duration="12" data-track-index="1">
-      <header data-hf-id="hf-f13-header" class="f13-header"><div data-hf-id="hf-f13-heading"><p data-hf-id="hf-f13-kicker" class="f13-kicker">Built with GPT-5.6</p><h1 data-hf-id="hf-f13-title" class="f13-title">One model became an engineering team</h1></div><span data-hf-id="hf-f13-badge" class="f13-badge"><i data-hf-id="hf-f13-badge-dot"></i>Parallel Codex sub-agents</span></header>
+  <div data-hf-id="hf-f13-root" id="f13-gpt56-engineering-team-root" data-composition-id="13-gpt56-engineering-team" data-start="0" data-duration="18.5" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-f13-ground" id="f13-ground" class="clip f13-ground" data-start="0" data-duration="18.5" data-track-index="0"></div>
+    <main data-hf-id="hf-f13-scene" id="f13-scene" class="clip f13-scene" data-start="0" data-duration="18.5" data-track-index="1">
+      <header data-hf-id="hf-f13-header" class="f13-header"><span data-hf-id="hf-f13-slug" class="f13-slug"><b data-hf-id="hf-f13-slug-b">Judging appendix</b> / Dogfooding and QA</span><span data-hf-id="hf-f13-index" class="f13-index">13 / 14</span></header>
+      <h1 data-hf-id="hf-f13-title" class="f13-title">Codex tested the same product we shipped.</h1>
 
-      <section data-hf-id="hf-f13-stage" id="f13-stage" class="f13-stage">
-        <article data-hf-id="hf-f13-lead" id="f13-lead" class="f13-lead"><span data-hf-id="hf-f13-lead-mark" class="f13-lead-mark">5.6</span><div data-hf-id="hf-f13-lead-copy"><span data-hf-id="hf-f13-lead-label" class="f13-lead-label">Lead agent / orchestration</span><h2 data-hf-id="hf-f13-lead-title" class="f13-lead-title">GPT-5.6</h2></div><span data-hf-id="hf-f13-lead-state" class="f13-lead-state"><i data-hf-id="hf-f13-lead-state-dot"></i>3 lanes active</span></article>
+      <section data-hf-id="hf-f13-qa-phase" id="f13-qa-phase" class="f13-qa-phase">
+        <article data-hf-id="hf-f13-workstation" class="f13-workstation">
+          <div data-hf-id="hf-f13-window-head" class="f13-window-head"><span data-hf-id="hf-f13-window-label" class="f13-window-label">Codex app / live QA session</span><span data-hf-id="hf-f13-window-state" class="f13-window-state"><i data-hf-id="hf-f13-window-state-dot"></i>Browser + computer use</span></div>
+          <div data-hf-id="hf-f13-browser" class="f13-browser"><img data-hf-id="hf-f13-browser-img" class="f13-browser-img" src="assets/09-ats-empty.png" alt="ResumeDB demo application" data-layout-allow-overflow><i data-hf-id="hf-f13-browser-wash" class="f13-browser-wash"></i></div>
+          <aside data-hf-id="hf-f13-extension" class="f13-extension">
+            <div data-hf-id="hf-f13-extension-head" class="f13-extension-head"><span data-hf-id="hf-f13-extension-brand" class="f13-extension-brand">ResumeDB</span><span data-hf-id="hf-f13-extension-ready" class="f13-extension-ready">Preflight ready</span></div>
+            <div data-hf-id="hf-f13-extension-body" class="f13-extension-body"><span data-hf-id="hf-f13-panel-label" class="f13-panel-label">Application helper</span><h2 data-hf-id="hf-f13-extension-title" class="f13-extension-title">Software Engineering Intern</h2><span data-hf-id="hf-f13-extension-company" class="f13-extension-company">Northstar Robotics</span><div data-hf-id="hf-f13-preflight" class="f13-preflight"><span data-hf-id="hf-f13-preflight-1" class="f13-preflight-item"><b data-hf-id="hf-f13-preflight-1-b">11</b><span data-hf-id="hf-f13-preflight-1-s">Mapped</span></span><span data-hf-id="hf-f13-preflight-2" class="f13-preflight-item"><b data-hf-id="hf-f13-preflight-2-b">0</b><span data-hf-id="hf-f13-preflight-2-s">Blockers</span></span><span data-hf-id="hf-f13-preflight-3" class="f13-preflight-item"><b data-hf-id="hf-f13-preflight-3-b">Yes</b><span data-hf-id="hf-f13-preflight-3-s">Resume</span></span></div><div data-hf-id="hf-f13-fill-list" class="f13-fill-list"><div data-hf-id="hf-f13-fill-1" class="f13-fill-row"><span data-hf-id="hf-f13-fill-1-s">Profile fields</span><b data-hf-id="hf-f13-fill-1-b">passed</b></div><div data-hf-id="hf-f13-fill-2" class="f13-fill-row"><span data-hf-id="hf-f13-fill-2-s">Education</span><b data-hf-id="hf-f13-fill-2-b">passed</b></div><div data-hf-id="hf-f13-fill-3" class="f13-fill-row"><span data-hf-id="hf-f13-fill-3-s">Tailored resume</span><b data-hf-id="hf-f13-fill-3-b">passed</b></div></div><span data-hf-id="hf-f13-fill-button" class="f13-fill-button">Fill mapped fields</span></div>
+          </aside>
+          <div data-hf-id="hf-f13-form-proof" class="f13-form-proof"><div data-hf-id="hf-f13-proof-1" class="f13-proof-field"><span data-hf-id="hf-f13-proof-1-label">First name</span><b data-hf-id="hf-f13-proof-1-value">Sam</b></div><div data-hf-id="hf-f13-proof-2" class="f13-proof-field"><span data-hf-id="hf-f13-proof-2-label">College</span><b data-hf-id="hf-f13-proof-2-value">Carnegie Mellon University</b></div><div data-hf-id="hf-f13-proof-3" class="f13-proof-field"><span data-hf-id="hf-f13-proof-3-label">Resume</span><b data-hf-id="hf-f13-proof-3-value">sam-rivera-robotics.pdf</b></div></div>
+          <i data-hf-id="hf-f13-cursor" id="f13-cursor" class="f13-cursor"></i><i data-hf-id="hf-f13-click" id="f13-click" class="f13-click"></i>
+        </article>
 
-        <svg data-hf-id="hf-f13-routes" class="f13-routes" viewBox="0 0 1768 156" preserveAspectRatio="none" aria-hidden="true">
-          <path data-hf-id="hf-f13-route-web-base" class="f13-route-base" d="M884 0 C884 55 290 65 290 156"></path><path data-hf-id="hf-f13-route-web" id="f13-route-web" class="f13-route-live" d="M884 0 C884 55 290 65 290 156"></path>
-          <path data-hf-id="hf-f13-route-extension-base" class="f13-route-base" d="M884 0 C884 60 884 88 884 156"></path><path data-hf-id="hf-f13-route-extension" id="f13-route-extension" class="f13-route-live" d="M884 0 C884 60 884 88 884 156"></path>
-          <path data-hf-id="hf-f13-route-mcp-base" class="f13-route-base" d="M884 0 C884 55 1478 65 1478 156"></path><path data-hf-id="hf-f13-route-mcp" id="f13-route-mcp" class="f13-route-live" d="M884 0 C884 55 1478 65 1478 156"></path>
-        </svg>
+        <aside data-hf-id="hf-f13-rail" class="f13-rail"><h2 data-hf-id="hf-f13-rail-title" class="f13-rail-title">Live QA session</h2><p data-hf-id="hf-f13-rail-copy" class="f13-rail-copy">Codex operated the hosted flow exactly like a student or judge.</p><div data-hf-id="hf-f13-steps" class="f13-steps"><div data-hf-id="hf-f13-step-1" class="f13-step"><span data-hf-id="hf-f13-step-1-number" class="f13-step-number">01</span><span data-hf-id="hf-f13-step-1-label" class="f13-step-label">Open hosted app</span><span data-hf-id="hf-f13-step-1-check" class="f13-step-check">✓</span></div><div data-hf-id="hf-f13-step-2" class="f13-step"><span data-hf-id="hf-f13-step-2-number" class="f13-step-number">02</span><span data-hf-id="hf-f13-step-2-label" class="f13-step-label">Drive extension</span><span data-hf-id="hf-f13-step-2-check" class="f13-step-check">✓</span></div><div data-hf-id="hf-f13-step-3" class="f13-step"><span data-hf-id="hf-f13-step-3-number" class="f13-step-number">03</span><span data-hf-id="hf-f13-step-3-label" class="f13-step-label">Reproduce failure</span><span data-hf-id="hf-f13-step-3-check" class="f13-step-check">✓</span></div><div data-hf-id="hf-f13-step-4" class="f13-step"><span data-hf-id="hf-f13-step-4-number" class="f13-step-number">04</span><span data-hf-id="hf-f13-step-4-label" class="f13-step-label">Verify fix</span><span data-hf-id="hf-f13-step-4-check" class="f13-step-check">✓</span></div></div><section data-hf-id="hf-f13-bug" class="f13-bug"><span data-hf-id="hf-f13-bug-kicker" class="f13-bug-kicker">Caught in dogfooding</span><h3 data-hf-id="hf-f13-bug-title" class="f13-bug-title">Fresh installs still pointed at localhost.</h3><div data-hf-id="hf-f13-bug-state-1" class="f13-bug-state is-caught"><span data-hf-id="hf-f13-bug-state-1-copy">Fresh install</span><strong data-hf-id="hf-f13-bug-state-1-value">localhost:8000</strong></div><div data-hf-id="hf-f13-bug-state-2" class="f13-bug-state is-fixed"><span data-hf-id="hf-f13-bug-state-2-copy">Hosted default</span><strong data-hf-id="hf-f13-bug-state-2-value">Railway + Vercel</strong></div><div data-hf-id="hf-f13-bug-state-3" class="f13-bug-state is-fixed"><span data-hf-id="hf-f13-bug-state-3-copy">Regression coverage</span><strong data-hf-id="hf-f13-bug-state-3-value">3 / 3 passed</strong></div></section></aside>
+      </section>
 
-        <div data-hf-id="hf-f13-cards" class="f13-cards">
-          <article data-hf-id="hf-f13-card-web" id="f13-card-web" class="f13-card">
-            <header data-hf-id="hf-f13-web-head" class="f13-card-head"><div data-hf-id="hf-f13-web-heading"><p data-hf-id="hf-f13-web-kicker" class="f13-card-kicker">Agent 01 / product</p><h2 data-hf-id="hf-f13-web-title" class="f13-card-title">Web app</h2></div><span data-hf-id="hf-f13-web-file" class="f13-file">frontend/src/</span></header>
-            <div data-hf-id="hf-f13-web-view" class="f13-view f13-web-view"><img data-hf-id="hf-f13-dashboard-image" data-layout-allow-overflow src="assets/01-dashboard.png" alt="Real ResumeDB web application"><div data-hf-id="hf-f13-web-shade" class="f13-view-shade"></div><div data-hf-id="hf-f13-nav-chips" class="f13-nav-chips"><span data-hf-id="hf-f13-chip-profile" class="f13-nav-chip">Profile</span><span data-hf-id="hf-f13-chip-agent" class="f13-nav-chip">Career Agent</span><span data-hf-id="hf-f13-chip-apps" class="f13-nav-chip">Applications</span></div></div>
-            <div data-hf-id="hf-f13-web-status" class="f13-card-status"><span data-hf-id="hf-f13-web-status-copy" class="f13-status">UI verified</span><span data-hf-id="hf-f13-web-check" id="f13-web-check" class="f13-check">✓</span></div>
-          </article>
-
-          <article data-hf-id="hf-f13-card-extension" id="f13-card-extension" class="f13-card">
-            <header data-hf-id="hf-f13-extension-head" class="f13-card-head"><div data-hf-id="hf-f13-extension-heading"><p data-hf-id="hf-f13-extension-kicker" class="f13-card-kicker">Agent 02 / browser</p><h2 data-hf-id="hf-f13-extension-title" class="f13-card-title">Chrome extension</h2></div><span data-hf-id="hf-f13-extension-file" class="f13-file">extension/</span></header>
-            <div data-hf-id="hf-f13-extension-view" class="f13-view f13-extension-view"><img data-hf-id="hf-f13-extension-image" data-layout-allow-overflow src="assets/13-extension-preflight-live.png" alt="Real ResumeDB extension preflight"><div data-hf-id="hf-f13-extension-shade" class="f13-view-shade"></div><div data-hf-id="hf-f13-extension-steps" class="f13-extension-steps"><span data-hf-id="hf-f13-ext-row-1" class="f13-live-row"><b data-hf-id="hf-f13-ext-row-1-i">1</b>scan page<em data-hf-id="hf-f13-ext-row-1-s">mapped</em></span><span data-hf-id="hf-f13-ext-row-2" class="f13-live-row"><b data-hf-id="hf-f13-ext-row-2-i">2</b>fill profile<em data-hf-id="hf-f13-ext-row-2-s">passed</em></span><span data-hf-id="hf-f13-ext-row-3" class="f13-live-row"><b data-hf-id="hf-f13-ext-row-3-i">3</b>upload resume<em data-hf-id="hf-f13-ext-row-3-s">passed</em></span></div></div>
-            <div data-hf-id="hf-f13-extension-status" class="f13-card-status"><span data-hf-id="hf-f13-extension-status-copy" class="f13-status">Autofill passed</span><span data-hf-id="hf-f13-extension-check" id="f13-extension-check" class="f13-check">✓</span></div>
-          </article>
-
-          <article data-hf-id="hf-f13-card-mcp" id="f13-card-mcp" class="f13-card">
-            <header data-hf-id="hf-f13-mcp-head" class="f13-card-head"><div data-hf-id="hf-f13-mcp-heading"><p data-hf-id="hf-f13-mcp-kicker" class="f13-card-kicker">Agent 03 / platform</p><h2 data-hf-id="hf-f13-mcp-title" class="f13-card-title">MCP server</h2></div><span data-hf-id="hf-f13-mcp-file" class="f13-file">backend/resumedb/<br data-hf-id="hf-f13-mcp-br">mcp_server.py</span></header>
-            <div data-hf-id="hf-f13-mcp-code" class="f13-view f13-code"><div data-hf-id="hf-f13-code-top" class="f13-code-top"><span data-hf-id="hf-f13-code-top-left">FastMCP / streamable HTTP</span><span data-hf-id="hf-f13-code-top-right">bounded writes</span></div><div data-hf-id="hf-f13-code-list" class="f13-code-list"><span data-hf-id="hf-f13-code-row-1" class="f13-code-row"><b data-hf-id="hf-f13-code-row-1-b">@</b>get_candidate_context<em data-hf-id="hf-f13-code-row-1-s">ready</em></span><span data-hf-id="hf-f13-code-row-2" class="f13-code-row"><b data-hf-id="hf-f13-code-row-2-b">@</b>save_job_lead<em data-hf-id="hf-f13-code-row-2-s">ready</em></span><span data-hf-id="hf-f13-code-row-3" class="f13-code-row"><b data-hf-id="hf-f13-code-row-3-b">@</b>render_application_resume<em data-hf-id="hf-f13-code-row-3-s">ready</em></span><span data-hf-id="hf-f13-code-row-4" class="f13-code-row"><b data-hf-id="hf-f13-code-row-4-b">@</b>record_agent_progress<em data-hf-id="hf-f13-code-row-4-s">ready</em></span></div></div>
-            <div data-hf-id="hf-f13-mcp-status" class="f13-card-status"><span data-hf-id="hf-f13-mcp-status-copy" class="f13-status">Tools live</span><span data-hf-id="hf-f13-mcp-check" id="f13-mcp-check" class="f13-check">✓</span></div>
-          </article>
-        </div>
-
-        <div data-hf-id="hf-f13-integration" id="f13-integration" class="f13-integration"><span data-hf-id="hf-f13-rail-label" class="f13-rail-label">Integration rail / end-to-end system</span><div data-hf-id="hf-f13-rail" class="f13-rail"><div data-hf-id="hf-f13-rail-fill" id="f13-rail-fill" class="f13-rail-fill"></div></div></div>
-        <div data-hf-id="hf-f13-final-band" id="f13-final-band" class="f13-final-band">Web app <b data-hf-id="hf-f13-band-dot-1">·</b> Extension <b data-hf-id="hf-f13-band-dot-2">·</b> MCP <b data-hf-id="hf-f13-band-dot-3">·</b> Shipped as one</div>
+      <section data-hf-id="hf-f13-mcp-phase" id="f13-mcp-phase" class="f13-mcp-phase">
+        <aside data-hf-id="hf-f13-stat-panel" class="f13-stat-panel"><div data-hf-id="hf-f13-stat-top"><span data-hf-id="hf-f13-matrix-kicker" class="f13-matrix-kicker">Protocol audit</span><div data-hf-id="hf-f13-count-lockup" class="f13-count-lockup"><span data-hf-id="hf-f13-count" id="f13-count" class="f13-count">0</span><span data-hf-id="hf-f13-count-denom" class="f13-count-denom">/ 13</span></div><p data-hf-id="hf-f13-count-copy" class="f13-count-copy">Every registered MCP tool invoked through the real transport.</p></div><div data-hf-id="hf-f13-stat-bottom"><span data-hf-id="hf-f13-matrix-status" class="f13-matrix-status"><i data-hf-id="hf-f13-matrix-status-dot"></i>Verified through /mcp/</span><div data-hf-id="hf-f13-stat-chips" class="f13-stat-chips"><span data-hf-id="hf-f13-chip-1" class="f13-chip">Authenticated</span><span data-hf-id="hf-f13-chip-2" class="f13-chip">Bounded writes</span><span data-hf-id="hf-f13-chip-3" class="f13-chip">Token rotation</span><span data-hf-id="hf-f13-chip-4" class="f13-chip">Run timeline</span></div></div></aside>
+        <article data-hf-id="hf-f13-matrix" class="f13-matrix"><div data-hf-id="hf-f13-matrix-head" class="f13-matrix-head"><h2 data-hf-id="hf-f13-matrix-title" class="f13-matrix-title">MCP tool verification</h2><span data-hf-id="hf-f13-transport" class="f13-transport">Streamable HTTP / bearer auth</span></div><div data-hf-id="hf-f13-tool-columns" class="f13-tool-columns"><div data-hf-id="hf-f13-tool-col-1" class="f13-tool-column"><div data-hf-id="hf-f13-tool-1" class="f13-tool-row"><span data-hf-id="hf-f13-tool-1-name" class="f13-tool-name">get_candidate_context</span><span data-hf-id="hf-f13-tool-1-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-2" class="f13-tool-row"><span data-hf-id="hf-f13-tool-2-name" class="f13-tool-name">list_applications</span><span data-hf-id="hf-f13-tool-2-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-3" class="f13-tool-row"><span data-hf-id="hf-f13-tool-3-name" class="f13-tool-name">get_application</span><span data-hf-id="hf-f13-tool-3-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-4" class="f13-tool-row"><span data-hf-id="hf-f13-tool-4-name" class="f13-tool-name">get_application_readiness</span><span data-hf-id="hf-f13-tool-4-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-5" class="f13-tool-row"><span data-hf-id="hf-f13-tool-5-name" class="f13-tool-name">save_job_lead</span><span data-hf-id="hf-f13-tool-5-check" class="f13-tool-check">✓</span></div></div><div data-hf-id="hf-f13-tool-col-2" class="f13-tool-column"><div data-hf-id="hf-f13-tool-6" class="f13-tool-row"><span data-hf-id="hf-f13-tool-6-name" class="f13-tool-name">create_application_draft</span><span data-hf-id="hf-f13-tool-6-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-7" class="f13-tool-row"><span data-hf-id="hf-f13-tool-7-name" class="f13-tool-name">save_application_artifact</span><span data-hf-id="hf-f13-tool-7-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-8" class="f13-tool-row"><span data-hf-id="hf-f13-tool-8-name" class="f13-tool-name">update_application_draft</span><span data-hf-id="hf-f13-tool-8-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-9" class="f13-tool-row"><span data-hf-id="hf-f13-tool-9-name" class="f13-tool-name">render_application_resume</span><span data-hf-id="hf-f13-tool-9-check" class="f13-tool-check">✓</span></div></div><div data-hf-id="hf-f13-tool-col-3" class="f13-tool-column"><div data-hf-id="hf-f13-tool-10" class="f13-tool-row"><span data-hf-id="hf-f13-tool-10-name" class="f13-tool-name">propose_knowledge_entry</span><span data-hf-id="hf-f13-tool-10-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-11" class="f13-tool-row"><span data-hf-id="hf-f13-tool-11-name" class="f13-tool-name">begin_agent_run</span><span data-hf-id="hf-f13-tool-11-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-12" class="f13-tool-row"><span data-hf-id="hf-f13-tool-12-name" class="f13-tool-name">record_agent_progress</span><span data-hf-id="hf-f13-tool-12-check" class="f13-tool-check">✓</span></div><div data-hf-id="hf-f13-tool-13" class="f13-tool-row"><span data-hf-id="hf-f13-tool-13-name" class="f13-tool-name">finish_agent_run</span><span data-hf-id="hf-f13-tool-13-check" class="f13-tool-check">✓</span></div></div></div><i data-hf-id="hf-f13-scan" id="f13-scan" class="f13-scan"></i></article>
       </section>
     </main>
   </div>
@@ -176,28 +416,29 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      ["#f13-route-web", "#f13-route-extension", "#f13-route-mcp"].forEach(function (selector) {
-        var path = document.querySelector(selector);
-        var length = path.getTotalLength();
-        path.style.strokeDasharray = String(length);
-        path.style.strokeDashoffset = String(length);
-      });
-      tl.fromTo("#f13-scene .f13-header", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.05);
-      tl.fromTo("#f13-lead", { y: 20, scale: 0.92, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.55, ease: "power3.out" }, 0.45);
-      tl.to(["#f13-route-web", "#f13-route-extension", "#f13-route-mcp"], { strokeDashoffset: 0, duration: 0.76, stagger: 0.08, ease: "power2.out" }, 1.05);
-      tl.fromTo("#f13-scene .f13-card", { y: 28, scale: 0.97, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.48, stagger: 0.08, ease: "power3.out", immediateRender: false }, 1.62);
-      tl.fromTo("#f13-scene .f13-nav-chip", { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.38, ease: "power2.out", immediateRender: false }, 2.35);
-      tl.fromTo("#f13-scene .f13-live-row", { x: -14, opacity: 0 }, { x: 0, opacity: 1, duration: 0.34, stagger: 0.46, ease: "power3.out", immediateRender: false }, 2.48);
-      tl.fromTo("#f13-scene .f13-code-row", { x: 14, opacity: 0 }, { x: 0, opacity: 1, duration: 0.32, stagger: 0.36, ease: "power3.out", immediateRender: false }, 2.38);
-      tl.to("#f13-card-web .f13-web-view img", { y: -30, scale: 1.05, duration: 2.4, ease: "power1.inOut" }, 3.15);
-      tl.to("#f13-card-extension .f13-extension-view img", { y: -20, scale: 1.06, duration: 2.2, ease: "power1.inOut" }, 3.35);
-      tl.fromTo(["#f13-web-check", "#f13-extension-check", "#f13-mcp-check"], { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.34, stagger: 0.24, ease: "back.out(1.8)", immediateRender: false }, 6.12);
-      tl.to("#f13-scene .f13-card", { borderColor: "rgba(109,40,217,0.34)", duration: 0.42, stagger: 0.12, ease: "power1.inOut" }, 6.3);
-      tl.fromTo("#f13-integration", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out", immediateRender: false }, 7.18);
-      tl.fromTo("#f13-rail-fill", { scaleX: 0 }, { scaleX: 1, duration: 1.35, ease: "power2.inOut", immediateRender: false }, 7.55);
-      tl.fromTo("#f13-final-band", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", immediateRender: false }, 9.32);
-      tl.to("#f13-lead", { boxShadow: "0 18px 54px rgba(109,40,217,0.22)", duration: 0.5, ease: "power1.inOut" }, 9.45);
-      tl.to({}, { duration: 12 }, 0);
+      tl.fromTo("#f13-scene .f13-header", { y: -18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 0.12);
+      tl.fromTo("#f13-scene .f13-title", { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.54, ease: "power3.out" }, 0.28);
+      tl.fromTo("#f13-qa-phase", { y: 28, scale: 0.988, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.62, ease: "power3.out" }, 0.42);
+      tl.fromTo("#f13-scene .f13-browser-img", { scale: 1.025 }, { scale: 1, duration: 3.6, ease: "sine.inOut" }, 0.72);
+      tl.fromTo("#f13-scene .f13-step", { x: 26, opacity: 0 }, { x: 0, opacity: 1, duration: 0.34, stagger: 0.62, ease: "power3.out" }, 0.9);
+      tl.fromTo("#f13-cursor", { x: 0, y: 0, opacity: 0 }, { x: -548, y: 108, opacity: 1, duration: 1.02, ease: "power2.inOut" }, 1.22);
+      tl.fromTo("#f13-click", { scale: 0.4, opacity: 0 }, { scale: 1.45, opacity: 1, duration: 0.26, ease: "power2.out", immediateRender: false }, 2.08);
+      tl.to("#f13-click", { scale: 2.05, opacity: 0, duration: 0.24, ease: "power1.out" }, 2.34);
+      tl.fromTo("#f13-scene .f13-fill-row", { x: -16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.34, stagger: 0.48, ease: "power3.out", immediateRender: false }, 2.26);
+      tl.fromTo("#f13-scene .f13-proof-field", { x: 28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.42, stagger: 0.56, ease: "power3.out", immediateRender: false }, 2.58);
+      tl.fromTo("#f13-scene .f13-bug", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", immediateRender: false }, 4.3);
+      tl.fromTo("#f13-scene .f13-bug-state", { x: 18, opacity: 0 }, { x: 0, opacity: 1, duration: 0.34, stagger: 0.68, ease: "power3.out", immediateRender: false }, 4.78);
+      tl.to("#f13-cursor", { opacity: 0, duration: 0.24, ease: "power1.out" }, 5.0);
+      tl.to("#f13-qa-phase", { x: -58, scale: 0.965, opacity: 0, duration: 0.68, ease: "power3.inOut" }, 8.12);
+      tl.fromTo("#f13-mcp-phase", { x: 66, scale: 0.975, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.72, ease: "power3.out", immediateRender: false }, 8.42);
+      tl.fromTo("#f13-mcp-phase .f13-tool-row", { x: 18, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, stagger: 0.28, ease: "power3.out", immediateRender: false }, 9.12);
+      tl.fromTo("#f13-mcp-phase .f13-tool-check", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.2, stagger: 0.28, ease: "back.out(1.55)", immediateRender: false }, 9.35);
+      tl.to("#f13-count", { innerText: 13, snap: { innerText: 1 }, duration: 3.65, ease: "power1.inOut" }, 9.15);
+      tl.fromTo("#f13-scan", { y: 0, opacity: 0 }, { y: 475, opacity: 0.92, duration: 1.15, ease: "power1.inOut", immediateRender: false }, 13.15);
+      tl.to("#f13-scan", { opacity: 0, duration: 0.22, ease: "power1.out" }, 14.3);
+      tl.fromTo("#f13-mcp-phase .f13-matrix-status", { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, ease: "power3.out", immediateRender: false }, 14.36);
+      tl.fromTo("#f13-mcp-phase .f13-chip", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, stagger: 0.12, ease: "power2.out", immediateRender: false }, 14.72);
+      tl.to({}, { duration: 18.5 }, 0);
       window.__timelines["13-gpt56-engineering-team"] = tl;
     })();
   </script>

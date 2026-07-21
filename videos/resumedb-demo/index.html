@@ -12,7 +12,7 @@
     </style>
   </head>
   <body>
-    <div data-hf-id="hf-main-root" id="root" data-composition-id="main" data-start="0" data-duration="150.635" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-main-root" id="root" data-composition-id="main" data-start="0" data-duration="148.135" data-width="1920" data-height="1080">
       <div data-hf-id="hf-scene-01" id="scene-01" class="scene" data-composition-id="01-job-hunt-hook" data-composition-src="compositions/frames/01-job-hunt-hook.html" data-start="0" data-duration="9.26" data-track-index="0"></div>
       <audio data-hf-id="hf-voice-01" id="voice-01" src="assets/voice/01.mp3" data-start="0" data-duration="8.81" data-track-index="10" data-volume="1"></audio>
 
@@ -46,16 +46,16 @@
       <div data-hf-id="hf-scene-11" id="scene-11" class="scene" data-composition-id="11-future-roadmap" data-composition-src="compositions/frames/11-future-roadmap.html" data-start="91.67" data-duration="11.415" data-track-index="0"></div>
       <audio data-hf-id="hf-voice-11" id="voice-11" src="assets/voice/11.mp3" data-start="91.67" data-duration="10.965" data-track-index="10" data-volume="1"></audio>
 
-      <div data-hf-id="hf-scene-12" id="scene-12" class="scene" data-composition-id="12-codex-inside-product" data-composition-src="compositions/frames/12-codex-inside-product.html" data-start="102.635" data-duration="15.45" data-track-index="1"></div>
-      <audio data-hf-id="hf-voice-12" id="voice-12" src="assets/voice/12.mp3" data-start="102.635" data-duration="15" data-track-index="10" data-volume="1"></audio>
+      <div data-hf-id="hf-scene-12" id="scene-12" class="scene" data-composition-id="12-codex-inside-product" data-composition-src="compositions/frames/12-codex-inside-product.html" data-start="102.635" data-duration="10.95" data-track-index="1"></div>
+      <audio data-hf-id="hf-voice-12" id="voice-12" src="assets/voice/12.mp3" data-start="102.635" data-duration="10.5" data-track-index="10" data-volume="1"></audio>
 
-      <div data-hf-id="hf-scene-13" id="scene-13" class="scene" data-composition-id="13-gpt56-engineering-team" data-composition-src="compositions/frames/13-gpt56-engineering-team.html" data-start="117.635" data-duration="12.45" data-track-index="0"></div>
-      <audio data-hf-id="hf-voice-13" id="voice-13" src="assets/voice/13.mp3" data-start="117.635" data-duration="12" data-track-index="10" data-volume="1"></audio>
+      <div data-hf-id="hf-scene-13" id="scene-13" class="scene" data-composition-id="13-gpt56-engineering-team" data-composition-src="compositions/frames/13-gpt56-engineering-team.html" data-start="113.135" data-duration="18.95" data-track-index="0"></div>
+      <audio data-hf-id="hf-voice-13" id="voice-13" src="assets/voice/13.mp3" data-start="113.135" data-duration="18.5" data-track-index="10" data-volume="1"></audio>
 
-      <div data-hf-id="hf-scene-14" id="scene-14" class="scene" data-composition-id="14-codex-dogfood-meta" data-composition-src="compositions/frames/14-codex-dogfood-meta.html" data-start="129.635" data-duration="21" data-track-index="1"></div>
-      <audio data-hf-id="hf-voice-14" id="voice-14" src="assets/voice/14.mp3" data-start="129.635" data-duration="21" data-track-index="10" data-volume="1"></audio>
+      <div data-hf-id="hf-scene-14" id="scene-14" class="scene" data-composition-id="14-codex-dogfood-meta" data-composition-src="compositions/frames/14-codex-dogfood-meta.html" data-start="131.635" data-duration="16.5" data-track-index="1"></div>
+      <audio data-hf-id="hf-voice-14" id="voice-14" src="assets/voice/14.mp3" data-start="131.635" data-duration="16.5" data-track-index="10" data-volume="1"></audio>
 
-      <div data-hf-id="hf-captions" id="captions" class="scene" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0" data-duration="150.635" data-track-index="2"></div>
+      <div data-hf-id="hf-captions" id="captions" class="scene" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0" data-duration="148.135" data-track-index="2"></div>
     </div>
 
     <script>
@@ -64,14 +64,19 @@
 
       (function () {
         var tl = window.__timelines.main;
-        var boundaries = [8.81, 17.07, 26.33, 35.09, 45.09, 52.96, 64.04, 72.95, 82.67, 91.67, 102.635, 117.635, 129.635];
+        var boundaries = [8.81, 17.07, 26.33, 35.09, 45.09, 52.96, 64.04, 72.95, 82.67, 91.67, 102.635, 113.135, 131.635];
         boundaries.forEach(function (at, index) {
           var outgoing = "#scene-" + String(index + 1).padStart(2, "0");
           var incoming = "#scene-" + String(index + 2).padStart(2, "0");
+          if (index >= 10) {
+            // The judging appendix uses deliberate hard cuts so it reads as a
+            // separate build story and never exposes the light root backdrop.
+            return;
+          }
           tl.to(outgoing, { opacity: 0, scale: 1.018, filter: "blur(5px)", duration: 0.38, ease: "power2.inOut" }, at);
           tl.fromTo(incoming, { opacity: 0, scale: 0.982, filter: "blur(5px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.38, ease: "power2.inOut" }, at);
         });
-        tl.to({}, { duration: 150.635 }, 0);
+        tl.to({}, { duration: 148.135 }, 0);
       })();
     </script>
   </body>
