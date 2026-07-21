@@ -1,2 +1,5 @@
 .thumbnails/
+.waveform-cache/
 node_modules/
+renders/review/
+snapshots/

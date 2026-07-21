@@ -343,10 +343,10 @@
     }
   </style>
 
-  <div data-hf-id="hf-kwwi" id="root" data-composition-id="05-human-gates" data-start="0" data-duration="7.84" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-cg65" class="clip f05-human-gates-ground" data-start="0" data-duration="7.84" data-track-index="0"></div>
+  <div data-hf-id="hf-kwwi" id="root" data-composition-id="05-human-gates" data-start="0" data-duration="8.24" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-cg65" id="f05-human-gates-background" class="clip f05-human-gates-ground" data-start="0" data-duration="8.24" data-track-index="0"></div>
 
-    <main data-hf-id="hf-f9sh" class="clip f05-human-gates-scene" data-start="0" data-duration="7.84" data-track-index="1">
+    <main data-hf-id="hf-f9sh" id="f05-human-gates-scene" class="clip f05-human-gates-scene" data-start="0" data-duration="8.24" data-track-index="1">
       <header data-hf-id="hf-e0qe" class="f05-human-gates-header">
         <p data-hf-id="hf-z2yt" class="f05-human-gates-kicker">Application pipeline</p>
         <h1 data-hf-id="hf-yvsp" class="f05-human-gates-title">Automation with human gates</h1>
@@ -457,10 +457,9 @@
     });
     const f05HumanGatesTimeline = gsap.timeline({ paused: true });
 
-    f05HumanGatesTimeline.set(
+    gsap.set(
       '#f05-human-gates-overview',
-      { scale: 0.82, filter: 'blur(20px)', opacity: 0 },
-      0
+      { scale: 0.82, filter: 'blur(20px)', opacity: 0 }
     );
 
     f05HumanGatesTimeline.fromTo(
