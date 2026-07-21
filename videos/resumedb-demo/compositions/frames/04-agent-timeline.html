@@ -1,15 +1,134 @@
 <template>
   <style>
-    @font-face{font-family:"Sketch Serif";src:local("Georgia")}@font-face{font-family:"Sketch Sans";src:local("Arial")}
-    #root{position:relative;width:1920px;height:1080px;overflow:hidden}.bg{position:absolute;inset:0;background:#f3f2f2}.scene{position:absolute;inset:0;padding:68px 82px 184px;color:#201f1d;font-family:"Sketch Sans",sans-serif}.k{margin:0 0 12px;color:#6d28d9;font-size:22px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}h1{margin:0;font:400 82px/1 "Sketch Serif",serif;letter-spacing:-.025em}h2{margin:0;font:600 27px/1.1 "Sketch Serif",serif}p{margin:0}.canvas{display:grid;grid-template-columns:1.48fr .52fr;gap:28px;height:610px;margin-top:44px}.agent{position:relative;overflow:hidden;padding:28px;border:2px dashed #6d28d9;border-radius:10px;background:rgba(109,40,217,.05)}.agent-head{display:flex;align-items:center;justify-content:space-between}.result{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}.pane{min-height:200px;padding:20px;border:1px solid rgba(32,31,29,.2);border-radius:8px;background:#fff}.pane strong{font-size:22px}.pane p{margin-top:8px;color:#6e6b67;font-size:18px;line-height:1.35}.scan-line{position:absolute;right:28px;top:360px;left:28px;height:5px;background:#6d28d9;box-shadow:0 0 20px rgba(109,40,217,.8)}.scan-label{position:absolute;right:45px;top:323px;padding:7px 12px;border-radius:999px;background:#6d28d9;color:#fff;font-size:14px;font-weight:700;text-transform:uppercase}.timeline{display:grid;align-content:center;padding:22px;border:2px solid rgba(32,31,29,.35);border-radius:10px;background:#f4e9d9}.step{padding:18px 14px;border-left:4px solid #6d28d9}.step.active{border:2px solid #6d28d9;border-left:4px solid #6d28d9;border-radius:8px;background:rgba(109,40,217,.08)}.label{color:#6d28d9;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.pill{padding:8px 13px;border:2px solid #6d28d9;border-radius:999px;color:#6d28d9;font-size:14px;font-weight:700;text-transform:uppercase}.band{position:absolute;right:82px;bottom:54px;left:82px;height:92px;border-top:1px solid rgba(32,31,29,.18);color:#8b8782;font-size:16px;line-height:92px;letter-spacing:.08em;text-transform:uppercase}
+    @font-face{font-family:"EB Garamond";src:url("assets/fonts/eb-garamond-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"EB Garamond";src:url("assets/fonts/eb-garamond-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:"Inter";src:url("assets/fonts/inter-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"Inter";src:url("assets/fonts/inter-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:"JetBrains Mono";src:url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+    #root{position:relative;width:1920px;height:1080px;overflow:hidden;container-type:size}
+    .f04-bg{position:absolute;inset:0;background:#f3f2f2}
+    .f04-scene{position:absolute;inset:0;padding:58px 76px 185px;color:#201f1d;font-family:"Inter",sans-serif}
+    .f04-kicker{margin:0 0 8px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:20px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+    .f04-title-row{display:flex;align-items:flex-end;justify-content:space-between;gap:36px}
+    .f04-title{margin:0;font-family:"EB Garamond",serif;font-size:76px;font-weight:400;line-height:.96;letter-spacing:-.022em}
+    .f04-observable{display:flex;align-items:center;gap:12px;margin-bottom:8px;color:#5f5b56;font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+    .f04-live-dot{width:10px;height:10px;border-radius:50%;background:#6d28d9;box-shadow:0 0 0 6px rgba(109,40,217,.12)}
+    .f04-stage{display:grid;grid-template-columns:minmax(0,3fr) minmax(290px,1fr);gap:24px;height:636px;margin-top:30px}
+    .f04-agent-shell{position:relative;overflow:hidden;border:1px solid rgba(32,31,29,.18);border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(32,31,29,.08),0 12px 28px rgba(32,31,29,.07)}
+    .f04-product{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.55;filter:saturate(.82) contrast(.94)}
+    .f04-product-wash{position:absolute;inset:0;background:linear-gradient(180deg,rgba(243,242,242,.06) 0%,rgba(243,242,242,.2) 44%,rgba(243,242,242,.96) 72%,#f3f2f2 100%)}
+    .f04-appbar{position:absolute;top:18px;right:18px;left:18px;display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border:1px solid rgba(32,31,29,.14);border-radius:8px;background:rgba(243,242,242,.92);backdrop-filter:blur(10px)}
+    .f04-appbar-label{display:flex;align-items:center;gap:10px;font-family:"JetBrains Mono",monospace;font-size:15px;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+    .f04-step-pill{padding:7px 12px;border:1px solid rgba(109,40,217,.38);border-radius:999px;background:rgba(109,40,217,.08);color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .f04-workbench{position:absolute;right:18px;bottom:18px;left:18px;display:grid;grid-template-columns:.86fr 1.14fr;gap:14px;height:330px}
+    .f04-pane{position:relative;overflow:hidden;padding:18px;border:1px solid rgba(32,31,29,.15);border-radius:9px;background:rgba(255,255,255,.96);box-shadow:0 3px 14px rgba(32,31,29,.06)}
+    .f04-pane-label{margin:0 0 14px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+    .f04-fact,.f04-requirement{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:9px;padding:10px 12px;border:1px solid rgba(32,31,29,.11);border-radius:7px;background:#f3f2f2;font-size:14px;line-height:1.15}
+    .f04-fact strong,.f04-requirement strong{font-weight:600}
+    .f04-source{color:#77716a;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+    .f04-marker{position:absolute;right:12px;bottom:8px;left:12px;height:5px;border-radius:99px;background:rgba(182,130,53,.55);transform-origin:left center}
+    .f04-verified{display:inline-flex;align-items:center;gap:5px;color:#6d28d9;font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;text-transform:uppercase}
+    .f04-verified::before{content:"✓";display:grid;width:16px;height:16px;place-items:center;border-radius:50%;background:#6d28d9;color:#fff;font-size:10px}
+    .f04-laser{position:absolute;right:0;left:0;top:0;height:4px;background:#6d28d9;box-shadow:0 -7px 20px rgba(109,40,217,.2),0 7px 22px rgba(109,40,217,.58);z-index:7}
+    .f04-laser-label{position:absolute;right:14px;top:12px;padding:6px 10px;border-radius:999px;background:#6d28d9;color:#fff;font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;z-index:8}
+    .f04-rail{position:relative;overflow:hidden;padding:24px 20px;border:1px solid rgba(32,31,29,.17);border-radius:12px;background:#f4e9d9;box-shadow:0 1px 3px rgba(32,31,29,.06)}
+    .f04-rail-head{margin:0 0 20px;color:#716b63;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+    .f04-progress-line{position:absolute;top:82px;bottom:88px;left:40px;width:2px;background:rgba(32,31,29,.13)}
+    .f04-progress-fill{position:absolute;top:82px;left:40px;width:2px;height:390px;background:#6d28d9;transform-origin:top center}
+    .f04-rail-focus{position:absolute;top:66px;right:10px;left:10px;height:94px;border:1px solid rgba(109,40,217,.55);border-radius:9px;background:rgba(109,40,217,.06)}
+    .f04-step{position:relative;z-index:2;display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:center;min-height:98px}
+    .f04-step-index{display:grid;width:24px;height:24px;place-items:center;border:1px solid rgba(32,31,29,.25);border-radius:50%;background:#f4e9d9;color:#6f6961;font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600}
+    .f04-step-state{margin:0 0 3px;color:#766f67;font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .f04-step-name{margin:0;font-family:"EB Garamond",serif;font-size:26px;font-weight:600;line-height:1}
+    .f04-match{position:absolute;right:20px;bottom:20px;left:20px;overflow:hidden;padding:13px 14px;border:1px solid rgba(32,31,29,.16);border-radius:9px;background:#f3f2f2}
+    .f04-match-row{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between}
+    .f04-match-label{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .f04-match-value{color:#6d28d9;font-family:"EB Garamond",serif;font-size:32px;font-weight:600;line-height:.8}
+    .f04-match-fill{position:absolute;inset:0;background:rgba(109,40,217,.1);transform-origin:left center}
   </style>
-  <div data-hf-id="hf-21f3" id="root" data-composition-id="04-agent-timeline" data-start="0" data-duration="8" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-sgit" id="f04-agent-timeline-bg" class="clip bg" data-start="0" data-duration="8" data-track-index="0"></div>
-    <main data-hf-id="hf-yjw8" id="f04-agent-timeline-scene" class="clip scene" data-start="0" data-duration="8" data-track-index="1">
-      <p data-hf-id="hf-w89c" class="k">Live agent run</p><h1 data-hf-id="hf-buvc">Watch the agent work</h1>
-      <div data-hf-id="hf-nq1o" class="canvas"><div data-hf-id="hf-omaj" class="agent"><div data-hf-id="hf-dqua" class="agent-head"><span data-hf-id="hf-z2e2" class="label">Animated Career Agent run</span><span data-hf-id="hf-a09c" class="pill">Step 3 of 4</span></div><div data-hf-id="hf-ycrv" class="result"><div data-hf-id="hf-yhbu" class="pane"><strong data-hf-id="hf-492m">Northstar Robotics</strong><p data-hf-id="hf-2loh">Software Engineering Intern<br data-hf-id="hf-x5px">React, TypeScript, Python, PostgreSQL</p></div><div data-hf-id="hf-bqam" class="pane"><strong data-hf-id="hf-pt61">Canonical evidence</strong><p data-hf-id="hf-efm7">Campus Technology Lab<br data-hf-id="hf-rsrt">CoursePath project<br data-hf-id="hf-szow">Measured product impact</p></div><div data-hf-id="hf-wrcg" class="pane" style="grid-column:1/3;min-height:250px"><strong data-hf-id="hf-yxm3">Evidence comparison surface</strong><p data-hf-id="hf-2aix">The scanner sweeps vertically across the job description and highlights supported experience as it passes.</p></div></div><span data-hf-id="hf-5907" class="scan-label">Verifying evidence</span><div data-hf-id="hf-d3te" class="scan-line"></div></div><div data-hf-id="hf-jvx5" class="timeline"><div data-hf-id="hf-uqbq" class="step"><span data-hf-id="hf-jl99" class="label">01 Complete</span><h2 data-hf-id="hf-4y4q">Read profile</h2></div><div data-hf-id="hf-jlje" class="step"><span data-hf-id="hf-ms22" class="label">02 Complete</span><h2 data-hf-id="hf-57ub">Inspect posting</h2></div><div data-hf-id="hf-ly7k" class="step active"><span data-hf-id="hf-4mz3" class="label">03 Scanning</span><h2 data-hf-id="hf-nrlj">Verify evidence</h2></div><div data-hf-id="hf-jzuf" class="step"><span data-hf-id="hf-1rdu" class="label">04 Next</span><h2 data-hf-id="hf-6e4n">Prepare match</h2></div></div></div>
-      <div data-hf-id="hf-y6ou" class="band">The wide agent surface carries the action - the checklist only tracks progress</div>
+  <div data-hf-id="hf-641u" id="root" data-composition-id="04-agent-timeline" data-start="0" data-duration="6.94" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-o072" id="f04-background" class="clip f04-bg" data-start="0" data-duration="6.94" data-track-index="0"></div>
+    <main data-hf-id="hf-dxma" id="f04-scene" class="clip f04-scene" data-start="0" data-duration="6.94" data-track-index="1">
+      <p data-hf-id="hf-xbzw" class="f04-kicker">✱ Live agent run</p>
+      <div data-hf-id="hf-h8lo" class="f04-title-row">
+        <h1 data-hf-id="hf-59mj" class="f04-title">Watch the agent work</h1>
+        <div data-hf-id="hf-dy9f" class="f04-observable"><span data-hf-id="hf-yy2i" class="f04-live-dot"></span> Observable by default</div>
+      </div>
+      <section data-hf-id="hf-c91z" class="f04-stage">
+        <div data-hf-id="hf-jue4" class="f04-agent-shell" id="f04-agent-shell">
+          <img data-hf-id="hf-ta8i" class="f04-product" src="assets/04-career-agent.png" alt="ResumeDB Career Agent workspace">
+          <div data-hf-id="hf-wbz4" class="f04-product-wash"></div>
+          <div data-hf-id="hf-1zzj" class="f04-appbar">
+            <div data-hf-id="hf-qd42" class="f04-appbar-label"><span data-hf-id="hf-hw9q" class="f04-live-dot"></span> Career Agent - Northstar Robotics</div>
+            <div data-hf-id="hf-g6n9" class="f04-step-pill" id="f04-run-status">Reading profile</div>
+          </div>
+          <div data-hf-id="hf-d6gm" class="f04-workbench">
+            <article data-hf-id="hf-b4cj" class="f04-pane" id="f04-profile-pane">
+              <p data-hf-id="hf-8gay" class="f04-pane-label">Canonical profile</p>
+              <div data-hf-id="hf-losp" class="f04-fact"><strong data-hf-id="hf-n494">Campus Technology Lab</strong><span data-hf-id="hf-an0t" class="f04-source">Experience</span></div>
+              <div data-hf-id="hf-e471" class="f04-fact"><strong data-hf-id="hf-edls">CoursePath</strong><span data-hf-id="hf-vrx6" class="f04-source">Project</span></div>
+              <div data-hf-id="hf-fb44" class="f04-fact"><strong data-hf-id="hf-8pax">Measured product impact</strong><span data-hf-id="hf-jak0" class="f04-source">Evidence</span></div>
+            </article>
+            <article data-hf-id="hf-8otd" class="f04-pane" id="f04-evidence-pane">
+              <p data-hf-id="hf-orqw" class="f04-pane-label">Posting evidence</p>
+              <div data-hf-id="hf-g1ws" class="f04-requirement"><strong data-hf-id="hf-rq87">React + TypeScript</strong><span data-hf-id="hf-24o0" class="f04-verified">Supported</span><i data-hf-id="hf-hkfh" class="f04-marker"></i></div>
+              <div data-hf-id="hf-m1xg" class="f04-requirement"><strong data-hf-id="hf-onm4">Python services</strong><span data-hf-id="hf-npqw" class="f04-verified">Supported</span><i data-hf-id="hf-4e3l" class="f04-marker"></i></div>
+              <div data-hf-id="hf-33ae" class="f04-requirement" id="f04-unsupported"><strong data-hf-id="hf-6wps">PostgreSQL</strong><span data-hf-id="hf-tcvu" class="f04-source">Checking source</span><i data-hf-id="hf-5l0o" class="f04-marker"></i></div>
+              <div data-hf-id="hf-ha2e" class="f04-laser" id="f04-laser"></div>
+              <span data-hf-id="hf-hzj5" class="f04-laser-label" id="f04-laser-label">Verifying evidence</span>
+            </article>
+          </div>
+        </div>
+        <aside data-hf-id="hf-ie3s" class="f04-rail">
+          <p data-hf-id="hf-k5fx" class="f04-rail-head">Agent run - 4 stages</p>
+          <div data-hf-id="hf-en39" class="f04-progress-line"></div>
+          <div data-hf-id="hf-uagy" class="f04-progress-fill" id="f04-progress-fill"></div>
+          <div data-hf-id="hf-7wly" class="f04-rail-focus" id="f04-rail-focus"></div>
+          <div data-hf-id="hf-1s61" class="f04-step"><span data-hf-id="hf-f3kw" class="f04-step-index">01</span><div data-hf-id="hf-yeow"><p data-hf-id="hf-qblg" class="f04-step-state">Active</p><h2 data-hf-id="hf-awq3" class="f04-step-name">Read profile</h2></div></div>
+          <div data-hf-id="hf-xbcd" class="f04-step"><span data-hf-id="hf-dwnt" class="f04-step-index">02</span><div data-hf-id="hf-y7yw"><p data-hf-id="hf-6rcz" class="f04-step-state">Queued</p><h2 data-hf-id="hf-f6ng" class="f04-step-name">Inspect posting</h2></div></div>
+          <div data-hf-id="hf-yi9g" class="f04-step"><span data-hf-id="hf-eayu" class="f04-step-index">03</span><div data-hf-id="hf-x11t"><p data-hf-id="hf-7wcj" class="f04-step-state">Queued</p><h2 data-hf-id="hf-pzt4" class="f04-step-name">Verify evidence</h2></div></div>
+          <div data-hf-id="hf-y3yf" class="f04-step"><span data-hf-id="hf-d41r" class="f04-step-index">04</span><div data-hf-id="hf-xfcu"><p data-hf-id="hf-7i1i" class="f04-step-state">Queued</p><h2 data-hf-id="hf-159w" class="f04-step-name">Prepare match</h2></div></div>
+          <div data-hf-id="hf-tumm" class="f04-match">
+            <div data-hf-id="hf-99y2" class="f04-match-fill" id="f04-match-fill"></div>
+            <div data-hf-id="hf-bnux" class="f04-match-row"><span data-hf-id="hf-nts5" class="f04-match-label">Role match</span><strong data-hf-id="hf-cgwq" class="f04-match-value" id="f04-match-value">92%</strong></div>
+          </div>
+        </aside>
+      </section>
     </main>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script><script>window.__timelines=window.__timelines||{};window.__timelines["04-agent-timeline"]=gsap.timeline({paused:true});</script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines=window.__timelines||{};
+      var tl=gsap.timeline({paused:true});
+      var steps=gsap.utils.toArray("#f04-scene .f04-step");
+      var states=gsap.utils.toArray("#f04-scene .f04-step-state");
+      var indexes=gsap.utils.toArray("#f04-scene .f04-step-index");
+      var setRail=function(index,label,position){
+        tl.to("#f04-rail-focus",{y:index*98,duration:.5,ease:"power3.inOut"},position);
+        tl.to("#f04-progress-fill",{scaleY:(index+1)/4,duration:.5,ease:"power3.out"},position);
+        tl.set(states[index],{textContent:"Active",color:"#6d28d9"},position);
+        if(index>0){tl.set(states[index-1],{textContent:"Complete",color:"#766f67"},position);tl.set(indexes[index-1],{textContent:"✓",backgroundColor:"#6d28d9",color:"#fff",borderColor:"#6d28d9"},position);}
+        tl.set("#f04-run-status",{textContent:label},position);
+      };
+      tl.fromTo("#f04-agent-shell",{scale:.96,opacity:0},{scale:1,opacity:1,duration:.7,ease:"power3.out"},0);
+      tl.fromTo("#f04-rail-focus",{opacity:0},{opacity:1,duration:.45,ease:"power3.out"},.35);
+      tl.fromTo("#f04-progress-fill",{scaleY:0},{scaleY:.25,duration:.65,ease:"power3.out",transformOrigin:"top center"},.35);
+      tl.fromTo("#f04-profile-pane .f04-fact",{x:-34,opacity:0},{x:0,opacity:1,duration:.42,ease:"power3.out",stagger:.18},1.35);
+      setRail(1,"Inspecting posting",1.55);
+      tl.fromTo("#f04-evidence-pane .f04-requirement",{x:36,opacity:0},{x:0,opacity:1,duration:.42,ease:"power3.out",stagger:.18},2.75);
+      tl.fromTo("#f04-evidence-pane .f04-marker",{scaleX:0},{scaleX:1,duration:.5,ease:"power2.out",stagger:.2,transformOrigin:"left center"},3.1);
+      setRail(2,"Verifying evidence",3.05);
+      tl.fromTo("#f04-laser",{y:0,opacity:0},{y:245,opacity:1,duration:1.25,ease:"power1.inOut"},4.35);
+      tl.fromTo("#f04-laser-label",{y:0,opacity:0},{y:220,opacity:1,duration:1.25,ease:"power1.inOut"},4.35);
+      tl.to("#f04-unsupported",{"--dof":"5px",filter:"blur(5px)",opacity:.45,duration:.7,ease:"power2.inOut"},4.72);
+      tl.fromTo("#f04-evidence-pane .f04-verified",{scale:.78,opacity:0},{scale:1,opacity:1,duration:.35,ease:"power3.out",stagger:.16},4.7);
+      setRail(3,"Preparing match",5.72);
+      tl.fromTo("#f04-match-fill",{scaleX:0},{scaleX:.92,duration:.8,ease:"power3.out",transformOrigin:"left center"},5.85);
+      tl.fromTo("#f04-match-value",{y:12,opacity:0},{y:0,opacity:1,duration:.5,ease:"power3.out"},6.05);
+      tl.set(states[2],{textContent:"Complete",color:"#766f67"},5.72);
+      tl.set(indexes[2],{textContent:"✓",backgroundColor:"#6d28d9",color:"#fff",borderColor:"#6d28d9"},5.72);
+      window.__timelines["04-agent-timeline"]=tl;
+    })();
+  </script>
 </template>

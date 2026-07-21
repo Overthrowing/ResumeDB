@@ -29,7 +29,7 @@ music: none
 - type: hook
 - persuasion: Friction reduction
 - beat: recognition to relief
-- blueprint: constellation-hub - scattered tasks converge into the dashboard
+- blueprint: constellation-hub
 - asset_candidates: assets/01-dashboard.png - ResumeDB career command center with a Ready application and a complete synthetic profile
 - focal: assets/01-dashboard.png
 - roles: 01-dashboard = background product surface; task chips = supporting; ResumeDB promise = foreground
@@ -54,7 +54,7 @@ keyMessage: ResumeDB manages the whole job journey, not only a resume.
 - type: product_intro
 - persuasion: Risk reversal
 - beat: trust
-- blueprint: device-surface-showcase - the real profile and knowledge surfaces advance through a single setup flow
+- blueprint: device-surface-showcase
 - asset_candidates: assets/02-settings-profile-agent.png - canonical applicant facts, explicit answers, and connected-agent settings; assets/03-knowledge.png - structured student career evidence
 - focal: assets/02-settings-profile-agent.png
 - roles: 02-settings-profile-agent = primary product surface; 03-knowledge = supporting evidence surface; missing-fact card = foreground
@@ -80,7 +80,7 @@ keyMessage: The agent learns from verified user data and never invents factual a
 - type: feature_showcase
 - persuasion: Show-don't-tell proof
 - beat: curiosity to control
-- blueprint: cursor-ui-demo - one natural-language discovery flow driven end to end by the simulated cursor
+- blueprint: cursor-ui-demo
 - asset_candidates: assets/04-career-agent.png - natural-language Career Agent input and discovery inbox
 - focal: assets/04-career-agent.png
 - roles: 04-career-agent = primary product surface; prompt = foreground interaction; transcript = foreground proof
@@ -106,7 +106,7 @@ keyMessage: A student can describe the goal or paste any posting and let the age
 - type: benefit_highlight
 - persuasion: Transparency
 - beat: confidence
-- blueprint: grid-card-assemble - four observable run stages accumulate and remain visible
+- blueprint: grid-card-assemble
 - asset_candidates: assets/04-career-agent.png - live agent run timeline with four named stages
 - focal: assets/04-career-agent.png
 - roles: 04-career-agent = wide primary agent surface; checklist = narrow supporting rail; evidence scanner = foreground proof
@@ -133,7 +133,7 @@ keyMessage: ResumeDB shows what the agent is doing and why.
 - type: benefit_highlight
 - persuasion: Risk reversal
 - beat: control
-- blueprint: spatial-pan-stations - the camera travels the five-stage application journey and pauses on both human gates
+- blueprint: spatial-pan-stations
 - asset_candidates: assets/05-applications.png - five-stage applications table; assets/06-application-overview.png - Ready application with the manual submission instruction
 - focal: assets/05-applications.png
 - roles: 05-applications = primary pipeline surface; 06-application-overview = supporting Ready workbench; human-gate labels = foreground
@@ -159,7 +159,7 @@ keyMessage: The agent prepares; the student approves and submits.
 - type: feature_showcase
 - persuasion: Show-don't-tell proof
 - beat: skepticism to trust
-- blueprint: comparison-split - original and tailored language open side by side while source evidence locks beneath them
+- blueprint: comparison-split
 - asset_candidates: assets/07-evidence-tailoring.png - three evidence-backed before and after tailoring cards
 - focal: assets/07-evidence-tailoring.png
 - roles: 07-evidence-tailoring = primary comparison surface; requirement tags = supporting; evidence links = foreground trust proof
@@ -185,7 +185,7 @@ keyMessage: Stronger positioning is grounded in real student evidence.
 - type: feature_showcase
 - persuasion: Value stacking
 - beat: capability and trust
-- blueprint: device-surface-showcase - a single application window cycles through the finished artifacts
+- blueprint: device-surface-showcase
 - asset_candidates: assets/14-tailored-resume.png - rendered one-page tailored resume; assets/15-cover-qa.png - sourced application answers and tailored cover letter
 - focal: assets/14-tailored-resume.png
 - roles: 14-tailored-resume = primary artifact; 15-cover-qa = supporting answers and letter; source badges = foreground trust proof
@@ -211,7 +211,7 @@ keyMessage: ResumeDB prepares every job-specific artifact from the same verified
 - type: feature_showcase
 - persuasion: Friction reduction plus risk reversal
 - beat: momentum with control
-- blueprint: cursor-ui-demo - preflight, fill, and deliberate stop shown as one continuous interaction
+- blueprint: cursor-ui-demo
 - asset_candidates: assets/13-extension-preflight-live.png - extension with eleven mapped fields and zero blockers; assets/09-ats-empty.png - empty synthetic ATS; assets/10-ats-filled.png - ATS after approved fields are filled; assets/11-ats-profile-answers.png - explicit eligibility and demographic answers
 - focal: assets/13-extension-preflight-live.png
 - roles: 13-extension-preflight-live = foreground extension panel; 09-ats-empty = background starting state; 10-ats-filled = primary completion state; 11-ats-profile-answers = supporting explicit-answer proof
@@ -238,7 +238,7 @@ keyMessage: ResumeDB automates form entry but never clicks Submit.
 - type: benefit_highlight
 - persuasion: Choice architecture
 - beat: freedom and confidence
-- blueprint: comparison-split - hosted and user-connected agents receive equal visual weight around one shared memory
+- blueprint: comparison-split
 - asset_candidates: assets/02-settings-profile-agent.png - hosted and connected-agent configuration inside Profile and Settings
 - focal: assets/02-settings-profile-agent.png
 - roles: 02-settings-profile-agent = real settings foundation; hosted agent = supporting branch; connected agent = supporting branch; shared memory = foreground anchor
@@ -264,7 +264,7 @@ keyMessage: Most users can use hosted AI, while power users can connect their ow
 - type: branding
 - persuasion: Future pacing
 - beat: aspiration
-- blueprint: grid-card-assemble - six roadmap ideas accumulate in two columns before the final lockup
+- blueprint: grid-card-assemble
 - asset_candidates: assets/favicon.svg - official ResumeDB mark captured from the deployed product
 - focal: assets/favicon.svg
 - roles: favicon = final brand lockup; roadmap cards = primary future ideas; future label = foreground scope guard

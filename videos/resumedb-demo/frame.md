@@ -26,21 +26,21 @@ shadows: { card: "0 1px 3px ink@8%, 0 4px 16px ink@4%", none: "none" }
 
 typography:
   # — reading + chrome ramp —
-  body:    { fontFamily: "Lora", cqw: 1.5, weight: 400, lineHeight: 1.5 }
-  lead:    { fontFamily: "Lora", cqw: 2.08, weight: 400, lineHeight: 1.5 }
-  card-title:{ fontFamily: "Cormorant Garamond", cqw: 2.3, weight: 600, lineHeight: 1.25, tracking: "-0.005em" }
-  button:  { fontFamily: "Lora", cqw: 1.46, weight: 600, lineHeight: 1.0 }
-  tag-upper:{ fontFamily: "Lora", cqw: 1.35, weight: 600, tracking: "0.18em", upper: true }
+  body:    { fontFamily: "Inter", cqw: 1.5, weight: 400, lineHeight: 1.5 }
+  lead:    { fontFamily: "Inter", cqw: 2.08, weight: 400, lineHeight: 1.5 }
+  card-title:{ fontFamily: "EB Garamond", cqw: 2.3, weight: 600, lineHeight: 1.25, tracking: "-0.005em" }
+  button:  { fontFamily: "Inter", cqw: 1.46, weight: 600, lineHeight: 1.0 }
+  tag-upper:{ fontFamily: "Inter", cqw: 1.35, weight: 600, tracking: "0.18em", upper: true }
   kicker:  { fontFamily: "JetBrains Mono", px: 28, cqw: 1.46, weight: 600, tracking: "0.16em", upper: true }
   mono-label:{ fontFamily: "JetBrains Mono", px: 26, cqw: 1.35, weight: 600, tracking: "0.02em" }
   code:    { fontFamily: "JetBrains Mono", cqw: 1.67, weight: 400, lineHeight: 1.6 }
   # — display ramp (Cormorant Garamond 400, sentence case, negative tracking. Renderer embeds only 400/700 — author at 400; italic is the synthesized slant) —
-  headline:{ fontFamily: "Cormorant Garamond", cqw: 4.6, weight: 400, lineHeight: 1.06, tracking: "-0.018em" }
-  quote-pull:{ fontFamily: "Cormorant Garamond", cqw: 5.0, weight: 400, lineHeight: 1.12, tracking: "-0.012em", italic: true }
-  display-italic:{ fontFamily: "Cormorant Garamond", cqw: 6.7, weight: 400, lineHeight: 1.05, tracking: "-0.012em", italic: true }
-  display:{ fontFamily: "Cormorant Garamond", cqw: 7.3, weight: 400, lineHeight: 1.02, tracking: "-0.022em" }
-  number-hero:{ fontFamily: "Cormorant Garamond", cqw: 9.4, weight: 400, lineHeight: 0.95, tracking: "-0.025em" }
-  display-cover:{ fontFamily: "Cormorant Garamond", cqw: 9.9, weight: 400, lineHeight: 0.98, tracking: "-0.028em" }
+  headline:{ fontFamily: "EB Garamond", cqw: 4.6, weight: 400, lineHeight: 1.06, tracking: "-0.018em" }
+  quote-pull:{ fontFamily: "EB Garamond", cqw: 5.0, weight: 400, lineHeight: 1.12, tracking: "-0.012em", italic: true }
+  display-italic:{ fontFamily: "EB Garamond", cqw: 6.7, weight: 400, lineHeight: 1.05, tracking: "-0.012em", italic: true }
+  display:{ fontFamily: "EB Garamond", cqw: 7.3, weight: 400, lineHeight: 1.02, tracking: "-0.022em" }
+  number-hero:{ fontFamily: "EB Garamond", cqw: 9.4, weight: 400, lineHeight: 0.95, tracking: "-0.025em" }
+  display-cover:{ fontFamily: "EB Garamond", cqw: 9.9, weight: 400, lineHeight: 0.98, tracking: "-0.028em" }
   number-unit:{ fontFamily: "JetBrains Mono", cqw: 2.08, weight: 600, lineHeight: 1.0 }
 
 spacing:
@@ -96,7 +96,7 @@ components:
 
 This is the **claude** preset remixed onto the captured brand. The YAML frontmatter above (colors · typography · components) is **normative and already correct — use it verbatim.** The prose below is the ORIGINAL preset's intent; read it THROUGH the frontmatter:
 
-- **Fonts** — already set to **Cormorant Garamond** (display) / **Lora** (body); ignore any preset font name lingering in prose.
+- **Fonts** — already set to **EB Garamond** (display) / **Inter** (body); ignore any preset font name lingering in prose.
 - **Weights** — the brand font ships `{400, 600}` only; every weight is clamped to these — ignore higher preset weights (e.g. 600/700) in prose.
 - **Colors** — use the frontmatter hex; preset color NAMES in prose (e.g. "cobalt", "cream") mean the remapped brand values.
 
