@@ -89,6 +89,22 @@ export interface Health {
   data_repo_ok: boolean
 }
 
+export interface McpConnectionTool {
+  name: string
+  description: string
+}
+
+export interface McpConnection {
+  enabled: boolean
+  created_at: string | null
+  token_hint: string | null
+  mcp_url: string
+  tools: McpConnectionTool[]
+  token?: string
+  codex_command?: string
+  revoked?: boolean
+}
+
 export interface HistoryEntry {
   sha: string
   timestamp: number
@@ -261,6 +277,9 @@ export const api = {
   health: () => req<Health>('/api/health'),
   config: () => req<Config>('/api/config'),
   saveConfig: (cfg: Partial<Config>) => req<Config>('/api/config', json('PUT', cfg)),
+  mcpConnection: () => req<McpConnection>('/api/agent-connections/mcp'),
+  rotateMcpConnection: () => req<McpConnection>('/api/agent-connections/mcp/rotate', { method: 'POST' }),
+  revokeMcpConnection: () => req<McpConnection>('/api/agent-connections/mcp', { method: 'DELETE' }),
   initDatarepo: (path?: string) => req<{ ok: boolean }>('/api/datarepo/init', json('POST', { path })),
   pickFolder: () => req<{ path: string | null }>('/api/pick-folder', { method: 'POST' }),
 

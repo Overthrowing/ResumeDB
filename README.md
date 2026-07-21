@@ -30,6 +30,7 @@ inspectable and recoverable.
 - Animated guided demo with spotlight masks and a simulated cursor
 - Manual post-submission outcomes
 - Claude Code and Codex provider support
+- Revocable bring-your-own-agent connections over Streamable HTTP MCP
 - Full API access for external agents through the generated OpenAPI interface
 
 ## Requirements
@@ -74,7 +75,7 @@ environment changes.
    limited to one replica because career-data writes are Git-backed. Do not
    set `RAILWAY_RUN_UID`; the startup script enters as root only to assign the
    mounted volume to its unprivileged `resumedb` runtime user.
-3. Set these variables:
+3. For ResumeDB-hosted agent runs, set these variables:
 
    ```text
    RESUMEDB_ALLOWED_ORIGINS=https://your-app.vercel.app
@@ -86,6 +87,12 @@ environment changes.
    `OPENAI_API_KEY`. The startup script authenticates the containerized Codex
    CLI from that secret. Never put either model key in a Vercel `VITE_`
    variable.
+
+   Model credentials are optional when the deployment uses only the guided
+   demo and bring-your-own-agent MCP tools. In that mode the connected user's
+   agent performs all model reasoning, so Railway does not need an OpenAI or
+   Anthropic key. Hosted Career Agent actions remain unavailable until a
+   server-side provider is authenticated.
 4. Generate a Railway public domain. On first launch, the onboarding screen
    creates the career-data repository at `/data/resume-data`.
 
@@ -188,6 +195,34 @@ Treat a public Railway deployment as a shared synthetic demo: do not load real
 candidate data, use a provider key with a strict spending limit, and remove or
 rotate the key after judging. Real user deployments require authentication,
 tenant isolation, and durable request-level usage controls.
+
+### Bring your own agent
+
+Open **Profile & Settings**, find **Bring your own agent**, and choose
+**Create agent connection**. ResumeDB shows the plaintext token once and stores
+only its SHA-256 hash on the persistent volume.
+
+For Codex, copy the generated two-line command into one terminal, then launch
+or restart Codex from that terminal. Codex uses the user's existing ChatGPT or
+API authentication. Other Streamable HTTP MCP clients can use the displayed
+endpoint with the token in an `Authorization: Bearer ...` header.
+
+After connecting, try:
+
+```text
+Use ResumeDB to read my complete career context, find internships I qualify
+for, and save supported applications as drafts.
+```
+
+The MCP server exposes bounded tools for reading the complete approved career
+knowledge base, saving job leads, creating and tailoring application drafts,
+rendering resumes, proposing new knowledge, and publishing progress to the
+existing live agent timeline. It never invokes ResumeDB's configured hosted
+model. Connected agents cannot move a draft to `ready` or a ready application
+to `submitted`; those remain human actions.
+
+Rotate or revoke the token from the same settings card. Rotation immediately
+invalidates the previous token.
 
 ## Safety model
 

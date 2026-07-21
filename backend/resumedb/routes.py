@@ -5,12 +5,13 @@ import sys
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse
 from pydantic import BaseModel
 
-from . import audit, config, datarepo, gitops, pipeline, render
+from . import agent_connections, audit, config, datarepo, gitops, pipeline, render
 from .agent import public_agent_error
+from .mcp_server import tool_manifest
 
 router = APIRouter(prefix="/api")
 _agent_tasks: set[asyncio.Task] = set()
@@ -75,6 +76,47 @@ def put_config(cfg: dict):
     merged["models"].update(cfg.get("models", {}))
     config.save(merged)
     return merged
+
+
+def _public_base(request: Request) -> str:
+    forwarded_proto = request.headers.get("x-forwarded-proto", "").split(",", 1)[0].strip()
+    forwarded_host = request.headers.get("x-forwarded-host", "").split(",", 1)[0].strip()
+    scheme = forwarded_proto or request.url.scheme
+    host = forwarded_host or request.headers.get("host") or request.url.netloc
+    return f"{scheme}://{host}".rstrip("/")
+
+
+async def _connection_payload(request: Request) -> dict:
+    mcp_url = f"{_public_base(request)}/mcp/"
+    return {
+        **agent_connections.status(),
+        "mcp_url": mcp_url,
+        "tools": await tool_manifest(),
+    }
+
+
+@router.get("/agent-connections/mcp")
+async def get_agent_connection(request: Request):
+    return await _connection_payload(request)
+
+
+@router.post("/agent-connections/mcp/rotate")
+async def rotate_agent_connection(request: Request):
+    token, _ = agent_connections.rotate()
+    payload = await _connection_payload(request)
+    payload["token"] = token
+    payload["codex_command"] = (
+        f"export RESUMEDB_MCP_TOKEN='{token}'\n"
+        f"codex mcp add resumedb --url '{payload['mcp_url']}' "
+        "--bearer-token-env-var RESUMEDB_MCP_TOKEN"
+    )
+    return payload
+
+
+@router.delete("/agent-connections/mcp")
+async def revoke_agent_connection(request: Request):
+    revoked = agent_connections.revoke()
+    return {**(await _connection_payload(request)), "revoked": revoked}
 
 
 @router.post("/pick-folder")
