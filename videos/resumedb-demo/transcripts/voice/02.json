@@ -1,0 +1,437 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:08,200"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 8200
+			},
+			"text": " Meet SAM. OneProfile remembers every project, result, preference, and hard-won skill, then gets smarter with every application.",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.93181,
+					"t_dtw": -1
+				},
+				{
+					"text": " Meet",
+					"timestamps": {
+						"from": "00:00:00,180",
+						"to": "00:00:00,570"
+					},
+					"offsets": {
+						"from": 180,
+						"to": 570
+					},
+					"id": 21167,
+					"p": 0.970783,
+					"t_dtw": -1
+				},
+				{
+					"text": " SAM",
+					"timestamps": {
+						"from": "00:00:00,570",
+						"to": "00:00:00,840"
+					},
+					"offsets": {
+						"from": 570,
+						"to": 840
+					},
+					"id": 28844,
+					"p": 0.874628,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:00,840",
+						"to": "00:00:01,230"
+					},
+					"offsets": {
+						"from": 840,
+						"to": 1230
+					},
+					"id": 13,
+					"p": 0.493397,
+					"t_dtw": -1
+				},
+				{
+					"text": " One",
+					"timestamps": {
+						"from": "00:00:01,550",
+						"to": "00:00:01,590"
+					},
+					"offsets": {
+						"from": 1550,
+						"to": 1590
+					},
+					"id": 1881,
+					"p": 0.507462,
+					"t_dtw": -1
+				},
+				{
+					"text": "Profile",
+					"timestamps": {
+						"from": "00:00:01,590",
+						"to": "00:00:02,040"
+					},
+					"offsets": {
+						"from": 1590,
+						"to": 2040
+					},
+					"id": 37046,
+					"p": 0.354043,
+					"t_dtw": -1
+				},
+				{
+					"text": " remembers",
+					"timestamps": {
+						"from": "00:00:02,040",
+						"to": "00:00:02,590"
+					},
+					"offsets": {
+						"from": 2040,
+						"to": 2590
+					},
+					"id": 18140,
+					"p": 0.952496,
+					"t_dtw": -1
+				},
+				{
+					"text": " every",
+					"timestamps": {
+						"from": "00:00:02,660",
+						"to": "00:00:02,880"
+					},
+					"offsets": {
+						"from": 2660,
+						"to": 2880
+					},
+					"id": 790,
+					"p": 0.986203,
+					"t_dtw": -1
+				},
+				{
+					"text": " project",
+					"timestamps": {
+						"from": "00:00:02,880",
+						"to": "00:00:03,250"
+					},
+					"offsets": {
+						"from": 2880,
+						"to": 3250
+					},
+					"id": 1628,
+					"p": 0.965394,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:03,250",
+						"to": "00:00:03,360"
+					},
+					"offsets": {
+						"from": 3250,
+						"to": 3360
+					},
+					"id": 11,
+					"p": 0.938095,
+					"t_dtw": -1
+				},
+				{
+					"text": " result",
+					"timestamps": {
+						"from": "00:00:03,420",
+						"to": "00:00:03,830"
+					},
+					"offsets": {
+						"from": 3420,
+						"to": 3830
+					},
+					"id": 1255,
+					"p": 0.906667,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:03,840",
+						"to": "00:00:03,920"
+					},
+					"offsets": {
+						"from": 3840,
+						"to": 3920
+					},
+					"id": 11,
+					"p": 0.960411,
+					"t_dtw": -1
+				},
+				{
+					"text": " preference",
+					"timestamps": {
+						"from": "00:00:04,190",
+						"to": "00:00:04,530"
+					},
+					"offsets": {
+						"from": 4190,
+						"to": 4530
+					},
+					"id": 12741,
+					"p": 0.917877,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:04,530",
+						"to": "00:00:04,640"
+					},
+					"offsets": {
+						"from": 4530,
+						"to": 4640
+					},
+					"id": 11,
+					"p": 0.669266,
+					"t_dtw": -1
+				},
+				{
+					"text": " and",
+					"timestamps": {
+						"from": "00:00:04,640",
+						"to": "00:00:04,820"
+					},
+					"offsets": {
+						"from": 4640,
+						"to": 4820
+					},
+					"id": 290,
+					"p": 0.94392,
+					"t_dtw": -1
+				},
+				{
+					"text": " hard",
+					"timestamps": {
+						"from": "00:00:04,820",
+						"to": "00:00:05,010"
+					},
+					"offsets": {
+						"from": 4820,
+						"to": 5010
+					},
+					"id": 1327,
+					"p": 0.904388,
+					"t_dtw": -1
+				},
+				{
+					"text": "-",
+					"timestamps": {
+						"from": "00:00:05,010",
+						"to": "00:00:05,040"
+					},
+					"offsets": {
+						"from": 5010,
+						"to": 5040
+					},
+					"id": 12,
+					"p": 0.721968,
+					"t_dtw": -1
+				},
+				{
+					"text": "won",
+					"timestamps": {
+						"from": "00:00:05,050",
+						"to": "00:00:05,200"
+					},
+					"offsets": {
+						"from": 5050,
+						"to": 5200
+					},
+					"id": 26502,
+					"p": 0.945728,
+					"t_dtw": -1
+				},
+				{
+					"text": " skill",
+					"timestamps": {
+						"from": "00:00:05,200",
+						"to": "00:00:05,690"
+					},
+					"offsets": {
+						"from": 5200,
+						"to": 5690
+					},
+					"id": 5032,
+					"p": 0.968174,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:05,910",
+						"to": "00:00:05,910"
+					},
+					"offsets": {
+						"from": 5910,
+						"to": 5910
+					},
+					"id": 11,
+					"p": 0.668514,
+					"t_dtw": -1
+				},
+				{
+					"text": " then",
+					"timestamps": {
+						"from": "00:00:05,960",
+						"to": "00:00:06,080"
+					},
+					"offsets": {
+						"from": 5960,
+						"to": 6080
+					},
+					"id": 788,
+					"p": 0.557271,
+					"t_dtw": -1
+				},
+				{
+					"text": " gets",
+					"timestamps": {
+						"from": "00:00:06,080",
+						"to": "00:00:06,290"
+					},
+					"offsets": {
+						"from": 6080,
+						"to": 6290
+					},
+					"id": 3011,
+					"p": 0.659363,
+					"t_dtw": -1
+				},
+				{
+					"text": " smarter",
+					"timestamps": {
+						"from": "00:00:06,330",
+						"to": "00:00:06,830"
+					},
+					"offsets": {
+						"from": 6330,
+						"to": 6830
+					},
+					"id": 23714,
+					"p": 0.951686,
+					"t_dtw": -1
+				},
+				{
+					"text": " with",
+					"timestamps": {
+						"from": "00:00:06,990",
+						"to": "00:00:07,140"
+					},
+					"offsets": {
+						"from": 6990,
+						"to": 7140
+					},
+					"id": 351,
+					"p": 0.970228,
+					"t_dtw": -1
+				},
+				{
+					"text": " every",
+					"timestamps": {
+						"from": "00:00:07,170",
+						"to": "00:00:07,420"
+					},
+					"offsets": {
+						"from": 7170,
+						"to": 7420
+					},
+					"id": 790,
+					"p": 0.995184,
+					"t_dtw": -1
+				},
+				{
+					"text": " application",
+					"timestamps": {
+						"from": "00:00:07,420",
+						"to": "00:00:07,980"
+					},
+					"offsets": {
+						"from": 7420,
+						"to": 7980
+					},
+					"id": 3586,
+					"p": 0.993066,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:07,980",
+						"to": "00:00:08,080"
+					},
+					"offsets": {
+						"from": 7980,
+						"to": 8080
+					},
+					"id": 13,
+					"p": 0.963426,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_410]",
+					"timestamps": {
+						"from": "00:00:08,200",
+						"to": "00:00:08,200"
+					},
+					"offsets": {
+						"from": 8200,
+						"to": 8200
+					},
+					"id": 50773,
+					"p": 0.0525334,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

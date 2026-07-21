@@ -9,104 +9,104 @@
         {
           "id": "fish-01-0",
           "text": "200",
-          "start": 0.17,
-          "end": 0.68
+          "start": 0.19,
+          "end": 0.75
         },
         {
           "id": "fish-01-1",
           "text": "applications.",
-          "start": 0.68,
-          "end": 1.71
+          "start": 0.75,
+          "end": 1.95
         },
         {
           "id": "fish-01-2",
           "text": "Hundreds",
-          "start": 1.85,
-          "end": 2.23
+          "start": 1.95,
+          "end": 2.46
         },
         {
           "id": "fish-01-3",
           "text": "of",
-          "start": 2.26,
-          "end": 2.38
+          "start": 2.46,
+          "end": 2.58
         },
         {
           "id": "fish-01-4",
           "text": "hours.",
-          "start": 2.38,
-          "end": 2.74
+          "start": 2.58,
+          "end": 3.12
         },
         {
           "id": "fish-01-5",
           "text": "Still",
-          "start": 3,
-          "end": 3.33
+          "start": 3.26,
+          "end": 3.62
         },
         {
           "id": "fish-01-6",
           "text": "no",
-          "start": 3.33,
-          "end": 3.51
+          "start": 3.62,
+          "end": 3.82
         },
         {
           "id": "fish-01-7",
           "text": "offer.",
-          "start": 3.51,
-          "end": 4.24
+          "start": 3.82,
+          "end": 4.54
         },
         {
           "id": "fish-01-8",
           "text": "Job",
-          "start": 4.43,
-          "end": 4.9
+          "start": 4.82,
+          "end": 4.86
         },
         {
           "id": "fish-01-9",
           "text": "hunting",
-          "start": 4.9,
-          "end": 5.39
+          "start": 4.86,
+          "end": 5.38
         },
         {
           "id": "fish-01-10",
           "text": "is",
-          "start": 5.39,
+          "start": 5.38,
           "end": 5.54
         },
         {
           "id": "fish-01-11",
           "text": "broken.",
-          "start": 5.55,
-          "end": 6.17
+          "start": 5.54,
+          "end": 6.1
         },
         {
           "id": "fish-01-12",
           "text": "Resume",
-          "start": 6.49,
-          "end": 6.93
+          "start": 6.6,
+          "end": 7.13
         },
         {
           "id": "fish-01-13",
           "text": "DB",
-          "start": 6.98,
-          "end": 7.15
+          "start": 7.13,
+          "end": 7.43
         },
         {
           "id": "fish-01-14",
           "text": "changes",
-          "start": 7.2,
-          "end": 7.75
+          "start": 7.44,
+          "end": 7.84
         },
         {
           "id": "fish-01-15",
           "text": "the",
-          "start": 7.75,
-          "end": 7.91
+          "start": 7.84,
+          "end": 8.13
         },
         {
           "id": "fish-01-16",
           "text": "game.",
-          "start": 7.91,
-          "end": 8.5
+          "start": 8.14,
+          "end": 8.64
         }
       ]
     },
@@ -118,110 +118,104 @@
         {
           "id": "fish-02-0",
           "text": "Meet",
-          "start": 0,
-          "end": 0.39
+          "start": 0.18,
+          "end": 0.57
         },
         {
           "id": "fish-02-1",
           "text": "SAM.",
-          "start": 0.39,
-          "end": 1.22
+          "start": 0.57,
+          "end": 1.23
         },
         {
           "id": "fish-02-2",
-          "text": "One",
-          "start": 1.22,
-          "end": 1.41
+          "text": "OneProfile",
+          "start": 1.55,
+          "end": 2.04
         },
         {
           "id": "fish-02-3",
-          "text": "profile",
-          "start": 1.67,
-          "end": 1.84
+          "text": "remembers",
+          "start": 2.04,
+          "end": 2.59
         },
         {
           "id": "fish-02-4",
-          "text": "remembers",
-          "start": 1.84,
-          "end": 2.39
+          "text": "every",
+          "start": 2.66,
+          "end": 2.88
         },
         {
           "id": "fish-02-5",
-          "text": "every",
-          "start": 2.39,
-          "end": 2.56
+          "text": "project,",
+          "start": 2.88,
+          "end": 3.36
         },
         {
           "id": "fish-02-6",
-          "text": "project,",
-          "start": 2.83,
-          "end": 3.27
+          "text": "result,",
+          "start": 3.42,
+          "end": 3.92
         },
         {
           "id": "fish-02-7",
-          "text": "result,",
-          "start": 3.27,
-          "end": 3.74
+          "text": "preference,",
+          "start": 4.19,
+          "end": 4.64
         },
         {
           "id": "fish-02-8",
-          "text": "preference,",
-          "start": 3.74,
-          "end": 4.47
+          "text": "and",
+          "start": 4.64,
+          "end": 4.82
         },
         {
           "id": "fish-02-9",
-          "text": "and",
-          "start": 4.47,
-          "end": 4.71
+          "text": "hard-won",
+          "start": 4.82,
+          "end": 5.2
         },
         {
           "id": "fish-02-10",
-          "text": "hard-won",
-          "start": 4.71,
-          "end": 5.33
-        },
-        {
-          "id": "fish-02-11",
           "text": "skill,",
-          "start": 5.33,
-          "end": 5.8
-        },
-        {
-          "id": "fish-02-12",
-          "text": "then",
-          "start": 5.8,
+          "start": 5.2,
           "end": 5.91
         },
         {
-          "id": "fish-02-13",
+          "id": "fish-02-11",
+          "text": "then",
+          "start": 5.96,
+          "end": 6.08
+        },
+        {
+          "id": "fish-02-12",
           "text": "gets",
-          "start": 5.91,
-          "end": 6
+          "start": 6.08,
+          "end": 6.29
+        },
+        {
+          "id": "fish-02-13",
+          "text": "smarter",
+          "start": 6.33,
+          "end": 6.83
         },
         {
           "id": "fish-02-14",
-          "text": "smarter",
-          "start": 6.33,
-          "end": 6.54
+          "text": "with",
+          "start": 6.99,
+          "end": 7.14
         },
         {
           "id": "fish-02-15",
-          "text": "with",
-          "start": 6.55,
-          "end": 6.84
+          "text": "every",
+          "start": 7.17,
+          "end": 7.42
         },
         {
           "id": "fish-02-16",
-          "text": "every",
-          "start": 6.84,
-          "end": 7.15
-        },
-        {
-          "id": "fish-02-17",
           "text": "application.",
-          "start": 7.22,
-          "end": 8.09
+          "start": 7.42,
+          "end": 8.08
         }
       ]
     },
@@ -232,141 +226,141 @@
       "words": [
         {
           "id": "fish-03-0",
-          "text": "SAM",
-          "start": 0,
-          "end": 0.05
+          "text": "Sam",
+          "start": 0.17,
+          "end": 0.24
         },
         {
           "id": "fish-03-1",
           "text": "asks",
-          "start": 0.09,
-          "end": 0.34
+          "start": 0.29,
+          "end": 0.55
         },
         {
           "id": "fish-03-2",
           "text": "for",
-          "start": 0.34,
-          "end": 0.56
+          "start": 0.57,
+          "end": 0.79
         },
         {
           "id": "fish-03-3",
           "text": "robotics",
-          "start": 0.56,
-          "end": 1.13
+          "start": 0.8,
+          "end": 1.44
         },
         {
           "id": "fish-03-4",
           "text": "and",
-          "start": 1.13,
-          "end": 1.28
+          "start": 1.44,
+          "end": 1.68
         },
         {
           "id": "fish-03-5",
           "text": "bioinformatics",
-          "start": 1.35,
-          "end": 2.38
+          "start": 1.68,
+          "end": 2.84
         },
         {
           "id": "fish-03-6",
           "text": "internships.",
-          "start": 2.38,
-          "end": 3.43
+          "start": 2.84,
+          "end": 3.86
         },
         {
           "id": "fish-03-7",
           "text": "The",
-          "start": 3.43,
-          "end": 3.63
+          "start": 4.09,
+          "end": 4.12
         },
         {
           "id": "fish-03-8",
           "text": "career",
-          "start": 3.63,
-          "end": 4.02
+          "start": 4.23,
+          "end": 4.49
         },
         {
           "id": "fish-03-9",
           "text": "agent",
-          "start": 4.22,
-          "end": 4.38
+          "start": 4.49,
+          "end": 4.73
         },
         {
           "id": "fish-03-10",
           "text": "searches,",
-          "start": 4.38,
-          "end": 5.09
+          "start": 4.81,
+          "end": 5.44
         },
         {
           "id": "fish-03-11",
           "text": "reads",
-          "start": 5.09,
-          "end": 5.42
+          "start": 5.44,
+          "end": 5.83
         },
         {
           "id": "fish-03-12",
           "text": "each",
-          "start": 5.54,
-          "end": 5.69
+          "start": 5.86,
+          "end": 6.16
         },
         {
           "id": "fish-03-13",
           "text": "posting,",
-          "start": 5.71,
-          "end": 6.33
+          "start": 6.16,
+          "end": 6.79
         },
         {
           "id": "fish-03-14",
           "text": "and",
-          "start": 6.33,
-          "end": 6.52
+          "start": 6.81,
+          "end": 6.94
         },
         {
           "id": "fish-03-15",
           "text": "finds",
-          "start": 6.52,
-          "end": 6.84
+          "start": 6.94,
+          "end": 7.2
         },
         {
           "id": "fish-03-16",
           "text": "the",
-          "start": 6.84,
-          "end": 6.98
+          "start": 7.2,
+          "end": 7.35
         },
         {
           "id": "fish-03-17",
           "text": "roles",
-          "start": 7.03,
-          "end": 7.35
+          "start": 7.35,
+          "end": 7.54
         },
         {
           "id": "fish-03-18",
           "text": "where",
-          "start": 7.35,
-          "end": 7.62
+          "start": 7.7,
+          "end": 7.7
         },
         {
           "id": "fish-03-19",
-          "text": "SAM",
-          "start": 7.69,
-          "end": 7.86
+          "text": "Sam",
+          "start": 8.01,
+          "end": 8.02
         },
         {
           "id": "fish-03-20",
           "text": "can",
-          "start": 7.86,
-          "end": 8.05
+          "start": 8.02,
+          "end": 8.19
         },
         {
           "id": "fish-03-21",
           "text": "genuinely",
-          "start": 8.05,
-          "end": 8.34
+          "start": 8.19,
+          "end": 8.69
         },
         {
           "id": "fish-03-22",
           "text": "win.",
           "start": 8.69,
-          "end": 9.09
+          "end": 9.22
         }
       ]
     },
@@ -378,122 +372,122 @@
         {
           "id": "fish-04-0",
           "text": "Watch",
-          "start": 0,
-          "end": 0.16
+          "start": 0.18,
+          "end": 0.33
         },
         {
           "id": "fish-04-1",
           "text": "it",
-          "start": 0.16,
-          "end": 0.29
+          "start": 0.39,
+          "end": 0.48
         },
         {
           "id": "fish-04-2",
           "text": "think",
-          "start": 0.29,
-          "end": 0.59
+          "start": 0.61,
+          "end": 0.89
         },
         {
           "id": "fish-04-3",
           "text": "in",
-          "start": 0.68,
-          "end": 0.72
+          "start": 0.89,
+          "end": 1.04
         },
         {
           "id": "fish-04-4",
           "text": "real",
-          "start": 0.77,
-          "end": 1
+          "start": 1.04,
+          "end": 1.34
         },
         {
           "id": "fish-04-5",
           "text": "time,",
-          "start": 1.01,
-          "end": 1.39
+          "start": 1.34,
+          "end": 1.8
         },
         {
           "id": "fish-04-6",
           "text": "inspecting",
-          "start": 1.67,
-          "end": 2.06
+          "start": 1.82,
+          "end": 2.5
         },
         {
           "id": "fish-04-7",
           "text": "pages,",
-          "start": 2.09,
-          "end": 2.52
+          "start": 2.5,
+          "end": 2.91
         },
         {
           "id": "fish-04-8",
           "text": "matching",
-          "start": 2.52,
-          "end": 3.05
+          "start": 3.13,
+          "end": 3.48
         },
         {
           "id": "fish-04-9",
           "text": "requirements,",
-          "start": 3.05,
-          "end": 3.97
+          "start": 3.48,
+          "end": 4.18
         },
         {
           "id": "fish-04-10",
           "text": "verifying",
-          "start": 4.22,
-          "end": 4.55
+          "start": 4.36,
+          "end": 4.8
         },
         {
           "id": "fish-04-11",
           "text": "evidence,",
-          "start": 4.61,
-          "end": 5.27
+          "start": 4.8,
+          "end": 5.44
         },
         {
           "id": "fish-04-12",
           "text": "and",
-          "start": 5.27,
-          "end": 5.42
+          "start": 5.61,
+          "end": 5.61
         },
         {
           "id": "fish-04-13",
           "text": "turning",
-          "start": 5.54,
-          "end": 5.84
+          "start": 5.62,
+          "end": 5.93
         },
         {
           "id": "fish-04-14",
           "text": "the",
-          "start": 5.84,
-          "end": 6
+          "start": 6.04,
+          "end": 6.16
         },
         {
           "id": "fish-04-15",
           "text": "strongest",
-          "start": 6.33,
-          "end": 6.52
+          "start": 6.19,
+          "end": 6.68
         },
         {
           "id": "fish-04-16",
           "text": "opportunities",
-          "start": 6.52,
-          "end": 7.26
+          "start": 6.68,
+          "end": 7.41
         },
         {
           "id": "fish-04-17",
           "text": "into",
-          "start": 7.26,
-          "end": 7.48
+          "start": 7.41,
+          "end": 7.6
         },
         {
           "id": "fish-04-18",
           "text": "live",
-          "start": 7.48,
-          "end": 7.7
+          "start": 7.7,
+          "end": 7.82
         },
         {
           "id": "fish-04-19",
           "text": "applications.",
-          "start": 7.7,
-          "end": 8.54
+          "start": 7.89,
+          "end": 8.6
         }
       ]
     },
@@ -504,153 +498,159 @@
       "words": [
         {
           "id": "fish-05-0",
-          "text": "Start",
-          "start": 0,
-          "end": 0.21
+          "text": "\"Start",
+          "start": 0.07,
+          "end": 0.45
         },
         {
           "id": "fish-05-1",
           "text": "the",
-          "start": 0.21,
-          "end": 0.43
+          "start": 0.45,
+          "end": 0.68
         },
         {
           "id": "fish-05-2",
-          "text": "agent,",
-          "start": 0.43,
-          "end": 0.96
+          "text": "agent",
+          "start": 0.68,
+          "end": 1.04
         },
         {
           "id": "fish-05-3",
           "text": "and",
-          "start": 0.96,
-          "end": 1.17
+          "start": 1.29,
+          "end": 1.29
         },
         {
           "id": "fish-05-4",
           "text": "the",
-          "start": 1.18,
-          "end": 1.37
+          "start": 1.34,
+          "end": 1.52
         },
         {
           "id": "fish-05-5",
           "text": "application",
-          "start": 1.68,
-          "end": 2.24
+          "start": 1.52,
+          "end": 2.36
         },
         {
           "id": "fish-05-6",
           "text": "moves.",
-          "start": 2.24,
-          "end": 2.89
+          "start": 2.36,
+          "end": 2.91
         },
         {
           "id": "fish-05-7",
           "text": "It",
-          "start": 2.89,
-          "end": 3.03
+          "start": 3.19,
+          "end": 3.28
         },
         {
           "id": "fish-05-8",
           "text": "researches,",
-          "start": 3.03,
-          "end": 3.75
+          "start": 3.36,
+          "end": 4.03
         },
         {
           "id": "fish-05-9",
           "text": "fills",
-          "start": 3.84,
-          "end": 4.09
+          "start": 4.35,
+          "end": 4.53
         },
         {
           "id": "fish-05-10",
           "text": "every",
-          "start": 4.22,
-          "end": 4.52
+          "start": 4.53,
+          "end": 4.88
         },
         {
           "id": "fish-05-11",
           "text": "field,",
-          "start": 4.52,
-          "end": 4.98
+          "start": 5.01,
+          "end": 5.31
         },
         {
           "id": "fish-05-12",
           "text": "writes",
-          "start": 4.98,
-          "end": 5.4
+          "start": 5.52,
+          "end": 5.74
         },
         {
           "id": "fish-05-13",
           "text": "the",
-          "start": 5.4,
-          "end": 5.6
+          "start": 5.78,
+          "end": 5.81
         },
         {
           "id": "fish-05-14",
           "text": "draft,",
-          "start": 5.6,
-          "end": 6.17
+          "start": 5.89,
+          "end": 6.55
         },
         {
           "id": "fish-05-15",
           "text": "then",
-          "start": 6.33,
-          "end": 6.42
+          "start": 6.6,
+          "end": 6.71
         },
         {
           "id": "fish-05-16",
           "text": "returns",
-          "start": 6.42,
-          "end": 6.86
+          "start": 6.71,
+          "end": 7
         },
         {
           "id": "fish-05-17",
           "text": "for",
-          "start": 6.86,
-          "end": 7.05
+          "start": 7,
+          "end": 7.18
         },
         {
           "id": "fish-05-18",
           "text": "a",
-          "start": 7.05,
-          "end": 7.11
+          "start": 7.18,
+          "end": 7.2
         },
         {
           "id": "fish-05-19",
-          "text": "lightning-fast",
-          "start": 7.11,
-          "end": 7.99
+          "text": "lightning",
+          "start": 7.3,
+          "end": 7.75
         },
         {
           "id": "fish-05-20",
-          "text": "review",
-          "start": 7.99,
-          "end": 8.33
+          "text": "fast",
+          "start": 7.84,
+          "end": 8.02
         },
         {
           "id": "fish-05-21",
-          "text": "and",
-          "start": 8.33,
-          "end": 8.54
+          "text": "review",
+          "start": 8.08,
+          "end": 8.42
         },
         {
           "id": "fish-05-22",
-          "text": "one",
-          "start": 8.69,
-          "end": 8.75
+          "text": "and",
+          "start": 8.42,
+          "end": 8.62
         },
         {
           "id": "fish-05-23",
-          "text": "clear",
-          "start": 8.75,
-          "end": 9.07
+          "text": "one",
+          "start": 8.62,
+          "end": 8.82
         },
         {
           "id": "fish-05-24",
-          "text": "approval.",
-          "start": 9.07,
-          "end": 9.65
+          "text": "clear",
+          "start": 8.82,
+          "end": 9.16
+        },
+        {
+          "id": "fish-05-25",
+          "text": "approval.\"",
+          "start": 9.16,
+          "end": 9.85
         }
       ]
     },
@@ -662,116 +662,116 @@
         {
           "id": "fish-06-0",
           "text": "The",
-          "start": 0,
-          "end": 0.04
+          "start": 0.16,
+          "end": 0.16
         },
         {
           "id": "fish-06-1",
           "text": "language",
-          "start": 0.09,
-          "end": 0.59
+          "start": 0.18,
+          "end": 0.57
         },
         {
           "id": "fish-06-2",
           "text": "gets",
-          "start": 0.68,
-          "end": 0.89
+          "start": 0.61,
+          "end": 0.8
         },
         {
           "id": "fish-06-3",
           "text": "stronger,",
-          "start": 0.89,
-          "end": 1.54
+          "start": 0.8,
+          "end": 1.27
         },
         {
           "id": "fish-06-4",
           "text": "never",
-          "start": 1.68,
-          "end": 1.94
+          "start": 1.48,
+          "end": 1.78
         },
         {
           "id": "fish-06-5",
           "text": "fictional.",
-          "start": 1.98,
-          "end": 2.87
+          "start": 1.78,
+          "end": 2.56
         },
         {
           "id": "fish-06-6",
           "text": "Every",
-          "start": 2.87,
-          "end": 3.17
+          "start": 2.74,
+          "end": 2.85
         },
         {
           "id": "fish-06-7",
           "text": "claim",
-          "start": 3.17,
-          "end": 3.47
+          "start": 2.85,
+          "end": 3.13
         },
         {
           "id": "fish-06-8",
           "text": "traces",
-          "start": 3.47,
-          "end": 3.75
+          "start": 3.17,
+          "end": 3.49
         },
         {
           "id": "fish-06-9",
           "text": "back",
-          "start": 3.83,
-          "end": 4.07
+          "start": 3.49,
+          "end": 3.72
         },
         {
           "id": "fish-06-10",
           "text": "to",
-          "start": 4.07,
-          "end": 4.07
+          "start": 3.72,
+          "end": 3.82
         },
         {
           "id": "fish-06-11",
           "text": "something",
-          "start": 4.26,
-          "end": 4.73
+          "start": 4.04,
+          "end": 4.4
         },
         {
           "id": "fish-06-12",
-          "text": "SAM",
-          "start": 4.73,
-          "end": 4.91
+          "text": "Sam",
+          "start": 4.4,
+          "end": 4.8
         },
         {
           "id": "fish-06-13",
           "text": "actually",
-          "start": 4.91,
-          "end": 5.39
+          "start": 4.8,
+          "end": 5.34
         },
         {
           "id": "fish-06-14",
           "text": "built,",
-          "start": 5.39,
-          "end": 5.81
+          "start": 5.34,
+          "end": 5.77
         },
         {
           "id": "fish-06-15",
           "text": "measured,",
-          "start": 5.81,
-          "end": 6.41
+          "start": 5.77,
+          "end": 6.24
         },
         {
           "id": "fish-06-16",
           "text": "shipped,",
-          "start": 6.41,
-          "end": 6.95
+          "start": 6.24,
+          "end": 6.66
         },
         {
           "id": "fish-06-17",
           "text": "or",
-          "start": 6.95,
-          "end": 7.07
+          "start": 6.66,
+          "end": 6.75
         },
         {
           "id": "fish-06-18",
           "text": "published.",
-          "start": 7.07,
-          "end": 7.87
+          "start": 6.75,
+          "end": 7.28
         }
       ]
     },
@@ -783,43 +783,43 @@
         {
           "id": "fish-07-0",
           "text": "Same",
-          "start": 0,
-          "end": 0.26
+          "start": 0.29,
+          "end": 0.5
         },
         {
           "id": "fish-07-1",
-          "text": "person.",
-          "start": 0.46,
-          "end": 1.22
+          "text": "person,",
+          "start": 0.51,
+          "end": 1.4
         },
         {
           "id": "fish-07-2",
-          "text": "Two",
-          "start": 1.39,
-          "end": 1.41
+          "text": "two",
+          "start": 1.41,
+          "end": 1.58
         },
         {
           "id": "fish-07-3",
           "text": "completely",
-          "start": 1.41,
-          "end": 1.98
+          "start": 1.58,
+          "end": 2.18
         },
         {
           "id": "fish-07-4",
           "text": "different",
-          "start": 2.05,
-          "end": 2.58
+          "start": 2.18,
+          "end": 2.73
         },
         {
           "id": "fish-07-5",
-          "text": "resumes.",
-          "start": 2.58,
-          "end": 3.24
+          "text": "resumes,",
+          "start": 2.73,
+          "end": 3.3
         },
         {
           "id": "fish-07-6",
-          "text": "Autonomy",
-          "start": 3.24,
+          "text": "autonomy",
+          "start": 3.3,
           "end": 3.74
         },
         {
@@ -831,92 +831,92 @@
         {
           "id": "fish-07-8",
           "text": "for",
-          "start": 4.19,
-          "end": 4.24
+          "start": 4.32,
+          "end": 4.44
         },
         {
           "id": "fish-07-9",
           "text": "robotics,",
-          "start": 4.26,
-          "end": 4.86
+          "start": 4.44,
+          "end": 5.26
         },
         {
           "id": "fish-07-10",
           "text": "and",
-          "start": 4.86,
-          "end": 5.05
+          "start": 5.32,
+          "end": 5.36
         },
         {
           "id": "fish-07-11",
           "text": "research",
-          "start": 5.05,
-          "end": 5.44
+          "start": 5.36,
+          "end": 5.82
         },
         {
           "id": "fish-07-12",
           "text": "pipelines",
-          "start": 5.65,
-          "end": 6.12
+          "start": 6.15,
+          "end": 6.45
         },
         {
           "id": "fish-07-13",
           "text": "for",
-          "start": 6.12,
-          "end": 6.3
+          "start": 6.45,
+          "end": 6.65
         },
         {
           "id": "fish-07-14",
-          "text": "bioinformatics.",
-          "start": 6.3,
-          "end": 7.39
+          "text": "bioinformatics,",
+          "start": 6.65,
+          "end": 7.69
         },
         {
           "id": "fish-07-15",
-          "text": "One",
-          "start": 7.52,
-          "end": 7.64
+          "text": "one",
+          "start": 7.77,
+          "end": 7.9
         },
         {
           "id": "fish-07-16",
           "text": "experience",
-          "start": 7.72,
-          "end": 8.34
+          "start": 7.94,
+          "end": 8.59
         },
         {
           "id": "fish-07-17",
           "text": "bank,",
-          "start": 8.34,
-          "end": 8.75
+          "start": 8.59,
+          "end": 8.88
         },
         {
           "id": "fish-07-18",
           "text": "perfectly",
-          "start": 8.75,
-          "end": 9.37
+          "start": 9.11,
+          "end": 9.61
         },
         {
           "id": "fish-07-19",
           "text": "reframed",
-          "start": 9.37,
-          "end": 9.91
+          "start": 9.61,
+          "end": 10.14
         },
         {
           "id": "fish-07-20",
           "text": "for",
-          "start": 10.08,
-          "end": 10.12
+          "start": 10.16,
+          "end": 10.34
         },
         {
           "id": "fish-07-21",
           "text": "each",
-          "start": 10.12,
-          "end": 10.4
+          "start": 10.34,
+          "end": 10.59
         },
         {
           "id": "fish-07-22",
           "text": "role.",
-          "start": 10.4,
-          "end": 10.94
+          "start": 10.61,
+          "end": 11.04
         }
       ]
     },
@@ -928,122 +928,122 @@
         {
           "id": "fish-08-0",
           "text": "On",
-          "start": 0,
-          "end": 0
+          "start": 0.11,
+          "end": 0.11
         },
         {
           "id": "fish-08-1",
           "text": "the",
-          "start": 0.03,
-          "end": 0.21
+          "start": 0.18,
+          "end": 0.28
         },
         {
           "id": "fish-08-2",
           "text": "application",
-          "start": 0.21,
-          "end": 0.99
+          "start": 0.28,
+          "end": 0.86
         },
         {
           "id": "fish-08-3",
           "text": "site,",
-          "start": 0.99,
-          "end": 1.41
+          "start": 0.93,
+          "end": 1.14
         },
         {
           "id": "fish-08-4",
           "text": "the",
-          "start": 1.41,
-          "end": 1.59
+          "start": 1.44,
+          "end": 1.46
         },
         {
           "id": "fish-08-5",
           "text": "extension",
-          "start": 1.72,
-          "end": 2.25
+          "start": 1.46,
+          "end": 2.08
         },
         {
           "id": "fish-08-6",
           "text": "types",
-          "start": 2.25,
-          "end": 2.58
+          "start": 2.08,
+          "end": 2.42
         },
         {
           "id": "fish-08-7",
-          "text": "SAM's",
-          "start": 2.58,
-          "end": 2.94
+          "text": "SAMS",
+          "start": 2.42,
+          "end": 2.68
         },
         {
           "id": "fish-08-8",
           "text": "details,",
-          "start": 2.98,
-          "end": 3.51
+          "start": 2.68,
+          "end": 3.34
         },
         {
           "id": "fish-08-9",
           "text": "selects",
-          "start": 3.61,
-          "end": 4.02
+          "start": 3.34,
+          "end": 3.83
         },
         {
           "id": "fish-08-10",
           "text": "education,",
-          "start": 4.29,
-          "end": 4.84
+          "start": 3.83,
+          "end": 4.48
         },
         {
           "id": "fish-08-11",
           "text": "answers",
-          "start": 4.84,
-          "end": 5.33
+          "start": 4.66,
+          "end": 4.92
         },
         {
           "id": "fish-08-12",
           "text": "questions,",
-          "start": 5.33,
-          "end": 6.03
+          "start": 4.99,
+          "end": 5.61
         },
         {
           "id": "fish-08-13",
           "text": "and",
-          "start": 6.31,
-          "end": 6.31
+          "start": 5.85,
+          "end": 5.85
         },
         {
           "id": "fish-08-14",
           "text": "uploads",
-          "start": 6.36,
-          "end": 6.79
+          "start": 5.92,
+          "end": 6.29
         },
         {
           "id": "fish-08-15",
           "text": "the",
-          "start": 6.84,
-          "end": 7.01
+          "start": 6.31,
+          "end": 6.49
         },
         {
           "id": "fish-08-16",
           "text": "right",
-          "start": 7.01,
-          "end": 7.36
+          "start": 6.49,
+          "end": 6.81
         },
         {
           "id": "fish-08-17",
           "text": "resume",
-          "start": 7.36,
-          "end": 7.77
+          "start": 6.81,
+          "end": 7.17
         },
         {
           "id": "fish-08-18",
           "text": "in",
-          "start": 7.81,
-          "end": 7.92
+          "start": 7.23,
+          "end": 7.33
         },
         {
           "id": "fish-08-19",
           "text": "seconds.",
-          "start": 7.92,
-          "end": 8.73
+          "start": 7.33,
+          "end": 7.84
         }
       ]
     },
@@ -1055,110 +1055,110 @@
         {
           "id": "fish-09-0",
           "text": "Across",
-          "start": 0,
-          "end": 0.26
+          "start": 0.16,
+          "end": 0.4
         },
         {
           "id": "fish-09-1",
           "text": "an",
-          "start": 0.26,
-          "end": 0.39
+          "start": 0.4,
+          "end": 0.5
         },
         {
           "id": "fish-09-2",
           "text": "illustrative",
-          "start": 0.39,
-          "end": 1.25
+          "start": 0.53,
+          "end": 1.32
         },
         {
           "id": "fish-09-3",
           "text": "campaign,",
-          "start": 1.26,
-          "end": 1.94
+          "start": 1.32,
+          "end": 1.87
         },
         {
           "id": "fish-09-4",
           "text": "200",
-          "start": 1.98,
-          "end": 2.55
+          "start": 2.27,
+          "end": 2.67
         },
         {
           "id": "fish-09-5",
           "text": "listings",
-          "start": 2.83,
-          "end": 3.18
+          "start": 2.67,
+          "end": 3.21
         },
         {
           "id": "fish-09-6",
           "text": "become",
-          "start": 3.18,
-          "end": 3.61
+          "start": 3.33,
+          "end": 3.74
         },
         {
           "id": "fish-09-7",
           "text": "88",
-          "start": 3.61,
-          "end": 4.02
+          "start": 3.74,
+          "end": 4.17
         },
         {
           "id": "fish-09-8",
           "text": "strong",
-          "start": 4.22,
-          "end": 4.47
+          "start": 4.19,
+          "end": 4.64
         },
         {
           "id": "fish-09-9",
           "text": "matches,",
-          "start": 4.47,
-          "end": 5.11
+          "start": 4.69,
+          "end": 5.2
         },
         {
           "id": "fish-09-10",
           "text": "64",
-          "start": 5.11,
-          "end": 5.4
+          "start": 5.36,
+          "end": 5.64
         },
         {
           "id": "fish-09-11",
           "text": "tailored",
-          "start": 5.54,
-          "end": 6
+          "start": 5.64,
+          "end": 6.17
         },
         {
           "id": "fish-09-12",
           "text": "applications,",
-          "start": 6.33,
-          "end": 7.11
+          "start": 6.22,
+          "end": 7.16
         },
         {
           "id": "fish-09-13",
           "text": "14",
-          "start": 7.11,
-          "end": 7.54
+          "start": 7.47,
+          "end": 7.7
         },
         {
           "id": "fish-09-14",
           "text": "interviews,",
-          "start": 7.54,
-          "end": 8.39
+          "start": 7.7,
+          "end": 8.58
         },
         {
           "id": "fish-09-15",
           "text": "and",
-          "start": 8.39,
-          "end": 8.54
+          "start": 8.58,
+          "end": 8.8
         },
         {
           "id": "fish-09-16",
           "text": "3",
-          "start": 8.69,
-          "end": 8.81
+          "start": 8.8,
+          "end": 9.02
         },
         {
           "id": "fish-09-17",
           "text": "offers.",
-          "start": 8.81,
-          "end": 9.55
+          "start": 9.02,
+          "end": 9.52
         }
       ]
     },
@@ -1170,152 +1170,152 @@
         {
           "id": "fish-10-0",
           "text": "With",
-          "start": 0,
-          "end": 0.07
+          "start": 0.38,
+          "end": 0.38
         },
         {
           "id": "fish-10-1",
           "text": "the",
-          "start": 0.09,
-          "end": 0.29
+          "start": 0.38,
+          "end": 0.66
         },
         {
           "id": "fish-10-2",
           "text": "MCP",
-          "start": 0.29,
-          "end": 0.47
+          "start": 0.66,
+          "end": 0.93
         },
         {
           "id": "fish-10-3",
           "text": "server,",
-          "start": 0.48,
-          "end": 1
+          "start": 0.94,
+          "end": 1.7
         },
         {
           "id": "fish-10-4",
           "text": "your",
-          "start": 1,
-          "end": 1.26
+          "start": 1.8,
+          "end": 2.06
         },
         {
           "id": "fish-10-5",
           "text": "own",
-          "start": 1.26,
-          "end": 1.46
+          "start": 2.06,
+          "end": 2.28
         },
         {
           "id": "fish-10-6",
           "text": "agent",
-          "start": 1.67,
-          "end": 1.79
+          "start": 2.32,
+          "end": 2.68
         },
         {
           "id": "fish-10-7",
           "text": "can",
-          "start": 1.79,
-          "end": 1.99
+          "start": 2.78,
+          "end": 3
         },
         {
           "id": "fish-10-8",
           "text": "use",
-          "start": 1.99,
-          "end": 2.19
+          "start": 3,
+          "end": 3.24
         },
         {
           "id": "fish-10-9",
           "text": "ResumeDB",
-          "start": 2.19,
-          "end": 2.58
+          "start": 3.24,
+          "end": 3.88
         },
         {
           "id": "fish-10-10",
           "text": "from",
-          "start": 2.83,
-          "end": 2.97
+          "start": 3.88,
+          "end": 4.07
         },
         {
           "id": "fish-10-11",
           "text": "the",
-          "start": 2.97,
-          "end": 3.17
+          "start": 4.07,
+          "end": 4.2
         },
         {
           "id": "fish-10-12",
           "text": "tools",
-          "start": 3.17,
-          "end": 3.47
+          "start": 4.25,
+          "end": 4.46
         },
         {
           "id": "fish-10-13",
           "text": "you",
-          "start": 3.58,
-          "end": 3.7
+          "start": 4.46,
+          "end": 4.62
         },
         {
           "id": "fish-10-14",
           "text": "already",
-          "start": 3.7,
-          "end": 4.05
+          "start": 4.62,
+          "end": 5
         },
         {
           "id": "fish-10-15",
           "text": "live",
-          "start": 4.22,
-          "end": 4.42
+          "start": 5,
+          "end": 5.15
         },
         {
           "id": "fish-10-16",
           "text": "in,",
-          "start": 4.42,
-          "end": 4.68
+          "start": 5.21,
+          "end": 5.41
         },
         {
           "id": "fish-10-17",
           "text": "discovering,",
-          "start": 4.68,
-          "end": 5.54
+          "start": 5.98,
+          "end": 6.35
         },
         {
           "id": "fish-10-18",
           "text": "tailoring,",
-          "start": 5.54,
-          "end": 6.25
+          "start": 6.35,
+          "end": 6.98
         },
         {
           "id": "fish-10-19",
           "text": "and",
-          "start": 6.33,
-          "end": 6.46
+          "start": 6.98,
+          "end": 7.15
         },
         {
           "id": "fish-10-20",
           "text": "tracking",
-          "start": 6.46,
-          "end": 6.97
+          "start": 7.15,
+          "end": 7.5
         },
         {
           "id": "fish-10-21",
           "text": "without",
-          "start": 6.99,
-          "end": 7.45
+          "start": 7.63,
+          "end": 8.02
         },
         {
           "id": "fish-10-22",
           "text": "breaking",
-          "start": 7.45,
-          "end": 7.98
+          "start": 8.02,
+          "end": 8.48
         },
         {
           "id": "fish-10-23",
           "text": "your",
-          "start": 7.98,
-          "end": 8.14
+          "start": 8.48,
+          "end": 8.69
         },
         {
           "id": "fish-10-24",
           "text": "flow.",
-          "start": 8.33,
-          "end": 8.83
+          "start": 8.76,
+          "end": 9
         }
       ]
     },
@@ -1327,128 +1327,134 @@
         {
           "id": "fish-11-0",
           "text": "Our",
-          "start": 0,
-          "end": 0.03
+          "start": 0.18,
+          "end": 0.19
         },
         {
           "id": "fish-11-1",
           "text": "other",
-          "start": 0.03,
-          "end": 0.37
+          "start": 0.27,
+          "end": 0.5
         },
         {
           "id": "fish-11-2",
           "text": "features",
-          "start": 0.37,
-          "end": 0.91
+          "start": 0.5,
+          "end": 0.97
         },
         {
           "id": "fish-11-3",
           "text": "include",
-          "start": 0.91,
-          "end": 1.26
+          "start": 1.03,
+          "end": 1.38
         },
         {
           "id": "fish-11-4",
           "text": "email",
-          "start": 1.65,
-          "end": 1.72
+          "start": 1.52,
+          "end": 1.8
         },
         {
           "id": "fish-11-5",
           "text": "tracking,",
-          "start": 1.72,
-          "end": 2.39
+          "start": 1.8,
+          "end": 2.37
         },
         {
           "id": "fish-11-6",
           "text": "interview",
-          "start": 2.39,
-          "end": 3
+          "start": 2.66,
+          "end": 3.04
         },
         {
           "id": "fish-11-7",
           "text": "prep,",
-          "start": 3,
-          "end": 3.4
+          "start": 3.13,
+          "end": 3.38
         },
         {
           "id": "fish-11-8",
           "text": "campus",
-          "start": 3.4,
-          "end": 3.74
+          "start": 3.69,
+          "end": 4
         },
         {
           "id": "fish-11-9",
           "text": "insights,",
-          "start": 3.88,
-          "end": 4.48
+          "start": 4,
+          "end": 4.76
         },
         {
           "id": "fish-11-10",
           "text": "four-year",
-          "start": 4.48,
-          "end": 5.01
+          "start": 4.84,
+          "end": 5.1
         },
         {
           "id": "fish-11-11",
           "text": "planning,",
-          "start": 5.06,
-          "end": 5.75
+          "start": 5.1,
+          "end": 5.8
         },
         {
           "id": "fish-11-12",
           "text": "and",
-          "start": 5.75,
-          "end": 5.95
+          "start": 5.84,
+          "end": 5.98
         },
         {
           "id": "fish-11-13",
           "text": "major",
-          "start": 5.95,
-          "end": 6
+          "start": 5.98,
+          "end": 6.28
         },
         {
           "id": "fish-11-14",
           "text": "specific",
-          "start": 6.33,
-          "end": 6.83
+          "start": 6.28,
+          "end": 6.73
         },
         {
           "id": "fish-11-15",
           "text": "portfolios.",
-          "start": 6.83,
-          "end": 7.83
+          "start": 6.87,
+          "end": 7.53
         },
         {
           "id": "fish-11-16",
-          "text": "ResumeDB,",
-          "start": 7.83,
-          "end": 8.53
+          "text": "Resume",
+          "start": 7.85,
+          "end": 8.69
         },
         {
           "id": "fish-11-17",
-          "text": "the",
-          "start": 8.69,
-          "end": 8.74
+          "text": "DB,",
+          "start": 8.8,
+          "end": 9.26
         },
         {
           "id": "fish-11-18",
-          "text": "internship",
-          "start": 8.74,
-          "end": 9.47
+          "text": "the",
+          "start": 9.26,
+          "end": 9.39
         },
         {
           "id": "fish-11-19",
-          "text": "operating",
-          "start": 9.47,
-          "end": 10.12
+          "text": "internship",
+          "start": 9.44,
+          "end": 9.91
         },
         {
           "id": "fish-11-20",
+          "text": "operating",
+          "start": 10.24,
+          "end": 10.39
+        },
+        {
+          "id": "fish-11-21",
           "text": "system.",
-          "start": 10.12,
-          "end": 10.83
+          "start": 10.39,
+          "end": 10.87
         }
       ]
     }

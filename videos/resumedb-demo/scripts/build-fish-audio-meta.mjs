@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PROJECT = resolve(HERE, "..");
 const SOURCE_AUDIO = join(PROJECT, "assets/audio/narration.mp3");
-const WHISPER_JSON = join(PROJECT, "transcripts/narration.json");
 const SCRIPT = join(PROJECT, "SCRIPT.md");
 const VOICE_DIR = join(PROJECT, "assets/voice");
+const VOICE_TRANSCRIPT_DIR = join(PROJECT, "transcripts/voice");
 const OUTPUT_META = join(PROJECT, "audio_meta.json");
 const OUTPUT_TRANSCRIPT = join(PROJECT, "transcript.json");
+const FILLERS = new Set(["uh", "um", "uhm", "erm", "hmm"]);
 
 function parseScriptLines(markdown) {
   const lines = [];
@@ -35,25 +36,12 @@ function parseScriptLines(markdown) {
   return lines;
 }
 
-function lexicalWords(text) {
-  return text.match(/[\p{L}\p{N}]+(?:['-][\p{L}\p{N}]+)*/gu) || [];
-}
-
 function normalizedWord(text) {
   return String(text)
     .normalize("NFKD")
     .replace(/\p{M}/gu, "")
     .replace(/[^\p{L}\p{N}]/gu, "")
     .toLowerCase();
-}
-
-function findBoundary(words, phrase, fromIndex) {
-  const normalizedPhrase = phrase.map(normalizedWord).filter(Boolean);
-  for (let index = fromIndex; index <= words.length - normalizedPhrase.length; index += 1) {
-    const candidate = words.slice(index, index + normalizedPhrase.length).map((word) => normalizedWord(word.text));
-    if (candidate.every((word, offset) => word === normalizedPhrase[offset])) return index;
-  }
-  throw new Error(`Could not locate narration boundary phrase: ${phrase.join(" ")}`);
 }
 
 function whisperWords(payload) {
@@ -91,68 +79,72 @@ function probeDuration(path) {
 }
 
 const scriptLines = parseScriptLines(readFileSync(SCRIPT, "utf8"));
-const words = whisperWords(JSON.parse(readFileSync(WHISPER_JSON, "utf8")));
-const sourceDuration = probeDuration(SOURCE_AUDIO);
-const boundaries = [0];
-let searchFrom = 1;
-for (const line of scriptLines.slice(1)) {
-  const phrase = lexicalWords(line.captionText || line.text).slice(0, 2);
-  const boundary = findBoundary(words, phrase, searchFrom);
-  boundaries.push(boundary);
-  searchFrom = boundary + phrase.length;
-}
+const existingMeta = JSON.parse(readFileSync(OUTPUT_META, "utf8"));
+const targetByFrame = new Map(existingMeta.voices.map((voice) => [voice.frame, voice.duration_s]));
 
-mkdirSync(VOICE_DIR, { recursive: true });
+let offset = 0;
+const allWords = [];
+const voices = scriptLines.map((line) => {
+  const duration = Number(targetByFrame.get(line.frame));
+  if (!duration) throw new Error(`Missing target duration for frame ${line.frame}`);
+  const clipPath = join(VOICE_DIR, `${String(line.frame).padStart(2, "0")}.mp3`);
+  if (!existsSync(clipPath)) throw new Error(`Missing narration clip: ${clipPath}`);
+  const clipDuration = probeDuration(clipPath);
+  if (Math.abs(clipDuration - duration) > 0.08) {
+    throw new Error(
+      `Frame ${line.frame} clip duration drifted: ${clipDuration.toFixed(3)}s, expected ${duration.toFixed(3)}s`,
+    );
+  }
 
-const voices = scriptLines.map((line, index) => {
-  const startIndex = boundaries[index];
-  const endIndex = boundaries[index + 1] ?? words.length;
-  const frameWords = words.slice(startIndex, endIndex);
-  const start = index === 0 ? 0 : frameWords[0].start;
-  const nextWord = words[endIndex];
-  const end = nextWord ? nextWord.start : sourceDuration;
-  const duration = Number((end - start).toFixed(3));
-  const filename = `${String(line.frame).padStart(2, "0")}.mp3`;
-  const outputPath = join(VOICE_DIR, filename);
+  const transcriptPath = join(VOICE_TRANSCRIPT_DIR, `${String(line.frame).padStart(2, "0")}.json`);
+  if (!existsSync(transcriptPath)) throw new Error(`Missing narration transcript: ${transcriptPath}`);
+  const frameWords = whisperWords(JSON.parse(readFileSync(transcriptPath, "utf8")));
+  const fillerWords = frameWords.filter((word) => FILLERS.has(normalizedWord(word.text)));
+  if (fillerWords.length) {
+    throw new Error(
+      `Frame ${line.frame} contains filler speech: ${fillerWords.map((word) => `${word.text}@${word.start.toFixed(2)}s`).join(", ")}`,
+    );
+  }
 
-  execFileSync(
-    "ffmpeg",
-    [
-      "-y",
-      "-v",
-      "error",
-      "-ss",
-      start.toFixed(3),
-      "-t",
-      duration.toFixed(3),
-      "-i",
-      SOURCE_AUDIO,
-      "-codec:a",
-      "libmp3lame",
-      "-q:a",
-      "2",
-      outputPath,
-    ],
-    { stdio: "inherit" },
-  );
+  const start = offset;
+  for (const word of frameWords) {
+    allWords.push({
+      text: word.text,
+      start: Number((start + Math.max(0, word.start)).toFixed(3)),
+      end: Number((start + Math.min(duration, word.end)).toFixed(3)),
+    });
+  }
+  offset += duration;
 
   return {
     frame: line.frame,
-    path: `assets/voice/${filename}`,
+    path: `assets/voice/${String(line.frame).padStart(2, "0")}.mp3`,
     duration_s: duration,
     words: frameWords.map((word, wordIndex) => ({
       id: `fish-${String(line.frame).padStart(2, "0")}-${wordIndex}`,
       text: word.text,
-      start: Number((word.start - start).toFixed(3)),
-      end: Number((word.end - start).toFixed(3)),
+      start: Number(Math.max(0, word.start).toFixed(3)),
+      end: Number(Math.min(duration, word.end).toFixed(3)),
     })),
   };
 });
 
+const timelineDuration = Number(offset.toFixed(3));
+const sourceDuration = probeDuration(SOURCE_AUDIO);
 writeFileSync(OUTPUT_META, `${JSON.stringify({ bgm: null, voices, sfx: [] }, null, 2)}\n`);
 writeFileSync(
   OUTPUT_TRANSCRIPT,
-  `${JSON.stringify({ provider: "fish-audio", model: "s2.1-pro-free", duration_s: sourceDuration, words }, null, 2)}\n`,
+  `${JSON.stringify(
+    {
+      provider: "fish-audio",
+      model: "s2.1-pro-free",
+      duration_s: timelineDuration,
+      source_duration_s: Number(sourceDuration.toFixed(3)),
+      words: allWords,
+    },
+    null,
+    2,
+  )}\n`,
 );
 
-console.log(`Built ${voices.length} Fish narration clips and ${words.length} word timings (${sourceDuration.toFixed(3)}s).`);
+console.log(`Built ${voices.length} Fish narration clips and ${allWords.length} word timings (${timelineDuration.toFixed(3)}s).`);

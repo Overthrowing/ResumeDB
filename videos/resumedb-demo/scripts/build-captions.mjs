@@ -11,6 +11,8 @@ const CAPTIONS_PATH = join(PROJECT, "compositions/captions.html");
 
 function cleanCaptionWord(text) {
   return String(text)
+    .replace(/^[“”"]+/, "")
+    .replace(/[“”"]+$/, "")
     .replace(/^SAM(?=\b|['’])/i, (match) => (match === "SAM" ? "Sam" : match))
     .replace(/^SAM'S$/i, "Sam's");
 }

@@ -1,0 +1,395 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:08,640"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 8640
+			},
+			"text": " 200 applications. Hundreds of hours. Still no offer. Job hunting is broken. Resume DB changes the game.",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.943058,
+					"t_dtw": -1
+				},
+				{
+					"text": " 200",
+					"timestamps": {
+						"from": "00:00:00,190",
+						"to": "00:00:00,750"
+					},
+					"offsets": {
+						"from": 190,
+						"to": 750
+					},
+					"id": 939,
+					"p": 0.869366,
+					"t_dtw": -1
+				},
+				{
+					"text": " applications",
+					"timestamps": {
+						"from": "00:00:00,750",
+						"to": "00:00:01,520"
+					},
+					"offsets": {
+						"from": 750,
+						"to": 1520
+					},
+					"id": 5479,
+					"p": 0.955359,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:01,850",
+						"to": "00:00:01,950"
+					},
+					"offsets": {
+						"from": 1850,
+						"to": 1950
+					},
+					"id": 13,
+					"p": 0.31403,
+					"t_dtw": -1
+				},
+				{
+					"text": " Hundreds",
+					"timestamps": {
+						"from": "00:00:01,950",
+						"to": "00:00:02,460"
+					},
+					"offsets": {
+						"from": 1950,
+						"to": 2460
+					},
+					"id": 32636,
+					"p": 0.464959,
+					"t_dtw": -1
+				},
+				{
+					"text": " of",
+					"timestamps": {
+						"from": "00:00:02,460",
+						"to": "00:00:02,580"
+					},
+					"offsets": {
+						"from": 2460,
+						"to": 2580
+					},
+					"id": 286,
+					"p": 0.998551,
+					"t_dtw": -1
+				},
+				{
+					"text": " hours",
+					"timestamps": {
+						"from": "00:00:02,580",
+						"to": "00:00:02,830"
+					},
+					"offsets": {
+						"from": 2580,
+						"to": 2830
+					},
+					"id": 2250,
+					"p": 0.996061,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:03,120",
+						"to": "00:00:03,120"
+					},
+					"offsets": {
+						"from": 3120,
+						"to": 3120
+					},
+					"id": 13,
+					"p": 0.979391,
+					"t_dtw": -1
+				},
+				{
+					"text": " Still",
+					"timestamps": {
+						"from": "00:00:03,260",
+						"to": "00:00:03,620"
+					},
+					"offsets": {
+						"from": 3260,
+						"to": 3620
+					},
+					"id": 7831,
+					"p": 0.810621,
+					"t_dtw": -1
+				},
+				{
+					"text": " no",
+					"timestamps": {
+						"from": "00:00:03,620",
+						"to": "00:00:03,820"
+					},
+					"offsets": {
+						"from": 3620,
+						"to": 3820
+					},
+					"id": 645,
+					"p": 0.994217,
+					"t_dtw": -1
+				},
+				{
+					"text": " offer",
+					"timestamps": {
+						"from": "00:00:03,820",
+						"to": "00:00:04,230"
+					},
+					"offsets": {
+						"from": 3820,
+						"to": 4230
+					},
+					"id": 2897,
+					"p": 0.993333,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:04,320",
+						"to": "00:00:04,540"
+					},
+					"offsets": {
+						"from": 4320,
+						"to": 4540
+					},
+					"id": 13,
+					"p": 0.979449,
+					"t_dtw": -1
+				},
+				{
+					"text": " Job",
+					"timestamps": {
+						"from": "00:00:04,820",
+						"to": "00:00:04,860"
+					},
+					"offsets": {
+						"from": 4820,
+						"to": 4860
+					},
+					"id": 15768,
+					"p": 0.88443,
+					"t_dtw": -1
+				},
+				{
+					"text": " hunting",
+					"timestamps": {
+						"from": "00:00:04,860",
+						"to": "00:00:05,380"
+					},
+					"offsets": {
+						"from": 4860,
+						"to": 5380
+					},
+					"id": 10988,
+					"p": 0.885149,
+					"t_dtw": -1
+				},
+				{
+					"text": " is",
+					"timestamps": {
+						"from": "00:00:05,380",
+						"to": "00:00:05,540"
+					},
+					"offsets": {
+						"from": 5380,
+						"to": 5540
+					},
+					"id": 318,
+					"p": 0.991508,
+					"t_dtw": -1
+				},
+				{
+					"text": " broken",
+					"timestamps": {
+						"from": "00:00:05,540",
+						"to": "00:00:05,980"
+					},
+					"offsets": {
+						"from": 5540,
+						"to": 5980
+					},
+					"id": 5445,
+					"p": 0.997213,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:05,980",
+						"to": "00:00:06,100"
+					},
+					"offsets": {
+						"from": 5980,
+						"to": 6100
+					},
+					"id": 13,
+					"p": 0.971895,
+					"t_dtw": -1
+				},
+				{
+					"text": " Res",
+					"timestamps": {
+						"from": "00:00:06,600",
+						"to": "00:00:06,690"
+					},
+					"offsets": {
+						"from": 6600,
+						"to": 6690
+					},
+					"id": 1874,
+					"p": 0.387677,
+					"t_dtw": -1
+				},
+				{
+					"text": "ume",
+					"timestamps": {
+						"from": "00:00:06,690",
+						"to": "00:00:07,130"
+					},
+					"offsets": {
+						"from": 6690,
+						"to": 7130
+					},
+					"id": 2454,
+					"p": 0.987851,
+					"t_dtw": -1
+				},
+				{
+					"text": " DB",
+					"timestamps": {
+						"from": "00:00:07,130",
+						"to": "00:00:07,430"
+					},
+					"offsets": {
+						"from": 7130,
+						"to": 7430
+					},
+					"id": 20137,
+					"p": 0.533898,
+					"t_dtw": -1
+				},
+				{
+					"text": " changes",
+					"timestamps": {
+						"from": "00:00:07,440",
+						"to": "00:00:07,840"
+					},
+					"offsets": {
+						"from": 7440,
+						"to": 7840
+					},
+					"id": 2458,
+					"p": 0.904702,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:07,840",
+						"to": "00:00:08,130"
+					},
+					"offsets": {
+						"from": 7840,
+						"to": 8130
+					},
+					"id": 262,
+					"p": 0.953497,
+					"t_dtw": -1
+				},
+				{
+					"text": " game",
+					"timestamps": {
+						"from": "00:00:08,140",
+						"to": "00:00:08,480"
+					},
+					"offsets": {
+						"from": 8140,
+						"to": 8480
+					},
+					"id": 983,
+					"p": 0.990981,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:08,640",
+						"to": "00:00:08,640"
+					},
+					"offsets": {
+						"from": 8640,
+						"to": 8640
+					},
+					"id": 13,
+					"p": 0.919183,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_432]",
+					"timestamps": {
+						"from": "00:00:08,640",
+						"to": "00:00:08,640"
+					},
+					"offsets": {
+						"from": 8640,
+						"to": 8640
+					},
+					"id": 50795,
+					"p": 0.0736459,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

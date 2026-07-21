@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "build:captions": "node scripts/build-captions.mjs",
+    "build:narration": "node scripts/transcribe-fish-clips.mjs && node scripts/build-fish-audio-meta.mjs && node scripts/build-captions.mjs",
     "dev": "npx --yes hyperframes@0.7.66 preview",
+    "generate:narration": "node scripts/fish-tts.mjs",
     "check": "npx --yes hyperframes@0.7.66 check",
     "generate:resumes": "uv run --with reportlab --with pypdf --with pdfplumber scripts/generate-demo-resumes.py",
     "render": "npx --yes hyperframes@0.7.66 render",

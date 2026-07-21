@@ -1,0 +1,548 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:07,580"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 7580
+			},
+			"text": " Our other features include email tracking, interview prep, campus insights, four-year planning, and major specific portfolios.",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.922182,
+					"t_dtw": -1
+				},
+				{
+					"text": " Our",
+					"timestamps": {
+						"from": "00:00:00,180",
+						"to": "00:00:00,190"
+					},
+					"offsets": {
+						"from": 180,
+						"to": 190
+					},
+					"id": 3954,
+					"p": 0.933878,
+					"t_dtw": -1
+				},
+				{
+					"text": " other",
+					"timestamps": {
+						"from": "00:00:00,270",
+						"to": "00:00:00,500"
+					},
+					"offsets": {
+						"from": 270,
+						"to": 500
+					},
+					"id": 584,
+					"p": 0.997128,
+					"t_dtw": -1
+				},
+				{
+					"text": " features",
+					"timestamps": {
+						"from": "00:00:00,500",
+						"to": "00:00:00,970"
+					},
+					"offsets": {
+						"from": 500,
+						"to": 970
+					},
+					"id": 3033,
+					"p": 0.99782,
+					"t_dtw": -1
+				},
+				{
+					"text": " include",
+					"timestamps": {
+						"from": "00:00:01,030",
+						"to": "00:00:01,380"
+					},
+					"offsets": {
+						"from": 1030,
+						"to": 1380
+					},
+					"id": 2291,
+					"p": 0.996175,
+					"t_dtw": -1
+				},
+				{
+					"text": " email",
+					"timestamps": {
+						"from": "00:00:01,520",
+						"to": "00:00:01,800"
+					},
+					"offsets": {
+						"from": 1520,
+						"to": 1800
+					},
+					"id": 3053,
+					"p": 0.778462,
+					"t_dtw": -1
+				},
+				{
+					"text": " tracking",
+					"timestamps": {
+						"from": "00:00:01,800",
+						"to": "00:00:02,330"
+					},
+					"offsets": {
+						"from": 1800,
+						"to": 2330
+					},
+					"id": 9646,
+					"p": 0.992895,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:02,350",
+						"to": "00:00:02,370"
+					},
+					"offsets": {
+						"from": 2350,
+						"to": 2370
+					},
+					"id": 11,
+					"p": 0.957032,
+					"t_dtw": -1
+				},
+				{
+					"text": " interview",
+					"timestamps": {
+						"from": "00:00:02,660",
+						"to": "00:00:03,040"
+					},
+					"offsets": {
+						"from": 2660,
+						"to": 3040
+					},
+					"id": 2720,
+					"p": 0.925074,
+					"t_dtw": -1
+				},
+				{
+					"text": " prep",
+					"timestamps": {
+						"from": "00:00:03,130",
+						"to": "00:00:03,290"
+					},
+					"offsets": {
+						"from": 3130,
+						"to": 3290
+					},
+					"id": 3143,
+					"p": 0.979744,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:03,340",
+						"to": "00:00:03,380"
+					},
+					"offsets": {
+						"from": 3340,
+						"to": 3380
+					},
+					"id": 11,
+					"p": 0.985883,
+					"t_dtw": -1
+				},
+				{
+					"text": " campus",
+					"timestamps": {
+						"from": "00:00:03,690",
+						"to": "00:00:04,000"
+					},
+					"offsets": {
+						"from": 3690,
+						"to": 4000
+					},
+					"id": 7611,
+					"p": 0.787888,
+					"t_dtw": -1
+				},
+				{
+					"text": " insights",
+					"timestamps": {
+						"from": "00:00:04,000",
+						"to": "00:00:04,580"
+					},
+					"offsets": {
+						"from": 4000,
+						"to": 4580
+					},
+					"id": 17218,
+					"p": 0.976172,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:04,760",
+						"to": "00:00:04,760"
+					},
+					"offsets": {
+						"from": 4760,
+						"to": 4760
+					},
+					"id": 11,
+					"p": 0.977116,
+					"t_dtw": -1
+				},
+				{
+					"text": " four",
+					"timestamps": {
+						"from": "00:00:04,840",
+						"to": "00:00:04,910"
+					},
+					"offsets": {
+						"from": 4840,
+						"to": 4910
+					},
+					"id": 1440,
+					"p": 0.592105,
+					"t_dtw": -1
+				},
+				{
+					"text": "-",
+					"timestamps": {
+						"from": "00:00:04,910",
+						"to": "00:00:04,940"
+					},
+					"offsets": {
+						"from": 4910,
+						"to": 4940
+					},
+					"id": 12,
+					"p": 0.622782,
+					"t_dtw": -1
+				},
+				{
+					"text": "year",
+					"timestamps": {
+						"from": "00:00:04,940",
+						"to": "00:00:05,100"
+					},
+					"offsets": {
+						"from": 4940,
+						"to": 5100
+					},
+					"id": 1941,
+					"p": 0.996107,
+					"t_dtw": -1
+				},
+				{
+					"text": " planning",
+					"timestamps": {
+						"from": "00:00:05,100",
+						"to": "00:00:05,580"
+					},
+					"offsets": {
+						"from": 5100,
+						"to": 5580
+					},
+					"id": 5410,
+					"p": 0.599655,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:05,800",
+						"to": "00:00:05,800"
+					},
+					"offsets": {
+						"from": 5800,
+						"to": 5800
+					},
+					"id": 11,
+					"p": 0.697028,
+					"t_dtw": -1
+				},
+				{
+					"text": " and",
+					"timestamps": {
+						"from": "00:00:05,840",
+						"to": "00:00:05,980"
+					},
+					"offsets": {
+						"from": 5840,
+						"to": 5980
+					},
+					"id": 290,
+					"p": 0.709595,
+					"t_dtw": -1
+				},
+				{
+					"text": " major",
+					"timestamps": {
+						"from": "00:00:05,980",
+						"to": "00:00:06,280"
+					},
+					"offsets": {
+						"from": 5980,
+						"to": 6280
+					},
+					"id": 1688,
+					"p": 0.986461,
+					"t_dtw": -1
+				},
+				{
+					"text": " specific",
+					"timestamps": {
+						"from": "00:00:06,280",
+						"to": "00:00:06,730"
+					},
+					"offsets": {
+						"from": 6280,
+						"to": 6730
+					},
+					"id": 2176,
+					"p": 0.864232,
+					"t_dtw": -1
+				},
+				{
+					"text": " portfolios",
+					"timestamps": {
+						"from": "00:00:06,870",
+						"to": "00:00:07,380"
+					},
+					"offsets": {
+						"from": 6870,
+						"to": 7380
+					},
+					"id": 47837,
+					"p": 0.995387,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:07,380",
+						"to": "00:00:07,530"
+					},
+					"offsets": {
+						"from": 7380,
+						"to": 7530
+					},
+					"id": 13,
+					"p": 0.825045,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_379]",
+					"timestamps": {
+						"from": "00:00:07,580",
+						"to": "00:00:07,580"
+					},
+					"offsets": {
+						"from": 7580,
+						"to": 7580
+					},
+					"id": 50742,
+					"p": 0.0787373,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:07,580",
+				"to": "00:00:10,880"
+			},
+			"offsets": {
+				"from": 7580,
+				"to": 10880
+			},
+			"text": " Resume DB, the internship operating system.",
+			"tokens": [
+				{
+					"text": " Res",
+					"timestamps": {
+						"from": "00:00:07,850",
+						"to": "00:00:08,170"
+					},
+					"offsets": {
+						"from": 7850,
+						"to": 8170
+					},
+					"id": 1874,
+					"p": 0.866022,
+					"t_dtw": -1
+				},
+				{
+					"text": "ume",
+					"timestamps": {
+						"from": "00:00:08,170",
+						"to": "00:00:08,690"
+					},
+					"offsets": {
+						"from": 8170,
+						"to": 8690
+					},
+					"id": 2454,
+					"p": 0.986997,
+					"t_dtw": -1
+				},
+				{
+					"text": " DB",
+					"timestamps": {
+						"from": "00:00:08,800",
+						"to": "00:00:09,160"
+					},
+					"offsets": {
+						"from": 8800,
+						"to": 9160
+					},
+					"id": 20137,
+					"p": 0.679261,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:09,160",
+						"to": "00:00:09,260"
+					},
+					"offsets": {
+						"from": 9160,
+						"to": 9260
+					},
+					"id": 11,
+					"p": 0.399415,
+					"t_dtw": -1
+				},
+				{
+					"text": " the",
+					"timestamps": {
+						"from": "00:00:09,260",
+						"to": "00:00:09,390"
+					},
+					"offsets": {
+						"from": 9260,
+						"to": 9390
+					},
+					"id": 262,
+					"p": 0.920442,
+					"t_dtw": -1
+				},
+				{
+					"text": " internship",
+					"timestamps": {
+						"from": "00:00:09,440",
+						"to": "00:00:09,910"
+					},
+					"offsets": {
+						"from": 9440,
+						"to": 9910
+					},
+					"id": 42329,
+					"p": 0.899285,
+					"t_dtw": -1
+				},
+				{
+					"text": " operating",
+					"timestamps": {
+						"from": "00:00:10,240",
+						"to": "00:00:10,390"
+					},
+					"offsets": {
+						"from": 10240,
+						"to": 10390
+					},
+					"id": 5361,
+					"p": 0.990146,
+					"t_dtw": -1
+				},
+				{
+					"text": " system",
+					"timestamps": {
+						"from": "00:00:10,390",
+						"to": "00:00:10,620"
+					},
+					"offsets": {
+						"from": 10390,
+						"to": 10620
+					},
+					"id": 1080,
+					"p": 0.998563,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:10,700",
+						"to": "00:00:10,870"
+					},
+					"offsets": {
+						"from": 10700,
+						"to": 10870
+					},
+					"id": 13,
+					"p": 0.94295,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_544]",
+					"timestamps": {
+						"from": "00:00:10,880",
+						"to": "00:00:10,880"
+					},
+					"offsets": {
+						"from": 10880,
+						"to": 10880
+					},
+					"id": 50907,
+					"p": 0.0488595,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

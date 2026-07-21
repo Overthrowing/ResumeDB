@@ -1,0 +1,450 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "small",
+		"multilingual": false,
+		"vocab": 51864,
+		"audio": {
+			"ctx": 1500,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"text": {
+			"ctx": 448,
+			"state": 768,
+			"head": 12,
+			"layer": 12
+		},
+		"mels": 80,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/nathanye/.cache/hyperframes/whisper/models/ggml-small.en.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:02,560"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 2560
+			},
+			"text": " The language gets stronger, never fictional.",
+			"tokens": [
+				{
+					"text": "[_BEG_]",
+					"timestamps": {
+						"from": "00:00:00,000",
+						"to": "00:00:00,000"
+					},
+					"offsets": {
+						"from": 0,
+						"to": 0
+					},
+					"id": 50363,
+					"p": 0.962321,
+					"t_dtw": -1
+				},
+				{
+					"text": " The",
+					"timestamps": {
+						"from": "00:00:00,160",
+						"to": "00:00:00,160"
+					},
+					"offsets": {
+						"from": 160,
+						"to": 160
+					},
+					"id": 383,
+					"p": 0.859175,
+					"t_dtw": -1
+				},
+				{
+					"text": " language",
+					"timestamps": {
+						"from": "00:00:00,180",
+						"to": "00:00:00,570"
+					},
+					"offsets": {
+						"from": 180,
+						"to": 570
+					},
+					"id": 3303,
+					"p": 0.998677,
+					"t_dtw": -1
+				},
+				{
+					"text": " gets",
+					"timestamps": {
+						"from": "00:00:00,610",
+						"to": "00:00:00,800"
+					},
+					"offsets": {
+						"from": 610,
+						"to": 800
+					},
+					"id": 3011,
+					"p": 0.990694,
+					"t_dtw": -1
+				},
+				{
+					"text": " stronger",
+					"timestamps": {
+						"from": "00:00:00,800",
+						"to": "00:00:01,230"
+					},
+					"offsets": {
+						"from": 800,
+						"to": 1230
+					},
+					"id": 7387,
+					"p": 0.998599,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:01,230",
+						"to": "00:00:01,270"
+					},
+					"offsets": {
+						"from": 1230,
+						"to": 1270
+					},
+					"id": 11,
+					"p": 0.758459,
+					"t_dtw": -1
+				},
+				{
+					"text": " never",
+					"timestamps": {
+						"from": "00:00:01,480",
+						"to": "00:00:01,780"
+					},
+					"offsets": {
+						"from": 1480,
+						"to": 1780
+					},
+					"id": 1239,
+					"p": 0.952328,
+					"t_dtw": -1
+				},
+				{
+					"text": " fictional",
+					"timestamps": {
+						"from": "00:00:01,780",
+						"to": "00:00:02,290"
+					},
+					"offsets": {
+						"from": 1780,
+						"to": 2290
+					},
+					"id": 19812,
+					"p": 0.998275,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:02,290",
+						"to": "00:00:02,560"
+					},
+					"offsets": {
+						"from": 2290,
+						"to": 2560
+					},
+					"id": 13,
+					"p": 0.794663,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_128]",
+					"timestamps": {
+						"from": "00:00:02,560",
+						"to": "00:00:02,560"
+					},
+					"offsets": {
+						"from": 2560,
+						"to": 2560
+					},
+					"id": 50491,
+					"p": 0.0460997,
+					"t_dtw": -1
+				}
+			]
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,560",
+				"to": "00:00:07,280"
+			},
+			"offsets": {
+				"from": 2560,
+				"to": 7280
+			},
+			"text": " Every claim traces back to something Sam actually built, measured, shipped, or published.",
+			"tokens": [
+				{
+					"text": " Every",
+					"timestamps": {
+						"from": "00:00:02,740",
+						"to": "00:00:02,850"
+					},
+					"offsets": {
+						"from": 2740,
+						"to": 2850
+					},
+					"id": 3887,
+					"p": 0.990291,
+					"t_dtw": -1
+				},
+				{
+					"text": " claim",
+					"timestamps": {
+						"from": "00:00:02,850",
+						"to": "00:00:03,130"
+					},
+					"offsets": {
+						"from": 2850,
+						"to": 3130
+					},
+					"id": 1624,
+					"p": 0.9962,
+					"t_dtw": -1
+				},
+				{
+					"text": " traces",
+					"timestamps": {
+						"from": "00:00:03,170",
+						"to": "00:00:03,490"
+					},
+					"offsets": {
+						"from": 3170,
+						"to": 3490
+					},
+					"id": 20675,
+					"p": 0.998721,
+					"t_dtw": -1
+				},
+				{
+					"text": " back",
+					"timestamps": {
+						"from": "00:00:03,490",
+						"to": "00:00:03,720"
+					},
+					"offsets": {
+						"from": 3490,
+						"to": 3720
+					},
+					"id": 736,
+					"p": 0.999003,
+					"t_dtw": -1
+				},
+				{
+					"text": " to",
+					"timestamps": {
+						"from": "00:00:03,720",
+						"to": "00:00:03,820"
+					},
+					"offsets": {
+						"from": 3720,
+						"to": 3820
+					},
+					"id": 284,
+					"p": 0.992538,
+					"t_dtw": -1
+				},
+				{
+					"text": " something",
+					"timestamps": {
+						"from": "00:00:04,040",
+						"to": "00:00:04,400"
+					},
+					"offsets": {
+						"from": 4040,
+						"to": 4400
+					},
+					"id": 1223,
+					"p": 0.996567,
+					"t_dtw": -1
+				},
+				{
+					"text": " Sam",
+					"timestamps": {
+						"from": "00:00:04,400",
+						"to": "00:00:04,800"
+					},
+					"offsets": {
+						"from": 4400,
+						"to": 4800
+					},
+					"id": 3409,
+					"p": 0.930177,
+					"t_dtw": -1
+				},
+				{
+					"text": " actually",
+					"timestamps": {
+						"from": "00:00:04,800",
+						"to": "00:00:05,340"
+					},
+					"offsets": {
+						"from": 4800,
+						"to": 5340
+					},
+					"id": 1682,
+					"p": 0.964267,
+					"t_dtw": -1
+				},
+				{
+					"text": " built",
+					"timestamps": {
+						"from": "00:00:05,340",
+						"to": "00:00:05,610"
+					},
+					"offsets": {
+						"from": 5340,
+						"to": 5610
+					},
+					"id": 3170,
+					"p": 0.989295,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:05,690",
+						"to": "00:00:05,770"
+					},
+					"offsets": {
+						"from": 5690,
+						"to": 5770
+					},
+					"id": 11,
+					"p": 0.818537,
+					"t_dtw": -1
+				},
+				{
+					"text": " measured",
+					"timestamps": {
+						"from": "00:00:05,770",
+						"to": "00:00:06,150"
+					},
+					"offsets": {
+						"from": 5770,
+						"to": 6150
+					},
+					"id": 8630,
+					"p": 0.678034,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:06,150",
+						"to": "00:00:06,240"
+					},
+					"offsets": {
+						"from": 6150,
+						"to": 6240
+					},
+					"id": 11,
+					"p": 0.99624,
+					"t_dtw": -1
+				},
+				{
+					"text": " shipped",
+					"timestamps": {
+						"from": "00:00:06,240",
+						"to": "00:00:06,570"
+					},
+					"offsets": {
+						"from": 6240,
+						"to": 6570
+					},
+					"id": 14338,
+					"p": 0.995599,
+					"t_dtw": -1
+				},
+				{
+					"text": ",",
+					"timestamps": {
+						"from": "00:00:06,570",
+						"to": "00:00:06,660"
+					},
+					"offsets": {
+						"from": 6570,
+						"to": 6660
+					},
+					"id": 11,
+					"p": 0.66158,
+					"t_dtw": -1
+				},
+				{
+					"text": " or",
+					"timestamps": {
+						"from": "00:00:06,660",
+						"to": "00:00:06,750"
+					},
+					"offsets": {
+						"from": 6660,
+						"to": 6750
+					},
+					"id": 393,
+					"p": 0.992873,
+					"t_dtw": -1
+				},
+				{
+					"text": " published",
+					"timestamps": {
+						"from": "00:00:06,750",
+						"to": "00:00:07,200"
+					},
+					"offsets": {
+						"from": 6750,
+						"to": 7200
+					},
+					"id": 3199,
+					"p": 0.997902,
+					"t_dtw": -1
+				},
+				{
+					"text": ".",
+					"timestamps": {
+						"from": "00:00:07,200",
+						"to": "00:00:07,280"
+					},
+					"offsets": {
+						"from": 7200,
+						"to": 7280
+					},
+					"id": 13,
+					"p": 0.948251,
+					"t_dtw": -1
+				},
+				{
+					"text": "[_TT_364]",
+					"timestamps": {
+						"from": "00:00:07,280",
+						"to": "00:00:07,280"
+					},
+					"offsets": {
+						"from": 7280,
+						"to": 7280
+					},
+					"id": 50727,
+					"p": 0.0780001,
+					"t_dtw": -1
+				}
+			]
+		}
+	]
+}

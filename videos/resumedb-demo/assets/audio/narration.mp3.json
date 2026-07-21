@@ -4,6 +4,89 @@
   "reference_id": "933563129e564b19a115bedd57b7406a",
   "format": "mp3",
   "sample_rate": 44100,
-  "sha256": "f55622136438afd18ab42b5927b378b7f9df87830d04b362496453a60fff34aa",
-  "source_script": "/Users/nathanye/.treehouse/ResumeDB-1059f1/3/ResumeDB/videos/resumedb-demo/SCRIPT.md"
+  "temperature": 0.45,
+  "top_p": 0.6,
+  "condition_on_previous_chunks": false,
+  "scene_isolated": true,
+  "sha256": "fa885cf192017545fefec8a191b0d8730f5823b98fc47b96ae91fbe9107cb597",
+  "source_script": "/Users/nathanye/.treehouse/ResumeDB-1059f1/3/ResumeDB/videos/resumedb-demo/SCRIPT.md",
+  "generated": [
+    {
+      "frame": 1,
+      "speed": 1.02,
+      "raw_duration_s": 8.673,
+      "target_duration_s": 8.81,
+      "source_sha256": "ad89fefc8e72c223fd85f53e61f5df7456b247dd01444cae8295d2a4b611f7a6"
+    },
+    {
+      "frame": 2,
+      "speed": 1.141,
+      "raw_duration_s": 8.359,
+      "target_duration_s": 8.26,
+      "source_sha256": "18fd898a18e95450da6429cffee84f34d947d78588b58f35930d4e377b939090"
+    },
+    {
+      "frame": 3,
+      "speed": 1.06,
+      "raw_duration_s": 9.926,
+      "target_duration_s": 9.26,
+      "source_sha256": "3a9cc807c75900698a254602932eec9b1132a2d4ab5afb8bc16aa2462248547f"
+    },
+    {
+      "frame": 4,
+      "speed": 1.08,
+      "raw_duration_s": 8.673,
+      "target_duration_s": 8.76,
+      "source_sha256": "71e01d833ae9a3a66a4ca61cec1e32d12ec5ca3774d871bd6c056bb1dd7aafe4"
+    },
+    {
+      "frame": 5,
+      "speed": 1.08,
+      "raw_duration_s": 10.397,
+      "target_duration_s": 10,
+      "source_sha256": "f53450f7a02e0f824452f38bb4e9fbe9a3db3dd061804e1c1dc7061354ddc29f"
+    },
+    {
+      "frame": 6,
+      "speed": 1.161,
+      "raw_duration_s": 7.366,
+      "target_duration_s": 7.87,
+      "source_sha256": "fc6fad4cec7884c09bbbff9e978d4f44cb81f9d5e20e26ad0fa1b90067350740"
+    },
+    {
+      "frame": 7,
+      "speed": 1.02,
+      "raw_duration_s": 11.781,
+      "target_duration_s": 11.08,
+      "source_sha256": "6e650f56fe3feef563bb123c69b2165e21a2d3b2cda95e7feeefa729ab47d632"
+    },
+    {
+      "frame": 8,
+      "speed": 1.08,
+      "raw_duration_s": 8.046,
+      "target_duration_s": 8.91,
+      "source_sha256": "4193436ebc87135edd0e4983b66eb5717c4b4a3e0a3e128392f1e51fc2033bac"
+    },
+    {
+      "frame": 9,
+      "speed": 1.02,
+      "raw_duration_s": 10.24,
+      "target_duration_s": 9.72,
+      "source_sha256": "bdfde192cd74df58611087f1a369b96b01b81c39f010b1e391586a2d45a8efe2"
+    },
+    {
+      "frame": 10,
+      "speed": 1.1,
+      "raw_duration_s": 8.986,
+      "target_duration_s": 9,
+      "source_sha256": "6316744af0ad1762e93dfe96b99dcbc69f91102361182c28d2f4752e36a83588"
+    },
+    {
+      "frame": 11,
+      "speed": 1.055,
+      "raw_duration_s": 11.781,
+      "target_duration_s": 10.965,
+      "source_sha256": "d6341dc73d7ac837c433f43ee0f5fb9e4781c5eb8e7edbe78df12ca3ac6811b5"
+    }
+  ]
 }
