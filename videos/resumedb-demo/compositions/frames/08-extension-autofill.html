@@ -44,7 +44,10 @@
     [class~="f08-extension-autofill-bg"] {
       position: absolute;
       inset: 0;
-      background: #f3f2f2;
+      background:
+        radial-gradient(circle at 88% 7%, rgba(109, 40, 217, 0.07), transparent 25%),
+        radial-gradient(circle at 7% 11%, rgba(184, 130, 42, 0.1), transparent 27%),
+        #f3f2f2;
     }
 
     [class~="f08-extension-autofill-scene"] {
@@ -53,18 +56,23 @@
       overflow: hidden;
     }
 
-    [class~="f08-extension-autofill-heading"] {
+    [class~="f08-extension-autofill-header"] {
       position: absolute;
-      top: 3.6cqh;
+      top: 3.8cqh;
+      right: 4.2cqw;
       left: 4.2cqw;
-      z-index: 6;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 28cqw;
+      align-items: end;
+      gap: 2cqw;
     }
 
     [class~="f08-extension-autofill-kicker"] {
-      margin: 0 0 0.7cqh;
-      color: #6f6e6d;
+      margin: 0 0 0.85cqh;
+      color: #8b5f1d;
       font-family: "JetBrains Mono";
-      font-size: 1.14cqw;
+      font-size: 1.02cqw;
       font-weight: 600;
       letter-spacing: 0.16em;
       line-height: 1;
@@ -75,279 +83,276 @@
       margin: 0;
       color: #201f1d;
       font-family: "EB Garamond";
-      font-size: 4.35cqw;
+      font-size: 4.15cqw;
       font-weight: 400;
-      letter-spacing: -0.018em;
-      line-height: 0.98;
+      letter-spacing: -0.024em;
+      line-height: 0.94;
     }
 
-    [class~="f08-extension-autofill-world"] {
+    [class~="f08-extension-autofill-deck"] {
+      margin: 0 0 0.4cqh;
+      color: rgba(32, 31, 29, 0.64);
+      font-size: 1.18cqw;
+      line-height: 1.42;
+    }
+
+    [class~="f08-extension-autofill-stage"] {
       position: absolute;
-      top: 19.5cqh;
+      top: 18.1cqh;
       right: 4.2cqw;
       left: 4.2cqw;
-      height: 57cqh;
-      transform-origin: 54% 58%;
-    }
-
-    [class~="f08-extension-autofill-layout"] {
-      position: absolute;
-      inset: 0;
+      z-index: 2;
       display: grid;
-      grid-template-columns: 27cqw 3.2cqw minmax(0, 1fr);
-      gap: 0;
+      height: 61cqh;
+      grid-template-columns: minmax(0, 28fr) minmax(0, 72fr);
+      gap: 1.25cqw;
     }
 
     [class~="f08-extension-autofill-panel"] {
       position: relative;
       min-width: 0;
       overflow: hidden;
-      border: 1px solid rgba(32, 31, 29, 0.16);
-      border-radius: 12px;
-      background: #f4e9d9;
+      border: 1px solid rgba(32, 31, 29, 0.17);
+      border-radius: 14px;
+      box-shadow: 0 16px 42px rgba(32, 31, 29, 0.09);
     }
 
     [class~="f08-extension-autofill-extension"] {
-      z-index: 4;
-      background: #161518;
-      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
-    }
-
-    [class~="f08-extension-autofill-extension-capture"] {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 50% 43%;
-      opacity: 0.76;
-    }
-
-    [class~="f08-extension-autofill-extension-veil"] {
-      position: absolute;
-      inset: 0;
-      background: rgba(22, 21, 24, 0.27);
+      background: #191923;
+      color: #f3f2f2;
     }
 
     [class~="f08-extension-autofill-extension-chrome"] {
       position: absolute;
-      top: 1.2cqh;
+      top: 1.25cqh;
       right: 0.85cqw;
       left: 0.85cqw;
-      z-index: 3;
+      z-index: 4;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 3.8cqh;
+      min-height: 4.2cqh;
       padding: 0 0.75cqw;
-      border: 1px solid rgba(243, 242, 242, 0.16);
+      border: 1px solid rgba(243, 242, 242, 0.15);
       border-radius: 8px;
-      background: rgba(29, 27, 31, 0.94);
-      color: #f3f2f2;
+      background: rgba(35, 34, 45, 0.98);
     }
 
-    [class~="f08-extension-autofill-mono"] {
+    [class~="f08-extension-autofill-extension-title"] {
+      display: flex;
+      align-items: center;
+      gap: 0.55cqw;
       font-family: "JetBrains Mono";
       font-size: 0.76cqw;
       font-weight: 600;
-      letter-spacing: 0.06em;
-      line-height: 1;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    [class~="f08-extension-autofill-ready"] {
-      color: rgba(243, 242, 242, 0.7);
+    [class~="f08-extension-autofill-extension-mark"] {
+      display: grid;
+      width: 1.45cqw;
+      height: 1.45cqw;
+      place-items: center;
+      border-radius: 6px;
+      background: #8b5f1d;
+      color: #f3f2f2;
+      font-family: "EB Garamond";
+      font-size: 1.05cqw;
+      line-height: 1;
     }
 
-    [class~="f08-extension-autofill-counters"] {
+    [class~="f08-extension-autofill-status-stack"] {
+      position: relative;
+      width: 7.5cqw;
+      height: 2.4cqh;
+    }
+
+    [class~="f08-extension-autofill-extension-status"] {
       position: absolute;
-      top: 6.2cqh;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(243, 242, 242, 0.18);
+      border-radius: 999px;
+      color: rgba(243, 242, 242, 0.7);
+      font-family: "JetBrains Mono";
+      font-size: 0.58cqw;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    [class~="f08-extension-autofill-extension-status-complete"] {
+      border-color: rgba(184, 130, 42, 0.5);
+      color: #f0c477;
+    }
+
+    [class~="f08-extension-autofill-summary"] {
+      position: absolute;
+      top: 6.7cqh;
       right: 0.85cqw;
       left: 0.85cqw;
-      z-index: 3;
+      z-index: 4;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      border: 1px solid rgba(243, 242, 242, 0.16);
-      border-radius: 8px;
+      grid-template-columns: 1fr 1fr;
       overflow: hidden;
-      background: rgba(29, 27, 31, 0.94);
-      color: #f3f2f2;
+      border: 1px solid rgba(243, 242, 242, 0.15);
+      border-radius: 8px;
+      background: rgba(35, 34, 45, 0.98);
     }
 
-    [class~="f08-extension-autofill-counter"] {
+    [class~="f08-extension-autofill-summary-block"] {
       display: flex;
-      flex-direction: column;
+      min-height: 5.9cqh;
+      padding: 0 0.75cqw;
       align-items: center;
-      justify-content: center;
-      min-width: 0;
-      min-height: 8.2cqh;
+      justify-content: space-between;
       border-right: 1px solid rgba(243, 242, 242, 0.12);
     }
 
-    [class~="f08-extension-autofill-counter"]:last-child {
+    [class~="f08-extension-autofill-summary-block"]:last-child {
       border-right: 0;
     }
 
-    [class~="f08-extension-autofill-counter-number"] {
+    [class~="f08-extension-autofill-summary-number"] {
+      position: relative;
+      width: 1.8cqw;
+      height: 2.6cqh;
       font-family: "EB Garamond";
-      font-size: 2.15cqw;
+      font-size: 1.7cqw;
       font-weight: 600;
-      letter-spacing: -0.012em;
-      line-height: 0.9;
+      line-height: 0.8;
     }
 
-    [class~="f08-extension-autofill-counter-label"] {
-      margin-top: 0.72cqh;
-      color: rgba(243, 242, 242, 0.62);
+    [class~="f08-extension-autofill-summary-number-value"] {
+      position: absolute;
+      inset: 0;
+    }
+
+    [class~="f08-extension-autofill-summary-label"] {
+      color: rgba(243, 242, 242, 0.58);
       font-family: "JetBrains Mono";
-      font-size: 0.62cqw;
+      font-size: 0.57cqw;
       font-weight: 600;
       letter-spacing: 0.06em;
-      line-height: 1;
+      line-height: 1.2;
+      text-align: right;
       text-transform: uppercase;
     }
 
-    [class~="f08-extension-autofill-mapping-list"] {
+    [class~="f08-extension-autofill-map-list"] {
       position: absolute;
-      top: 16.3cqh;
-      right: 1.25cqw;
-      left: 1.25cqw;
-      z-index: 3;
+      top: 14.1cqh;
+      right: 0.85cqw;
+      left: 0.85cqw;
+      z-index: 4;
       display: grid;
-      gap: 0.62cqh;
+      gap: 0.55cqh;
     }
 
-    [class~="f08-extension-autofill-mapping-row"] {
-      display: flex;
+    [class~="f08-extension-autofill-map-row"] {
+      display: grid;
+      grid-template-columns: 1.25cqw minmax(0, 1fr) auto;
       align-items: center;
-      justify-content: space-between;
-      min-height: 3.65cqh;
-      padding: 0 0.78cqw;
+      gap: 0.55cqw;
+      min-height: 4.3cqh;
+      padding: 0 0.72cqw;
       border: 1px solid rgba(243, 242, 242, 0.13);
-      border-radius: 6px;
-      background: rgba(29, 27, 31, 0.9);
-      color: rgba(243, 242, 242, 0.82);
-      font-size: 0.78cqw;
-      line-height: 1;
+      border-radius: 7px;
+      background: rgba(35, 34, 45, 0.96);
     }
 
-    [class~="f08-extension-autofill-row-check"] {
+    [class~="f08-extension-autofill-map-check"] {
       display: grid;
       width: 1.12cqw;
       height: 1.12cqw;
       place-items: center;
-      border: 1px solid rgba(243, 242, 242, 0.38);
-      border-radius: 9999px;
-      font-size: 0.62cqw;
-      line-height: 1;
+      border: 1px solid rgba(243, 242, 242, 0.28);
+      border-radius: 99px;
       transform-origin: center;
     }
 
-    [class~="f08-extension-autofill-progress-rail"] {
-      position: absolute;
-      top: 16.3cqh;
-      right: 0.55cqw;
-      bottom: 8.8cqh;
-      z-index: 4;
-      width: 2px;
-      overflow: hidden;
-      background: rgba(243, 242, 242, 0.14);
-    }
-
-    [class~="f08-extension-autofill-progress-fill"] {
-      position: absolute;
-      inset: 0;
-      background: #b68235;
-      transform-origin: center bottom;
-    }
-
-    [class~="f08-extension-autofill-action"] {
-      position: absolute;
-      right: 1.15cqw;
-      bottom: 1.55cqh;
-      left: 1.15cqw;
-      z-index: 5;
-      display: grid;
-      height: 5.1cqh;
-      place-items: center;
-      border: 1px solid rgba(243, 242, 242, 0.32);
-      border-radius: 8px;
-      background: #222025;
+    [class~="f08-extension-autofill-map-check-glyph"] {
       color: #f3f2f2;
-      font-family: "Inter";
-      font-size: 1cqw;
+      font-size: 0.58cqw;
       font-weight: 600;
       line-height: 1;
       transform-origin: center;
     }
 
-    [class~="f08-extension-autofill-ripple"] {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 2cqw;
-      height: 2cqw;
-      margin-top: -1cqw;
-      margin-left: -1cqw;
-      border: 1px solid #b68235;
-      border-radius: 9999px;
-      pointer-events: none;
-      transform-origin: center;
-    }
-
-    [class~="f08-extension-autofill-arrow"] {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(32, 31, 29, 0.54);
-      font-family: "EB Garamond";
-      font-size: 2.8cqw;
+    [class~="f08-extension-autofill-map-name"] {
+      color: rgba(243, 242, 242, 0.84);
+      font-size: 0.75cqw;
+      font-weight: 600;
       line-height: 1;
     }
 
-    [class~="f08-extension-autofill-arrow"]::before {
-      position: absolute;
-      top: 50%;
-      right: 0.5cqw;
-      left: 0.5cqw;
-      height: 1px;
-      background: rgba(32, 31, 29, 0.16);
-      content: "";
+    [class~="f08-extension-autofill-map-source"] {
+      color: rgba(243, 242, 242, 0.65);
+      font-family: "JetBrains Mono";
+      font-size: 0.55cqw;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      line-height: 1;
+      text-transform: uppercase;
     }
 
-    [class~="f08-extension-autofill-arrow-mark"] {
-      position: relative;
-      z-index: 1;
-      padding: 0.25cqh 0.4cqw;
-      background: #f3f2f2;
+    [class~="f08-extension-autofill-action"] {
+      position: absolute;
+      right: 0.85cqw;
+      bottom: 1.35cqh;
+      left: 0.85cqw;
+      z-index: 5;
+      display: grid;
+      height: 5cqh;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid #8b5f1d;
+      border-radius: 8px;
+      background: #b8822a;
+      color: #f3f2f2;
+      font-size: 0.9cqw;
+      font-weight: 600;
+      transform-origin: center;
+    }
+
+    [class~="f08-extension-autofill-action-label"] {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    [class~="f08-extension-autofill-ripple"] {
+      position: absolute;
+      width: 3cqw;
+      height: 3cqw;
+      border: 2px solid rgba(243, 242, 242, 0.75);
+      border-radius: 99px;
+      transform-origin: center;
+    }
+
+    [class~="f08-extension-autofill-cursor"] {
+      position: absolute;
+      z-index: 16;
+      top: 45.5cqh;
+      left: 5.4cqw;
+      width: 2cqw;
+      height: 2.6cqw;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.28));
+      transform-origin: 3px 3px;
+    }
+
+    [class~="f08-extension-autofill-cursor-path"] {
+      fill: #f3f2f2;
+      stroke: #201f1d;
+      stroke-linejoin: round;
+      stroke-width: 2;
     }
 
     [class~="f08-extension-autofill-ats"] {
-      background: #f3f2f2;
-    }
-
-    [class~="f08-extension-autofill-swap"] {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    [class~="f08-extension-autofill-ats-state"] {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      transform-origin: 50% 50%;
-      will-change: transform, opacity;
-    }
-
-    [class~="f08-extension-autofill-constructed"] {
-      z-index: 1;
-    }
-
-    [class~="f08-extension-autofill-final"] {
-      z-index: 2;
+      background: #f1eff9;
     }
 
     [class~="f08-extension-autofill-ats-capture"] {
@@ -356,331 +361,1007 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: 72% 5%;
+      object-position: 50% 4%;
+      filter: saturate(0.62) contrast(0.88);
+      opacity: 0.16;
     }
 
-    [class~="f08-extension-autofill-filled-slice"] {
+    [class~="f08-extension-autofill-ats-wash"] {
       position: absolute;
       inset: 0;
-      overflow: hidden;
-      background-image: url("assets/10-ats-filled.png");
-      background-position: 72% 5%;
-      background-repeat: no-repeat;
-      background-size: cover;
-      will-change: clip-path;
+      background: rgba(245, 243, 250, 0.62);
     }
 
-    [class~="f08-extension-autofill-scanner"] {
+    [class~="f08-extension-autofill-ats-chrome"] {
       position: absolute;
       top: 0;
       right: 0;
       left: 0;
       z-index: 5;
-      height: 1px;
-      background: #b68235;
-      pointer-events: none;
-    }
-
-    [class~="f08-extension-autofill-upload-proof"] {
-      position: absolute;
-      right: 1.25cqw;
-      bottom: 1.35cqh;
-      left: 1.25cqw;
-      z-index: 6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 4.6cqh;
-      padding: 0 1cqw;
-      border: 1px solid rgba(32, 31, 29, 0.18);
-      border-radius: 9999px;
-      background: rgba(243, 242, 242, 0.94);
-      color: rgba(32, 31, 29, 0.72);
-      font-family: "JetBrains Mono";
-      font-size: 0.76cqw;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    [class~="f08-extension-autofill-final-capture"] {
-      opacity: 1;
-    }
-
-    [class~="f08-extension-autofill-answers-proof"] {
-      position: absolute;
-      top: 6.6cqh;
-      right: 1.3cqw;
-      z-index: 5;
-      width: 28.5cqw;
-      height: 37cqh;
-      overflow: hidden;
-      border: 1px solid rgba(32, 31, 29, 0.18);
-      border-radius: 12px;
-      background: #f3f2f2;
-      transform-origin: 68% 40%;
-    }
-
-    [class~="f08-extension-autofill-answers-capture"] {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 76% 52%;
-    }
-
-    [class~="f08-extension-autofill-answers-label"] {
-      position: absolute;
-      top: 1.1cqh;
-      left: 0.9cqw;
-      z-index: 2;
-      padding: 0.65cqh 0.7cqw;
-      border: 1px solid rgba(32, 31, 29, 0.16);
-      border-radius: 9999px;
-      background: rgba(243, 242, 242, 0.94);
-      color: rgba(32, 31, 29, 0.68);
-      font-family: "JetBrains Mono";
-      font-size: 0.7cqw;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    [class~="f08-extension-autofill-submit-dock"] {
-      position: absolute;
-      right: 1.05cqw;
-      bottom: 1.05cqh;
-      left: 1.05cqw;
-      z-index: 8;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 6.8cqh;
-      padding: 0 1cqw;
-      border: 1px solid rgba(32, 31, 29, 0.18);
-      border-radius: 8px;
-      background: rgba(243, 242, 242, 0.97);
+      height: 5.2cqh;
+      padding: 0 1.25cqw;
+      border-bottom: 1px solid rgba(109, 40, 217, 0.14);
+      background: rgba(251, 250, 253, 0.96);
     }
 
-    [class~="f08-extension-autofill-submit-title"] {
-      margin: 0;
-      font-family: "EB Garamond";
-      font-size: 1.85cqw;
+    [class~="f08-extension-autofill-company"] {
+      display: flex;
+      align-items: center;
+      gap: 0.65cqw;
+      font-size: 0.84cqw;
       font-weight: 600;
-      letter-spacing: -0.006em;
+    }
+
+    [class~="f08-extension-autofill-company-mark"] {
+      display: grid;
+      width: 1.75cqw;
+      height: 1.75cqw;
+      place-items: center;
+      border-radius: 7px;
+      background: #6d28d9;
+      color: #f3f2f2;
+      font-size: 0.92cqw;
       line-height: 1;
     }
 
-    [class~="f08-extension-autofill-submit-side"] {
-      display: flex;
-      align-items: center;
+    [class~="f08-extension-autofill-ats-status-stack"] {
+      position: relative;
+      width: 9.5cqw;
+      height: 2.65cqh;
+    }
+
+    [class~="f08-extension-autofill-ats-status"] {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(109, 40, 217, 0.2);
+      border-radius: 999px;
+      background: #f3f2f2;
+      color: rgba(32, 31, 29, 0.68);
+      font-family: "JetBrains Mono";
+      font-size: 0.58cqw;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    [class~="f08-extension-autofill-ats-status-ready"] {
+      border-color: rgba(109, 40, 217, 0.34);
+      color: #5b21b6;
+    }
+
+    [class~="f08-extension-autofill-ats-body"] {
+      position: absolute;
+      top: 6.7cqh;
+      right: 1cqw;
+      bottom: 1.25cqh;
+      left: 1cqw;
+      z-index: 6;
+      display: grid;
+      grid-template-columns: minmax(0, 27fr) minmax(0, 73fr);
       gap: 0.9cqw;
     }
 
-    [class~="f08-extension-autofill-student-pill"] {
-      display: grid;
-      min-height: 3.6cqh;
-      padding: 0 0.8cqw;
-      place-items: center;
-      border: 1px solid rgba(32, 31, 29, 0.18);
-      border-radius: 9999px;
-      color: rgba(32, 31, 29, 0.65);
-      font-family: "JetBrains Mono";
-      font-size: 0.7cqw;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    [class~="f08-extension-autofill-job"],
+    [class~="f08-extension-autofill-form"] {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(109, 40, 217, 0.13);
+      border-radius: 11px;
+      background: rgba(251, 250, 253, 0.98);
     }
 
-    [class~="f08-extension-autofill-submit-button"] {
-      display: grid;
-      width: 12.5cqw;
-      height: 4.5cqh;
-      place-items: center;
-      border: 1px solid rgba(243, 242, 242, 0.16);
-      border-radius: 8px;
-      background: #222025;
-      color: #f3f2f2;
-      font-size: 0.9cqw;
-      font-weight: 600;
-      line-height: 1;
+    [class~="f08-extension-autofill-job"] {
+      padding: 1.55cqh 1.05cqw;
+      background: rgba(245, 243, 255, 0.97);
     }
 
-    [class~="f08-extension-autofill-guard"] {
-      position: absolute;
-      right: 1.25cqw;
-      bottom: 7.9cqh;
-      z-index: 10;
-      width: 17.4cqw;
-      height: 1px;
-      background: #6d28d9;
-      transform-origin: right center;
-    }
-
-    [class~="f08-extension-autofill-guard-label"] {
-      position: absolute;
-      right: 0;
-      bottom: 0.9cqh;
+    [class~="f08-extension-autofill-job-kicker"],
+    [class~="f08-extension-autofill-form-kicker"] {
+      margin: 0 0 0.55cqh;
       color: #6d28d9;
       font-family: "JetBrains Mono";
-      font-size: 0.75cqw;
+      font-size: 0.65cqw;
       font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.1em;
       line-height: 1;
       text-transform: uppercase;
+    }
+
+    [class~="f08-extension-autofill-job-title"] {
+      margin: 0;
+      font-family: "EB Garamond";
+      font-size: 2cqw;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      line-height: 0.98;
+    }
+
+    [class~="f08-extension-autofill-job-chips"] {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.38cqw;
+      margin-top: 1.15cqh;
+    }
+
+    [class~="f08-extension-autofill-job-chip"] {
+      padding: 0.42cqh 0.5cqw;
+      border: 1px solid rgba(109, 40, 217, 0.16);
+      border-radius: 999px;
+      background: #f3f2f2;
+      color: rgba(32, 31, 29, 0.64);
+      font-size: 0.62cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f08-extension-autofill-job-copy"] {
+      margin: 1.45cqh 0 0;
+      color: rgba(32, 31, 29, 0.68);
+      font-size: 0.76cqw;
+      line-height: 1.48;
+    }
+
+    [class~="f08-extension-autofill-job-list"] {
+      display: grid;
+      gap: 0.7cqh;
+      margin: 1.35cqh 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    [class~="f08-extension-autofill-job-item"] {
+      position: relative;
+      padding-left: 0.8cqw;
+      color: rgba(32, 31, 29, 0.7);
+      font-size: 0.69cqw;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    [class~="f08-extension-autofill-job-item"]::before {
+      position: absolute;
+      top: 0.48em;
+      left: 0;
+      width: 0.32cqw;
+      height: 0.32cqw;
+      border-radius: 99px;
+      background: #6d28d9;
+      content: "";
+    }
+
+    [class~="f08-extension-autofill-fit"] {
+      position: absolute;
+      right: 1.05cqw;
+      bottom: 1.45cqh;
+      left: 1.05cqw;
+      padding-top: 1.15cqh;
+      border-top: 1px solid rgba(109, 40, 217, 0.14);
+    }
+
+    [class~="f08-extension-autofill-fit-value"] {
+      display: block;
+      font-family: "EB Garamond";
+      font-size: 2cqw;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+    }
+
+    [class~="f08-extension-autofill-fit-label"] {
+      display: block;
+      margin-top: 0.5cqh;
+      color: rgba(32, 31, 29, 0.68);
+      font-family: "JetBrains Mono";
+      font-size: 0.58cqw;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    [class~="f08-extension-autofill-form"] {
+      padding: 1.25cqh 1.05cqw;
+    }
+
+    [class~="f08-extension-autofill-form-heading"] {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1cqw;
+      padding-top: 0.35cqh;
+      padding-bottom: 0.95cqh;
+      border-bottom: 1px solid rgba(32, 31, 29, 0.12);
+    }
+
+    [class~="f08-extension-autofill-form-title"] {
+      margin: 0;
+      font-family: "EB Garamond";
+      font-size: 1.75cqw;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      line-height: 1;
+    }
+
+    [class~="f08-extension-autofill-required"] {
+      color: rgba(32, 31, 29, 0.65);
+      font-size: 0.62cqw;
+      line-height: 1;
+    }
+
+    [class~="f08-extension-autofill-fields"] {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7cqh 0.65cqw;
+      margin-top: 1cqh;
+    }
+
+    [class~="f08-extension-autofill-field"] {
+      position: relative;
+      min-width: 0;
+    }
+
+    [class~="f08-extension-autofill-field-wide"] {
+      grid-column: 1 / -1;
+    }
+
+    [class~="f08-extension-autofill-field-label"] {
+      display: block;
+      margin-bottom: 0.38cqh;
+      color: rgba(32, 31, 29, 0.62);
+      font-size: 0.62cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f08-extension-autofill-required-mark"] {
+      color: #6d28d9;
+    }
+
+    [class~="f08-extension-autofill-control"] {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      height: 3.65cqh;
+      padding: 0 0.72cqw;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.17);
+      border-radius: 7px;
+      background: #fdfcfa;
+      color: #201f1d;
+      font-size: 0.72cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f08-extension-autofill-value"] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    [class~="f08-extension-autofill-cursor"] {
-      position: absolute;
-      top: 69cqh;
-      left: 19cqw;
-      z-index: 20;
-      width: 2.15cqw;
-      height: 2.15cqw;
-      pointer-events: none;
-      transform-origin: 15% 12%;
+    [class~="f08-extension-autofill-chevron"] {
+      margin-left: auto;
+      color: rgba(32, 31, 29, 0.68);
+      font-size: 0.9cqw;
+      line-height: 1;
     }
 
-    [class~="f08-extension-autofill-cursor"] svg {
+    [class~="f08-extension-autofill-upload-control"] {
+      gap: 0.65cqw;
+      height: 4.15cqh;
+    }
+
+    [class~="f08-extension-autofill-file-icon"] {
+      display: grid;
+      flex: 0 0 auto;
+      width: 1.35cqw;
+      height: 1.35cqw;
+      place-items: center;
+      border-radius: 5px;
+      background: #eee9e1;
+      color: #8b5f1d;
+      font-family: "JetBrains Mono";
+      font-size: 0.52cqw;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    [class~="f08-extension-autofill-upload-copy"] {
+      min-width: 0;
+    }
+
+    [class~="f08-extension-autofill-upload-name"] {
       display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    [class~="f08-extension-autofill-upload-note"] {
+      display: block;
+      margin-top: 0.3cqh;
+      color: rgba(32, 31, 29, 0.48);
+      font-size: 0.58cqw;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    [class~="f08-extension-autofill-upload-check"] {
+      display: grid;
+      flex: 0 0 auto;
+      width: 1.35cqw;
+      height: 1.35cqw;
+      margin-left: auto;
+      place-items: center;
+      border-radius: 99px;
+      background: #b8822a;
+      color: #f3f2f2;
+      font-size: 0.66cqw;
+      line-height: 1;
+      transform-origin: center;
+    }
+
+    [class~="f08-extension-autofill-upload-progress"] {
+      position: absolute;
+      right: 0;
+      bottom: -0.1cqh;
+      left: 0;
+      height: 0.3cqh;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(32, 31, 29, 0.08);
+    }
+
+    [class~="f08-extension-autofill-upload-progress-fill"] {
       width: 100%;
       height: 100%;
-      overflow: visible;
-    }
-
-    [class~="f08-extension-autofill-band"] {
-      position: absolute;
-      top: 79cqh;
-      right: 4.2cqw;
-      left: 4.2cqw;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 3.7cqh;
-      border-top: 1px solid rgba(32, 31, 29, 0.16);
-      color: #6f6f6e;
-      font-family: "JetBrains Mono";
-      font-size: 0.8cqw;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    [class~="f08-extension-autofill-band-index"] {
-      color: #6f6e6e;
+      border-radius: inherit;
+      background: #b8822a;
+      transform-origin: left center;
     }
   </style>
 
-  <div data-hf-id="hf-x801" id="root" data-composition-id="08-extension-autofill" data-start="0" data-duration="9.2" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-2glc" id="f08-extension-autofill-background" class="clip f08-extension-autofill-bg" data-start="0" data-duration="9.2" data-track-index="0"></div>
+  <div
+    id="root"
+    data-composition-id="08-extension-autofill"
+    data-hf-id="f08-root"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      id="f08-extension-autofill-bg"
+      class="clip f08-extension-autofill-bg"
+      data-hf-id="f08-bg"
+      data-start="0"
+      data-duration="8.910"
+      data-track-index="0"
+    ></div>
 
-    <main data-hf-id="hf-zzpc" id="f08-extension-autofill-scene" class="clip f08-extension-autofill-scene" data-start="0" data-duration="9.2" data-track-index="1">
-      <header data-hf-id="hf-rdsy" class="f08-extension-autofill-heading" id="f08-extension-autofill-heading">
-        <p data-hf-id="hf-qzd6" class="f08-extension-autofill-kicker">Extension preflight</p>
-        <h1 data-hf-id="hf-95re" class="f08-extension-autofill-title">Autofill everything approved - then stop</h1>
+    <section
+      id="f08-extension-autofill-scene"
+      class="clip f08-extension-autofill-scene"
+      data-hf-id="f08-scene"
+      data-start="0"
+      data-duration="8.910"
+      data-track-index="1"
+    >
+      <header class="f08-extension-autofill-header" data-hf-id="f08-header">
+        <div data-hf-id="f08-header-copy">
+          <p class="f08-extension-autofill-kicker" data-hf-id="f08-kicker">
+            Autofill in motion
+          </p>
+          <h1 class="f08-extension-autofill-title" data-hf-id="f08-title">
+            One click. Every field.
+          </h1>
+        </div>
+        <p class="f08-extension-autofill-deck" data-hf-id="f08-deck">
+          Sam's approved profile becomes a complete application in seconds.
+        </p>
       </header>
 
-      <section data-hf-id="hf-tx6u" class="f08-extension-autofill-world" id="f08-extension-autofill-world">
-        <div data-hf-id="hf-rub8" class="f08-extension-autofill-layout">
-          <aside data-hf-id="hf-vhv7" class="f08-extension-autofill-panel f08-extension-autofill-extension" id="f08-extension-autofill-extension">
-            <img data-hf-id="hf-ic3h" class="f08-extension-autofill-extension-capture" src="assets/13-extension-preflight-live.png" alt="ResumeDB extension preflight with mapped fields" data-layout-allow-overflow="">
-            <div data-hf-id="hf-3byq" class="f08-extension-autofill-extension-veil"></div>
-            <div data-hf-id="hf-owso" class="f08-extension-autofill-extension-chrome">
-              <span data-hf-id="hf-rltv" class="f08-extension-autofill-mono">Extension screenshot</span>
-              <span data-hf-id="hf-wvm6" class="f08-extension-autofill-mono f08-extension-autofill-ready" id="f08-extension-autofill-ready">Resume ready</span>
+      <main class="f08-extension-autofill-stage" data-hf-id="f08-stage">
+        <aside
+          class="f08-extension-autofill-panel f08-extension-autofill-extension"
+          data-hf-id="f08-extension"
+        >
+          <div class="f08-extension-autofill-extension-chrome" data-hf-id="f08-extension-chrome">
+            <div class="f08-extension-autofill-extension-title" data-hf-id="f08-extension-title">
+              <span class="f08-extension-autofill-extension-mark" data-hf-id="f08-extension-mark">R</span>
+              ResumeDB Autofill
             </div>
+            <div class="f08-extension-autofill-status-stack" data-hf-id="f08-extension-status-stack">
+              <span
+                class="f08-extension-autofill-extension-status f08-extension-autofill-extension-status-preflight"
+                data-hf-id="f08-extension-status-preflight"
+              >
+                Preflight
+              </span>
+              <span
+                class="f08-extension-autofill-extension-status f08-extension-autofill-extension-status-filling"
+                data-hf-id="f08-extension-status-filling"
+              >
+                Filling
+              </span>
+              <span
+                class="f08-extension-autofill-extension-status f08-extension-autofill-extension-status-complete"
+                data-hf-id="f08-extension-status-complete"
+              >
+                Complete
+              </span>
+            </div>
+          </div>
 
-            <div data-hf-id="hf-cz1l" class="f08-extension-autofill-counters">
-              <div data-hf-id="hf-mcb2" class="f08-extension-autofill-counter">
-                <strong data-hf-id="hf-59mx" class="f08-extension-autofill-counter-number" id="f08-extension-autofill-mapped-number">0</strong>
-                <span data-hf-id="hf-zdq1" class="f08-extension-autofill-counter-label">Mapped</span>
+          <div class="f08-extension-autofill-summary" data-hf-id="f08-summary">
+            <div class="f08-extension-autofill-summary-block" data-hf-id="f08-summary-mapped">
+              <span class="f08-extension-autofill-summary-number" data-hf-id="f08-summary-mapped-number">7</span>
+              <span class="f08-extension-autofill-summary-label" data-hf-id="f08-summary-mapped-label">
+                Mapped sources
+              </span>
+            </div>
+            <div class="f08-extension-autofill-summary-block" data-hf-id="f08-summary-complete">
+              <span class="f08-extension-autofill-summary-number" data-hf-id="f08-summary-complete-number">
+                <span
+                  class="f08-extension-autofill-summary-number-value f08-extension-autofill-complete-zero"
+                  data-hf-id="f08-summary-complete-zero"
+                >
+                  0
+                </span>
+                <span
+                  class="f08-extension-autofill-summary-number-value f08-extension-autofill-complete-seven"
+                  data-hf-id="f08-summary-complete-seven"
+                >
+                  7
+                </span>
+              </span>
+              <span class="f08-extension-autofill-summary-label" data-hf-id="f08-summary-complete-label">
+                Rows complete
+              </span>
+            </div>
+          </div>
+
+          <div class="f08-extension-autofill-map-list" data-hf-id="f08-map-list">
+            <div class="f08-extension-autofill-map-row" data-hf-id="f08-map-name">
+              <span class="f08-extension-autofill-map-check" data-hf-id="f08-map-name-check">
+                <span class="f08-extension-autofill-map-check-glyph" data-hf-id="f08-map-name-check-glyph">✓</span>
+              </span>
+              <span class="f08-extension-autofill-map-name" data-hf-id="f08-map-name-label">Name</span>
+              <span class="f08-extension-autofill-map-source" data-hf-id="f08-map-name-source">Profile</span>
+            </div>
+            <div class="f08-extension-autofill-map-row" data-hf-id="f08-map-email">
+              <span class="f08-extension-autofill-map-check" data-hf-id="f08-map-email-check">
+                <span class="f08-extension-autofill-map-check-glyph" data-hf-id="f08-map-email-check-glyph">✓</span>
+              </span>
+              <span class="f08-extension-autofill-map-name" data-hf-id="f08-map-email-label">Email</span>
+              <span class="f08-extension-autofill-map-source" data-hf-id="f08-map-email-source">Profile</span>
+            </div>
+            <div class="f08-extension-autofill-map-row" data-hf-id="f08-map-location">
+              <span class="f08-extension-autofill-map-check" data-hf-id="f08-map-location-check">
+                <span class="f08-extension-autofill-map-check-glyph" data-hf-id="f08-map-location-check-glyph">✓</span>
+              </span>
+              <span class="f08-extension-autofill-map-name" data-hf-id="f08-map-location-label">Location</span>
+              <span class="f08-extension-autofill-map-source" data-hf-id="f08-map-location-source">Profile</span>
+            </div>
+            <div class="f08-extension-autofill-map-row" data-hf-id="f08-map-college">
+              <span class="f08-extension-autofill-map-check" data-hf-id="f08-map-college-check">
+                <span class="f08-extension-autofill-map-check-glyph" data-hf-id="f08-map-college-check-glyph">✓</span>
+              </span>
+              <span class="f08-extension-autofill-map-name" data-hf-id="f08-map-college-label">College</span>
+              <span class="f08-extension-autofill-map-source" data-hf-id="f08-map-college-source">Education</span>
+            </div>
+            <div class="f08-extension-autofill-map-row" data-hf-id="f08-map-degree">
+              <span class="f08-extension-autofill-map-check" data-hf-id="f08-map-degree-check">
+                <span class="f08-extension-autofill-map-check-glyph" data-hf-id="f08-map-degree-check-glyph">✓</span>
+              </span>
+              <span class="f08-extension-autofill-map-name" data-hf-id="f08-map-degree-label">Degree</span>
+              <span class="f08-extension-autofill-map-source" data-hf-id="f08-map-degree-source">Education</span>
+            </div>
+            <div class="f08-extension-autofill-map-row" data-hf-id="f08-map-authorization">
+              <span class="f08-extension-autofill-map-check" data-hf-id="f08-map-authorization-check">
+                <span
+                  class="f08-extension-autofill-map-check-glyph"
+                  data-hf-id="f08-map-authorization-check-glyph"
+                >
+                  ✓
+                </span>
+              </span>
+              <span class="f08-extension-autofill-map-name" data-hf-id="f08-map-authorization-label">
+                Authorization
+              </span>
+              <span class="f08-extension-autofill-map-source" data-hf-id="f08-map-authorization-source">Profile</span>
+            </div>
+            <div class="f08-extension-autofill-map-row" data-hf-id="f08-map-resume">
+              <span class="f08-extension-autofill-map-check" data-hf-id="f08-map-resume-check">
+                <span class="f08-extension-autofill-map-check-glyph" data-hf-id="f08-map-resume-check-glyph">✓</span>
+              </span>
+              <span class="f08-extension-autofill-map-name" data-hf-id="f08-map-resume-label">
+                Robotics resume
+              </span>
+              <span class="f08-extension-autofill-map-source" data-hf-id="f08-map-resume-source">PDF</span>
+            </div>
+          </div>
+
+          <div class="f08-extension-autofill-action" data-hf-id="f08-action">
+            <span
+              class="f08-extension-autofill-action-label f08-extension-autofill-action-start"
+              data-hf-id="f08-action-start"
+            >
+              Fill mapped fields
+            </span>
+            <span
+              class="f08-extension-autofill-action-label f08-extension-autofill-action-filling"
+              data-hf-id="f08-action-filling"
+            >
+              Filling application
+            </span>
+            <span
+              class="f08-extension-autofill-action-label f08-extension-autofill-action-complete"
+              data-hf-id="f08-action-complete"
+            >
+              ✓ Autofill complete
+            </span>
+            <span class="f08-extension-autofill-ripple" data-hf-id="f08-ripple"></span>
+          </div>
+
+          <svg
+            class="f08-extension-autofill-cursor"
+            data-hf-id="f08-cursor"
+            viewBox="0 0 34 44"
+            aria-hidden="true"
+          >
+            <path
+              class="f08-extension-autofill-cursor-path"
+              data-hf-id="f08-cursor-path"
+              d="M4 3 L4 34 L12 27 L18 41 L25 37 L18 24 L29 24 Z"
+            ></path>
+          </svg>
+        </aside>
+
+        <section class="f08-extension-autofill-panel f08-extension-autofill-ats" data-hf-id="f08-ats">
+          <img
+            class="f08-extension-autofill-ats-capture"
+            data-hf-id="f08-ats-capture"
+            src="assets/09-ats-empty.png"
+            alt=""
+          />
+          <div class="f08-extension-autofill-ats-wash" data-hf-id="f08-ats-wash"></div>
+
+          <div class="f08-extension-autofill-ats-chrome" data-hf-id="f08-ats-chrome">
+            <div class="f08-extension-autofill-company" data-hf-id="f08-company">
+              <span class="f08-extension-autofill-company-mark" data-hf-id="f08-company-mark">✦</span>
+              Northstar Robotics
+            </div>
+            <div class="f08-extension-autofill-ats-status-stack" data-hf-id="f08-ats-status-stack">
+              <span
+                class="f08-extension-autofill-ats-status f08-extension-autofill-ats-status-preflight"
+                data-hf-id="f08-ats-status-preflight"
+              >
+                Ready to fill
+              </span>
+              <span
+                class="f08-extension-autofill-ats-status f08-extension-autofill-ats-status-running"
+                data-hf-id="f08-ats-status-running"
+              >
+                Autofill running
+              </span>
+              <span
+                class="f08-extension-autofill-ats-status f08-extension-autofill-ats-status-ready"
+                data-hf-id="f08-ats-status-ready"
+              >
+                Application ready
+              </span>
+            </div>
+          </div>
+
+          <div class="f08-extension-autofill-ats-body" data-hf-id="f08-ats-body">
+            <aside class="f08-extension-autofill-job" data-hf-id="f08-job">
+              <p class="f08-extension-autofill-job-kicker" data-hf-id="f08-job-kicker">
+                University recruiting
+              </p>
+              <h2 class="f08-extension-autofill-job-title" data-hf-id="f08-job-title">
+                Autonomy Software Intern
+              </h2>
+              <div class="f08-extension-autofill-job-chips" data-hf-id="f08-job-chips">
+                <span class="f08-extension-autofill-job-chip" data-hf-id="f08-job-chip-location">
+                  San Francisco, CA
+                </span>
+                <span class="f08-extension-autofill-job-chip" data-hf-id="f08-job-chip-hybrid">Hybrid</span>
               </div>
-              <div data-hf-id="hf-8z4o" class="f08-extension-autofill-counter" id="f08-extension-autofill-blockers-counter">
-                <strong data-hf-id="hf-k9vy" class="f08-extension-autofill-counter-number">0</strong>
-                <span data-hf-id="hf-2ykx" class="f08-extension-autofill-counter-label">Blockers</span>
+              <p class="f08-extension-autofill-job-copy" data-hf-id="f08-job-copy">
+                Help build the software layer for useful, approachable robots.
+              </p>
+              <ul class="f08-extension-autofill-job-list" data-hf-id="f08-job-list">
+                <li class="f08-extension-autofill-job-item" data-hf-id="f08-job-item-one">
+                  Ship reliable autonomy software
+                </li>
+                <li class="f08-extension-autofill-job-item" data-hf-id="f08-job-item-two">
+                  Work with production robot data
+                </li>
+                <li class="f08-extension-autofill-job-item" data-hf-id="f08-job-item-three">
+                  Collaborate across engineering
+                </li>
+              </ul>
+              <div class="f08-extension-autofill-fit" data-hf-id="f08-fit">
+                <span class="f08-extension-autofill-fit-value" data-hf-id="f08-fit-value">94%</span>
+                <span class="f08-extension-autofill-fit-label" data-hf-id="f08-fit-label">
+                  evidence fit
+                </span>
               </div>
-              <div data-hf-id="hf-v4o8" class="f08-extension-autofill-counter" id="f08-extension-autofill-resume-counter">
-                <strong data-hf-id="hf-6cdx" class="f08-extension-autofill-counter-number">Yes</strong>
-                <span data-hf-id="hf-m4bm" class="f08-extension-autofill-counter-label">Resume ready</span>
-              </div>
-            </div>
+            </aside>
 
-            <div data-hf-id="hf-ruc1" class="f08-extension-autofill-mapping-list">
-              <div data-hf-id="hf-x8nl" class="f08-extension-autofill-mapping-row" id="f08-extension-autofill-row-name"><span data-hf-id="hf-7s30">First name</span><span data-hf-id="hf-qcky" class="f08-extension-autofill-row-check" id="f08-extension-autofill-row-check-name">✓</span></div>
-              <div data-hf-id="hf-4g7s" class="f08-extension-autofill-mapping-row" id="f08-extension-autofill-row-email"><span data-hf-id="hf-xnub">Email</span><span data-hf-id="hf-lnjp" class="f08-extension-autofill-row-check" id="f08-extension-autofill-row-check-email">✓</span></div>
-              <div data-hf-id="hf-mifn" class="f08-extension-autofill-mapping-row" id="f08-extension-autofill-row-college"><span data-hf-id="hf-oyra">College</span><span data-hf-id="hf-9i3w" class="f08-extension-autofill-row-check" id="f08-extension-autofill-row-check-college">✓</span></div>
-              <div data-hf-id="hf-59dl" class="f08-extension-autofill-mapping-row" id="f08-extension-autofill-row-resume"><span data-hf-id="hf-vgba">Resume</span><span data-hf-id="hf-g7bm" class="f08-extension-autofill-row-check" id="f08-extension-autofill-row-check-resume">✓</span></div>
-            </div>
-
-            <div data-hf-id="hf-jqdc" class="f08-extension-autofill-progress-rail">
-              <div data-hf-id="hf-i4iq" class="f08-extension-autofill-progress-fill" id="f08-extension-autofill-progress-fill"></div>
-            </div>
-
-            <div data-hf-id="hf-e30w" class="f08-extension-autofill-action" id="f08-extension-autofill-action">
-              Autofill
-              <span data-hf-id="hf-n700" class="f08-extension-autofill-ripple" id="f08-extension-autofill-ripple-one"></span>
-              <span data-hf-id="hf-nb9m" class="f08-extension-autofill-ripple" id="f08-extension-autofill-ripple-two"></span>
-            </div>
-          </aside>
-
-          <div data-hf-id="hf-si4q" class="f08-extension-autofill-arrow" id="f08-extension-autofill-arrow"><span data-hf-id="hf-0668" class="f08-extension-autofill-arrow-mark">→</span></div>
-
-          <section data-hf-id="hf-1u02" class="f08-extension-autofill-panel f08-extension-autofill-ats" id="f08-extension-autofill-ats">
-            <div data-hf-id="hf-066f" class="f08-extension-autofill-swap">
-              <div data-hf-id="hf-wkxq" class="f08-extension-autofill-ats-state f08-extension-autofill-constructed" id="f08-extension-autofill-constructed">
-                <img data-hf-id="hf-wuzf" class="f08-extension-autofill-ats-capture" src="assets/09-ats-empty.png" alt="Empty synthetic ATS form">
-
-                <div data-hf-id="hf-e1dq" class="f08-extension-autofill-filled-slice" id="f08-extension-autofill-slice-one" role="img" aria-label="Filled ATS contact fields"></div>
-                <div data-hf-id="hf-hd00" class="f08-extension-autofill-filled-slice" id="f08-extension-autofill-slice-two" role="img" aria-label="Filled ATS education fields"></div>
-                <div data-hf-id="hf-w3pi" class="f08-extension-autofill-filled-slice" id="f08-extension-autofill-slice-three" role="img" aria-label="Filled ATS links"></div>
-                <div data-hf-id="hf-dje6" class="f08-extension-autofill-filled-slice" id="f08-extension-autofill-slice-four" role="img" aria-label="Filled ATS application fields"></div>
-
-                <div data-hf-id="hf-ogmm" class="f08-extension-autofill-scanner" id="f08-extension-autofill-scanner"></div>
-                <div data-hf-id="hf-aulw" class="f08-extension-autofill-upload-proof" id="f08-extension-autofill-upload-proof">Profile answers + tailored resume uploaded</div>
+            <section class="f08-extension-autofill-form" data-hf-id="f08-form">
+              <div class="f08-extension-autofill-form-heading" data-hf-id="f08-form-heading">
+                <div data-hf-id="f08-form-heading-copy">
+                  <p class="f08-extension-autofill-form-kicker" data-hf-id="f08-form-kicker">
+                    Application
+                  </p>
+                  <h2 class="f08-extension-autofill-form-title" data-hf-id="f08-form-title">
+                    Tell us about yourself
+                  </h2>
+                </div>
+                <span class="f08-extension-autofill-required" data-hf-id="f08-required">* Required</span>
               </div>
 
-              <div data-hf-id="hf-k5na" class="f08-extension-autofill-ats-state f08-extension-autofill-final" id="f08-extension-autofill-final">
-                <img data-hf-id="hf-h29o" class="f08-extension-autofill-ats-capture f08-extension-autofill-final-capture" id="f08-extension-autofill-final-capture" src="assets/10-ats-filled.png" alt="Completed synthetic ATS form">
-                <article data-hf-id="hf-yp83" class="f08-extension-autofill-answers-proof" id="f08-extension-autofill-answers-proof">
-                  <img data-hf-id="hf-bj6d" class="f08-extension-autofill-answers-capture" src="assets/11-ats-profile-answers.png" alt="Explicit eligibility and demographic answers">
-                  <span data-hf-id="hf-fk01" class="f08-extension-autofill-answers-label">Explicit profile answers</span>
-                </article>
+              <div class="f08-extension-autofill-fields" data-hf-id="f08-fields">
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-first">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-first-label">
+                    First name <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-first-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-first">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-first">Sam</span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-last">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-last-label">
+                    Last name <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-last-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-last">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-last">Rivera</span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-email">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-email-label">
+                    Email address <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-email-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-email">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-email">
+                      sam.rivera@example.com
+                    </span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-phone">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-phone-label">
+                    Phone number <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-phone-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-phone">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-phone">
+                      +1 (412) 555-0100
+                    </span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-location">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-location-label">
+                    Current city and state
+                    <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-location-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-location">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-location">
+                      Pittsburgh, PA
+                    </span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-college">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-college-label">
+                    College or university
+                    <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-college-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-college">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-college">
+                      Carnegie Mellon University
+                    </span>
+                    <span class="f08-extension-autofill-chevron" data-hf-id="f08-chevron-college">⌄</span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-major">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-major-label">
+                    Major or field of study
+                    <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-major-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-major">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-major">
+                      Computer Science
+                    </span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field" data-hf-id="f08-field-degree">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-degree-label">
+                    Degree <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-degree-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-degree">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-degree">
+                      Bachelor of Science
+                    </span>
+                    <span class="f08-extension-autofill-chevron" data-hf-id="f08-chevron-degree">⌄</span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field f08-extension-autofill-field-wide" data-hf-id="f08-field-authorization">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-authorization-label">
+                    Work authorization
+                    <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-authorization-mark">*</span>
+                  </span>
+                  <div class="f08-extension-autofill-control" data-hf-id="f08-control-authorization">
+                    <span class="f08-extension-autofill-value" data-hf-id="f08-value-authorization">
+                      Authorized to work in the US
+                    </span>
+                    <span class="f08-extension-autofill-chevron" data-hf-id="f08-chevron-authorization">⌄</span>
+                  </div>
+                </div>
+
+                <div class="f08-extension-autofill-field f08-extension-autofill-field-wide" data-hf-id="f08-field-resume">
+                  <span class="f08-extension-autofill-field-label" data-hf-id="f08-field-resume-label">
+                    Resume <span class="f08-extension-autofill-required-mark" data-hf-id="f08-field-resume-mark">*</span>
+                  </span>
+                  <div
+                    class="f08-extension-autofill-control f08-extension-autofill-upload-control"
+                    data-hf-id="f08-control-resume"
+                  >
+                    <span class="f08-extension-autofill-file-icon" data-hf-id="f08-file-icon">PDF</span>
+                    <span class="f08-extension-autofill-upload-copy" data-hf-id="f08-upload-copy">
+                      <span class="f08-extension-autofill-upload-name" data-hf-id="f08-upload-name">
+                        Sam-Rivera-Robotics.pdf
+                      </span>
+                      <span class="f08-extension-autofill-upload-note" data-hf-id="f08-upload-note">
+                        Tailored resume attached
+                      </span>
+                    </span>
+                    <span class="f08-extension-autofill-upload-check" data-hf-id="f08-upload-check">✓</span>
+                    <span class="f08-extension-autofill-upload-progress" data-hf-id="f08-upload-progress">
+                      <span
+                        class="f08-extension-autofill-upload-progress-fill"
+                        data-hf-id="f08-upload-progress-fill"
+                      ></span>
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div data-hf-id="hf-aw7m" class="f08-extension-autofill-submit-dock" id="f08-extension-autofill-submit-dock">
-              <h2 data-hf-id="hf-k91o" class="f08-extension-autofill-submit-title">Submit application</h2>
-              <div data-hf-id="hf-htuq" class="f08-extension-autofill-submit-side">
-                <span data-hf-id="hf-hfua" class="f08-extension-autofill-student-pill">Student clicks</span>
-                <div data-hf-id="hf-mz7f" class="f08-extension-autofill-submit-button">Submit</div>
-              </div>
-            </div>
-
-            <div data-hf-id="hf-am0e" class="f08-extension-autofill-guard" id="f08-extension-autofill-guard">
-              <span data-hf-id="hf-pkvv" class="f08-extension-autofill-guard-label" id="f08-extension-autofill-guard-label">Manual submit preserved</span>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <div data-hf-id="hf-58w2" class="f08-extension-autofill-cursor" id="f08-extension-autofill-cursor">
-        <svg data-hf-id="hf-vbx0" viewBox="0 0 44 44" aria-hidden="true">
-          <path data-hf-id="hf-6lcu" d="M7 4L34 24L22 26L16 38L7 4Z" fill="#f3f2f2" stroke="#201f1d" stroke-width="2.2"/>
-        </svg>
-      </div>
-
-      <div data-hf-id="hf-xv2g" class="f08-extension-autofill-band" id="f08-extension-autofill-band">
-        <span data-hf-id="hf-rf1b">The extension fills the form - it never clicks Submit</span>
-        <span data-hf-id="hf-6u04" class="f08-extension-autofill-band-index">08 / manual submit</span>
-      </div>
-    </main>
+            </section>
+          </div>
+        </section>
+      </main>
+    </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script>(()=>{window.__timelines=window.__timelines||{};const o=gsap.timeline({paused:!0}),e=o=>document.getElementById(`f08-extension-autofill-${o}`),a={value:0},t=e("mapped-number"),r=[e("ripple-one"),e("ripple-two")];o.set(r,{scale:0,opacity:0},0),o.fromTo(e("heading"),{y:-12,opacity:.35},{y:0,opacity:1,duration:.45,ease:"power2.out"},0),o.fromTo(e("extension"),{x:-78,opacity:.18},{x:0,opacity:1,duration:.52,ease:"power3.out"},0),o.fromTo(e("ats"),{x:34,opacity:.22},{x:0,opacity:1,duration:.52,ease:"power3.out"},.08),o.fromTo(e("arrow"),{scale:.86,opacity:.2},{scale:1,opacity:1,duration:.4,ease:"power2.out"},.3),o.fromTo(e("cursor"),{x:-150,y:-240,opacity:.3},{x:-150,y:-240,opacity:1,duration:.42,ease:"power2.out"},.22),o.fromTo(a,{value:0},{value:11,duration:.68,ease:"power2.out",snap:{value:1},onUpdate:()=>{t.textContent=String(Math.round(a.value))}},.4),o.fromTo(e("blockers-counter"),{y:10,opacity:.18},{y:0,opacity:1,duration:.28,ease:"power2.out"},.95),o.fromTo(e("resume-counter"),{y:10,opacity:.18},{y:0,opacity:1,duration:.28,ease:"power2.out"},1.25),o.fromTo(e("band"),{y:10,opacity:.25},{y:0,opacity:1,duration:.38,ease:"power2.out"},1.18);["name","email","college","resume"].forEach((a,t)=>{const r=1.68+.27*t;o.fromTo(e(`row-${a}`),{x:-10,opacity:.3},{x:0,opacity:1,duration:.24,ease:"power2.out"},r),o.fromTo(e(`row-check-${a}`),{scale:.55,opacity:0},{scale:1,opacity:1,duration:.16,ease:"power2.out"},r+.13)}),o.fromTo(e("scanner"),{y:54,opacity:0},{y:505,opacity:1,duration:1.36,ease:"power2.inOut"},1.72),o.to(e("scanner"),{opacity:0,duration:.18,ease:"none"},3.08),o.to(e("world"),{x:-8,scale:1.012,duration:.55,ease:"power2.inOut"},1.65),o.to(e("cursor"),{x:0,y:0,duration:.74,ease:"power2.inOut"},1.68),o.to(e("cursor"),{scale:.84,duration:.08,ease:"power2.in"},2.68),o.to(e("action"),{scale:.95,duration:.08,ease:"power2.in"},2.68),o.set(r,{scale:0,opacity:1},2.68),o.to(e("cursor"),{scale:1,duration:.08,ease:"power2.out"},2.76),o.to(e("action"),{scale:1,duration:.08,ease:"power2.out"},2.76),o.to(r,{scale:4.2,opacity:0,duration:.62,ease:"power2.out",stagger:.08,immediateRender:!1},2.68),o.to(e("world"),{x:-20,y:-4,scale:1.018,duration:.48,ease:"power2.inOut"},3.42),o.to(e("cursor"),{x:650,y:-360,duration:.55,ease:"power3.out"},3.38);[{id:"slice-one",start:"inset(0% 100% 75% 0%)",end:"inset(0% 0% 75% 0%)"},{id:"slice-two",start:"inset(25% 100% 50% 0%)",end:"inset(25% 0% 50% 0%)"},{id:"slice-three",start:"inset(50% 100% 25% 0%)",end:"inset(50% 0% 25% 0%)"},{id:"slice-four",start:"inset(75% 100% 0% 0%)",end:"inset(75% 0% 0% 0%)"}].forEach((a,t)=>{o.fromTo(e(a.id),{clipPath:a.start},{clipPath:a.end,duration:.48,ease:"power2.inOut"},3.45+.38*t)}),o.fromTo(e("progress-fill"),{scaleY:0},{scaleY:1,duration:1.72,ease:"power2.inOut"},3.45),o.to(e("cursor"),{x:950,y:-230,duration:.78,ease:"power2.inOut"},4.02),o.fromTo(e("upload-proof"),{y:12,opacity:0},{y:0,opacity:1,duration:.35,ease:"power2.out"},4.92),o.to(e("constructed"),{scale:.78,opacity:0,duration:.38,ease:"power2.in"},5.4),o.fromTo(e("final"),{scale:.78,opacity:0},{scale:1,opacity:1,duration:.58,ease:"back.out(1.4)"},5.63),o.to(e("cursor"),{x:1080,y:-300,duration:.62,ease:"power2.inOut"},5.52),o.fromTo(e("answers-proof"),{y:22,scale:.93,opacity:0},{y:0,scale:1,opacity:1,duration:.46,ease:"power3.out"},6.24),o.to(e("final-capture"),{opacity:.52,duration:.42,ease:"power2.inOut"},6.24),o.to(e("answers-proof"),{scale:1.025,duration:.24,ease:"power2.inOut"},6.68),o.to(e("answers-proof"),{scale:1,duration:.22,ease:"power2.out"},6.92),o.fromTo(e("submit-dock"),{y:16,opacity:0},{y:0,opacity:1,duration:.32,ease:"power2.out"},6.78),o.to(e("world"),{x:-26,y:-9,scale:1.022,duration:.42,ease:"power2.inOut"},7.15),o.to(e("cursor"),{x:1260,y:-22,duration:.45,ease:"power3.out"},7.15),o.to(e("cursor"),{x:1270,y:-18,duration:.16,ease:"power4.out"},7.6),o.fromTo(e("guard"),{scaleX:0,opacity:0},{scaleX:1,opacity:1,duration:.18,ease:"power2.out"},7.56),o.fromTo(e("guard-label"),{x:12,opacity:0},{x:0,opacity:1,duration:.26,ease:"power2.out"},7.72),o.to({value:0},{value:1,duration:.82,ease:"none"},7.98),window.__timelines["08-extension-autofill"]=o})()</script>
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const root = document.getElementById("root");
+    const q = (selector) => root.querySelector(selector);
+    const qa = (selector) => Array.from(root.querySelectorAll(selector));
+
+    const header = q(".f08-extension-autofill-header");
+    const extension = q(".f08-extension-autofill-extension");
+    const ats = q(".f08-extension-autofill-ats");
+    const mapRows = qa(".f08-extension-autofill-map-row");
+    const mapChecks = qa(".f08-extension-autofill-map-check");
+    const mapCheckGlyphs = qa(".f08-extension-autofill-map-check-glyph");
+    const extensionStatusPreflight = q(".f08-extension-autofill-extension-status-preflight");
+    const extensionStatusFilling = q(".f08-extension-autofill-extension-status-filling");
+    const extensionStatusComplete = q(".f08-extension-autofill-extension-status-complete");
+    const action = q(".f08-extension-autofill-action");
+    const actionStart = q(".f08-extension-autofill-action-start");
+    const actionFilling = q(".f08-extension-autofill-action-filling");
+    const actionComplete = q(".f08-extension-autofill-action-complete");
+    const ripple = q(".f08-extension-autofill-ripple");
+    const cursor = q(".f08-extension-autofill-cursor");
+    const fields = qa(".f08-extension-autofill-field");
+    const controls = qa(".f08-extension-autofill-control");
+    const values = qa(".f08-extension-autofill-field .f08-extension-autofill-value");
+    const resumeField = q(".f08-extension-autofill-field[data-hf-id='f08-field-resume']");
+    const resumeControl = q(".f08-extension-autofill-upload-control");
+    const uploadCopy = q(".f08-extension-autofill-upload-copy");
+    const fileIcon = q(".f08-extension-autofill-file-icon");
+    const uploadCheck = q(".f08-extension-autofill-upload-check");
+    const uploadProgress = q(".f08-extension-autofill-upload-progress");
+    const uploadProgressFill = q(".f08-extension-autofill-upload-progress-fill");
+    const completeZero = q(".f08-extension-autofill-complete-zero");
+    const completeSeven = q(".f08-extension-autofill-complete-seven");
+    const atsStatusPreflight = q(".f08-extension-autofill-ats-status-preflight");
+    const atsStatusRunning = q(".f08-extension-autofill-ats-status-running");
+    const atsStatusReady = q(".f08-extension-autofill-ats-status-ready");
+
+    const tl = gsap.timeline({ paused: true });
+
+    tl.set(header, { opacity: 0, y: 18 }, 0);
+    tl.set(extension, { opacity: 0, x: -24 }, 0);
+    tl.set(ats, { opacity: 0, x: 24 }, 0);
+    tl.set(mapRows, { opacity: 0, x: -9 }, 0);
+    tl.set(mapChecks, { backgroundColor: "transparent", scale: 0.72 }, 0);
+    tl.set(mapCheckGlyphs, { opacity: 0, scale: 0.65 }, 0);
+    tl.set(extensionStatusPreflight, { opacity: 1 }, 0);
+    tl.set([extensionStatusFilling, extensionStatusComplete], { opacity: 0 }, 0);
+    tl.set(actionStart, { opacity: 1 }, 0);
+    tl.set([actionFilling, actionComplete], { opacity: 0 }, 0);
+    tl.set(ripple, { opacity: 0, scale: 0.4 }, 0);
+    tl.set(cursor, { opacity: 0, x: 0, y: 0, scale: 1 }, 0);
+    tl.set(values, { opacity: 0, x: 7, clipPath: "inset(0 100% 0 0)" }, 0);
+    tl.set(controls, { borderColor: "rgba(32,31,29,0.17)", boxShadow: "none" }, 0);
+    tl.set(resumeField, { opacity: 1 }, 0);
+    tl.set(resumeControl, { borderColor: "rgba(32,31,29,0.17)", boxShadow: "none" }, 0);
+    tl.set([uploadCopy, fileIcon, uploadProgress], { opacity: 0 }, 0);
+    tl.set(uploadCheck, { opacity: 0, scale: 0.55 }, 0);
+    tl.set(uploadProgressFill, { scaleX: 0 }, 0);
+    tl.set(completeZero, { opacity: 1 }, 0);
+    tl.set(completeSeven, { opacity: 0 }, 0);
+    tl.set(atsStatusPreflight, { opacity: 1 }, 0);
+    tl.set([atsStatusRunning, atsStatusReady], { opacity: 0 }, 0);
+
+    tl.to(header, { opacity: 1, y: 0, duration: 0.56, ease: "power2.out" }, 0.04);
+    tl.to(extension, { opacity: 1, x: 0, duration: 0.64, ease: "power3.out" }, 0.12);
+    tl.to(ats, { opacity: 1, x: 0, duration: 0.64, ease: "power3.out" }, 0.2);
+    tl.to(mapRows, { opacity: 1, x: 0, duration: 0.27, stagger: 0.105, ease: "power2.out" }, 0.42);
+
+    tl.to(cursor, { opacity: 1, duration: 0.18, ease: "none" }, 1.24);
+    tl.to(cursor, { x: 165, y: 118, duration: 0.38, ease: "power2.inOut" }, 1.32);
+    tl.to(cursor, { scale: 0.86, duration: 0.08, ease: "power1.in" }, 1.72);
+    tl.to(action, { scale: 0.97, duration: 0.08, ease: "power1.in" }, 1.72);
+    tl.to(ripple, { opacity: 0.86, scale: 1.7, duration: 0.26, ease: "power2.out" }, 1.72);
+    tl.to(cursor, { scale: 1, duration: 0.1, ease: "power1.out" }, 1.8);
+    tl.to(action, { scale: 1, duration: 0.1, ease: "power1.out" }, 1.8);
+    tl.to(ripple, { opacity: 0, duration: 0.18, ease: "power1.out" }, 1.88);
+    tl.to(actionStart, { opacity: 0, duration: 0.07, ease: "none" }, 1.84);
+    tl.to(actionFilling, { opacity: 1, duration: 0.09, ease: "none" }, 1.94);
+    tl.to(extensionStatusPreflight, { opacity: 0, duration: 0.07, ease: "none" }, 1.84);
+    tl.to(extensionStatusFilling, { opacity: 1, duration: 0.09, ease: "none" }, 1.94);
+    tl.to(atsStatusPreflight, { opacity: 0, duration: 0.07, ease: "none" }, 1.84);
+    tl.to(atsStatusRunning, { opacity: 1, duration: 0.09, ease: "none" }, 1.94);
+    tl.to(
+      action,
+      {
+        backgroundColor: "#25242f",
+        borderColor: "rgba(243,242,242,0.22)",
+        color: "rgba(243,242,242,0.84)",
+        duration: 0.2,
+        ease: "power1.out"
+      },
+      1.86
+    );
+    tl.to(cursor, { opacity: 0, x: 180, y: 105, duration: 0.22, ease: "power1.out" }, 1.9);
+
+    const fillStarts = [2.04, 2.42, 2.8, 3.22, 3.65, 4.12, 4.66, 5.2, 5.75];
+
+    fillStarts.forEach((start, index) => {
+      const field = fields[index];
+      const control = controls[index];
+      const value = values[index];
+
+      tl.to(
+        control,
+        {
+          borderColor: "#6d28d9",
+          boxShadow: "0 0 0 3px rgba(109,40,217,0.1)",
+          duration: 0.14,
+          ease: "power1.out"
+        },
+        start
+      );
+      tl.to(
+        value,
+        {
+          opacity: 1,
+          x: 0,
+          clipPath: "inset(0 0% 0 0)",
+          duration: 0.3,
+          ease: "power1.out"
+        },
+        start + 0.05
+      );
+      tl.to(
+        control,
+        {
+          borderColor: "rgba(32,31,29,0.17)",
+          boxShadow: "none",
+          duration: 0.18,
+          ease: "power1.out"
+        },
+        start + 0.36
+      );
+    });
+
+    const checkStarts = [2.78, 3.18, 4.05, 4.58, 5.64, 6.22];
+    checkStarts.forEach((start, index) => {
+      tl.to(
+        mapChecks[index],
+        {
+          backgroundColor: "#b8822a",
+          borderColor: "#b8822a",
+          scale: 1,
+          duration: 0.24,
+          ease: "back.out(1.6)"
+        },
+        start
+      );
+      tl.to(
+        mapCheckGlyphs[index],
+        { opacity: 1, scale: 1, duration: 0.18, ease: "back.out(1.6)" },
+        start + 0.05
+      );
+    });
+
+    tl.to(
+      resumeControl,
+      {
+        borderColor: "#6d28d9",
+        boxShadow: "0 0 0 3px rgba(109,40,217,0.1)",
+        duration: 0.16,
+        ease: "power1.out"
+      },
+      7.18
+    );
+    tl.to([fileIcon, uploadCopy, uploadProgress], { opacity: 1, duration: 0.22, ease: "power1.out" }, 7.28);
+    tl.to(uploadProgressFill, { scaleX: 1, duration: 0.64, ease: "power2.inOut" }, 7.34);
+    tl.to(uploadCheck, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(1.7)" }, 7.92);
+    tl.to(
+      resumeControl,
+      {
+        borderColor: "rgba(32,31,29,0.17)",
+        boxShadow: "none",
+        duration: 0.18,
+        ease: "power1.out"
+      },
+      8.02
+    );
+    tl.to(
+      mapChecks[6],
+      {
+        backgroundColor: "#b8822a",
+        borderColor: "#b8822a",
+        scale: 1,
+        duration: 0.24,
+        ease: "back.out(1.6)"
+      },
+      8.02
+    );
+    tl.to(
+      mapCheckGlyphs[6],
+      { opacity: 1, scale: 1, duration: 0.18, ease: "back.out(1.6)" },
+      8.07
+    );
+
+    tl.to(extensionStatusFilling, { opacity: 0, duration: 0.07, ease: "none" }, 8.08);
+    tl.to(extensionStatusComplete, { opacity: 1, duration: 0.09, ease: "none" }, 8.18);
+    tl.to(actionFilling, { opacity: 0, duration: 0.07, ease: "none" }, 8.08);
+    tl.to(actionComplete, { opacity: 1, duration: 0.09, ease: "none" }, 8.18);
+    tl.to(completeZero, { opacity: 0, duration: 0.07, ease: "none" }, 8.08);
+    tl.to(completeSeven, { opacity: 1, duration: 0.09, ease: "none" }, 8.18);
+    tl.to(atsStatusRunning, { opacity: 0, duration: 0.07, ease: "none" }, 8.08);
+    tl.to(atsStatusReady, { opacity: 1, duration: 0.09, ease: "none" }, 8.18);
+    tl.to(
+      action,
+      {
+        backgroundColor: "#b8822a",
+        borderColor: "#8b5f1d",
+        color: "#f3f2f2",
+        duration: 0.2,
+        ease: "power1.out"
+      },
+      8.12
+    );
+
+    window.__timelines["08-extension-autofill"] = tl;
+  </script>
 </template>
