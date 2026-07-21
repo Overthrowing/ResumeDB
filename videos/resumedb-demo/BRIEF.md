@@ -53,6 +53,8 @@ and turns scattered applications into a focused career campaign.
 - Use expressive Fish bracket tags to sell the emotional arc without sounding theatrical.
 - Keep the supplied temporary Fish key environment-only. Never commit or print it.
 - Generate word-level caption timing by locally transcribing the Fish narration.
+- Normalize the final delivery to -18 LUFS integrated with a -1.5 dBTP ceiling
+  for clear online playback.
 - Use real ResumeDB captures as recognizable anchors, then reconstruct legible
   product interactions for motion where still screenshots would look broken.
 - Keep the lower caption band clear in every frame.

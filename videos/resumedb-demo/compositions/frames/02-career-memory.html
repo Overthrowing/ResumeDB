@@ -854,37 +854,37 @@
           <path
             class="f02-career-memory-link"
             data-hf-id="f02-profile-link"
-            d="M 1015 344 C 980 405, 955 480, 865 548"
+            d="M 1020 391 C 1005 425, 995 456, 990 480"
           ></path>
           <path
             class="f02-career-memory-link f02-career-memory-link-accent"
             data-hf-id="f02-robotics-link"
-            d="M 1275 262 C 1205 346, 1120 440, 1010 548"
+            d="M 1123 341 C 1100 390, 1082 440, 1070 480"
           ></path>
           <path
             class="f02-career-memory-link f02-career-memory-link-violet"
             data-hf-id="f02-bio-link"
-            d="M 1275 460 C 1190 486, 1105 526, 1010 586"
+            d="M 1123 452 C 1110 462, 1100 472, 1090 480"
           ></path>
           <circle
             class="f02-career-memory-link-dot"
             data-hf-id="f02-profile-link-dot"
-            cx="1015"
-            cy="344"
+            cx="1020"
+            cy="391"
             r="6"
           ></circle>
           <circle
             class="f02-career-memory-link-dot"
             data-hf-id="f02-robotics-link-dot"
-            cx="1275"
-            cy="262"
+            cx="1123"
+            cy="341"
             r="6"
           ></circle>
           <circle
             class="f02-career-memory-link-dot"
             data-hf-id="f02-bio-link-dot"
-            cx="1275"
-            cy="460"
+            cx="1123"
+            cy="452"
             r="6"
           ></circle>
         </svg>
@@ -919,7 +919,7 @@
   </div>
 
   <script>
-    const root = document.getElementById("root");
+    const root = document.querySelector('[data-composition-id="02-career-memory"]');
     const q = (selector) => root.querySelector(selector);
     const qa = (selector) => Array.from(root.querySelectorAll(selector));
 
@@ -927,8 +927,8 @@
     const leftPanel = q(".f02-career-memory-left-panel");
     const rightPanel = q(".f02-career-memory-right-panel");
     const identity = q(".f02-career-memory-identity");
-    const profileState = q(".f02-career-memory-profile-state");
-    const evidenceState = q(".f02-career-memory-evidence-state");
+    const profileState = q('[data-hf-id="f02-profile-state"]');
+    const evidenceState = q('[data-hf-id="f02-evidence-state"]');
     const fields = qa(".f02-career-memory-field");
     const fieldReveals = qa(".f02-career-memory-field-reveal");
     const fieldChecks = qa(".f02-career-memory-field-check");

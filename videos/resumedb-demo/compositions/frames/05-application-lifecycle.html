@@ -260,7 +260,7 @@
     [class~="f05-application-lifecycle-meta-label"] {
       display: block;
       margin-bottom: 0.42cqh;
-      color: rgba(32, 31, 29, 0.5);
+      color: #6f6c68;
       font-family: "JetBrains Mono";
       font-size: 0.64cqw;
       font-weight: 600;
@@ -284,7 +284,7 @@
     }
 
     [class~="f05-application-lifecycle-status-label"] {
-      color: rgba(32, 31, 29, 0.5);
+      color: #6f6c68;
       font-family: "JetBrains Mono";
       font-size: 0.64cqw;
       font-weight: 600;
@@ -339,7 +339,7 @@
       border: 1px solid #8b5f1d;
       border-radius: 9px;
       background: #b8822a;
-      color: #f3f2f2;
+      color: #201f1d;
       font-family: "Inter";
       font-size: 0.9cqw;
       font-weight: 600;
@@ -454,6 +454,10 @@
       line-height: 1;
     }
 
+    [class~="f05-application-lifecycle-doc-kicker"] {
+      line-height: 1.25;
+    }
+
     [class~="f05-application-lifecycle-transcript"] {
       display: grid;
       gap: 0.72cqh;
@@ -478,10 +482,10 @@
       place-items: center;
       border: 1px solid rgba(32, 31, 29, 0.26);
       border-radius: 99px;
-      color: rgba(32, 31, 29, 0.56);
+      color: #5f5a54;
       font-size: 0.62cqw;
       font-weight: 600;
-      line-height: 1;
+      line-height: 1.3;
     }
 
     [class~="f05-application-lifecycle-transcript-copy"] {
@@ -500,7 +504,7 @@
       display: block;
       margin-top: 0.24cqh;
       overflow: hidden;
-      color: rgba(32, 31, 29, 0.54);
+      color: #6c6861;
       font-size: 0.63cqw;
       line-height: 1.2;
       text-overflow: ellipsis;
@@ -526,7 +530,7 @@
     [class~="f05-application-lifecycle-answer-label"] {
       display: block;
       margin-bottom: 0.35cqh;
-      color: rgba(32, 31, 29, 0.5);
+      color: #6f6c68;
       font-family: "JetBrains Mono";
       font-size: 0.57cqw;
       font-weight: 600;
@@ -626,14 +630,14 @@
 
     [class~="f05-application-lifecycle-resume-target"] {
       margin: 0.42cqh 0 0;
-      color: rgba(32, 31, 29, 0.56);
+      color: #6f6b66;
       font-size: 0.76cqw;
       font-weight: 600;
       line-height: 1.25;
     }
 
     [class~="f05-application-lifecycle-resume-contact"] {
-      color: rgba(32, 31, 29, 0.52);
+      color: #706d68;
       font-family: "JetBrains Mono";
       font-size: 0.58cqw;
       font-weight: 600;
@@ -654,7 +658,7 @@
       font-size: 0.67cqw;
       font-weight: 600;
       letter-spacing: 0.1em;
-      line-height: 1;
+      line-height: 1.3;
       text-transform: uppercase;
     }
 
@@ -677,7 +681,7 @@
     }
 
     [class~="f05-application-lifecycle-experience-stack"] {
-      color: rgba(32, 31, 29, 0.54);
+      color: #706d68;
       font-family: "JetBrains Mono";
       font-size: 0.57cqw;
       font-weight: 600;
@@ -971,6 +975,7 @@
               <span
                 class="f05-application-lifecycle-button-ripple"
                 data-hf-id="f05-button-ripple"
+                data-layout-allow-overflow
               ></span>
             </div>
           </article>
@@ -1058,19 +1063,19 @@
 
               <div class="f05-application-lifecycle-answer-group" data-hf-id="f05-answer-group">
                 <div class="f05-application-lifecycle-answer" data-hf-id="f05-answer-why">
-                  <span class="f05-application-lifecycle-answer-label" data-hf-id="f05-answer-why-label">
+                  <span class="f05-application-lifecycle-answer-label" data-hf-id="f05-answer-why-label" data-layout-allow-occlusion>
                     Why this role?
                   </span>
-                  <span class="f05-application-lifecycle-answer-value" data-hf-id="f05-answer-why-value">
+                  <span class="f05-application-lifecycle-answer-value" data-hf-id="f05-answer-why-value" data-layout-allow-occlusion>
                     Production autonomy with measurable impact.
                   </span>
                   <span class="f05-application-lifecycle-answer-reveal" data-hf-id="f05-answer-why-reveal"></span>
                 </div>
                 <div class="f05-application-lifecycle-answer" data-hf-id="f05-answer-project">
-                  <span class="f05-application-lifecycle-answer-label" data-hf-id="f05-answer-project-label">
+                  <span class="f05-application-lifecycle-answer-label" data-hf-id="f05-answer-project-label" data-layout-allow-occlusion>
                     Best evidence
                   </span>
-                  <span class="f05-application-lifecycle-answer-value" data-hf-id="f05-answer-project-value">
+                  <span class="f05-application-lifecycle-answer-value" data-hf-id="f05-answer-project-value" data-layout-allow-occlusion>
                     75% faster AMR replanning at Waypoint.
                   </span>
                   <span class="f05-application-lifecycle-answer-reveal" data-hf-id="f05-answer-project-reveal"></span>
@@ -1228,7 +1233,7 @@
   <script>
     window.__timelines = window.__timelines || {};
 
-    const root = document.getElementById("root");
+    const root = document.querySelector('[data-composition-id="05-application-lifecycle"]');
     const q = (selector) => root.querySelector(selector);
     const qa = (selector) => Array.from(root.querySelectorAll(selector));
 
@@ -1281,7 +1286,7 @@
     tl.set(connectionLine, { scaleX: 0 }, 0);
     tl.set(workBody, { opacity: 0.54 }, 0);
     tl.set(transcriptRows, { opacity: 0, x: 12 }, 0);
-    tl.set(transcriptIcons, { backgroundColor: "#eee9e1", color: "rgba(32,31,29,0.56)", scale: 0.7 }, 0);
+    tl.set(transcriptIcons, { backgroundColor: "#eee9e1", color: "#5f5a54", scale: 0.7 }, 0);
     tl.set(answerReveals, { scaleX: 1 }, 0);
     tl.set(docStatusProgress, { opacity: 1 }, 0);
     tl.set([docStatusDraft, docStatusReady, docStatusSubmitted], { opacity: 0 }, 0);
@@ -1331,7 +1336,7 @@
         transcriptIcons[index],
         {
           backgroundColor: "#b8822a",
-          color: "#f3f2f2",
+          color: "#201f1d",
           scale: 1,
           duration: 0.28,
           ease: "back.out(1.6)"
