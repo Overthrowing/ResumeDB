@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Markdown from 'react-markdown'
 import { api, type Proposal } from './api'
-import { IconChat, IconCheck, IconHistory, IconPlus, IconSend, IconWarn, IconX } from './icons'
+import { IconChat, IconCheck, IconChevronDown, IconHistory, IconPaperclip, IconPlus, IconSend, IconWarn, IconX } from './icons'
 import { apiUrl, websocketUrl } from './runtime'
 
 const RAIL_MIN = 300
@@ -56,12 +56,19 @@ export default function ChatRail({
   const [convId, setConvId] = useState<string | null>(null)
   const [showHistory, setShowHistory] = useState(false)
   const [model, setModel] = useState(() => localStorage.getItem(`chatModel:${scope}`) ?? '')
+  const [activityOpen, setActivityOpen] = useState(false)
+  const [attachments, setAttachments] = useState<string[]>([])
+  const [uploading, setUploading] = useState(false)
   const [provider, setProvider] = useState<'claude' | 'codex' | null>(null)
   const wsRef = useRef<WebSocket | null>(null)
   const convRef = useRef<string | null>(null)
+  const scopeRef = useRef(scope)
   convRef.current = convId
+  scopeRef.current = scope
   const scrollRef = useRef<HTMLDivElement>(null)
   const railRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
   const streamRef = useRef({ text: '', thinking: '', tools: [] as string[] })
 
   const startResize = (down: React.PointerEvent) => {
@@ -122,6 +129,9 @@ export default function ChatRail({
   }
 
   useEffect(() => {
+    setAttachments([])
+    setActivityOpen(false)
+    setUploading(false)
     refreshConvs()
       .then((c) => loadConversation(c[0]?.id ?? null))
       .catch(() => {})
@@ -154,6 +164,46 @@ export default function ChatRail({
       setMessages((m) => [...m, { role: 'error', text: (e as Error).message }])
     }
   }
+
+  const approveAll = async () => {
+    try {
+      await api.approveAllProposals()
+      setProposals(await api.proposals())
+      onTurnDone?.()
+    } catch (e) {
+      setMessages((messages) => [...messages, { role: 'error', text: (e as Error).message }])
+    }
+  }
+
+  const uploadFiles = async (files: File[]) => {
+    if (files.length === 0 || busy || uploading) return
+    const uploadScope = scope
+    setUploading(true)
+    try {
+      for (const file of files) {
+        const { path } = await api.upload(uploadScope, file)
+        if (scopeRef.current === uploadScope) {
+          setAttachments((attachments) => [...attachments, path])
+        }
+      }
+    } catch (e) {
+      if (scopeRef.current === uploadScope) {
+        setMessages((messages) => [
+          ...messages,
+          { role: 'error', text: `Upload failed: ${(e as Error).message}` },
+        ])
+      }
+    } finally {
+      if (scopeRef.current === uploadScope) setUploading(false)
+    }
+  }
+
+  useEffect(() => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+    textarea.style.height = 'auto'
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 160)}px`
+  }, [draft])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
@@ -239,9 +289,15 @@ export default function ChatRail({
     })
 
   const send = async () => {
-    const text = draft.trim()
-    if (!text || busy) return
+    const files = attachments
+    let text = draft.trim()
+    if ((!text && files.length === 0) || busy || uploading) return
+    if (files.length > 0) {
+      const note = `[Attached file${files.length === 1 ? '' : 's'}: ${files.join(', ')}]`
+      text = text ? `${text}\n\n${note}` : note
+    }
     setDraft('')
+    setAttachments([])
     setMessages((m) => [...m, { role: 'user', text }])
     setBusy(true)
     try {
@@ -337,13 +393,33 @@ export default function ChatRail({
         {messages.map((m, i) => (
           <Bubble key={i} m={m} />
         ))}
+        {!busy && proposals.filter((proposal) => !proposal.error).length >= 2 && (
+          <div style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span className="text-muted" style={{ fontSize: 12 }}>
+              {proposals.filter((proposal) => !proposal.error).length} proposals pending
+            </span>
+            <button className="btn btn-primary" style={{ padding: '4px 10px', fontSize: 12, marginLeft: 'auto' }} onClick={approveAll}>
+              <IconCheck size={12} />
+              Approve all
+            </button>
+          </div>
+        )}
         {!busy &&
           proposals.map((p) => (
             <InlineProposal key={p.name} p={p} onResolve={resolveProposal} />
           ))}
         {busy && (
           <div style={{ flex: 'none', alignSelf: 'flex-start', maxWidth: '90%', width: '100%' }}>
-            {tools.length > 0 && (
+            <button className="activity-row" aria-expanded={activityOpen} onClick={() => setActivityOpen((open) => !open)}>
+              <span className="activity-dot" />
+              {tools.length > 0
+                ? `${tools[tools.length - 1]} · ${tools.length} tool call${tools.length === 1 ? '' : 's'}`
+                : 'Thinking…'}
+              <span style={{ display: 'inline-flex', transform: activityOpen ? 'none' : 'rotate(-90deg)', transition: 'transform .12s' }}>
+                <IconChevronDown size={11} />
+              </span>
+            </button>
+            {activityOpen && tools.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
                 {tools.map((t, i) => (
                   <span key={i} className="tag tag-neutral" style={{ fontSize: 10 }}>
@@ -352,14 +428,16 @@ export default function ChatRail({
                 ))}
               </div>
             )}
-            {thinking && (
+            {activityOpen && thinking && (
               <div className="thinking-stream rs-scroll" ref={(el) => el?.scrollTo({ top: el.scrollHeight })}>
                 {thinking}
               </div>
             )}
-            <div className="chat-md" style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--color-neutral-800)' }}>
-              {streaming ? <Markdown>{streaming}</Markdown> : !thinking && <span className="text-muted">Thinking…</span>}
-            </div>
+            {streaming && (
+              <div className="chat-md" style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--color-neutral-800)' }}>
+                <Markdown>{streaming}</Markdown>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -382,29 +460,81 @@ export default function ChatRail({
             ))}
           </select>
         </div>
-        <div style={{ border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', padding: '9px 11px', display: 'flex', alignItems: 'flex-end', gap: 8 }}>
-          <textarea
-            rows={1}
-            placeholder={placeholder}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault()
-                send()
-              }
-            }}
-            style={{ flex: 1, fontSize: 13, fontFamily: 'var(--font-body)', border: 'none', outline: 'none', background: 'transparent', resize: 'none', color: 'var(--color-text)' }}
-          />
-          {busy ? (
-            <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: 12 }} onClick={cancel}>
-              Stop
-            </button>
-          ) : (
-            <button className="btn btn-icon btn-primary" style={{ width: 30, height: 30 }} onClick={send} disabled={!draft.trim()}>
-              <IconSend size={15} />
-            </button>
+        <div style={{ border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', padding: '9px 11px' }}>
+          {attachments.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+              {attachments.map((path) => (
+                <span key={path} className="tag tag-neutral" style={{ fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  {path.split('/').pop()}
+                  <button
+                    title="Remove attachment"
+                    aria-label={`Remove ${path.split('/').pop()}`}
+                    onClick={() => setAttachments((current) => current.filter((item) => item !== path))}
+                    style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer', color: 'inherit', display: 'inline-flex' }}
+                  >
+                    <IconX size={10} />
+                  </button>
+                </span>
+              ))}
+            </div>
           )}
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+            <input
+              ref={fileRef}
+              type="file"
+              multiple
+              accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.md"
+              style={{ display: 'none' }}
+              onChange={(event) => {
+                uploadFiles(Array.from(event.target.files ?? []))
+                event.target.value = ''
+              }}
+            />
+            <button
+              className="btn btn-ghost btn-icon"
+              style={{ width: 26, height: 26, color: 'var(--color-neutral-600)', flex: 'none' }}
+              title={uploading ? 'Uploading file' : 'Attach file'}
+              aria-label={uploading ? 'Uploading file' : 'Attach file'}
+              disabled={uploading || busy}
+              onClick={() => fileRef.current?.click()}
+            >
+              <IconPaperclip size={14} />
+            </button>
+            <textarea
+              ref={textareaRef}
+              rows={1}
+              placeholder={placeholder}
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onPaste={(event) => {
+                if (event.clipboardData.files.length > 0) {
+                  event.preventDefault()
+                  uploadFiles(Array.from(event.clipboardData.files))
+                }
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                  event.preventDefault()
+                  send()
+                }
+              }}
+              style={{ flex: 1, fontSize: 13, lineHeight: 1.5, fontFamily: 'var(--font-body)', border: 'none', outline: 'none', background: 'transparent', resize: 'none', color: 'var(--color-text)', maxHeight: 160, overflowY: 'auto' }}
+            />
+            {busy ? (
+              <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: 12 }} onClick={cancel}>
+                Stop
+              </button>
+            ) : (
+              <button
+                className="btn btn-icon btn-primary"
+                style={{ width: 30, height: 30 }}
+                onClick={send}
+                disabled={(!draft.trim() && attachments.length === 0) || uploading}
+              >
+                <IconSend size={15} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -468,6 +598,7 @@ function InlineProposal({ p, onResolve }: { p: Proposal; onResolve: (name: strin
 }
 
 function Bubble({ m }: { m: ChatMessage }) {
+  const [toolsOpen, setToolsOpen] = useState(false)
   if (m.role === 'user')
     return (
       <div style={{ flex: 'none', alignSelf: 'flex-end', maxWidth: '82%', background: 'var(--color-accent-100)', border: '1px solid var(--color-accent-200)', borderRadius: '10px 10px 2px 10px', padding: '10px 12px', fontSize: 13, lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
@@ -486,13 +617,23 @@ function Bubble({ m }: { m: ChatMessage }) {
   return (
     <div style={{ flex: 'none', alignSelf: 'flex-start', maxWidth: '90%' }}>
       {m.tools && m.tools.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
-          {m.tools.map((t, i) => (
-            <span key={i} className="tag tag-neutral" style={{ fontSize: 10 }}>
-              {t}
+        <>
+          <button className="activity-row" aria-expanded={toolsOpen} onClick={() => setToolsOpen((open) => !open)}>
+            {m.tools.length} tool call{m.tools.length === 1 ? '' : 's'}
+            <span style={{ display: 'inline-flex', transform: toolsOpen ? 'none' : 'rotate(-90deg)', transition: 'transform .12s' }}>
+              <IconChevronDown size={11} />
             </span>
-          ))}
-        </div>
+          </button>
+          {toolsOpen && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+              {m.tools.map((tool, index) => (
+                <span key={index} className="tag tag-neutral" style={{ fontSize: 10 }}>
+                  {tool}
+                </span>
+              ))}
+            </div>
+          )}
+        </>
       )}
       <div className="chat-md" style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--color-neutral-800)' }}>
         <Markdown>{m.text}</Markdown>

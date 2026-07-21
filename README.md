@@ -32,6 +32,8 @@ inspectable and recoverable.
 - Claude Code and Codex provider support
 - Revocable bring-your-own-agent connections over Streamable HTTP MCP
 - Full API access for external agents through the generated OpenAPI interface
+- Chat attachments for PDFs, images, and text files, plus bulk approval for
+  reviewed career-fact proposals
 
 ## How Codex and GPT-5.6 were used
 

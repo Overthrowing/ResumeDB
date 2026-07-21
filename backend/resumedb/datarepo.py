@@ -32,6 +32,7 @@ APP_FILES = {
     "readiness.yaml",
     "tailoring.yaml",
 }
+UPLOAD_EXTENSIONS = {".jpeg", ".jpg", ".md", ".pdf", ".png", ".txt", ".webp"}
 
 APP_STATUSES = ["not_started", "in_progress", "draft", "ready", "submitted"]
 STATUS_ALIASES = {"awaiting_review": "draft", "applied": "submitted"}
@@ -95,27 +96,70 @@ def is_datarepo(path: Path) -> bool:
     return (path / MARKER).exists()
 
 
-def sync_new_skills(path: Path) -> None:
-    """Copy scaffold skills (and a missing CLAUDE.md) into an existing data repo.
+BOILERPLATE_FILES = (
+    "CLAUDE.md",
+    "templates/SCHEMA.md",
+    "templates/sample.yaml",
+    "templates/classic.typ",
+)
 
-    Never overwrites: skills and CLAUDE.md are user-editable, so only whole
-    skills the repo does not have yet are added, and CLAUDE.md is restored only
-    if it is missing entirely (e.g. an agent deleted it - it is the standing
-    rulebook, so a repo must never run without one).
+
+def sync_boilerplate(path: Path, force: bool = False) -> list[str]:
+    """Sync app-authored boilerplate from the scaffold into a data repo.
+
+    Additive health checks preserve user edits while restoring missing files.
+    Forced development syncs overwrite scaffold-owned skills, CLAUDE.md, and
+    templates, but never touch user data or application work.
+
+    Return the Git-relative paths that changed.
     """
     if not is_datarepo(path):
-        return
-    added = []
+        return []
     for skill_dir in (SCAFFOLD / ".claude" / "skills").iterdir():
+        if not skill_dir.is_dir():
+            continue
         target = path / ".claude" / "skills" / skill_dir.name
-        if skill_dir.is_dir() and not target.exists():
+        if force and target.exists():
+            shutil.rmtree(target)
+        if not target.exists():
             shutil.copytree(skill_dir, target)
-            added.append(f"skill {skill_dir.name}")
-    if not (path / "CLAUDE.md").exists():
-        shutil.copy(SCAFFOLD / "CLAUDE.md", path / "CLAUDE.md")
-        added.append("CLAUDE.md")
-    if added:
-        gitops.checkpoint(path, "db", f"sync from app update: {', '.join(added)}")
+    for relative_path in BOILERPLATE_FILES:
+        destination = path / relative_path
+        if force or not destination.exists():
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(SCAFFOLD / relative_path, destination)
+    changed = gitops.changed_files(path, ".claude/skills", "CLAUDE.md", "templates")
+    if changed:
+        verb = "overwrite" if force else "add"
+        gitops.checkpoint(
+            path,
+            "db",
+            f"sync boilerplate from scaffold ({verb} {len(changed)} file(s))",
+        )
+    return changed
+
+
+def sync_new_skills(path: Path) -> None:
+    """Add missing scaffold files during a health check without overwriting edits."""
+    sync_boilerplate(path, force=False)
+
+
+if __name__ == "__main__":
+    from . import config
+
+    root = Path(config.load()["data_repo"]).expanduser()
+    if not is_datarepo(root):
+        print(f"no data repo at {root} yet - nothing to sync")
+    else:
+        changed = sync_boilerplate(root, force=True)
+        message = (
+            f"synced {len(changed)} boilerplate file(s) to {root}"
+            if changed
+            else f"boilerplate already up to date in {root}"
+        )
+        print(message)
+        for relative_path in changed:
+            print(f"  {relative_path}")
 
 
 class DataRepo:
@@ -618,7 +662,8 @@ class DataRepo:
                 return p
         raise DataRepoError(f"no proposal {name}")
 
-    def approve_proposal(self, name: str) -> str:
+    def _apply_proposal(self, name: str) -> str:
+        """Apply one proposal without creating a Git checkpoint."""
         src = self._proposal_path(name)
         try:
             data = _load(src) or {}
@@ -627,17 +672,68 @@ class DataRepo:
                 f"proposal {name} is not valid YAML ({type(e).__name__}). "
                 f"Ask the assistant to rewrite it, or discard it."
             )
+        if not isinstance(data, dict):
+            raise DataRepoError(f"proposal {name} is not a YAML mapping")
         target = data.pop("target", None)
         if not target or not re.fullmatch(r"db/[a-z0-9][a-z0-9-]*\.yaml", str(target)):
             raise DataRepoError(f"proposal {name} has no valid db/ target")
         _dump(data, self.root / target)
         src.unlink()
+        return str(target)
+
+    def approve_proposal(self, name: str) -> str:
+        target = self._apply_proposal(name)
         gitops.checkpoint(self.root, "db", f"approve proposal {name} -> {target}")
         return target
+
+    def approve_all_proposals(self) -> dict[str, list[str]]:
+        """Approve readable proposals in one checkpoint and retain invalid ones."""
+        approved: list[str] = []
+        skipped: list[str] = []
+        for proposal in self.list_proposals():
+            name = proposal["name"]
+            try:
+                self._apply_proposal(name)
+                approved.append(name)
+            except DataRepoError:
+                skipped.append(name)
+        if approved:
+            gitops.checkpoint(self.root, "db", f"approve {len(approved)} proposals")
+        return {"approved": approved, "skipped": skipped}
 
     def reject_proposal(self, name: str) -> None:
         self._proposal_path(name).unlink()
         gitops.checkpoint(self.root, "db", f"reject proposal {name}")
+
+    # -- uploads -------------------------------------------------------------
+
+    def save_upload(self, scope: str, filename: str, data: bytes) -> str:
+        """Store a chat attachment and return its data-repo-relative path."""
+        extension = Path(filename).suffix.lower()
+        if extension not in UPLOAD_EXTENSIONS:
+            allowed = ", ".join(sorted(UPLOAD_EXTENSIONS))
+            raise DataRepoError(
+                f"file type {extension or '(none)'} not allowed; use {allowed}"
+            )
+        if scope.startswith("app:"):
+            app_id = scope.split(":", 2)[1]
+            directory = self.app_dir(app_id) / "uploads"
+            git_scope = f"app:{app_id}"
+        elif scope in {"apps", "db"}:
+            directory = self.root / "uploads"
+            git_scope = "db"
+        else:
+            raise DataRepoError(f"bad upload scope: {scope!r}")
+        directory.mkdir(exist_ok=True)
+        stem = re.sub(r"[^A-Za-z0-9._-]+", "-", Path(filename).stem).strip("-.") or "file"
+        path = directory / f"{stem}{extension}"
+        suffix = 2
+        while path.exists():
+            path = directory / f"{stem}-{suffix}{extension}"
+            suffix += 1
+        path.write_bytes(data)
+        gitops.checkpoint(self.root, git_scope, f"upload {path.name}")
+        return str(path.relative_to(self.root))
 
     # -- research runs --------------------------------------------------------
 

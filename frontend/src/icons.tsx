@@ -37,6 +37,9 @@ export const IconX = (p: { size?: number; sw?: number }) => <I sw={2} {...p} d="
 export const IconChevronDown = (p: { size?: number }) => <I {...p} d="m6 9 6 6 6-6" />
 export const IconChevronLeft = (p: { size?: number; sw?: number }) => <I sw={1.6} {...p} d="m15 18-6-6 6-6" />
 export const IconSend = (p: { size?: number; sw?: number }) => <I sw={1.6} {...p} d="M22 2 11 13M22 2l-7 20-4-9-9-4Z" />
+export const IconPaperclip = (p: { size?: number; sw?: number }) => (
+  <I sw={1.6} {...p} d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+)
 export const IconChat = (p: { size?: number }) => (
   <I {...p} d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
 )
