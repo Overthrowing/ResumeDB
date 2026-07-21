@@ -8,7 +8,7 @@
   "top_p": 0.6,
   "condition_on_previous_chunks": false,
   "scene_isolated": true,
-  "sha256": "fa885cf192017545fefec8a191b0d8730f5823b98fc47b96ae91fbe9107cb597",
+  "sha256": "df90088dd68b5697de35c3d487b8e52a9d80bdc87601b84a3ee129c8b9389609",
   "source_script": "/Users/nathanye/.treehouse/ResumeDB-1059f1/3/ResumeDB/videos/resumedb-demo/SCRIPT.md",
   "generated": [
     {
@@ -56,9 +56,9 @@
     {
       "frame": 7,
       "speed": 1.02,
-      "raw_duration_s": 11.781,
+      "raw_duration_s": 10.815,
       "target_duration_s": 11.08,
-      "source_sha256": "6e650f56fe3feef563bb123c69b2165e21a2d3b2cda95e7feeefa729ab47d632"
+      "source_sha256": "4124201e406d3fa3626c71247e27fb26dfd47d9529b0ed888c5b4a543085c8e5"
     },
     {
       "frame": 8,
@@ -88,5 +88,112 @@
       "target_duration_s": 10.965,
       "source_sha256": "d6341dc73d7ac837c433f43ee0f5fb9e4781c5eb8e7edbe78df12ca3ac6811b5"
     }
-  ]
+  ],
+  "leveling": {
+    "method": "ffmpeg EBU R128 scene matching",
+    "target_lufs": -22.3,
+    "peak_ceiling_dbfs": -1,
+    "max_gain_change_db": 2.5,
+    "clips": [
+      {
+        "frame": 1,
+        "before_lufs": -22.55,
+        "gain_db": 0,
+        "after_lufs": -22.55,
+        "after_true_peak_dbfs": -4.01,
+        "reused": true,
+        "output_sha256": "dab09871f9b8c146e3a38e4cccba1b3d23fd0493415f4083acf816be6d859abe"
+      },
+      {
+        "frame": 2,
+        "before_lufs": -22.57,
+        "gain_db": 0,
+        "after_lufs": -22.57,
+        "after_true_peak_dbfs": -4.06,
+        "reused": true,
+        "output_sha256": "dd87d5e65322dc2e328c2347d1740eab1abcfb166d0bd312d5c644e42f61ae1b"
+      },
+      {
+        "frame": 3,
+        "before_lufs": -22.56,
+        "gain_db": 0,
+        "after_lufs": -22.56,
+        "after_true_peak_dbfs": -1.38,
+        "reused": true,
+        "output_sha256": "692795b8591acd61be65ef360a0a0f3430e5f00c7f9a9193d240cc9c4df43680"
+      },
+      {
+        "frame": 4,
+        "before_lufs": -22.77,
+        "gain_db": 0,
+        "after_lufs": -22.77,
+        "after_true_peak_dbfs": -1.27,
+        "reused": true,
+        "output_sha256": "085aa14aea5307586902056b2f1456cb24c7794a31148be3858f2bd0842d331d"
+      },
+      {
+        "frame": 5,
+        "before_lufs": -22.57,
+        "gain_db": 0,
+        "after_lufs": -22.57,
+        "after_true_peak_dbfs": -3.92,
+        "reused": true,
+        "output_sha256": "ade0cec1ad3d59ebf4fccbd0ff3877b023bc3ee600df67694ab4593cf4a560ca"
+      },
+      {
+        "frame": 6,
+        "before_lufs": -22.56,
+        "gain_db": 0,
+        "after_lufs": -22.56,
+        "after_true_peak_dbfs": -3.96,
+        "reused": true,
+        "output_sha256": "aef081d213c49cfe0fb5c25ecda8fdc4c674646b70e3b2d44c3e012b0f827c3c"
+      },
+      {
+        "frame": 7,
+        "before_lufs": -22.57,
+        "gain_db": 0,
+        "after_lufs": -22.57,
+        "after_true_peak_dbfs": -2.56,
+        "reused": true,
+        "output_sha256": "51c8abec892945eb6ceaf3179c087191c13d9a2538519ec15f772225e30a320f"
+      },
+      {
+        "frame": 8,
+        "before_lufs": -22.56,
+        "gain_db": 0,
+        "after_lufs": -22.56,
+        "after_true_peak_dbfs": -3.12,
+        "reused": true,
+        "output_sha256": "41e6f73cc01ed67c665a9e591350961b4c993bb2485a74fb5611c5b45d5cc3a1"
+      },
+      {
+        "frame": 9,
+        "before_lufs": -22.57,
+        "gain_db": 0,
+        "after_lufs": -22.57,
+        "after_true_peak_dbfs": -2.77,
+        "reused": true,
+        "output_sha256": "b3cdb94c676a65904558b5d570400cf6a54370d3ffdec8a3d7fcc9ce99681e58"
+      },
+      {
+        "frame": 10,
+        "before_lufs": -22.57,
+        "gain_db": 0,
+        "after_lufs": -22.57,
+        "after_true_peak_dbfs": -1.58,
+        "reused": true,
+        "output_sha256": "53c873071ccadc4f6a870f41ef50fe2193cbfc8ac7fbdde383b3a85f8f06621d"
+      },
+      {
+        "frame": 11,
+        "before_lufs": -22.56,
+        "gain_db": 0,
+        "after_lufs": -22.56,
+        "after_true_peak_dbfs": -3.21,
+        "reused": true,
+        "output_sha256": "d8615566984ca7a380a45173d3e92529ff317169f3e32a55e061c7bafd39c3bf"
+      }
+    ]
+  }
 }

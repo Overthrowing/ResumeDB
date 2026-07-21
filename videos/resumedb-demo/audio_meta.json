@@ -125,7 +125,7 @@
           "id": "fish-02-1",
           "text": "SAM.",
           "start": 0.57,
-          "end": 1.23
+          "end": 1.22
         },
         {
           "id": "fish-02-2",
@@ -311,7 +311,7 @@
         {
           "id": "fish-03-14",
           "text": "and",
-          "start": 6.81,
+          "start": 6.85,
           "end": 6.94
         },
         {
@@ -783,140 +783,140 @@
         {
           "id": "fish-07-0",
           "text": "Same",
-          "start": 0.29,
-          "end": 0.5
+          "start": 0.21,
+          "end": 0.37
         },
         {
           "id": "fish-07-1",
           "text": "person,",
-          "start": 0.51,
-          "end": 1.4
+          "start": 0.37,
+          "end": 1.02
         },
         {
           "id": "fish-07-2",
           "text": "two",
-          "start": 1.41,
-          "end": 1.58
+          "start": 1.31,
+          "end": 1.31
         },
         {
           "id": "fish-07-3",
           "text": "completely",
-          "start": 1.58,
-          "end": 2.18
+          "start": 1.32,
+          "end": 1.97
         },
         {
           "id": "fish-07-4",
           "text": "different",
-          "start": 2.18,
-          "end": 2.73
+          "start": 1.97,
+          "end": 2.56
         },
         {
           "id": "fish-07-5",
           "text": "resumes,",
-          "start": 2.73,
-          "end": 3.3
+          "start": 2.56,
+          "end": 3.06
         },
         {
           "id": "fish-07-6",
           "text": "autonomy",
-          "start": 3.3,
-          "end": 3.74
+          "start": 3.2,
+          "end": 3.6
         },
         {
           "id": "fish-07-7",
           "text": "depth",
-          "start": 3.74,
-          "end": 3.95
+          "start": 3.6,
+          "end": 3.84
         },
         {
           "id": "fish-07-8",
           "text": "for",
-          "start": 4.32,
-          "end": 4.44
+          "start": 4.09,
+          "end": 4.27
         },
         {
           "id": "fish-07-9",
           "text": "robotics,",
-          "start": 4.44,
-          "end": 5.26
+          "start": 4.27,
+          "end": 5.08
         },
         {
           "id": "fish-07-10",
           "text": "and",
-          "start": 5.32,
-          "end": 5.36
+          "start": 5.1,
+          "end": 5.2
         },
         {
           "id": "fish-07-11",
           "text": "research",
-          "start": 5.36,
-          "end": 5.82
+          "start": 5.2,
+          "end": 5.55
         },
         {
           "id": "fish-07-12",
           "text": "pipelines",
-          "start": 6.15,
-          "end": 6.45
+          "start": 5.84,
+          "end": 6.2
         },
         {
           "id": "fish-07-13",
           "text": "for",
-          "start": 6.45,
-          "end": 6.65
+          "start": 6.2,
+          "end": 6.41
         },
         {
           "id": "fish-07-14",
           "text": "bioinformatics,",
-          "start": 6.65,
-          "end": 7.69
+          "start": 6.41,
+          "end": 7.53
         },
         {
           "id": "fish-07-15",
           "text": "one",
-          "start": 7.77,
-          "end": 7.9
+          "start": 7.56,
+          "end": 7.76
         },
         {
           "id": "fish-07-16",
           "text": "experience",
-          "start": 7.94,
-          "end": 8.59
+          "start": 7.76,
+          "end": 8.4
         },
         {
           "id": "fish-07-17",
           "text": "bank,",
-          "start": 8.59,
-          "end": 8.88
+          "start": 8.51,
+          "end": 8.8
         },
         {
           "id": "fish-07-18",
           "text": "perfectly",
-          "start": 9.11,
-          "end": 9.61
+          "start": 8.85,
+          "end": 9.4
         },
         {
           "id": "fish-07-19",
           "text": "reframed",
           "start": 9.61,
-          "end": 10.14
+          "end": 9.94
         },
         {
           "id": "fish-07-20",
           "text": "for",
-          "start": 10.16,
-          "end": 10.34
+          "start": 9.94,
+          "end": 10.14
         },
         {
           "id": "fish-07-21",
           "text": "each",
-          "start": 10.34,
-          "end": 10.59
+          "start": 10.14,
+          "end": 10.33
         },
         {
           "id": "fish-07-22",
           "text": "role.",
-          "start": 10.61,
-          "end": 11.04
+          "start": 10.66,
+          "end": 10.72
         }
       ]
     },

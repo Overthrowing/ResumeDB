@@ -51,10 +51,10 @@
 
 ## Line 7 - One person, two resumes (Frame 7)
 
-**Delivery:** Sound impressed by the contrast. Emphasize "two completely different resumes."
-**Caption text:** Same person. Two completely different resumes: autonomy depth for robotics, and research pipelines for bioinformatics. One experience bank, perfectly reframed for each role.
+**Delivery:** Sound impressed by the contrast, but keep the opening conversational and understated.
+**Caption text:** Same person, two completely different resumes: autonomy depth for robotics, and research pipelines for bioinformatics. One experience bank, perfectly reframed for each role.
 
-    [impressed] Same person. [excited] Two completely different resumes: autonomy depth for robotics, and research pipelines for bioinformatics. [confident] One experience bank, perfectly reframed for [emphasis] each role.
+    [assured, conversational, restrained emphasis] Same person, two completely different resumes: autonomy depth for robotics, and research pipelines for bioinformatics. [confident and natural] One experience bank, perfectly reframed for each role.
 
 ## Line 8 - Autofill in motion (Frame 8)
 

@@ -181,7 +181,7 @@
       "id": "caption-group-8",
       "frame": 2,
       "start": 8.99,
-      "end": 10.04,
+      "end": 10.03,
       "text": "Meet Sam.",
       "words": [
         {
@@ -194,7 +194,7 @@
           "id": "caption-word-8-1",
           "text": "Sam.",
           "start": 9.38,
-          "end": 10.04
+          "end": 10.03
         }
       ]
     },
@@ -490,7 +490,7 @@
         {
           "id": "caption-word-21-1",
           "text": "and",
-          "start": 23.88,
+          "start": 23.92,
           "end": 24.01
         },
         {
@@ -1197,219 +1197,219 @@
     {
       "id": "caption-group-51",
       "frame": 7,
-      "start": 53.25,
-      "end": 54.54,
+      "start": 53.17,
+      "end": 54.27,
       "text": "Same person, two",
       "words": [
         {
           "id": "caption-word-51-0",
           "text": "Same",
-          "start": 53.25,
-          "end": 53.46
+          "start": 53.17,
+          "end": 53.33
         },
         {
           "id": "caption-word-51-1",
           "text": "person,",
-          "start": 53.47,
-          "end": 54.36
+          "start": 53.33,
+          "end": 53.98
         },
         {
           "id": "caption-word-51-2",
           "text": "two",
-          "start": 54.37,
-          "end": 54.54
+          "start": 54.27,
+          "end": 54.27
         }
       ]
     },
     {
       "id": "caption-group-52",
       "frame": 7,
-      "start": 54.54,
-      "end": 55.69,
+      "start": 54.28,
+      "end": 55.52,
       "text": "completely different",
       "words": [
         {
           "id": "caption-word-52-0",
           "text": "completely",
-          "start": 54.54,
-          "end": 55.14
+          "start": 54.28,
+          "end": 54.93
         },
         {
           "id": "caption-word-52-1",
           "text": "different",
-          "start": 55.14,
-          "end": 55.69
+          "start": 54.93,
+          "end": 55.52
         }
       ]
     },
     {
       "id": "caption-group-53",
       "frame": 7,
-      "start": 55.69,
-      "end": 56.91,
+      "start": 55.52,
+      "end": 56.8,
       "text": "resumes, autonomy depth",
       "words": [
         {
           "id": "caption-word-53-0",
           "text": "resumes,",
-          "start": 55.69,
-          "end": 56.26
+          "start": 55.52,
+          "end": 56.02
         },
         {
           "id": "caption-word-53-1",
           "text": "autonomy",
-          "start": 56.26,
-          "end": 56.7
+          "start": 56.16,
+          "end": 56.56
         },
         {
           "id": "caption-word-53-2",
           "text": "depth",
-          "start": 56.7,
-          "end": 56.91
+          "start": 56.56,
+          "end": 56.8
         }
       ]
     },
     {
       "id": "caption-group-54",
       "frame": 7,
-      "start": 57.28,
-      "end": 58.32,
+      "start": 57.05,
+      "end": 58.16,
       "text": "for robotics, and",
       "words": [
         {
           "id": "caption-word-54-0",
           "text": "for",
-          "start": 57.28,
-          "end": 57.4
+          "start": 57.05,
+          "end": 57.23
         },
         {
           "id": "caption-word-54-1",
           "text": "robotics,",
-          "start": 57.4,
-          "end": 58.22
+          "start": 57.23,
+          "end": 58.04
         },
         {
           "id": "caption-word-54-2",
           "text": "and",
-          "start": 58.28,
-          "end": 58.32
+          "start": 58.06,
+          "end": 58.16
         }
       ]
     },
     {
       "id": "caption-group-55",
       "frame": 7,
-      "start": 58.32,
-      "end": 59.61,
+      "start": 58.16,
+      "end": 59.37,
       "text": "research pipelines for",
       "words": [
         {
           "id": "caption-word-55-0",
           "text": "research",
-          "start": 58.32,
-          "end": 58.78
+          "start": 58.16,
+          "end": 58.51
         },
         {
           "id": "caption-word-55-1",
           "text": "pipelines",
-          "start": 59.11,
-          "end": 59.41
+          "start": 58.8,
+          "end": 59.16
         },
         {
           "id": "caption-word-55-2",
           "text": "for",
-          "start": 59.41,
-          "end": 59.61
+          "start": 59.16,
+          "end": 59.37
         }
       ]
     },
     {
       "id": "caption-group-56",
       "frame": 7,
-      "start": 59.61,
-      "end": 60.86,
+      "start": 59.37,
+      "end": 60.72,
       "text": "bioinformatics, one",
       "words": [
         {
           "id": "caption-word-56-0",
           "text": "bioinformatics,",
-          "start": 59.61,
-          "end": 60.65
+          "start": 59.37,
+          "end": 60.49
         },
         {
           "id": "caption-word-56-1",
           "text": "one",
-          "start": 60.73,
-          "end": 60.86
+          "start": 60.52,
+          "end": 60.72
         }
       ]
     },
     {
       "id": "caption-group-57",
       "frame": 7,
-      "start": 60.9,
-      "end": 61.84,
-      "text": "experience bank,",
+      "start": 60.72,
+      "end": 62.36,
+      "text": "experience bank, perfectly",
       "words": [
         {
           "id": "caption-word-57-0",
           "text": "experience",
-          "start": 60.9,
-          "end": 61.55
+          "start": 60.72,
+          "end": 61.36
         },
         {
           "id": "caption-word-57-1",
           "text": "bank,",
-          "start": 61.55,
-          "end": 61.84
+          "start": 61.47,
+          "end": 61.76
+        },
+        {
+          "id": "caption-word-57-2",
+          "text": "perfectly",
+          "start": 61.81,
+          "end": 62.36
         }
       ]
     },
     {
       "id": "caption-group-58",
       "frame": 7,
-      "start": 62.07,
-      "end": 63.3,
-      "text": "perfectly reframed for",
+      "start": 62.57,
+      "end": 63.29,
+      "text": "reframed for each",
       "words": [
         {
           "id": "caption-word-58-0",
-          "text": "perfectly",
-          "start": 62.07,
-          "end": 62.57
+          "text": "reframed",
+          "start": 62.57,
+          "end": 62.9
         },
         {
           "id": "caption-word-58-1",
-          "text": "reframed",
-          "start": 62.57,
+          "text": "for",
+          "start": 62.9,
           "end": 63.1
         },
         {
           "id": "caption-word-58-2",
-          "text": "for",
-          "start": 63.12,
-          "end": 63.3
+          "text": "each",
+          "start": 63.1,
+          "end": 63.29
         }
       ]
     },
     {
       "id": "caption-group-59",
       "frame": 7,
-      "start": 63.3,
-      "end": 64,
-      "text": "each role.",
+      "start": 63.62,
+      "end": 63.68,
+      "text": "role.",
       "words": [
         {
           "id": "caption-word-59-0",
-          "text": "each",
-          "start": 63.3,
-          "end": 63.55
-        },
-        {
-          "id": "caption-word-59-1",
           "text": "role.",
-          "start": 63.57,
-          "end": 64
+          "start": 63.62,
+          "end": 63.68
         }
       ]
     },

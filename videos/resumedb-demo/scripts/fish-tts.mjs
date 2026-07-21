@@ -183,6 +183,9 @@ const selectedFrames = parseFrameSelection(valueFor("--frames", ""));
 const narrationLines = parseNarrationLines(await readFile(scriptPath, "utf8"));
 const targetMeta = JSON.parse(await readFile(targetMetaPath, "utf8"));
 const targetByFrame = new Map(targetMeta.voices.map((voice) => [voice.frame, voice.duration_s]));
+const previousMetadata = selectedFrames
+  ? JSON.parse(await readFile(`${outputPath}.json`, "utf8").catch(() => "{}"))
+  : {};
 const generated = [];
 const stagedClips = new Map();
 
@@ -235,6 +238,9 @@ try {
   const clipPaths = narrationLines.map((line) => join(voiceDir, `${String(line.frame).padStart(2, "0")}.mp3`));
   concatenateClips(clipPaths, outputPath);
   const narrationAudio = await readFile(outputPath);
+  const generatedByFrame = new Map(
+    [...(previousMetadata.generated ?? []), ...generated].map((entry) => [entry.frame, entry]),
+  );
   await writeFile(
     `${outputPath}.json`,
     `${JSON.stringify(
@@ -250,7 +256,8 @@ try {
         scene_isolated: true,
         sha256: hashFile(narrationAudio),
         source_script: scriptPath,
-        generated,
+        generated: [...generatedByFrame.values()].sort((a, b) => a.frame - b.frame),
+        ...(selectedFrames && previousMetadata.leveling ? { leveling: previousMetadata.leveling } : {}),
       },
       null,
       2,
