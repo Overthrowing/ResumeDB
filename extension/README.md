@@ -6,30 +6,34 @@ resumes, and opens the ready queue without storing job-site passwords.
 
 ## Install
 
-1. Start ResumeDB with `make dev`.
+1. Download and unzip `ResumeDB-Chrome-Extension.zip`, or use this directory
+   directly during development.
 2. Open `chrome://extensions`.
 3. Enable Developer mode.
-4. Choose Load unpacked and select this `extension` directory.
-5. Click the ResumeDB extension icon to open the side panel.
+4. Choose Load unpacked and select the extracted
+   `ResumeDB-Chrome-Extension` directory (or this `extension` directory during
+   development).
+5. Open the [hosted ResumeDB app](https://resumedb-ai.vercel.app/) and click the
+   ResumeDB extension icon on a job application page.
 
-The current side panel shows the ResumeDB logo and version `2.4.0` in its
+The current side panel shows the ResumeDB logo and version `2.4.1` in its
 header. The extension requests access to job application pages because Chrome
 requires explicit site access before it can capture or fill them.
 
-For the hosted demo, open the extension's **Connection settings** and enter
-the Railway backend URL and Vercel web app URL. The settings sync through the
-Chrome profile. Localhost remains the default for local testing.
+The hosted Railway backend and Vercel web app are configured by default. For
+local development, open **Connection settings** and replace them with the
+local backend and web-app URLs. The settings sync through the Chrome profile.
 
 ## Troubleshooting
 
-If the side panel remains on **Connecting to ResumeDB...**, first confirm that
-`make dev` is running. If the header has no ResumeDB logo or version, Chrome is
-still running an older unpacked copy:
+If the side panel remains on **Connecting to ResumeDB...**, open **Connection
+settings** and use **Save and test connection**. If the header has no ResumeDB
+logo or version, Chrome is still running an older unpacked copy:
 
 1. Open `chrome://extensions`.
 2. Remove the old ResumeDB extension.
-3. Choose **Load unpacked** and select the `extension` directory from the
-   checkout you are currently running.
+3. Choose **Load unpacked** and select the extracted extension directory you
+   intend to test.
 4. Reload the job application tab after loading or reloading the extension.
 
 After editing extension source files, use the Reload button on the ResumeDB

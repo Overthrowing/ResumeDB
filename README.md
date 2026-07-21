@@ -112,9 +112,10 @@ backend that holds a model credential.
 
 ### Hosted Chrome extension
 
-Reload the unpacked extension after pulling deployment changes, then open its
-connection settings. Enter the Railway backend domain and Vercel web app
-domain. Localhost remains the default for local development.
+The packaged extension defaults to the hosted Railway backend and Vercel web
+app, so judges do not need to configure a server or run this repository. Use
+**Connection settings** only to point the extension at a local or custom
+deployment.
 
 ## Demo flow
 
@@ -164,16 +165,24 @@ For a walkthrough with your own data:
 
 ## Chrome extension
 
-1. Open `chrome://extensions`.
-2. Enable Developer mode.
-3. Choose Load unpacked and select the repository's `extension` directory.
-4. Start ResumeDB, then click the extension icon on any job page.
+Judge installation does not require a repository checkout:
 
-The installed side panel should display the ResumeDB logo and version `2.4.0`.
+1. Download `ResumeDB-Chrome-Extension.zip` from the submission files and
+   unzip it.
+2. Open `chrome://extensions`.
+3. Enable Developer mode.
+4. Choose Load unpacked and select the extracted
+   `ResumeDB-Chrome-Extension` directory.
+5. Open the [hosted ResumeDB app](https://resumedb-ai.vercel.app/), create the
+   Ready demo, then click the extension icon on the Northstar application.
+
+For local development, load the repository's `extension` directory and use
+**Connection settings** to enter the local backend and web-app URLs.
+
+The installed side panel should display the ResumeDB logo and version `2.4.1`.
 If it has no logo or remains on **Connecting to ResumeDB...**, remove the old
-unpacked copy, load the `extension` directory from the checkout you are
-actually running, and reload the job page. Unpacked extensions do not update
-automatically.
+unpacked copy, load the intended extracted extension directory again, and
+reload the job page. Unpacked extensions do not update automatically.
 
 The extension can capture the current job, preview exact mappings without
 changing the page, fill any approved application using semantic labels and the
