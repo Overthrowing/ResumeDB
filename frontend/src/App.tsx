@@ -8,6 +8,7 @@ import Ingest from './Ingest'
 import Settings from './Settings'
 import Onboarding from './Onboarding'
 import GuidedDemo, { type DemoDestination } from './GuidedDemo'
+import { isDemoProfile } from './demoMode'
 
 type Screen = 'dashboard' | 'library' | 'applications' | 'agent' | 'settings'
 
@@ -107,7 +108,10 @@ export default function App() {
             {initials}
           </div>
           <div className="app-user-copy" style={{ lineHeight: 1.3 }}>
-            <div style={{ fontSize: 13 }}>{profile.name || 'Set up your profile'}</div>
+            <div className="app-user-name" style={{ fontSize: 13 }}>
+              <span>{profile.name || 'Set up your profile'}</span>
+              {isDemoProfile(profile) && <span className="demo-badge demo-badge-compact">Demo</span>}
+            </div>
             <div style={{ fontSize: 11, color: 'var(--color-neutral-600)' }}>{profile.email || ''}</div>
           </div>
         </div>

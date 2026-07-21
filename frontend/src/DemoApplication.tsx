@@ -54,9 +54,12 @@ export default function DemoApplication() {
           <span className="demo-ats-logo" aria-hidden="true">
             <svg viewBox="0 0 36 36"><path d="M18 2.5 21.5 14 33 18l-11.5 4L18 33.5 14.5 22 3 18l11.5-4L18 2.5Z" /></svg>
           </span>
-          <span>Northstar Robotics</span>
+          <span className="demo-ats-brand-name">Northstar Robotics</span>
         </a>
-        <a className="demo-ats-back" href={window.location.pathname}>Back to ResumeDB</a>
+        <div className="demo-ats-header-actions">
+          <span className="demo-ats-mode"><span aria-hidden="true" /> ResumeDB demo sandbox</span>
+          <a className="demo-ats-back" href={window.location.pathname}>Back to ResumeDB</a>
+        </div>
       </header>
 
       <main className="demo-ats-main">

@@ -16,6 +16,7 @@ export interface Entry {
 }
 
 export interface Profile {
+  demo_mode?: boolean
   name?: string
   email?: string
   phone?: string

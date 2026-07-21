@@ -42,6 +42,7 @@ export async function makeDemoProfile(): Promise<Profile> {
   const phoneSuffix = faker.number.int({ min: 100, max: 199 })
 
   return {
+    demo_mode: true,
     name: `${firstName} ${lastName}`,
     email: faker.internet.exampleEmail({ firstName, lastName }).toLowerCase(),
     phone: `+1 (415) 555-${String(phoneSuffix).padStart(4, '0')}`,

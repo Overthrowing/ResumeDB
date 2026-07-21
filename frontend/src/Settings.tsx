@@ -13,6 +13,7 @@ import {
   makeDemoResume,
   makeDemoTailoring,
 } from './demoData'
+import { isDemoProfile } from './demoMode'
 
 const CLAUDE_MODEL_OPTIONS = ['', 'haiku', 'sonnet', 'opus', 'fable']
 const CODEX_MODEL_OPTIONS = ['', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
@@ -198,19 +199,22 @@ export default function Settings({
       <h2 style={{ margin: '0 0 var(--space-4)' }}>Settings</h2>
       <div style={{ maxWidth: 680, display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
         <section className="card demo-tools-card">
-          <div className="card-kicker">Hackathon demo</div>
+          <div className="demo-tools-heading">
+            <div className="card-kicker">Hackathon demo</div>
+            <span className="demo-badge">Demo sandbox</span>
+          </div>
           <h3 style={{ margin: 0, fontSize: 24 }}>Get to the good part faster</h3>
           <p className="card-body">
-            Faker can populate the profile for a quick walkthrough. The full demo also creates a tailored Ready application so the Chrome extension can fill the local Northstar test site.
+            Faker can populate the profile for a quick walkthrough. The full demo creates synthetic records and a tailored Ready application for the Northstar test site.
           </p>
           <div className="demo-tools-actions">
-            <button className="btn btn-secondary" type="button" onClick={showDemoProfile} disabled={demoBusy}>
+            <button className="btn btn-demo-secondary" type="button" onClick={showDemoProfile} disabled={demoBusy}>
               Fill fields with Faker
             </button>
-            <button className="btn btn-primary" type="button" onClick={createReadyDemo} disabled={demoBusy}>
+            <button className="btn btn-demo-primary" type="button" onClick={createReadyDemo} disabled={demoBusy}>
               {demoBusy ? 'Building demo...' : 'Create Ready demo + open form'}
             </button>
-            <button className="btn btn-ghost" type="button" onClick={openDemoForm} disabled={demoBusy}>
+            <button className="btn btn-demo-ghost" type="button" onClick={openDemoForm} disabled={demoBusy}>
               Open blank test form
             </button>
           </div>
@@ -222,7 +226,13 @@ export default function Settings({
 
         <AgentConnections />
 
-        <div>
+        <div className={isDemoProfile(profile) ? 'demo-profile-panel' : undefined}>
+          {isDemoProfile(profile) && (
+            <div className="demo-profile-notice" role="status">
+              <span className="demo-badge">Synthetic profile</span>
+              <span>These values were generated for the demo and do not describe a real applicant.</span>
+            </div>
+          )}
           <div className="card-kicker">Canonical facts</div>
           <h3 style={{ margin: '3px 0 var(--space-2)', fontSize: 24 }}>Application profile</h3>
           <p className="text-muted" style={{ fontSize: 12 }}>The agent can use every value here. Blank factual fields are always flagged and never inferred.</p>
