@@ -1,5 +1,6 @@
-const DEFAULT_BACKEND_URL = 'http://localhost:8000';
-const DEFAULT_WEB_APP_URL = 'http://localhost:5173';
+const DEFAULT_BACKEND_URL = 'https://zealous-benevolence-production-617e.up.railway.app';
+const DEFAULT_WEB_APP_URL = 'https://resumedb-ai.vercel.app';
+const LOCAL_BACKEND_URLS = ['http://localhost:8000', 'http://127.0.0.1:8000'];
 
 const normalizeBaseUrl = (value, fallback) => {
   const candidate = (value || fallback).trim().replace(/\/+$/, '');
@@ -25,5 +26,5 @@ const getResumeDbSettings = async () => {
 
 const getBackendCandidates = async () => {
   const { backendUrl } = await getResumeDbSettings();
-  return [...new Set([backendUrl, DEFAULT_BACKEND_URL, 'http://127.0.0.1:8000'])];
+  return [...new Set([backendUrl, DEFAULT_BACKEND_URL, ...LOCAL_BACKEND_URLS])];
 };

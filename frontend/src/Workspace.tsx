@@ -898,13 +898,16 @@ function AutofillTab({ app }: { app: Application }) {
         <h4 style={{ margin: '0 0 var(--space-2)', fontSize: 15 }}>How to use the Chrome Extension:</h4>
         <ol style={{ fontSize: 13, margin: 0, paddingLeft: 20, lineHeight: 1.6 }}>
           <li>
+            Download <strong>ResumeDB-Chrome-Extension.zip</strong> from this project&apos;s submission files and unzip it.
+          </li>
+          <li>
             Open Chrome and navigate to <strong>chrome://extensions</strong>.
           </li>
           <li>
             Enable <strong>Developer mode</strong> (toggle switch in the top-right corner).
           </li>
           <li>
-            Click <strong>Load unpacked</strong> and select this repository&apos;s <code>extension</code> folder.
+            Click <strong>Load unpacked</strong> and select the extracted <code>ResumeDB-Chrome-Extension</code> folder. The hosted Vercel app and Railway API are already configured.
           </li>
           <li>
             Open the job application page (Lever, Greenhouse, etc.), open the extension from your browser toolbar, select <strong>{app.meta.company} - {app.meta.role}</strong>, then choose <strong>Scan page before filling</strong> and <strong>Fill mapped fields</strong>.
