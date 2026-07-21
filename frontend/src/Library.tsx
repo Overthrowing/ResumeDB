@@ -4,6 +4,7 @@ import ChatRail from './ChatRail'
 import EntryForm from './EntryForm'
 import MarkdownField from './MarkdownField'
 import { IconChevronDown, IconMemory, IconPlus } from './icons'
+import { isDemoEntry } from './demoMode'
 
 const SECTIONS = [
   { id: 'experience', label: 'Experiences', plural: 'experiences' },
@@ -121,11 +122,11 @@ export default function Library() {
               editing === e.id ? (
                 <EntryForm key={e.id} type={section} entry={e} onDone={onSaved} onCancel={() => setEditing(null)} />
               ) : (
-                <div key={e.id} className="entry-row" onClick={() => setEditing(e.id)}>
+                <div key={e.id} className={`entry-row${isDemoEntry(e) ? ' demo-record-row' : ''}`} onClick={() => setEditing(e.id)}>
                   <div style={{ flex: '1 1 220px', minWidth: 220 }}>
-                    <div style={{ fontFamily: 'var(--font-heading)', fontSize: 16 }}>
-                      {e.title}
-                      {e.org ? ` · ${e.org}` : ''}
+                    <div className="demo-record-title" style={{ fontFamily: 'var(--font-heading)', fontSize: 16 }}>
+                      <span>{e.title}{e.org ? ` · ${e.org}` : ''}</span>
+                      {isDemoEntry(e) && <span className="demo-badge demo-badge-compact">Demo data</span>}
                     </div>
                     <div className="text-muted" style={{ fontSize: 12 }}>
                       {[e.location, dates(e), e.bullets?.length ? `${e.bullets.length} achievements` : '']

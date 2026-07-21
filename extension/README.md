@@ -12,7 +12,7 @@ resumes, and opens the ready queue without storing job-site passwords.
 4. Choose Load unpacked and select this `extension` directory.
 5. Click the ResumeDB extension icon to open the side panel.
 
-The current side panel shows the ResumeDB logo and version `2.3.0` in its
+The current side panel shows the ResumeDB logo and version `2.4.0` in its
 header. The extension requests access to job application pages because Chrome
 requires explicit site access before it can capture or fill them.
 
@@ -58,7 +58,8 @@ the user.
 2. Choose **Create Ready demo + open form** and confirm the synthetic-data
    notice.
 3. On the Northstar Robotics form, open the extension side panel.
-4. Select the Ready Northstar application and choose **Scan page before
+4. Select the purple `[DEMO]` Ready Northstar application and confirm the
+   demo-sandbox banner is visible, then choose **Scan page before
    filling**. Confirm that the preview reports mapped fields and a resume slot.
 5. Choose **Fill mapped fields**.
 6. Verify that the profile fields, voluntary answers, and hidden resume input

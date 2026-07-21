@@ -3,6 +3,7 @@ import { api, type AppMeta, type AppStatus } from './api'
 import ChatRail from './ChatRail'
 import Workspace from './Workspace'
 import { IconPlus } from './icons'
+import { isDemoApplication } from './demoMode'
 
 const STATUS_STYLE: Record<AppStatus, { bg: string; color: string; border: string }> = {
   not_started: { bg: 'var(--color-neutral-200)', color: 'var(--color-neutral-800)', border: 'var(--color-neutral-400)' },
@@ -142,12 +143,18 @@ export default function Applications({
         <tbody>
           {filtered.map((a) => {
             const style = STATUS_STYLE[a.status] || STATUS_STYLE.not_started
+            const demo = isDemoApplication(a)
             return (
-              <tr key={a.id} style={{ cursor: 'pointer' }} onClick={() => setOpenId(a.id)}>
+              <tr key={a.id} className={demo ? 'demo-record-row' : undefined} style={{ cursor: 'pointer' }} onClick={() => setOpenId(a.id)}>
                 <td style={{ width: 4, padding: 0 }}>
                   <div style={{ width: 4, height: '100%', minHeight: 36, background: style.border, borderRadius: 2 }} />
                 </td>
-                <td style={{ fontFamily: 'var(--font-heading)', fontSize: 15 }}>{a.role}</td>
+                <td style={{ fontFamily: 'var(--font-heading)', fontSize: 15 }}>
+                  <span className="demo-record-title">
+                    <span>{a.role}</span>
+                    {demo && <span className="demo-badge demo-badge-compact">Demo</span>}
+                  </span>
+                </td>
                 <td>{a.company}</td>
                 <td>
                   <span

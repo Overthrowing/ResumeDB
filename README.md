@@ -119,7 +119,9 @@ domain. Localhost remains the default for local development.
 ## Demo flow
 
 For the fastest hackathon walkthrough, open **Profile & Settings** and use the
-Hackathon demo card:
+purple **Hackathon demo** sandbox card. Synthetic profiles, knowledge entries,
+applications, and extension selections keep the same purple Demo treatment so
+they cannot be confused with real candidate data:
 
 1. **Fill fields with Faker** generates a synthetic student directly in the
    visible form. Nothing is saved until you choose **Save profile**.
@@ -167,7 +169,7 @@ For a walkthrough with your own data:
 3. Choose Load unpacked and select the repository's `extension` directory.
 4. Start ResumeDB, then click the extension icon on any job page.
 
-The installed side panel should display the ResumeDB logo and version `2.3.0`.
+The installed side panel should display the ResumeDB logo and version `2.4.0`.
 If it has no logo or remains on **Connecting to ResumeDB...**, remove the old
 unpacked copy, load the `extension` directory from the checkout you are
 actually running, and reload the job page. Unpacked extensions do not update

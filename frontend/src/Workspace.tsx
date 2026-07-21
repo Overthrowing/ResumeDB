@@ -4,6 +4,7 @@ import ChatRail from './ChatRail'
 import MarkdownField from './MarkdownField'
 import { IconCheck, IconChevronLeft, IconDownload, IconRefresh, IconSparkle, IconWarn } from './icons'
 import { apiUrl } from './runtime'
+import { isDemoApplication } from './demoMode'
 
 const PIPELINE_STEPS: { status: AppStatus; label: string; color: string }[] = [
   { status: 'not_started', label: 'Not Started', color: 'var(--color-neutral-400)' },
@@ -62,16 +63,18 @@ export default function Workspace({
   if (!app) return <div style={{ padding: 'var(--space-6)' }} className="text-muted">{error || 'Loading…'}</div>
 
   const meta = app.meta
+  const demo = isDemoApplication(meta)
 
   return (
     <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: 'var(--space-3) var(--space-6)', borderBottom: '1px solid var(--color-divider)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+      <div className={demo ? 'workspace-demo-header' : undefined} style={{ padding: 'var(--space-3) var(--space-6)', borderBottom: '1px solid var(--color-divider)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
         <button className="btn btn-ghost" style={{ padding: '4px 6px' }} onClick={onClose}>
           <IconChevronLeft size={16} />
         </button>
         <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: 'var(--font-heading)', fontSize: 18 }}>
-            {meta.role} · {meta.company}
+          <div className="demo-record-title" style={{ fontFamily: 'var(--font-heading)', fontSize: 18 }}>
+            <span>{meta.role} · {meta.company}</span>
+            {demo && <span className="demo-badge">Synthetic demo</span>}
           </div>
           <div className="text-muted" style={{ fontSize: 12 }}>
             {meta.deadline ? `Deadline ${meta.deadline} · ` : ''}reads your Library + memory, writes this

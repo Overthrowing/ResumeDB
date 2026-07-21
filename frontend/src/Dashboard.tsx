@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api, type AppMeta, type Profile } from './api'
+import { isDemoApplication, isDemoProfile } from './demoMode'
 
 const PROFILE_FIELDS: Array<[keyof Profile, string]> = [
   ['name', 'full name'],
@@ -43,7 +44,10 @@ export default function Dashboard({
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div className="section-head" style={{ alignItems: 'center', marginBottom: 'var(--space-6)' }}>
           <div>
-            <div className="card-kicker">Career command center</div>
+            <div className="dashboard-kicker-row">
+              <div className="card-kicker">Career command center</div>
+              {isDemoProfile(profile) && <span className="demo-badge">Synthetic profile active</span>}
+            </div>
             <h1 style={{ fontSize: 40, margin: '2px 0 4px' }}>
               {profile.name ? `Welcome back, ${profile.name.split(' ')[0]}` : 'Build your internship pipeline'}
             </h1>
@@ -51,7 +55,7 @@ export default function Dashboard({
           </div>
           <div className="dashboard-hero-actions" data-tour="demo-launch">
             <button className="btn btn-secondary" onClick={() => onNavigate('agent')}>Ask the career agent</button>
-            <button className="btn btn-primary guided-demo-launch" onClick={onStartDemo}>
+            <button className="btn btn-demo-primary guided-demo-launch" onClick={onStartDemo}>
               <span className="demo-play-icon" aria-hidden="true">▶</span>
               Watch guided demo
             </button>
@@ -75,9 +79,12 @@ export default function Dashboard({
               <button className="btn btn-ghost" onClick={() => onNavigate('applications')}>View all</button>
             </div>
             {recent.map((app) => (
-              <div key={app.id} className="dashboard-row">
+              <div key={app.id} className={`dashboard-row${isDemoApplication(app) ? ' demo-record-row' : ''}`}>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>{app.role}</div>
+                  <div className="demo-record-title" style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>
+                    <span>{app.role}</span>
+                    {isDemoApplication(app) && <span className="demo-badge demo-badge-compact">Demo</span>}
+                  </div>
                   <div className="text-muted" style={{ fontSize: 12 }}>{app.company}</div>
                 </div>
                 <span className={`status-pill status-${app.status}`}>{app.status.replace('_', ' ')}</span>

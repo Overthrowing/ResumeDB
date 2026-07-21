@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const openAppButton = document.getElementById('open-app-btn');
   const connectionSettingsButton = document.getElementById('connection-settings-btn');
   const versionText = document.getElementById('extension-version');
+  const demoSelectionBanner = document.getElementById('demo-selection-banner');
 
   let applications = [];
   let activePackage = null;
@@ -37,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let conversationId = null;
 
   versionText.textContent = `v${chrome.runtime.getManifest().version}`;
+
+  const isDemoApplication = (app) => app?.source?.includes('demo=ats') === true;
 
   const connectBackend = async () => {
     let lastError = null;
@@ -118,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const app of applications) {
       const option = document.createElement('option');
       option.value = app.id;
-      option.textContent = `${app.company} - ${app.role} (${app.status.replace('_', ' ')})`;
+      option.textContent = `${isDemoApplication(app) ? '[DEMO] ' : ''}${app.company} - ${app.role} (${app.status.replace('_', ' ')})`;
       appSelect.appendChild(option);
     }
     const readyCount = applications.filter((app) => app.status === 'ready' && app.source).length;
@@ -137,21 +140,21 @@ document.addEventListener('DOMContentLoaded', () => {
     activePackage = appId ? await request(`/api/applications/${appId}/autofill-package`) : null;
     preflightPanel.hidden = true;
     const ready = activePackage?.application.meta.status === 'ready';
+    const demo = isDemoApplication(activePackage?.application.meta);
+    demoSelectionBanner.hidden = !demo;
     preflightButton.disabled = !ready;
     fillButton.disabled = !ready;
     openFillButton.disabled = !ready || !activePackage.application.meta.source;
     submittedButton.style.display = activePackage ? 'block' : 'none';
     submittedButton.disabled = !ready;
-    setStatus(
-      ready
+    const statusMessage = ready
         ? activePackage.missing.length
           ? `${activePackage.missing.length} missing answers need review before autofill.`
           : 'Approved package ready to autofill.'
         : activePackage
           ? `Application is ${activePackage.application.meta.status}. Approve its draft in ResumeDB first.`
-          : 'Select a ready application.',
-      ready && !activePackage.missing.length ? 'success' : '',
-    );
+          : 'Select a ready application.';
+    setStatus(demo ? `Demo sandbox: ${statusMessage}` : statusMessage, demo ? 'demo' : ready && !activePackage.missing.length ? 'success' : '');
   };
 
   const pdfBase64 = async (appId) => {
