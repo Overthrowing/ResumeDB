@@ -1,15 +1,557 @@
 <template>
   <style>
-    @font-face{font-family:"Sketch Serif";src:local("Georgia")}@font-face{font-family:"Sketch Sans";src:local("Arial")}
-    #root{position:relative;width:1920px;height:1080px;overflow:hidden}.bg{position:absolute;inset:0;background:#f3f2f2}.scene{position:absolute;inset:0;padding:68px 82px 184px;color:#201f1d;font-family:"Sketch Sans",sans-serif}.k{margin:0 0 12px;color:#6d28d9;font-size:22px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}h1{margin:0;font:400 78px/1 "Sketch Serif",serif;letter-spacing:-.025em}h2{margin:0;font:600 38px/1.1 "Sketch Serif",serif}p{margin:0;font-size:23px}.canvas{display:grid;grid-template-columns:1fr 360px 1fr;gap:42px;align-items:center;height:610px;margin-top:44px}.card{display:flex;height:340px;flex-direction:column;align-items:center;justify-content:center;padding:28px;border:2px solid rgba(32,31,29,.35);border-radius:10px;background:#f4e9d9;text-align:center}.core{height:250px;border-color:#6d28d9;background:rgba(109,40,217,.08)}.pill{display:inline-flex;padding:9px 16px;border:2px solid #6d28d9;border-radius:999px;color:#6d28d9;font-size:17px;font-weight:700;text-transform:uppercase}.label{color:#6d28d9;font-size:17px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.sub{margin-top:18px;color:#6e6b67}.screen{grid-column:1/4;display:flex;align-items:center;justify-content:center;min-height:150px;border:2px dashed rgba(32,31,29,.38);border-radius:10px;background:rgba(255,255,255,.42);color:#5e5a55;font-size:22px;font-weight:700;text-transform:uppercase}.band{position:absolute;right:82px;bottom:54px;left:82px;height:92px;border-top:1px solid rgba(32,31,29,.18);color:#8b8782;font-size:16px;line-height:92px;letter-spacing:.08em;text-transform:uppercase}
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+      font-family: "Inter", sans-serif;
+    }
+
+    .f09-bring-your-own-agent-bg {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+      container-type: size;
+    }
+
+    .f09-bring-your-own-agent-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .f09-bring-your-own-agent-header {
+      position: absolute;
+      top: 34px;
+      left: 56px;
+      z-index: 9;
+    }
+
+    .f09-bring-your-own-agent-kicker {
+      margin: 0 0 5px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .f09-bring-your-own-agent-spike {
+      color: #6d28d9;
+    }
+
+    .f09-bring-your-own-agent-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 72px;
+      font-weight: 400;
+      letter-spacing: -0.022em;
+      line-height: 1;
+    }
+
+    .f09-bring-your-own-agent-proofline {
+      position: absolute;
+      top: 84px;
+      right: 56px;
+      z-index: 9;
+      max-width: 640px;
+      margin: 0;
+      color: rgba(32, 31, 29, 0.62);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.045em;
+      line-height: 1.35;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .f09-bring-your-own-agent-settings {
+      position: absolute;
+      top: 158px;
+      left: 56px;
+      width: 1808px;
+      height: 728px;
+      z-index: 1;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 12px;
+      background: #f3f2f2;
+    }
+
+    .f09-bring-your-own-agent-settings-soft {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 1808px;
+      height: auto;
+      opacity: 0.38;
+      filter: blur(2.5px);
+    }
+
+    .f09-bring-your-own-agent-settings-wash {
+      position: absolute;
+      inset: 0;
+      background: rgba(243, 242, 242, 0.22);
+    }
+
+    .f09-bring-your-own-agent-focus-window {
+      position: absolute;
+      top: 378px;
+      left: 304px;
+      width: 768px;
+      height: 350px;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 8px 8px 0 0;
+      background: #f3f2f2;
+      opacity: 0;
+    }
+
+    .f09-bring-your-own-agent-settings-sharp {
+      position: absolute;
+      top: -378px;
+      left: -304px;
+      display: block;
+      width: 1808px;
+      height: auto;
+    }
+
+    .f09-bring-your-own-agent-branch-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      perspective: 1400px;
+      pointer-events: none;
+    }
+
+    .f09-bring-your-own-agent-branch-shell {
+      position: absolute;
+      top: 470px;
+      left: 960px;
+      width: 430px;
+      height: 250px;
+      opacity: 0;
+      will-change: transform;
+    }
+
+    .f09-bring-your-own-agent-branch-face {
+      position: absolute;
+      inset: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 34px 36px;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 12px;
+      background: rgba(244, 233, 217, 0.97);
+      transform-style: preserve-3d;
+    }
+
+    .f09-bring-your-own-agent-branch-face-left {
+      box-shadow: 7px 3px 16px rgba(32, 31, 29, 0.06);
+      text-align: right;
+    }
+
+    .f09-bring-your-own-agent-branch-face-right {
+      box-shadow: -7px 3px 16px rgba(32, 31, 29, 0.06);
+      text-align: left;
+    }
+
+    .f09-bring-your-own-agent-card-pill {
+      position: absolute;
+      top: 24px;
+      display: inline-flex;
+      min-width: 92px;
+      height: 31px;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 9999px;
+      background: #f3f2f2;
+      color: rgba(32, 31, 29, 0.7);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      text-transform: uppercase;
+    }
+
+    .f09-bring-your-own-agent-card-pill-left {
+      right: -20px;
+    }
+
+    .f09-bring-your-own-agent-card-pill-right {
+      left: -20px;
+    }
+
+    .f09-bring-your-own-agent-card-label {
+      display: block;
+      margin-bottom: 12px;
+      color: rgba(32, 31, 29, 0.6);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .f09-bring-your-own-agent-card-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 46px;
+      font-weight: 600;
+      letter-spacing: -0.014em;
+      line-height: 1.02;
+    }
+
+    .f09-bring-your-own-agent-card-sub {
+      margin: 18px 0 0;
+      color: rgba(32, 31, 29, 0.68);
+      font-family: "Inter", sans-serif;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    .f09-bring-your-own-agent-core {
+      position: absolute;
+      top: 470px;
+      left: 960px;
+      z-index: 7;
+      width: 300px;
+      min-height: 190px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      border: 1px solid rgba(32, 31, 29, 0.22);
+      border-radius: 12px;
+      background: rgba(243, 242, 242, 0.985);
+      opacity: 0;
+      text-align: center;
+      will-change: transform;
+    }
+
+    .f09-bring-your-own-agent-core-label {
+      display: block;
+      margin-bottom: 14px;
+      color: #6d28d9;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .f09-bring-your-own-agent-core-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 36px;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      line-height: 1.05;
+    }
+
+    .f09-bring-your-own-agent-paths {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      width: 1920px;
+      height: 1080px;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .f09-bring-your-own-agent-data-path {
+      fill: none;
+      stroke: rgba(32, 31, 29, 0.52);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .f09-bring-your-own-agent-workflow {
+      position: absolute;
+      top: 734px;
+      left: 650px;
+      z-index: 6;
+      width: 620px;
+      height: 108px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      padding: 21px 26px;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 8px;
+      background: rgba(243, 242, 242, 0.985);
+      opacity: 0;
+    }
+
+    .f09-bring-your-own-agent-workflow-label {
+      display: block;
+      margin-bottom: 5px;
+      color: rgba(32, 31, 29, 0.58);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .f09-bring-your-own-agent-workflow-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .f09-bring-your-own-agent-key-badge {
+      position: absolute;
+      right: -18px;
+      bottom: 24px;
+      width: 214px;
+      height: 45px;
+    }
+
+    .f09-bring-your-own-agent-key-badge svg {
+      position: absolute;
+      inset: 0;
+      width: 214px;
+      height: 45px;
+      overflow: visible;
+    }
+
+    .f09-bring-your-own-agent-key-outline {
+      fill: none;
+      stroke: #6d28d9;
+      stroke-width: 2;
+    }
+
+    .f09-bring-your-own-agent-key-text {
+      position: absolute;
+      inset: 0;
+      color: #6d28d9;
+      font-family: "Inter", sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 45px;
+      opacity: 0;
+      text-align: center;
+    }
   </style>
-  <div data-hf-id="hf-mskz" id="root" data-composition-id="09-bring-your-own-agent" data-start="0" data-duration="9" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-09kz" id="f09-bring-your-own-agent-bg" class="clip bg" data-start="0" data-duration="9" data-track-index="0"></div>
-    <main data-hf-id="hf-b8by" id="f09-bring-your-own-agent-scene" class="clip scene" data-start="0" data-duration="9" data-track-index="1">
-      <p data-hf-id="hf-wslq" class="k">Your model, your choice</p><h1 data-hf-id="hf-veeg">Hosted AI or bring your own agent</h1>
-      <div data-hf-id="hf-nq1o" class="canvas"><div data-hf-id="hf-vn2y" class="card"><span data-hf-id="hf-2595" class="pill">Default</span><h2 data-hf-id="hf-yo7b" style="margin-top:28px">ResumeDB hosted model</h2><p data-hf-id="hf-wwc8" class="sub">Ready for most students</p></div><div data-hf-id="hf-d7j3" class="card core"><span data-hf-id="hf-r1cj" class="label">Shared core</span><h2 data-hf-id="hf-mi8n" style="margin-top:20px">Career memory + workflow</h2></div><div data-hf-id="hf-i08u" class="card"><span data-hf-id="hf-er4o" class="pill">Optional</span><h2 data-hf-id="hf-idsn" style="margin-top:28px">Your connected agent</h2><p data-hf-id="hf-x9aq" class="sub">No shared API key</p></div><div data-hf-id="hf-62vb" class="screen">Profile and Settings screenshot</div></div>
-      <div data-hf-id="hf-8o8c" class="band">Different model path - the same student memory and workflow</div>
+
+  <div id="root" data-composition-id="09-bring-your-own-agent" data-start="0" data-duration="8.16" data-width="1920" data-height="1080">
+    <div id="f09-bring-your-own-agent-bg" class="clip f09-bring-your-own-agent-bg" data-start="0" data-duration="8.16" data-track-index="0"></div>
+    <main id="f09-bring-your-own-agent-scene" class="clip f09-bring-your-own-agent-scene" data-start="0" data-duration="8.16" data-track-index="1">
+      <header id="f09-bring-your-own-agent-header" class="f09-bring-your-own-agent-header">
+        <p class="f09-bring-your-own-agent-kicker"><span class="f09-bring-your-own-agent-spike">✱</span> Your model, your choice</p>
+        <h1 class="f09-bring-your-own-agent-title">Hosted AI or bring your own agent</h1>
+      </header>
+      <p id="f09-bring-your-own-agent-proofline" class="f09-bring-your-own-agent-proofline">Different model path - the same student memory and workflow</p>
+
+      <section id="f09-bring-your-own-agent-settings" class="f09-bring-your-own-agent-settings" aria-label="Profile and Settings screenshot">
+        <img class="f09-bring-your-own-agent-settings-soft" src="assets/02-settings-profile-agent.png" alt="ResumeDB Profile and Settings with connected-agent controls" />
+        <div class="f09-bring-your-own-agent-settings-wash"></div>
+        <div id="f09-bring-your-own-agent-focus-window" class="f09-bring-your-own-agent-focus-window">
+          <img class="f09-bring-your-own-agent-settings-sharp" src="assets/02-settings-profile-agent.png" alt="Sharpened connected-agent settings" />
+        </div>
+      </section>
+
+      <svg class="f09-bring-your-own-agent-paths" viewBox="0 0 1920 1080" aria-hidden="true">
+        <path id="f09-bring-your-own-agent-path-core-left" class="f09-bring-your-own-agent-data-path" d="M 960 470 C 850 470 790 470 655 470" />
+        <path id="f09-bring-your-own-agent-path-core-right" class="f09-bring-your-own-agent-data-path" d="M 960 470 C 1070 470 1130 470 1265 470" />
+        <path id="f09-bring-your-own-agent-path-left-workflow" class="f09-bring-your-own-agent-data-path" d="M 440 595 C 440 678 760 688 960 734" />
+        <path id="f09-bring-your-own-agent-path-right-workflow" class="f09-bring-your-own-agent-data-path" d="M 1480 595 C 1480 678 1160 688 960 734" />
+      </svg>
+
+      <div class="f09-bring-your-own-agent-branch-layer">
+        <article id="f09-bring-your-own-agent-left-shell" class="f09-bring-your-own-agent-branch-shell">
+          <div id="f09-bring-your-own-agent-left-face" class="f09-bring-your-own-agent-branch-face f09-bring-your-own-agent-branch-face-left">
+            <span id="f09-bring-your-own-agent-default-pill" class="f09-bring-your-own-agent-card-pill f09-bring-your-own-agent-card-pill-left">Default</span>
+            <span class="f09-bring-your-own-agent-card-label">Hosted model</span>
+            <h2 class="f09-bring-your-own-agent-card-title">ResumeDB hosted model</h2>
+            <p class="f09-bring-your-own-agent-card-sub">Ready for most students</p>
+          </div>
+        </article>
+
+        <article id="f09-bring-your-own-agent-right-shell" class="f09-bring-your-own-agent-branch-shell">
+          <div id="f09-bring-your-own-agent-right-face" class="f09-bring-your-own-agent-branch-face f09-bring-your-own-agent-branch-face-right">
+            <span id="f09-bring-your-own-agent-optional-pill" class="f09-bring-your-own-agent-card-pill f09-bring-your-own-agent-card-pill-right">Optional</span>
+            <span class="f09-bring-your-own-agent-card-label">Your agent</span>
+            <h2 class="f09-bring-your-own-agent-card-title">Your connected agent</h2>
+            <div id="f09-bring-your-own-agent-key-badge" class="f09-bring-your-own-agent-key-badge">
+              <svg viewBox="0 0 214 45" aria-hidden="true">
+                <rect id="f09-bring-your-own-agent-key-outline" class="f09-bring-your-own-agent-key-outline" x="1" y="1" width="212" height="43" rx="21.5" />
+              </svg>
+              <span id="f09-bring-your-own-agent-key-text" class="f09-bring-your-own-agent-key-text">No shared API key</span>
+            </div>
+          </div>
+        </article>
+
+        <article id="f09-bring-your-own-agent-core" class="f09-bring-your-own-agent-core">
+          <span class="f09-bring-your-own-agent-core-label">Shared core</span>
+          <h2 class="f09-bring-your-own-agent-core-title">Career memory + workflow</h2>
+        </article>
+      </div>
+
+      <section id="f09-bring-your-own-agent-workflow" class="f09-bring-your-own-agent-workflow">
+        <div>
+          <span class="f09-bring-your-own-agent-workflow-label">Shared destination</span>
+          <h2 class="f09-bring-your-own-agent-workflow-title">Same application workflow</h2>
+        </div>
+      </section>
     </main>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script><script>window.__timelines=window.__timelines||{};window.__timelines["09-bring-your-own-agent"]=gsap.timeline({paused:true});</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const f09Timeline = gsap.timeline({ paused: true });
+    const f09Paths = gsap.utils.toArray("#f09-bring-your-own-agent-scene .f09-bring-your-own-agent-data-path");
+    const f09KeyOutline = document.querySelector("#f09-bring-your-own-agent-key-outline");
+
+    f09Paths.forEach(function (path) {
+      const length = path.getTotalLength();
+      path.style.strokeDasharray = String(length);
+      path.style.strokeDashoffset = String(length);
+    });
+    const f09KeyLength = f09KeyOutline.getTotalLength();
+    f09KeyOutline.style.strokeDasharray = String(f09KeyLength);
+    f09KeyOutline.style.strokeDashoffset = String(f09KeyLength);
+
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-header",
+      { y: -18, opacity: 0.78 },
+      { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", immediateRender: false },
+      0
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-settings",
+      { scale: 0.985, opacity: 0.82 },
+      { scale: 1, opacity: 1, duration: 0.72, ease: "power2.out", immediateRender: false },
+      0
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-focus-window",
+      { scale: 0.985, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.82, ease: "power2.out", immediateRender: false },
+      0.72
+    );
+
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-core",
+      { xPercent: -50, yPercent: -50, scale: 0.86, opacity: 0 },
+      { xPercent: -50, yPercent: -50, scale: 1, opacity: 1, duration: 0.46, ease: "power3.out", immediateRender: false },
+      2
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-left-shell",
+      { xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 0.85, opacity: 0 },
+      { xPercent: -50, yPercent: -50, x: -520, y: 0, scale: 1, opacity: 1, duration: 1.2, ease: "power3.out", immediateRender: false },
+      2.2
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-left-face",
+      { rotationY: 0 },
+      { rotationY: 4, duration: 1.2, ease: "power3.out", immediateRender: false },
+      2.2
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-right-shell",
+      { xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 0.85, opacity: 0 },
+      { xPercent: -50, yPercent: -50, x: 520, y: 0, scale: 1, opacity: 1, duration: 1.2, ease: "power3.out", immediateRender: false },
+      2.27
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-right-face",
+      { rotationY: 0 },
+      { rotationY: -4, duration: 1.2, ease: "power3.out", immediateRender: false },
+      2.27
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-default-pill",
+      { scale: 0.82, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.32, ease: "back.out(1.25)", immediateRender: false },
+      3.55
+    );
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-optional-pill",
+      { scale: 0.82, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.32, ease: "back.out(1.25)", immediateRender: false },
+      3.85
+    );
+
+    f09Timeline.to("#f09-bring-your-own-agent-path-core-left", { strokeDashoffset: 0, duration: 0.52, ease: "power2.out" }, 4.45);
+    f09Timeline.to("#f09-bring-your-own-agent-path-core-right", { strokeDashoffset: 0, duration: 0.52, ease: "power2.out" }, 4.72);
+    f09Timeline.to("#f09-bring-your-own-agent-path-left-workflow", { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" }, 5.02);
+    f09Timeline.to("#f09-bring-your-own-agent-path-right-workflow", { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" }, 5.42);
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-workflow",
+      { y: 46, scale: 1.03, opacity: 0 },
+      { y: 0, scale: 1, opacity: 1, duration: 0.3, ease: "power4.out", immediateRender: false },
+      6.1
+    );
+
+    f09Timeline.to("#f09-bring-your-own-agent-key-outline", { strokeDashoffset: 0, duration: 0.56, ease: "power2.out" }, 6.45);
+    f09Timeline.fromTo(
+      "#f09-bring-your-own-agent-key-text",
+      { y: 7, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.32, ease: "power3.out", immediateRender: false },
+      6.74
+    );
+    f09Timeline.set("#f09-bring-your-own-agent-key-text", { opacity: 1 }, 8.16);
+
+    window.__timelines["09-bring-your-own-agent"] = f09Timeline;
+  </script>
 </template>
