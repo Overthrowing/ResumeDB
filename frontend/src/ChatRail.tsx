@@ -2,10 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Markdown from 'react-markdown'
 import { api, type Proposal } from './api'
 import { IconChat, IconCheck, IconChevronDown, IconHistory, IconPaperclip, IconPlus, IconSend, IconWarn, IconX } from './icons'
+import { apiUrl, websocketUrl } from './runtime'
 
 const RAIL_MIN = 300
 const RAIL_MAX = 720
-const MODELS = ['', 'haiku', 'sonnet', 'opus', 'fable', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
+const CLAUDE_MODELS = ['', 'haiku', 'sonnet', 'opus', 'fable']
+const CODEX_MODELS = ['', 'gpt-5.3-codex-spark', 'gpt-5.6-sol']
 
 export interface Conversation {
   id: string
@@ -57,6 +59,7 @@ export default function ChatRail({
   const [activityOpen, setActivityOpen] = useState(false)
   const [attachments, setAttachments] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
+  const [provider, setProvider] = useState<'claude' | 'codex' | null>(null)
   const wsRef = useRef<WebSocket | null>(null)
   const convRef = useRef<string | null>(null)
   convRef.current = convId
@@ -92,7 +95,7 @@ export default function ChatRail({
         setMessages([])
         return
       }
-      fetch(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`)
+      fetch(apiUrl(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`))
         .then((r) => (r.ok ? r.json() : []))
         .then(setMessages)
         .catch(() => setMessages([]))
@@ -102,7 +105,7 @@ export default function ChatRail({
 
   const refreshConvs = useCallback(
     () =>
-      fetch(`/api/chat/${encodeURIComponent(scope)}/conversations`)
+      fetch(apiUrl(`/api/chat/${encodeURIComponent(scope)}/conversations`))
         .then((r) => (r.ok ? r.json() : []))
         .then((c: Conversation[]) => {
           setConvs(c)
@@ -114,7 +117,7 @@ export default function ChatRail({
   const deleteConv = async (id: string) => {
     if (!confirm('Delete this conversation? Its checkpointed history stays in git.')) return
     try {
-      const res = await fetch(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`, { method: 'DELETE' })
+      const res = await fetch(apiUrl(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`), { method: 'DELETE' })
       if (!res.ok) throw new Error((await res.json()).detail ?? res.statusText)
       const remaining = await refreshConvs()
       if (id === convRef.current) loadConversation(remaining[0]?.id ?? null)
@@ -131,6 +134,19 @@ export default function ChatRail({
       .proposals()
       .then(setProposals)
       .catch((e) => setMessages((m) => [...m, { role: 'error', text: `Could not load pending approvals: ${e.message}` }]))
+    api
+      .config()
+      .then((configured) => {
+        const nextProvider = configured.agent_provider
+        const available = nextProvider === 'codex' ? CODEX_MODELS : CLAUDE_MODELS
+        setProvider(nextProvider)
+        setModel((current) => {
+          if (available.includes(current)) return current
+          localStorage.removeItem(`chatModel:${scope}`)
+          return ''
+        })
+      })
+      .catch(() => setProvider(null))
     return () => wsRef.current?.close()
   }, [scope, refreshConvs, loadConversation])
 
@@ -245,10 +261,11 @@ export default function ChatRail({
         resolve(wsRef.current)
         return
       }
-      const proto = location.protocol === 'https:' ? 'wss' : 'ws'
-      const ws = new WebSocket(
-        `${proto}://${location.host}/api/chat?scope=${encodeURIComponent(scope)}&conversation=${convRef.current ?? ''}`,
-      )
+      const query = new URLSearchParams({
+        scope,
+        conversation: convRef.current ?? '',
+      })
+      const ws = new WebSocket(websocketUrl(`/api/chat?${query}`))
       ws.onopen = () => resolve(ws)
       ws.onerror = () => reject(new Error('chat connection failed'))
       ws.onmessage = (e) => handleEvent(JSON.parse(e.data))
@@ -423,7 +440,7 @@ export default function ChatRail({
             title="Model for this chat"
             style={{ border: 'none', background: 'transparent', color: 'var(--color-neutral-600)', fontSize: 11, fontFamily: 'var(--font-body)', cursor: 'pointer', textAlign: 'right' }}
           >
-            {MODELS.map((m) => (
+            {(provider === 'codex' ? CODEX_MODELS : provider === 'claude' ? CLAUDE_MODELS : ['']).map((m) => (
               <option key={m} value={m}>
                 {m === '' ? 'default model' : m}
               </option>

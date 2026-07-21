@@ -8,6 +8,8 @@
       --surface: #262626;
       --text: #e0e0e0;
       --accent: #b68235;
+      --demo: #a78bfa;
+      --demo-deep: #4c1d95;
       --divider: #3a3a3a;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
@@ -31,8 +33,31 @@
     header h2 {
       margin: 0;
       font-size: 16px;
-      color: var(--accent);
+      color: var(--text);
       font-weight: 600;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .brand img {
+      width: 32px;
+      height: 32px;
+    }
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .brand-copy span {
+      margin-top: 3px;
+      color: #888;
+      font-size: 10px;
+    }
+    .version {
+      color: #777;
+      font-size: 10px;
     }
     .tabs {
       display: flex;
@@ -115,6 +140,115 @@
     }
     .status.success { color: #4caf50; }
     .status.error { color: #f44336; }
+    .status.demo { color: #c4b5fd; }
+    .demo-selection-banner {
+      margin-bottom: 12px;
+      padding: 10px 11px;
+      border: 1px solid #6d4cc7;
+      border-radius: 6px;
+      background: linear-gradient(145deg, #312052, #241b35);
+      color: #ddd2ff;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .demo-selection-banner[hidden] { display: none; }
+    .demo-selection-banner strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #c4b5fd;
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .connection-panel {
+      margin-bottom: 14px;
+      padding: 12px;
+      border: 1px solid #6c3434;
+      border-radius: 6px;
+      background: #2b1c1c;
+    }
+    .connection-panel strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #ffb4b4;
+      font-size: 12px;
+    }
+    .connection-panel p {
+      margin: 0 0 9px;
+      color: #c9a7a7;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .connection-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+    .connection-actions button {
+      margin: 0;
+      padding: 7px;
+      border: 1px solid #555;
+      background: #292929;
+      color: var(--text);
+      font-size: 11px;
+    }
+    .preflight-panel {
+      margin: 12px 0 4px;
+      overflow: hidden;
+      border: 1px solid #5e4b2f;
+      border-radius: 7px;
+      background: linear-gradient(145deg, #29251f, #232323);
+    }
+    .preflight-panel[hidden] { display: none; }
+    .preflight-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 11px;
+      border-bottom: 1px solid #443a2d;
+    }
+    .preflight-head strong { display: block; color: #f0dfc4; font-size: 12px; }
+    .preflight-head span { display: block; margin-top: 2px; color: #958b7c; font-size: 9px; }
+    .preflight-badge {
+      flex: none;
+      border-radius: 999px;
+      padding: 3px 7px;
+      background: #263f2a;
+      color: #8bd098 !important;
+      font-size: 9px !important;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .preflight-metrics { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .preflight-metric {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      padding: 10px 5px;
+      border-right: 1px solid #403930;
+    }
+    .preflight-metric:last-child { border-right: 0; }
+    .preflight-metric strong { color: #f3e5ce; font-size: 19px; line-height: 1; }
+    .preflight-metric span { margin-top: 3px; color: #8f877c; font-size: 8px; text-transform: uppercase; letter-spacing: .05em; }
+    .preflight-fields { max-height: 150px; overflow-y: auto; border-top: 1px solid #403930; }
+    .preflight-field {
+      display: grid;
+      grid-template-columns: 14px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border-bottom: 1px solid #34312d;
+      font-size: 10px;
+    }
+    .preflight-field:last-child { border-bottom: 0; }
+    .preflight-field .mark { color: #75c484; font-weight: 800; }
+    .preflight-field.review .mark { color: #e0aa56; }
+    .preflight-field .field-name { overflow: hidden; color: #ddd2c1; text-overflow: ellipsis; white-space: nowrap; }
+    .preflight-field .field-source { max-width: 102px; overflow: hidden; color: #77716a; text-overflow: ellipsis; white-space: nowrap; }
+    #preflight-btn { border: 1px solid #6a5435; background: #29251f; color: #dcb270; }
+    #preflight-btn:hover { background: #332b21; }
     
     /* Metrics & Keyword styles */
     .metric-card {
@@ -210,7 +344,14 @@
 </head>
 <body>
   <header>
-    <h2>ResumeDB Side Panel</h2>
+    <div class="brand">
+      <img src="icons/icon32.png" alt="">
+      <div class="brand-copy">
+        <h2>ResumeDB</h2>
+        <span>Application agent</span>
+      </div>
+    </div>
+    <span class="version" id="extension-version"></span>
   </header>
 
   <div class="tabs">
@@ -222,15 +363,46 @@
   <div class="content-area">
     <!-- Autofill Panel -->
     <div class="panel active" id="autofill-panel">
+      <div class="connection-panel" id="connection-panel" hidden>
+        <strong>ResumeDB is offline</strong>
+        <p id="connection-message">Start the local app, then retry.</p>
+        <div class="connection-actions">
+          <button id="retry-btn" type="button">Retry</button>
+          <button id="open-app-btn" type="button">Open ResumeDB</button>
+        </div>
+        <button id="connection-settings-btn" type="button" style="margin-top: 7px; background: transparent; border: 1px solid #555; color: var(--text);">Connection settings</button>
+      </div>
       <div class="field">
         <label for="app-select">Select Tracked Role</label>
         <select id="app-select">
           <option value="">Connecting to ResumeDB...</option>
         </select>
       </div>
-      <button id="fill-btn" disabled>Auto-fill current form</button>
+      <div class="demo-selection-banner" id="demo-selection-banner" hidden>
+        <strong>Demo sandbox selected</strong>
+        This package contains synthetic applicant data and opens the local Northstar test application.
+      </div>
+      <button id="preflight-btn" disabled>Scan page before filling</button>
+      <div class="preflight-panel" id="preflight-panel" hidden>
+        <div class="preflight-head">
+          <div>
+            <strong>Page mapping preflight</strong>
+            <span id="preflight-page">Current application page</span>
+          </div>
+          <span class="preflight-badge">No fields changed</span>
+        </div>
+        <div class="preflight-metrics">
+          <div class="preflight-metric"><strong id="preflight-mapped">0</strong><span>mapped</span></div>
+          <div class="preflight-metric"><strong id="preflight-review">0</strong><span>review</span></div>
+          <div class="preflight-metric"><strong id="preflight-resume">No</strong><span>resume slot</span></div>
+        </div>
+        <div class="preflight-fields" id="preflight-fields"></div>
+      </div>
+      <button id="fill-btn" disabled>Fill mapped fields</button>
       <button id="open-fill-btn" style="background: #208b5e; color: #fff;" disabled>Open & Auto-fill</button>
-      <div class="status" id="status-text">Ready.</div>
+      <button id="ready-queue-btn" style="background: #335f73; color: #fff;" disabled>Open ready queue (0)</button>
+      <button id="submitted-btn" style="display: none; background: transparent; color: var(--accent); border: 1px solid var(--accent);" disabled>I submitted this application</button>
+      <div class="status" id="status-text">Connecting to ResumeDB...</div>
       
       <div id="open-fill-progress" style="display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
          <div class="spinner"></div>
@@ -239,15 +411,7 @@
 
       <hr style="border: none; border-top: 1px solid var(--divider); margin: 16px 0;">
       
-      <button id="scrape-btn" style="background: var(--surface); color: var(--text); border: 1px solid var(--divider);">📄 Scrape This Page</button>
-      
-      <div id="scrape-results" style="display: none; margin-top: 12px; padding: 12px; background: #111; border: 1px solid var(--divider); border-radius: 4px;">
-         <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: var(--accent);">Extracted Details:</div>
-         <div id="scrape-company" style="font-size: 12px; margin-bottom: 4px;"></div>
-         <div id="scrape-role" style="font-size: 12px; margin-bottom: 4px;"></div>
-         <div id="scrape-location" style="font-size: 12px; margin-bottom: 8px;"></div>
-         <button id="track-role-btn">Track This Role</button>
-      </div>
+      <button id="scrape-btn" style="background: var(--surface); color: var(--text); border: 1px solid var(--divider);">Capture this job page</button>
     </div>
 
     <!-- Keywords & Metrics Panel -->
@@ -289,6 +453,7 @@
     </div>
   </div>
 
+  <script src="backend-config.js"></script>
   <script src="sidepanel.js"></script>
 </body>
 </html>

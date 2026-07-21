@@ -1,11 +1,10 @@
-const BACKEND_URL = 'http://localhost:8000';
-
 document.addEventListener('DOMContentLoaded', async () => {
   const select = document.getElementById('app-select');
   const btn = document.getElementById('fill-btn');
   const status = document.getElementById('status-text');
 
   let profile = null;
+  const { backendUrl: BACKEND_URL } = await getResumeDbSettings();
 
   try {
     // 1. Fetch Profile

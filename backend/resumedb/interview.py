@@ -1,7 +1,6 @@
-import json
 from ruamel.yaml import YAML
 from pathlib import Path
-from .claude import run_oneshot
+from .agent import run_structured
 
 INTERVIEW_SCHEMA = {
     "type": "object",
@@ -73,8 +72,12 @@ async def generate_questions(r, app_id: str) -> list:
     Provide your output formatted EXACTLY to the requested JSON schema.
     """
 
-    res_str = await run_oneshot(prompt, json_schema=INTERVIEW_SCHEMA)
-    result = json.loads(res_str)
+    result = await run_structured(
+        cwd=r.root,
+        prompt=prompt,
+        schema=INTERVIEW_SCHEMA,
+        task="tailor",
+    )
     questions = result.get("questions", [])
     
     save_questions(r, app_id, questions)

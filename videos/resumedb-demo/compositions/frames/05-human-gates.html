@@ -1,0 +1,631 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/eb-garamond-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-400.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/inter-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #201f1d;
+    }
+
+    .f05-human-gates-ground {
+      position: absolute;
+      inset: 0;
+      background: #f3f2f2;
+    }
+
+    .f05-human-gates-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .f05-human-gates-header {
+      position: absolute;
+      z-index: 30;
+      top: 54px;
+      left: 82px;
+      width: 1050px;
+    }
+
+    .f05-human-gates-kicker {
+      margin: 0 0 8px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .f05-human-gates-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 4.3cqw;
+      font-weight: 400;
+      line-height: 0.98;
+      letter-spacing: -0.024em;
+    }
+
+    .f05-human-gates-hero {
+      position: absolute;
+      z-index: 4;
+      top: 190px;
+      right: 82px;
+      left: 82px;
+      height: 645px;
+      overflow: hidden;
+    }
+
+    .f05-human-gates-pipeline-cut,
+    .f05-human-gates-zoom-outer,
+    .f05-human-gates-zoom-inner {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      will-change: transform;
+    }
+
+    .f05-human-gates-zoom-outer {
+      transform-origin: 50% 50%;
+    }
+
+    .f05-human-gates-product {
+      position: absolute;
+      z-index: 1;
+      top: 132px;
+      right: 0;
+      left: 0;
+      height: 490px;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 12px;
+      background: #f3f2f2;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+    }
+
+    .f05-human-gates-product img,
+    .f05-human-gates-overview img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .f05-human-gates-stations {
+      position: absolute;
+      z-index: 8;
+      top: 18px;
+      right: 44px;
+      left: 44px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 42px;
+    }
+
+    .f05-human-gates-station {
+      position: relative;
+      display: flex;
+      height: 92px;
+      padding: 15px 18px 13px;
+      box-sizing: border-box;
+      flex-direction: column;
+      justify-content: center;
+      overflow: visible;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 12px;
+      background: #f3f2f2;
+      will-change: transform, opacity, background-color;
+    }
+
+    .f05-human-gates-station-index {
+      margin-bottom: 5px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.1em;
+    }
+
+    .f05-human-gates-station-name {
+      font-family: "EB Garamond", serif;
+      font-size: 1.72cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.005em;
+      white-space: nowrap;
+    }
+
+    .f05-human-gates-station-line {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      border-radius: 0 0 12px 12px;
+      background: #201f1d;
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    .f05-human-gates-station-ready .f05-human-gates-station-line {
+      background: #6d28d9;
+    }
+
+    .f05-human-gates-connector {
+      position: absolute;
+      top: 45px;
+      right: -42px;
+      width: 42px;
+      height: 1px;
+      background: rgba(32, 31, 29, 0.3);
+    }
+
+    .f05-human-gates-connector::after {
+      position: absolute;
+      top: -4px;
+      right: 1px;
+      width: 7px;
+      height: 7px;
+      border-top: 1px solid rgba(32, 31, 29, 0.55);
+      border-right: 1px solid rgba(32, 31, 29, 0.55);
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    .f05-human-gates-overview {
+      position: absolute;
+      z-index: 10;
+      top: 63px;
+      right: 0;
+      left: 0;
+      height: 560px;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid rgba(32, 31, 29, 0.18);
+      border-radius: 12px;
+      background: #f3f2f2;
+      box-shadow: 0 1px 3px rgba(32, 31, 29, 0.08), 0 4px 16px rgba(32, 31, 29, 0.04);
+      transform-origin: 50% 50%;
+      will-change: transform, filter, opacity;
+    }
+
+    .f05-human-gates-gate {
+      position: absolute;
+      z-index: 18;
+      top: 278px;
+      display: grid;
+      width: 160px;
+      min-height: 47px;
+      padding: 7px 9px 6px;
+      box-sizing: border-box;
+      place-items: center;
+      border: 1px solid rgba(32, 31, 29, 0.2);
+      border-radius: 8px;
+      background: #f3f2f2;
+      text-align: center;
+      will-change: transform, opacity;
+    }
+
+    .f05-human-gates-review { left: 625px; }
+    .f05-human-gates-submit { left: 793px; }
+
+    .f05-human-gates-marker-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .f05-human-gates-marker-bar {
+      position: absolute;
+      z-index: 0;
+      top: 2px;
+      right: -5px;
+      bottom: 1px;
+      left: -5px;
+      border-radius: 3px;
+      background: rgba(32, 31, 29, 0.14);
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    .f05-human-gates-review .f05-human-gates-marker-bar {
+      background: rgba(109, 40, 217, 0.2);
+    }
+
+    .f05-human-gates-gate-title {
+      position: relative;
+      z-index: 1;
+      font-family: "Inter", sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .f05-human-gates-review .f05-human-gates-gate-title {
+      color: #6d28d9;
+    }
+
+    .f05-human-gates-gate-route {
+      margin-top: 4px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .f05-human-gates-cursor {
+      position: absolute;
+      z-index: 24;
+      top: 0;
+      left: 0;
+      width: 30px;
+      height: 38px;
+      filter: drop-shadow(0 2px 2px rgba(32, 31, 29, 0.16));
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    .f05-human-gates-cursor svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .f05-human-gates-band {
+      position: absolute;
+      z-index: 30;
+      top: 836px;
+      right: 82px;
+      left: 82px;
+      display: flex;
+      height: 60px;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(32, 31, 29, 0.18);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.4cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .f05-human-gates-band-note {
+      color: rgba(32, 31, 29, 0.58);
+      font-size: 15px;
+      letter-spacing: 0.14em;
+    }
+  </style>
+
+  <div data-hf-id="hf-kwwi" id="root" data-composition-id="05-human-gates" data-start="0" data-duration="8.24" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-cg65" id="f05-human-gates-background" class="clip f05-human-gates-ground" data-start="0" data-duration="8.24" data-track-index="0"></div>
+
+    <main data-hf-id="hf-f9sh" id="f05-human-gates-scene" class="clip f05-human-gates-scene" data-start="0" data-duration="8.24" data-track-index="1">
+      <header data-hf-id="hf-e0qe" class="f05-human-gates-header">
+        <p data-hf-id="hf-z2yt" class="f05-human-gates-kicker">Application pipeline</p>
+        <h1 data-hf-id="hf-yvsp" class="f05-human-gates-title">Automation with human gates</h1>
+      </header>
+
+      <section data-hf-id="hf-nrsp" id="f05-human-gates-hero" class="f05-human-gates-hero" aria-label="Five application stages with review and submission gates">
+        <div data-hf-id="hf-801y" id="f05-human-gates-pipeline-cut" class="f05-human-gates-pipeline-cut">
+          <div data-hf-id="hf-4ptu" id="f05-human-gates-zoom-outer" class="f05-human-gates-zoom-outer">
+            <div data-hf-id="hf-ykby" id="f05-human-gates-zoom-inner" class="f05-human-gates-zoom-inner">
+              <figure data-hf-id="hf-o66h" class="f05-human-gates-product">
+                <img data-hf-id="hf-bunu" src="assets/05-applications.png" alt="ResumeDB Applications table with a ready application">
+              </figure>
+
+              <div data-hf-id="hf-xras" class="f05-human-gates-stations" aria-label="Not Started, In Progress, Draft, Ready, Submitted">
+                <div data-hf-id="hf-ox0s" id="f05-human-gates-station-not-started" class="f05-human-gates-station">
+                  <span data-hf-id="hf-hsak" class="f05-human-gates-station-index">01</span>
+                  <span data-hf-id="hf-1o4c" class="f05-human-gates-station-name">Not Started</span>
+                  <span data-hf-id="hf-aevr" class="f05-human-gates-station-line"></span>
+                  <span data-hf-id="hf-yaxo" class="f05-human-gates-connector" aria-hidden="true"></span>
+                </div>
+                <div data-hf-id="hf-wh7o" id="f05-human-gates-station-in-progress" class="f05-human-gates-station">
+                  <span data-hf-id="hf-gldh" class="f05-human-gates-station-index">02</span>
+                  <span data-hf-id="hf-99ga" class="f05-human-gates-station-name">In Progress</span>
+                  <span data-hf-id="hf-unrr" class="f05-human-gates-station-line"></span>
+                  <span data-hf-id="hf-xjo4" class="f05-human-gates-connector" aria-hidden="true"></span>
+                </div>
+                <div data-hf-id="hf-kitq" id="f05-human-gates-station-draft" class="f05-human-gates-station">
+                  <span data-hf-id="hf-gzoi" class="f05-human-gates-station-index">03</span>
+                  <span data-hf-id="hf-jto7" class="f05-human-gates-station-name">Draft</span>
+                  <span data-hf-id="hf-u9gq" class="f05-human-gates-station-line"></span>
+                  <span data-hf-id="hf-wcr1" class="f05-human-gates-connector" aria-hidden="true"></span>
+                </div>
+                <div data-hf-id="hf-039p" id="f05-human-gates-station-ready" class="f05-human-gates-station f05-human-gates-station-ready">
+                  <span data-hf-id="hf-iz7n" class="f05-human-gates-station-index">04</span>
+                  <span data-hf-id="hf-25j7" class="f05-human-gates-station-name">Ready</span>
+                  <span data-hf-id="hf-tv5p" class="f05-human-gates-station-line"></span>
+                  <span data-hf-id="hf-wr22" class="f05-human-gates-connector" aria-hidden="true"></span>
+                </div>
+                <div data-hf-id="hf-byyw" id="f05-human-gates-station-submitted" class="f05-human-gates-station">
+                  <span data-hf-id="hf-jdio" class="f05-human-gates-station-index">05</span>
+                  <span data-hf-id="hf-srtd" class="f05-human-gates-station-name">Submitted</span>
+                  <span data-hf-id="hf-wnaw" class="f05-human-gates-station-line"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <figure data-hf-id="hf-w88z" id="f05-human-gates-overview" class="f05-human-gates-overview">
+          <img data-hf-id="hf-mefw" src="assets/06-application-overview.png" alt="Ready application workbench with manual submission instruction">
+        </figure>
+
+        <div data-hf-id="hf-95ue" id="f05-human-gates-review" class="f05-human-gates-gate f05-human-gates-review">
+          <span data-hf-id="hf-xrar" class="f05-human-gates-marker-wrap">
+            <span data-hf-id="hf-zlq8" id="f05-human-gates-review-marker" class="f05-human-gates-marker-bar"></span>
+            <span data-hf-id="hf-8gfz" class="f05-human-gates-gate-title">Human review</span>
+          </span>
+          <span data-hf-id="hf-4xrm" class="f05-human-gates-gate-route">Draft to Ready</span>
+        </div>
+
+        <div data-hf-id="hf-58jq" id="f05-human-gates-submit" class="f05-human-gates-gate f05-human-gates-submit">
+          <span data-hf-id="hf-y8r7" class="f05-human-gates-marker-wrap">
+            <span data-hf-id="hf-uac0" id="f05-human-gates-submit-marker" class="f05-human-gates-marker-bar"></span>
+            <span data-hf-id="hf-wgcy" class="f05-human-gates-gate-title">User submits</span>
+          </span>
+          <span data-hf-id="hf-egpg" class="f05-human-gates-gate-route">Ready to Submitted</span>
+        </div>
+
+        <div data-hf-id="hf-3o5z" id="f05-human-gates-cursor" class="f05-human-gates-cursor" aria-hidden="true">
+          <svg data-hf-id="hf-ft61" viewBox="0 0 30 38" xmlns="http://www.w3.org/2000/svg">
+            <path data-hf-id="hf-y1th" d="M3 2 L25 22 L15.5 23.5 L20.5 34 L14.5 37 L9.5 26 L3 33 Z" fill="#F3F2F2" stroke="#201F1D" stroke-width="2" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </section>
+
+      <div data-hf-id="hf-6uxw" class="f05-human-gates-band">
+        <span data-hf-id="hf-xhci">The agent prepares - the student approves and submits</span>
+        <span data-hf-id="hf-g49m" class="f05-human-gates-band-note">Human control stays visible</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const f05HumanGatesRoot = document.querySelector('[data-composition-id="05-human-gates"]');
+    const f05HumanGatesHero = f05HumanGatesRoot.querySelector('#f05-human-gates-hero');
+    const f05HumanGatesReady = f05HumanGatesRoot.querySelector('#f05-human-gates-station-ready');
+    const f05HumanGatesStations = Array.from(f05HumanGatesRoot.querySelectorAll('.f05-human-gates-station'));
+    const f05HumanGatesLines = Array.from(f05HumanGatesRoot.querySelectorAll('.f05-human-gates-station-line'));
+    const f05HumanGatesCursor = f05HumanGatesRoot.querySelector('#f05-human-gates-cursor');
+    const f05HumanGatesHeroRect = f05HumanGatesHero.getBoundingClientRect();
+    const f05HumanGatesReadyRect = f05HumanGatesReady.getBoundingClientRect();
+    const f05HumanGatesOffsetX = f05HumanGatesReadyRect.left + f05HumanGatesReadyRect.width / 2 - (f05HumanGatesHeroRect.left + f05HumanGatesHeroRect.width / 2);
+    const f05HumanGatesOffsetY = f05HumanGatesReadyRect.top + f05HumanGatesReadyRect.height / 2 - (f05HumanGatesHeroRect.top + f05HumanGatesHeroRect.height / 2);
+    const f05HumanGatesMaxScale = Math.min(
+      (0.88 * f05HumanGatesHeroRect.width) / f05HumanGatesReadyRect.width,
+      (0.88 * f05HumanGatesHeroRect.height) / f05HumanGatesReadyRect.height
+    );
+    const f05HumanGatesZoomScale = Math.min(1.55, f05HumanGatesMaxScale);
+    const f05HumanGatesStationPoints = f05HumanGatesStations.map((station) => {
+      const rect = station.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2 - f05HumanGatesHeroRect.left - 12,
+        y: rect.top + rect.height / 2 - f05HumanGatesHeroRect.top + 14
+      };
+    });
+    const f05HumanGatesTimeline = gsap.timeline({ paused: true });
+
+    gsap.set(
+      '#f05-human-gates-overview',
+      { scale: 0.82, filter: 'blur(20px)', opacity: 0 }
+    );
+
+    f05HumanGatesTimeline.fromTo(
+      f05HumanGatesRoot.querySelector('.f05-human-gates-header'),
+      { y: -18, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.48, ease: 'power2.out' },
+      0
+    );
+
+    f05HumanGatesTimeline.fromTo(
+      f05HumanGatesRoot.querySelector('.f05-human-gates-product'),
+      { y: 18, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.68, ease: 'power3.out' },
+      0.08
+    );
+
+    f05HumanGatesStations.forEach((station, index) => {
+      f05HumanGatesTimeline.fromTo(
+        station,
+        { y: -14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.54, ease: 'power3.out' },
+        0.28 + index * 0.2
+      );
+    });
+
+    f05HumanGatesTimeline.fromTo(
+      f05HumanGatesCursor,
+      {
+        x: f05HumanGatesStationPoints[0].x,
+        y: f05HumanGatesStationPoints[0].y,
+        scale: 0.9,
+        opacity: 0
+      },
+      {
+        x: f05HumanGatesStationPoints[0].x,
+        y: f05HumanGatesStationPoints[0].y,
+        scale: 1,
+        opacity: 1,
+        duration: 0.22,
+        ease: 'power2.out'
+      },
+      1.62
+    );
+
+    f05HumanGatesStations.forEach((station, index) => {
+      const stationAt = 1.72 + index * 0.46;
+
+      if (index > 0) {
+        f05HumanGatesTimeline.to(
+          f05HumanGatesCursor,
+          {
+            x: f05HumanGatesStationPoints[index].x,
+            y: f05HumanGatesStationPoints[index].y,
+            duration: 0.36,
+            ease: 'power2.inOut'
+          },
+          stationAt - 0.14
+        );
+      }
+
+      f05HumanGatesTimeline.fromTo(
+        f05HumanGatesLines[index],
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.34, ease: 'power2.out' },
+        stationAt
+      );
+      f05HumanGatesTimeline.to(
+        station,
+        { backgroundColor: '#f4e9d9', duration: 0.32, ease: 'power1.out' },
+        stationAt
+      );
+    });
+
+    f05HumanGatesTimeline.to(
+      f05HumanGatesCursor,
+      { opacity: 0, duration: 0.18, ease: 'power1.out' },
+      4.0
+    );
+
+    f05HumanGatesTimeline.fromTo(
+      '#f05-human-gates-zoom-outer',
+      { scale: 1 },
+      { scale: f05HumanGatesZoomScale, duration: 1.0, ease: 'power3.inOut' },
+      4.0
+    );
+    f05HumanGatesTimeline.fromTo(
+      '#f05-human-gates-zoom-inner',
+      { x: 0, y: 0 },
+      {
+        x: -f05HumanGatesOffsetX,
+        y: -f05HumanGatesOffsetY,
+        duration: 1.0,
+        ease: 'power3.inOut'
+      },
+      4.0
+    );
+
+    f05HumanGatesTimeline.fromTo(
+      '#f05-human-gates-pipeline-cut',
+      { scale: 1, filter: 'blur(0px)' },
+      { scale: 1.18, filter: 'blur(20px)', duration: 0.22, ease: 'power3.in' },
+      4.98
+    );
+    f05HumanGatesTimeline.to(
+      '#f05-human-gates-pipeline-cut',
+      { opacity: 0.15, duration: 0.22, ease: 'none' },
+      4.98
+    );
+    f05HumanGatesTimeline.set('#f05-human-gates-pipeline-cut', { opacity: 0 }, 5.2);
+
+    f05HumanGatesTimeline.set('#f05-human-gates-overview', { opacity: 0.15 }, 5.2);
+    f05HumanGatesTimeline.to(
+      '#f05-human-gates-overview',
+      { scale: 1, filter: 'blur(0px)', opacity: 1, duration: 0.5, ease: 'expo.out' },
+      5.2
+    );
+
+    f05HumanGatesTimeline.fromTo(
+      '#f05-human-gates-review',
+      { y: 10, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.42, ease: 'power2.out' },
+      5.36
+    );
+    f05HumanGatesTimeline.fromTo(
+      '#f05-human-gates-review-marker',
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.48, ease: 'power2.out' },
+      5.42
+    );
+
+    f05HumanGatesTimeline.fromTo(
+      '#f05-human-gates-submit',
+      { y: 10, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.42, ease: 'power2.out' },
+      5.98
+    );
+    f05HumanGatesTimeline.fromTo(
+      '#f05-human-gates-submit-marker',
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.48, ease: 'power2.out' },
+      6.04
+    );
+
+    f05HumanGatesTimeline.set(
+      f05HumanGatesCursor,
+      { x: 1180, y: 250, scale: 1, opacity: 0 },
+      6.02
+    );
+    f05HumanGatesTimeline.to(
+      f05HumanGatesCursor,
+      { opacity: 1, duration: 0.2, ease: 'power1.out' },
+      6.04
+    );
+    f05HumanGatesTimeline.to(
+      f05HumanGatesCursor,
+      { x: 905, y: 320, duration: 0.76, ease: 'power2.inOut' },
+      6.24
+    );
+
+    f05HumanGatesTimeline.fromTo(
+      '.f05-human-gates-band',
+      { y: 12, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+      6.58
+    );
+
+    window.__timelines['05-human-gates'] = f05HumanGatesTimeline;
+  </script>
+</template>

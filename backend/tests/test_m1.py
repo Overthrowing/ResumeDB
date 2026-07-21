@@ -73,7 +73,7 @@ def test_application_lifecycle_and_scoped_history(repo):
         repo.save_app_file(app_id, "meta.yaml", "nope")
 
     app_log = gitops.log(repo.root, f"app:{app_id}")
-    assert [e["subject"].split(":")[0] for e in app_log] == [f"app"] * 2
+    assert [e["subject"].split(":")[0] for e in app_log] == ["app"] * 2
     db_log = gitops.log(repo.root, "db")
     assert all(e["subject"].startswith("db:") for e in db_log)
     assert len(db_log) == 1  # only the scaffold commit; app work is invisible to db scope

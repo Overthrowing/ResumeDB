@@ -1,5 +1,4 @@
-import json
-from .claude import run_oneshot
+from .agent import run_structured
 
 REVIEW_SCHEMA = {
     "type": "object",
@@ -68,8 +67,12 @@ async def run_review(r, app_id: str) -> dict:
         """
         
         try:
-            res_str = await run_oneshot(prompt, json_schema=REVIEW_SCHEMA)
-            llm_report = json.loads(res_str)
+            llm_report = await run_structured(
+                cwd=r.root,
+                prompt=prompt,
+                schema=REVIEW_SCHEMA,
+                task="audit",
+            )
             
             # Merge items
             llm_items = llm_report.get("items", [])

@@ -1,6 +1,7 @@
 from __future__ import annotations  # keep annotations lazy so the SDK stays optional
 
 import asyncio
+import copy
 from pathlib import Path
 from typing import AsyncIterator
 
@@ -33,6 +34,30 @@ def _require_codex() -> None:
             "The Codex provider needs the openai_codex SDK, which is not installed. "
             "Install it, or set agent_provider back to 'claude' in settings."
         ) from _CODEX_IMPORT_ERROR
+
+
+def _strict_json_schema(schema: dict) -> dict:
+    """Convert a JSON schema to the strict object form required by Codex."""
+    strict = copy.deepcopy(schema)
+
+    def visit(node):
+        if not isinstance(node, dict):
+            return
+        if node.get("type") == "object":
+            properties = node.setdefault("properties", {})
+            node["additionalProperties"] = False
+            node["required"] = list(properties)
+            for child in properties.values():
+                visit(child)
+        items = node.get("items")
+        if isinstance(items, dict):
+            visit(items)
+        for keyword in ("anyOf", "oneOf", "allOf"):
+            for child in node.get(keyword, []):
+                visit(child)
+
+    visit(strict)
+    return strict
 
 def _map_effort(effort: str | None) -> ReasoningEffort | None:
     if not effort:
@@ -116,7 +141,6 @@ class CodexProcess:
                             if self._cancelled:
                                 break
                             
-                            method = notification.method
                             payload = notification.payload
 
                             if isinstance(payload, AgentMessageDeltaNotification):
@@ -155,6 +179,7 @@ async def run_oneshot_codex(
     model: str | None = None,
     effort: str | None = None,
     json_schema: dict | None = None,
+    allow_web: bool = False,
 ) -> str:
     """One-shot call using Codex (no session persistence). Returns the result text."""
     _require_codex()
@@ -172,9 +197,9 @@ async def run_oneshot_codex(
                     prompt,
                     model=model,
                     effort=mapped_effort,
-                    output_schema=json_schema,
+                    output_schema=_strict_json_schema(json_schema) if json_schema else None,
                     approval_mode=ApprovalMode.deny_all,
-                    sandbox=Sandbox.full_access
+                    sandbox=Sandbox.read_only
                 )
                 
                 items = []

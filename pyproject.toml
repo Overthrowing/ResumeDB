@@ -1,25 +1,27 @@
 [project]
 name = "resumedb"
 version = "0.1.0"
-description = "Local resume tailoring app - Python backend"
+description = "Agent-native internship discovery, tailoring, and application management"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi",
-    "uvicorn",
-    "ruamel.yaml",
-    "pypdf",
-    "python-multipart",  # required by the /api/upload multipart form endpoints
+  "fastapi>=0.139.0",
+  "mcp>=1.28.1",
+  "openai-codex==0.1.0b2",
+  "pypdf>=6.7.0",
+  "python-multipart>=0.0.22",  # required by the /api/upload multipart endpoints
+  "ruamel-yaml>=0.19.0",
+  "uvicorn[standard]>=0.41.0",
 ]
 
-# Optional Codex provider. The openai_codex SDK is imported lazily (see codex.py),
-# so the default claude pipeline runs without it. Install separately to enable:
-#   uv pip install openai_codex
-
 [dependency-groups]
-dev = ["pytest", "httpx"]
+dev = [
+  "httpx2>=2.7.0",
+  "pytest>=9.0.0",
+  "ruff>=0.12.0",
+]
 
 [tool.uv]
-package = false  # resumedb is run via --app-dir / conftest path insertion, not installed
+package = false  # resumedb runs via --app-dir / conftest path insertion, not installed
 
 [tool.pytest.ini_options]
 testpaths = ["backend/tests"]

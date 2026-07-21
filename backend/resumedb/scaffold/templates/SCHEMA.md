@@ -21,7 +21,10 @@ notes: |
   Unlimited freeform prose the agent mines when tailoring.
 ```
 
-db/profile.yaml: `name, email, phone, location, links: [{label, url}]`.
+db/profile.yaml contains canonical user facts including contact information,
+college, major, degree, graduation year, work authorization, sponsorship,
+preferences, links, and an `application_answers` map. Agents may use every
+explicit value but never infer a missing factual field.
 
 ## Per-application resume.yaml (what templates consume)
 

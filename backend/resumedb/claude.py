@@ -173,6 +173,7 @@ async def run_oneshot(
     model: str | None = None,
     effort: str | None = None,
     json_schema: dict | None = None,
+    allow_web: bool = False,
 ) -> str:
     """One-shot call (no session persistence). Returns the result text."""
     argv = _base_argv(claude_bin, model, effort) + [
@@ -181,6 +182,9 @@ async def run_oneshot(
     ]
     if json_schema:
         argv += ["--json-schema", json.dumps(json_schema)]
+    # Structured tasks return data for ResumeDB to validate and persist. They
+    # never need mutation tools, even when external content contains prompts.
+    argv += ["--tools", "WebSearch,WebFetch,Read" if allow_web else ""]
     proc = await asyncio.create_subprocess_exec(
         *argv,
         cwd=cwd,

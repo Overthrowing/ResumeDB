@@ -1,20 +1,23 @@
 import { useCallback, useEffect, useState } from 'react'
-import { api, type Application, type AppStatus, type AuditResult, type HistoryEntry, type RenderResult } from './api'
+import { api, type Application, type AppStatus, type AuditResult, type AutofillPackage, type HistoryEntry, type ReadinessReport, type RenderResult, type TailoringReport } from './api'
 import ChatRail from './ChatRail'
 import MarkdownField from './MarkdownField'
 import { IconCheck, IconChevronLeft, IconDownload, IconRefresh, IconSparkle, IconWarn } from './icons'
+import { apiUrl } from './runtime'
+import { isDemoApplication } from './demoMode'
 
 const PIPELINE_STEPS: { status: AppStatus; label: string; color: string }[] = [
   { status: 'not_started', label: 'Not Started', color: 'var(--color-neutral-400)' },
   { status: 'in_progress', label: 'In Progress', color: '#42a5f5' },
-  { status: 'awaiting_review', label: 'Awaiting Review', color: '#ffa726' },
+  { status: 'draft', label: 'Draft', color: '#ffa726' },
   { status: 'ready', label: 'Ready', color: '#66bb6a' },
-  { status: 'applied', label: 'Applied', color: 'var(--color-accent)' },
+  { status: 'submitted', label: 'Submitted', color: 'var(--color-accent)' },
 ]
 
-type Tab = 'overview' | 'resume' | 'cover' | 'ats' | 'versions' | 'autofill'
+type Tab = 'overview' | 'comparison' | 'resume' | 'cover' | 'ats' | 'versions' | 'autofill'
 const TABS: { id: Tab; label: string }[] = [
   { id: 'overview', label: 'Overview' },
+  { id: 'comparison', label: 'Tailoring' },
   { id: 'resume', label: 'Resume' },
   { id: 'cover', label: 'Cover & Q&A' },
   { id: 'ats', label: 'ATS check' },
@@ -22,9 +25,17 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'autofill', label: 'Autofill' },
 ]
 
-export default function Workspace({ id, onClose }: { id: string; onClose: () => void }) {
+export default function Workspace({
+  id,
+  onClose,
+  focusTab,
+}: {
+  id: string
+  onClose: () => void
+  focusTab?: 'comparison' | 'autofill'
+}) {
   const [app, setApp] = useState<Application | null>(null)
-  const [tab, setTab] = useState<Tab>('resume')
+  const [tab, setTab] = useState<Tab>('overview')
   const [error, setError] = useState('')
   const [renderCount, setRenderCount] = useState(0)
   const [lastRender, setLastRender] = useState<RenderResult | null>(null)
@@ -33,6 +44,9 @@ export default function Workspace({ id, onClose }: { id: string; onClose: () => 
   useEffect(() => {
     reload()
   }, [reload])
+  useEffect(() => {
+    if (focusTab) setTab(focusTab)
+  }, [focusTab])
 
   const render = async () => {
     try {
@@ -49,16 +63,18 @@ export default function Workspace({ id, onClose }: { id: string; onClose: () => 
   if (!app) return <div style={{ padding: 'var(--space-6)' }} className="text-muted">{error || 'Loading…'}</div>
 
   const meta = app.meta
+  const demo = isDemoApplication(meta)
 
   return (
     <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: 'var(--space-3) var(--space-6)', borderBottom: '1px solid var(--color-divider)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+      <div className={demo ? 'workspace-demo-header' : undefined} style={{ padding: 'var(--space-3) var(--space-6)', borderBottom: '1px solid var(--color-divider)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
         <button className="btn btn-ghost" style={{ padding: '4px 6px' }} onClick={onClose}>
           <IconChevronLeft size={16} />
         </button>
         <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: 'var(--font-heading)', fontSize: 18 }}>
-            {meta.role} · {meta.company}
+          <div className="demo-record-title" style={{ fontFamily: 'var(--font-heading)', fontSize: 18 }}>
+            <span>{meta.role} · {meta.company}</span>
+            {demo && <span className="demo-badge">Synthetic demo</span>}
           </div>
           <div className="text-muted" style={{ fontSize: 12 }}>
             {meta.deadline ? `Deadline ${meta.deadline} · ` : ''}reads your Library + memory, writes this
@@ -87,6 +103,7 @@ export default function Workspace({ id, onClose }: { id: string; onClose: () => 
               </div>
             )}
             {tab === 'overview' && <Overview app={app} onError={setError} onSaved={reload} />}
+            {tab === 'comparison' && <TailoringTab appId={id} />}
             {tab === 'resume' && (
               <ResumeTab app={app} renderCount={renderCount} lastRender={lastRender} onRender={render} onError={setError} onSaved={reload} />
             )}
@@ -122,11 +139,13 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
     source: meta.source ?? '',
     deadline: meta.deadline ?? '',
     status: meta.status,
+    outcome: meta.outcome ?? '',
   })
   const [jd, setJd] = useState(app.files['jd.md'] ?? '')
   const [notes, setNotes] = useState(app.files['notes.md'] ?? '')
   const [decisions, setDecisions] = useState(app.files['decisions.md'] ?? '')
   const [dirty, setDirty] = useState(false)
+  const [actionBusy, setActionBusy] = useState(false)
 
   const save = async () => {
     try {
@@ -149,12 +168,31 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
   const currentIdx = PIPELINE_STEPS.findIndex((s) => s.status === fields.status)
 
   const transitionStatus = async (newStatus: AppStatus) => {
+    setActionBusy(true)
     try {
-      await api.saveAppMeta(meta.id, { status: newStatus })
+      if (newStatus === 'ready') await api.approve(meta.id)
+      else if (newStatus === 'submitted') await api.markSubmitted(meta.id)
+      else await api.saveAppMeta(meta.id, { status: newStatus })
       setFields({ ...fields, status: newStatus })
       onSaved()
     } catch (e) {
       onError((e as Error).message)
+    } finally {
+      setActionBusy(false)
+    }
+  }
+
+  const prepare = async () => {
+    setActionBusy(true)
+    try {
+      setFields({ ...fields, status: 'in_progress' })
+      await api.prepare(meta.id)
+      setFields({ ...fields, status: 'draft' })
+      onSaved()
+    } catch (e) {
+      onError((e as Error).message)
+    } finally {
+      setActionBusy(false)
     }
   }
 
@@ -192,14 +230,25 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
       </div>
 
       {/* Status action buttons */}
-      {fields.status === 'awaiting_review' && (
+      {(fields.status === 'not_started' || fields.status === 'in_progress') && (
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', padding: 'var(--space-3)', border: '1px solid #42a5f5', borderRadius: 'var(--radius-md)', background: '#e3f2fd55' }}>
+          <div style={{ flex: 1, fontSize: 13 }}>
+            <strong style={{ color: '#155a91' }}>Let the agent prepare the complete package.</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>It will tailor the resume, fill known answers, and flag facts only you can provide.</div>
+          </div>
+          <button className="btn" disabled={actionBusy} style={{ background: '#155a91', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={prepare}>
+            {actionBusy ? 'Preparing...' : 'Prepare draft'}
+          </button>
+        </div>
+      )}
+      {fields.status === 'draft' && (
         <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', padding: 'var(--space-3)', border: '1px solid #66bb6a', borderRadius: 'var(--radius-md)', background: '#e8f5e920' }}>
           <div style={{ flex: 1, fontSize: 13 }}>
-            <strong style={{ color: '#2e7d32' }}>Ready to lock in?</strong>
-            <div className="text-muted" style={{ fontSize: 12 }}>Review everything above, then finalize.</div>
+            <strong style={{ color: '#2e7d32' }}>Human review required.</strong>
+            <div className="text-muted" style={{ fontSize: 12 }}>Review the resume, answers, missing facts, and tailoring evidence before approval.</div>
           </div>
-          <button className="btn" style={{ background: '#2e7d32', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('ready')}>
-            Lock In
+          <button className="btn" disabled={actionBusy} style={{ background: '#2e7d32', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('ready')}>
+            Approve as ready
           </button>
         </div>
       )}
@@ -207,10 +256,10 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
         <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', padding: 'var(--space-3)', border: '1px solid var(--color-accent)', borderRadius: 'var(--radius-md)', background: 'var(--color-accent-100)' }}>
           <div style={{ flex: 1, fontSize: 13 }}>
             <strong style={{ color: 'var(--color-accent-800)' }}>Application is locked and ready.</strong>
-            <div className="text-muted" style={{ fontSize: 12 }}>Once you submit it, mark it as applied.</div>
+            <div className="text-muted" style={{ fontSize: 12 }}>Use the extension to autofill, then confirm after you click Submit.</div>
           </div>
-          <button className="btn" style={{ background: 'var(--color-accent)', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('applied')}>
-            Mark as Applied
+          <button className="btn" disabled={actionBusy} style={{ background: 'var(--color-accent)', color: '#fff', border: 'none', padding: '6px 16px', fontSize: 13 }} onClick={() => transitionStatus('submitted')}>
+            Mark submitted
           </button>
         </div>
       )}
@@ -234,12 +283,22 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
           <label>Deadline</label>
           <input className="input" value={fields.deadline} onChange={(e) => set({ deadline: e.target.value })} />
         </div>
-        <div className="field" style={{ width: 150 }}>
+        <div className="field" style={{ width: 135 }}>
           <label>Status</label>
-          <select className="input" value={fields.status} onChange={(e) => set({ status: e.target.value as AppStatus })}>
+          <select className="input" value={fields.status} disabled aria-label="Application status">
             {PIPELINE_STEPS.map((s) => (
               <option key={s.status} value={s.status}>{s.label}</option>
             ))}
+          </select>
+        </div>
+        <div className="field" style={{ width: 135 }}>
+          <label>Outcome</label>
+          <select className="input" value={fields.outcome} onChange={(e) => set({ outcome: e.target.value })}>
+            <option value="">No outcome</option>
+            <option value="interview">Interview</option>
+            <option value="rejected">Rejected</option>
+            <option value="offer">Offer</option>
+            <option value="withdrawn">Withdrawn</option>
           </select>
         </div>
       </div>
@@ -296,7 +355,7 @@ function Overview({ app, onError, onSaved }: { app: Application; onError: (e: st
         Save overview
       </button>
 
-      {(meta.status === 'not_started' || meta.status === 'in_progress' || meta.status === 'awaiting_review') && (
+      {(fields.status === 'not_started' || fields.status === 'in_progress' || fields.status === 'draft') && (
         <ReviewPanel appId={meta.id} />
       )}
     </div>
@@ -368,7 +427,7 @@ function ResumeTab({
               Render
             </button>
           )}
-          <a className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: 13 }} href={`/api/applications/${app.meta.id}/resume.pdf`} download={`resume-${app.meta.company.toLowerCase()}.pdf`}>
+          <a className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: 13 }} href={apiUrl(`/api/applications/${app.meta.id}/resume.pdf`)} download={`resume-${app.meta.company.toLowerCase()}.pdf`}>
             <IconDownload size={14} />
             Export
           </a>
@@ -380,7 +439,7 @@ function ResumeTab({
           <iframe
             key={renderCount}
             title="resume preview"
-            src={`/api/applications/${app.meta.id}/resume.pdf#toolbar=0&t=${renderCount}`}
+            src={`${apiUrl(`/api/applications/${app.meta.id}/resume.pdf`)}#toolbar=0&t=${renderCount}`}
             style={{ flex: 1, minHeight: 0, width: '100%', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', background: '#fff' }}
           />
         ) : (
@@ -407,6 +466,10 @@ function ResumeTab({
 function CoverTab({ app, onError, onSaved }: { app: Application; onError: (e: string) => void; onSaved: () => void }) {
   const [text, setText] = useState(app.files['cover-letter.md'] ?? '')
   const [dirty, setDirty] = useState(false)
+  const [packageData, setPackageData] = useState<AutofillPackage | null>(null)
+  useEffect(() => {
+    api.autofillPackage(app.meta.id).then(setPackageData).catch(() => {})
+  }, [app.meta.id])
   const save = async () => {
     try {
       await api.saveAppFile(app.meta.id, 'cover-letter.md', text)
@@ -417,7 +480,32 @@ function CoverTab({ app, onError, onSaved }: { app: Application; onError: (e: st
     }
   }
   return (
-    <div style={{ maxWidth: 620, display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+    <div style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+      <div>
+        <h4 style={{ margin: '0 0 4px' }}>Application answers</h4>
+        <p className="text-muted" style={{ fontSize: 12 }}>Every answer includes its profile provenance. Missing facts stay blank.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          {packageData?.answers.map((answer) => (
+            <div key={`${answer.key}-${answer.question}`} className="dashboard-row" style={{ alignItems: 'flex-start' }}>
+              <div style={{ fontSize: 13 }}>
+                <strong>{answer.question}</strong>
+                <div className="text-muted" style={{ fontSize: 10 }}>Source: {answer.source}</div>
+              </div>
+              <span style={{ fontSize: 13, maxWidth: '45%', textAlign: 'right' }}>{String(answer.value)}</span>
+            </div>
+          ))}
+          {packageData?.missing.map((item) => (
+            <div key={item.key} className="dashboard-row" style={{ alignItems: 'flex-start' }}>
+              <div style={{ fontSize: 13 }}><strong>{item.label}</strong><div className="text-muted" style={{ fontSize: 10 }}>{item.message}</div></div>
+              <span className="tag tag-outline">Missing{item.required ? ' · required' : ''}</span>
+            </div>
+          ))}
+          {packageData && packageData.answers.length === 0 && packageData.missing.length === 0 && (
+            <div className="empty-state">No application questions were included in this draft.</div>
+          )}
+        </div>
+      </div>
+      <hr className="hr" />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <h4 style={{ margin: 0 }}>Cover letter</h4>
         <button className="btn btn-secondary" style={{ fontSize: 13 }} disabled={!dirty} onClick={save}>
@@ -437,6 +525,79 @@ function CoverTab({ app, onError, onSaved }: { app: Application; onError: (e: st
         Short answers live here too - ask the assistant to append Q&A blocks.
       </p>
     </div>
+  )
+}
+
+function TailoringTab({ appId }: { appId: string }) {
+  const [report, setReport] = useState<TailoringReport | null>(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    setReport(null)
+    setError('')
+    api.tailoring(appId).then(setReport).catch((e) => setError(e.message))
+  }, [appId])
+
+  return (
+    <section className="tailoring-comparison">
+      <div className="tailoring-head" data-tour="tailoring-comparison">
+        <div>
+          <div className="card-kicker">Evidence-backed tailoring</div>
+          <h3>What changed, and why</h3>
+          <p className="text-muted">
+            Every stronger phrase must trace back to a fact in the student&apos;s knowledge base.
+          </p>
+        </div>
+        {report && (
+          <div className="tailoring-count">
+            <strong>{report.comparisons.length}</strong>
+            <span>{report.generated ? 'agent rewrites' : 'verified changes'}</span>
+          </div>
+        )}
+      </div>
+
+      {error && <div className="error-banner">Could not load tailoring evidence: {error}</div>}
+      {!report && !error && <div className="empty-state">Loading tailoring evidence...</div>}
+      {report && report.comparisons.length === 0 && (
+        <div className="empty-state">
+          Prepare this application to generate a before-and-after explanation for each material rewrite.
+        </div>
+      )}
+
+      <div className="tailoring-list">
+        {report?.comparisons.map((comparison, index) => (
+          <article className="tailoring-card" key={`${comparison.source}-${index}`}>
+            <div className="tailoring-requirement">
+              <span>Job requirement</span>
+              <strong>{comparison.requirement}</strong>
+              {!!comparison.keywords?.length && (
+                <div className="tailoring-keywords">
+                  {comparison.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}
+                </div>
+              )}
+            </div>
+            <div className="tailoring-split">
+              <div className="tailoring-version tailoring-before">
+                <span className="tailoring-label"><b>-</b> Before</span>
+                <p>{comparison.before}</p>
+              </div>
+              <div className="tailoring-arrow" aria-hidden="true">→</div>
+              <div className="tailoring-version tailoring-after">
+                <span className="tailoring-label"><b>+</b> Tailored</span>
+                <p>{comparison.after}</p>
+              </div>
+            </div>
+            <div className="tailoring-evidence">
+              <IconCheck size={14} />
+              <div>
+                <strong>Supported by {comparison.source}</strong>
+                <span>{comparison.evidence}</span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -658,12 +819,12 @@ function VersionsTab({ appId, onReverted, onError }: { appId: string; onReverted
 }
 
 function AutofillTab({ app }: { app: Application }) {
-  const [profile, setProfile] = useState<any>(null)
+  const [data, setData] = useState<AutofillPackage | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
 
   useEffect(() => {
-    api.profile().then(setProfile).catch(() => {})
-  }, [])
+    api.autofillPackage(app.meta.id).then(setData).catch(() => {})
+  }, [app.meta.id])
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
@@ -672,10 +833,12 @@ function AutofillTab({ app }: { app: Application }) {
   }
 
   const handleDownload = () => {
-    window.open(`/api/applications/${app.meta.id}/resume.pdf`, '_blank')
+    window.open(apiUrl(`/api/applications/${app.meta.id}/resume.pdf`), '_blank')
   }
 
-  if (!profile) return <div className="text-muted">Loading profile...</div>
+  if (!data) return <div className="text-muted">Loading application package...</div>
+
+  const profile = data.profile
 
   const fields = [
     { label: 'Full Name', value: profile.name || '' },
@@ -689,15 +852,47 @@ function AutofillTab({ app }: { app: Application }) {
       fields.push({ label: l.label, value: l.url })
     })
   }
+  data.answers.forEach((answer) => {
+    fields.push({ label: answer.question, value: answer.value == null ? '' : String(answer.value) })
+  })
 
   return (
     <div style={{ maxWidth: 720 }}>
       <div style={{ marginBottom: 'var(--space-4)' }}>
         <h3 style={{ margin: '0 0 4px', fontSize: 20 }}>Auto-fill Application Form</h3>
         <p className="text-muted" style={{ fontSize: 13, margin: 0 }}>
-          Use the ResumeDB Chrome Extension to automatically fill this application's forms and upload the tailored resume PDF in one click.
+          The extension receives this complete approved package, fills unfamiliar forms, uploads the tailored resume, and stops before final submission.
         </p>
       </div>
+
+      {data.missing.length > 0 && (
+        <div className="error-banner">
+          <strong>{data.missing.length} answers still need you.</strong>
+          <div style={{ marginTop: 4 }}>{data.missing.map((item) => item.label).join(', ')}</div>
+        </div>
+      )}
+
+      <section className="extension-preflight" data-tour="extension-preflight">
+        <div className="extension-preflight-head">
+          <div>
+            <div className="card-kicker">Extension preflight</div>
+            <h3>Approved package is ready to map</h3>
+            <p className="text-muted">The extension scans the active page and previews its exact field matches before writing anything.</p>
+          </div>
+          <span className={`extension-ready-badge ${app.meta.status === 'ready' ? 'is-ready' : ''}`}>
+            {app.meta.status === 'ready' ? 'Ready to autofill' : 'Review required'}
+          </span>
+        </div>
+        <div className="extension-preflight-grid">
+          <div><strong>{fields.filter((field) => field.value).length}</strong><span>known answers</span></div>
+          <div><strong>{data.missing.length}</strong><span>need review</span></div>
+          <div><strong>{app.has_pdf ? 'Yes' : 'No'}</strong><span>tailored PDF</span></div>
+          <div><strong>Never</strong><span>auto-submits</span></div>
+        </div>
+        <div className="extension-preflight-flow">
+          <span>1. Scan page</span><i>→</i><span>2. Review mappings</span><i>→</i><span>3. Fill fields</span><i>→</i><span>4. You submit</span>
+        </div>
+      </section>
 
       <div className="card" style={{ padding: 'var(--space-4)', marginBottom: 'var(--space-6)', borderLeft: '3px solid var(--color-accent)' }}>
         <h4 style={{ margin: '0 0 var(--space-2)', fontSize: 15 }}>How to use the Chrome Extension:</h4>
@@ -709,13 +904,10 @@ function AutofillTab({ app }: { app: Application }) {
             Enable <strong>Developer mode</strong> (toggle switch in the top-right corner).
           </li>
           <li>
-            Click <strong>Load unpacked</strong> (top-left button) and select the extension folder:
-            <code style={{ display: 'block', background: 'var(--color-neutral-100)', padding: '4px 8px', borderRadius: 'var(--radius-sm)', marginTop: 4, fontFamily: 'monospace', fontSize: 12 }}>
-              /Users/nathanye/Dev/Hackathons/ResumeDB/extension
-            </code>
+            Click <strong>Load unpacked</strong> and select this repository&apos;s <code>extension</code> folder.
           </li>
           <li>
-            Open the job application page (Lever, Greenhouse, etc.), open the extension from your browser toolbar, select <strong>{app.meta.company} - {app.meta.role}</strong>, and click <strong>Auto-fill current form</strong>.
+            Open the job application page (Lever, Greenhouse, etc.), open the extension from your browser toolbar, select <strong>{app.meta.company} - {app.meta.role}</strong>, then choose <strong>Scan page before filling</strong> and <strong>Fill mapped fields</strong>.
           </li>
         </ol>
       </div>
@@ -762,50 +954,22 @@ function AutofillTab({ app }: { app: Application }) {
   )
 }
 
-interface ReviewItem {
-  severity: 'critical' | 'medium' | 'low'
-  category: 'missing_field' | 'weak_content' | 'keyword_gap' | 'suggestion'
-  title: string
-  description: string
-  action: string
-}
-
-interface ReviewReport {
-  readiness_score: number
-  summary: string
-  items: ReviewItem[]
-}
-
 function ReviewPanel({ appId }: { appId: string }) {
-  const [report, setReport] = useState<ReviewReport | null>(null)
-  const [busy, setBusy] = useState(false)
+  const [report, setReport] = useState<ReadinessReport | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [dismissed, setDismissed] = useState<Record<number, boolean>>({})
 
-  const runReview = async () => {
-    setBusy(true)
+  const runReview = useCallback(async () => {
     setError(null)
     try {
-      const res = await api.review(appId)
-      setReport(res)
+      setReport(await api.readiness(appId))
     } catch (e) {
       setError((e as Error).message)
-    } finally {
-      setBusy(false)
     }
-  }
+  }, [appId])
 
   useEffect(() => {
     runReview()
-  }, [appId])
-
-  if (busy) {
-    return (
-      <div style={{ padding: 'var(--space-4) 0', color: 'var(--color-neutral-600)', fontSize: 13 }}>
-        ⏳ Running application audit & readiness review...
-      </div>
-    )
-  }
+  }, [runReview])
 
   if (error) {
     return (
@@ -818,68 +982,49 @@ function ReviewPanel({ appId }: { appId: string }) {
 
   if (!report) return null
 
-  const severityColors = {
-    critical: '#f44336',
-    medium: '#ff9800',
-    low: '#9e9e9e'
-  }
-
-  const visibleItems = report.items.filter((_, idx) => !dismissed[idx])
+  const issues = [
+    ...report.blockers.map((item) => ({ ...item, kind: 'blocker' as const })),
+    ...report.warnings.map((item) => ({ ...item, kind: 'warning' as const })),
+  ]
 
   return (
     <div style={{ marginTop: 'var(--space-6)', borderTop: '1px solid var(--color-divider)', paddingTop: 'var(--space-4)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
         <div>
-          <h3 style={{ margin: 0, fontSize: 18 }}>AI Readiness Audit</h3>
-          <p className="text-muted" style={{ fontSize: 12, margin: '2px 0 0' }}>Review critical priorities and suggestions before finalizing.</p>
+          <h3 style={{ margin: 0, fontSize: 18 }}>Application readiness</h3>
+          <p className="text-muted" style={{ fontSize: 12, margin: '2px 0 0' }}>Required facts block approval. Optional profile gaps remain visible but never get inferred.</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ textAlign: 'right' }}>
-            <span style={{ fontSize: 11, color: 'var(--color-neutral-600)' }}>Readiness Score</span>
-            <div style={{ fontSize: 22, fontWeight: 700, color: report.readiness_score >= 80 ? '#2e7d32' : report.readiness_score >= 50 ? '#e65100' : '#c62828' }}>
-              {report.readiness_score}%
+            <span style={{ fontSize: 11, color: 'var(--color-neutral-600)' }}>Readiness score</span>
+            <div style={{ fontSize: 22, fontWeight: 700, color: report.ready ? '#2e7d32' : '#c62828' }}>
+              {report.score}%
             </div>
           </div>
-          <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: 12 }} onClick={runReview}>Re-run Audit</button>
+          <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: 12 }} onClick={runReview}>Refresh</button>
         </div>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-        {visibleItems.map((item) => {
-          const actualIdx = report.items.indexOf(item)
-          return (
-            <div key={actualIdx} style={{ display: 'flex', gap: 12, padding: 'var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', background: 'var(--color-neutral-100)' }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: severityColors[item.severity], marginTop: 6, flex: 'none' }} />
+        {issues.map((item) => (
+            <div key={`${item.kind}-${item.key}`} style={{ display: 'flex', gap: 12, padding: 'var(--space-3)', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', background: 'var(--color-neutral-100)' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: item.kind === 'blocker' ? '#f44336' : '#ff9800', marginTop: 6, flex: 'none' }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                  <strong style={{ fontSize: 14 }}>{item.title}</strong>
-                  <span className="tag tag-neutral" style={{ fontSize: 9, padding: '1px 6px', textTransform: 'uppercase' }}>{item.category.replace('_', ' ')}</span>
+                  <strong style={{ fontSize: 14 }}>{item.label}</strong>
+                  <span className="tag tag-neutral" style={{ fontSize: 9, padding: '1px 6px', textTransform: 'uppercase' }}>{item.kind}</span>
                 </div>
-                <div style={{ fontSize: 13, marginTop: 4, color: 'var(--color-neutral-800)' }}>{item.description}</div>
-                {item.action && (
-                  <div style={{ fontSize: 12, marginTop: 6, color: 'var(--color-accent-800)', fontStyle: 'italic' }}>
-                    💡 Suggested: {item.action}
-                  </div>
-                )}
+                <div style={{ fontSize: 13, marginTop: 4, color: 'var(--color-neutral-800)' }}>{item.message}</div>
               </div>
-              <button
-                className="btn-ghost"
-                style={{ alignSelf: 'flex-start', padding: '2px 6px', fontSize: 11, border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--color-neutral-500)' }}
-                onClick={() => setDismissed({ ...dismissed, [actualIdx]: true })}
-              >
-                Dismiss
-              </button>
             </div>
-          )
-        })}
+        ))}
 
-        {visibleItems.length === 0 && (
+        {issues.length === 0 && (
           <div className="text-muted" style={{ padding: 'var(--space-3)', textAlign: 'center', fontSize: 13, border: '1px dashed var(--color-divider)', borderRadius: 'var(--radius-md)' }}>
-            🎉 No checklist priorities found. Your application looks strong and ready to go!
+            No blockers or warnings. This application is ready for human approval.
           </div>
         )}
       </div>
     </div>
   )
 }
-

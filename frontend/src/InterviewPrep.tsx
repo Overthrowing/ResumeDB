@@ -14,9 +14,9 @@ export default function InterviewPrep() {
   useEffect(() => {
     api.applications()
       .then((data) => {
-        // Show applied and ready roles first
+        // Show submitted and ready roles first
         const sorted = [...data].sort((a, b) => {
-          const rank: Record<string, number> = { applied: 1, ready: 2, awaiting_review: 3, in_progress: 4, not_started: 5 }
+          const rank: Record<string, number> = { submitted: 1, ready: 2, draft: 3, in_progress: 4, not_started: 5 }
           return (rank[a.status] || 99) - (rank[b.status] || 99)
         })
         setApps(sorted)
@@ -91,7 +91,7 @@ export default function InterviewPrep() {
                   </strong>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11 }}>
                     <span className="text-muted">{app.company}</span>
-                    <span style={{ fontSize: 10, textTransform: 'capitalize', fontWeight: 600, color: app.status === 'applied' || app.status === 'ready' ? 'var(--color-accent)' : 'var(--color-neutral-600)' }}>
+                    <span style={{ fontSize: 10, textTransform: 'capitalize', fontWeight: 600, color: app.status === 'submitted' || app.status === 'ready' ? 'var(--color-accent)' : 'var(--color-neutral-600)' }}>
                       {app.status.replace('_', ' ')}
                     </span>
                   </div>

@@ -1,3 +1,5 @@
+import { apiUrl } from './runtime'
+
 export interface Entry {
   id: string
   type: 'experience' | 'project' | 'skill' | 'course' | 'education' | 'achievement' | 'extra'
@@ -14,10 +16,20 @@ export interface Entry {
 }
 
 export interface Profile {
+  demo_mode?: boolean
   name?: string
   email?: string
   phone?: string
   location?: string
+  college?: string
+  major?: string
+  degree?: string
+  graduation_year?: string
+  work_authorization?: string
+  requires_sponsorship?: string
+  preferred_roles?: string[]
+  preferred_locations?: string[]
+  application_answers?: Record<string, string | boolean | number | null>
   links?: { label: string; url: string }[]
 }
 
@@ -25,7 +37,7 @@ export interface Memory {
   content: string
 }
 
-export type AppStatus = 'not_started' | 'in_progress' | 'awaiting_review' | 'ready' | 'applied'
+export type AppStatus = 'not_started' | 'in_progress' | 'draft' | 'ready' | 'submitted'
 
 export interface AppMeta {
   id: string
@@ -37,6 +49,10 @@ export interface AppMeta {
   deadline?: string
   source?: string
   session_id?: string | null
+  submitted_at?: string | null
+  fit_score?: number | null
+  fit_summary?: string | null
+  outcome?: string | null
 }
 
 export interface Application {
@@ -58,6 +74,7 @@ export interface ModelConfig {
 
 export interface Config {
   data_repo: string
+  agent_provider: 'claude' | 'codex'
   claude_bin: string | null
   models: ModelConfig
 }
@@ -71,6 +88,22 @@ export interface Health {
   typst: string | null
   data_repo: string
   data_repo_ok: boolean
+}
+
+export interface McpConnectionTool {
+  name: string
+  description: string
+}
+
+export interface McpConnection {
+  enabled: boolean
+  created_at: string | null
+  token_hint: string | null
+  mcp_url: string
+  tools: McpConnectionTool[]
+  token?: string
+  codex_command?: string
+  revoked?: boolean
 }
 
 export interface HistoryEntry {
@@ -110,6 +143,7 @@ export interface AuditResult {
 }
 
 export interface JobLead {
+  id?: string
   company: string
   role: string
   location?: string
@@ -127,16 +161,92 @@ export interface JobLead {
   notes?: string
   application_url?: string
   source_url?: string
+  canonical_url?: string
+  fit_score?: number
+  fit_level?: 'high' | 'medium' | 'low'
+  fit_summary?: string
+  evidence?: string[]
+  missing_facts?: string[]
+  hard_conflicts?: string[]
+  status?: 'inbox' | 'preparing' | 'tracked' | 'dismissed'
+  application_id?: string
+  preparation_error?: string
+}
+
+export interface SearchSubscription {
+  id: string
+  query: string
+  enabled: boolean
+  created_at: string
+  last_run_at?: string | null
+  last_attempt_at?: string | null
+  last_error?: string | null
+}
+
+export interface ReadinessIssue {
+  key: string
+  label: string
+  message: string
+}
+
+export interface ReadinessReport {
+  ready: boolean
+  score: number
+  blockers: ReadinessIssue[]
+  warnings: ReadinessIssue[]
+  status: AppStatus
+}
+
+export interface ApplicationAnswer {
+  key: string
+  question: string
+  value: string | boolean | number | null
+  required: boolean
+  source: string
+}
+
+export interface AutofillPackage {
+  profile: Profile
+  answers: ApplicationAnswer[]
+  missing: Array<{ key: string; label: string; required: boolean; message: string }>
+  application: Application
+  readiness: ReadinessReport
+}
+
+export interface TailoringComparison {
+  before: string
+  after: string
+  requirement: string
+  evidence: string
+  source: string
+  keywords?: string[]
+}
+
+export interface TailoringReport {
+  comparisons: TailoringComparison[]
+  generated: boolean
+}
+
+export interface AgentRunEvent {
+  id: string
+  label: string
+  detail: string
+  status: 'pending' | 'active' | 'completed' | 'failed'
+  created_at: string
+  updated_at: string
 }
 
 export interface ResearchRun {
   id: string
-  kind: 'search' | 'ingest'
+  kind: 'search' | 'ingest' | 'command'
   query: string
-  status: 'pending' | 'completed' | 'failed'
+  status: 'pending' | 'running' | 'completed' | 'failed'
   summary: string
   created_at: string
+  updated_at?: string
+  completed_at?: string
   error?: string | null
+  events?: AgentRunEvent[]
   result?: {
     summary?: string
     job?: JobLead
@@ -145,7 +255,7 @@ export interface ResearchRun {
 }
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
+  const res = await fetch(apiUrl(url), init)
   if (!res.ok) {
     let detail = res.statusText
     try {
@@ -168,6 +278,9 @@ export const api = {
   health: () => req<Health>('/api/health'),
   config: () => req<Config>('/api/config'),
   saveConfig: (cfg: Partial<Config>) => req<Config>('/api/config', json('PUT', cfg)),
+  mcpConnection: () => req<McpConnection>('/api/agent-connections/mcp'),
+  rotateMcpConnection: () => req<McpConnection>('/api/agent-connections/mcp/rotate', { method: 'POST' }),
+  revokeMcpConnection: () => req<McpConnection>('/api/agent-connections/mcp', { method: 'DELETE' }),
   initDatarepo: (path?: string) => req<{ ok: boolean }>('/api/datarepo/init', json('POST', { path })),
   pickFolder: () => req<{ path: string | null }>('/api/pick-folder', { method: 'POST' }),
 
@@ -201,12 +314,18 @@ export const api = {
     req<{ ok: boolean }>(`/api/applications/${id}/meta`, json('PUT', updates)),
   render: (id: string) => req<RenderResult>(`/api/applications/${id}/render`, { method: 'POST' }),
   audit: (id: string) => req<AuditResult>(`/api/applications/${id}/audit`, { method: 'POST' }),
+  readiness: (id: string) => req<ReadinessReport>(`/api/applications/${id}/readiness`),
+  prepare: (id: string) => req<{ application: Application; readiness: ReadinessReport; render: RenderResult }>(`/api/applications/${id}/prepare`, { method: 'POST' }),
+  approve: (id: string) => req<ReadinessReport>(`/api/applications/${id}/approve`, { method: 'POST' }),
+  markSubmitted: (id: string) => req<{ ok: boolean; application: Application }>(`/api/applications/${id}/submitted`, { method: 'POST' }),
+  autofillPackage: (id: string) => req<AutofillPackage>(`/api/applications/${id}/autofill-package`),
+  tailoring: (id: string) => req<TailoringReport>(`/api/applications/${id}/tailoring`),
 
   templates: () => req<string[]>('/api/templates'),
 
   history: (scope: string) => req<HistoryEntry[]>(`/api/history?scope=${encodeURIComponent(scope)}`),
   historyDiff: async (sha: string) => {
-    const res = await fetch(`/api/history/${sha}/diff`)
+    const res = await fetch(apiUrl(`/api/history/${sha}/diff`))
     if (!res.ok) throw new Error(res.statusText)
     return res.text()
   },
@@ -214,6 +333,20 @@ export const api = {
 
   agentIngest: (body: { input: string }) => req<{ run_id: string; summary: string; job: JobLead }>('/api/agent/ingest', json('POST', body)),
   agentSearch: (body: { query: string }) => req<{ run_id: string; summary: string; jobs: JobLead[] }>('/api/agent/search', json('POST', body)),
+  agentCommand: (command: string, autoPrepare = true) =>
+    req<{ intent: 'add_job' | 'discover'; summary: string; search_goal?: string | null; jobs: JobLead[] }>(
+      '/api/agent/command',
+      json('POST', { command, auto_prepare: autoPrepare }),
+    ),
+  startAgentCommand: (command: string, autoPrepare = true) =>
+    req<ResearchRun>('/api/agent/command/start', json('POST', { command, auto_prepare: autoPrepare })),
+  jobLeads: (status?: string) => req<JobLead[]>(`/api/agent/jobs${status ? `?status=${encodeURIComponent(status)}` : ''}`),
+  trackLead: (id: string) => req<{ ok: boolean; application_id: string }>(`/api/agent/jobs/${id}/track`, { method: 'POST' }),
+  prepareLead: (id: string) => req<{ ok: boolean; application_id: string }>(`/api/agent/jobs/${id}/prepare`, { method: 'POST' }),
+  dismissLead: (id: string) => req<JobLead>(`/api/agent/jobs/${id}/dismiss`, { method: 'POST' }),
+  subscriptions: () => req<SearchSubscription[]>('/api/agent/subscriptions'),
+  saveSubscription: (query: string) => req<SearchSubscription>('/api/agent/subscriptions', json('POST', { query, enabled: true })),
+  runSubscription: (id: string) => req<{ summary: string; jobs: JobLead[] }>(`/api/agent/subscriptions/${id}/run`, { method: 'POST' }),
   runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
   run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
   review: (id: string) => req<ReviewReport>(`/api/applications/${id}/review`, { method: 'POST' }),
@@ -256,4 +389,3 @@ export interface ParsedResume {
   profile: Profile
   entries: Entry[]
 }
-

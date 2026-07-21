@@ -1,7 +1,7 @@
 import io
-import json
+import re
 from pypdf import PdfReader
-from .claude import run_oneshot
+from .agent import run_structured
 
 IMPORT_SCHEMA = {
     "type": "object",
@@ -13,6 +13,10 @@ IMPORT_SCHEMA = {
                 "email": {"type": "string"},
                 "phone": {"type": "string"},
                 "location": {"type": "string"},
+                "college": {"type": "string"},
+                "major": {"type": "string"},
+                "degree": {"type": "string"},
+                "graduation_year": {"type": ["string", "null"]},
                 "links": {
                     "type": "array",
                     "items": {
@@ -49,7 +53,7 @@ IMPORT_SCHEMA = {
     "required": ["profile", "entries"]
 }
 
-async def parse_resume_pdf(pdf_bytes: bytes) -> dict:
+async def parse_resume_pdf(pdf_bytes: bytes, r) -> dict:
     try:
         pdf_file = io.BytesIO(pdf_bytes)
         reader = PdfReader(pdf_file)
@@ -76,8 +80,12 @@ async def parse_resume_pdf(pdf_bytes: bytes) -> dict:
     Format the response EXACTLY to the requested JSON schema.
     """
 
-    res_str = await run_oneshot(prompt, json_schema=IMPORT_SCHEMA)
-    return json.loads(res_str)
+    return await run_structured(
+        cwd=r.root,
+        prompt=prompt,
+        schema=IMPORT_SCHEMA,
+        task="chat",
+    )
 
 def apply_import(r, parsed: dict) -> None:
     # Save profile
@@ -85,7 +93,7 @@ def apply_import(r, parsed: dict) -> None:
     
     # Save entries
     for entry in parsed.get("entries", []):
-        entry_id = entry.get("id")
+        entry_id = re.sub(r"[^a-z0-9]+", "-", str(entry.get("id") or entry.get("title") or "entry").lower()).strip("-")
         entry_data = {
             "type": entry.get("type"),
             "title": entry.get("title"),

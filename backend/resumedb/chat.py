@@ -131,6 +131,16 @@ def _check_conv(conv: str) -> str:
     return conv
 
 
+def _http_base(ws: WebSocket) -> str:
+    forwarded = ws.headers.get("x-forwarded-proto", "").split(",", 1)[0].strip()
+    scheme = forwarded or ws.url.scheme
+    if scheme in {"wss", "https"}:
+        scheme = "https"
+    else:
+        scheme = "http"
+    return f"{scheme}://{ws.headers.get('host', 'localhost:8000')}"
+
+
 @router.get("/api/chat/{scope}/conversations")
 def list_conversations(scope: str):
     repo = _repo()
@@ -180,6 +190,9 @@ def delete_conversation(scope: str, conv: str):
 
 @router.websocket("/api/chat")
 async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
+    if not config.origin_is_allowed(ws.headers.get("origin")):
+        await ws.close(code=1008, reason="origin not allowed")
+        return
     await ws.accept()
     cfg = config.load()
     repo = DataRepo(Path(cfg["data_repo"]))
@@ -224,7 +237,7 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
                 if scope.startswith("app:"):
                     intro = APP_INTRO.format(app_id=scope[4:])
                 elif scope == "apps":
-                    intro = APPS_INTRO.format(base=f"http://{ws.headers.get('host', 'localhost:8000')}")
+                    intro = APPS_INTRO.format(base=_http_base(ws))
                 else:
                     intro = DB_INTRO
                 prompt = intro + text

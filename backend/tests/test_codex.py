@@ -4,7 +4,7 @@ pytest.importorskip("openai_codex")  # optional provider - skip when SDK absent
 
 from unittest.mock import AsyncMock, MagicMock, patch
 from pathlib import Path
-from resumedb.codex import _map_effort, CodexProcess, run_oneshot_codex
+from resumedb.codex import _map_effort, _strict_json_schema, CodexProcess
 from openai_codex.generated.v2_all import (
     ReasoningEffort,
     AgentMessageDeltaNotification,
@@ -26,6 +26,31 @@ def test_map_effort():
     assert _map_effort("max") == ReasoningEffort.xhigh
     assert _map_effort(None) is None
     assert _map_effort("invalid") is None
+
+
+def test_strict_json_schema_closes_and_requires_nested_objects():
+    schema = {
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"},
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {"label": {"type": "string"}},
+                },
+            },
+        },
+    }
+
+    strict = _strict_json_schema(schema)
+
+    assert strict["additionalProperties"] is False
+    assert strict["required"] == ["name", "items"]
+    nested = strict["properties"]["items"]["items"]
+    assert nested["additionalProperties"] is False
+    assert nested["required"] == ["label"]
+    assert "additionalProperties" not in schema
 
 @pytest.mark.anyio
 async def test_codex_process_events():

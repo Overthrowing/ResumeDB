@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+.playwright-cli/
+output/
 
 # OS
 .DS_Store

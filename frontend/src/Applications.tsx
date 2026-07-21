@@ -3,26 +3,33 @@ import { api, type AppMeta, type AppStatus } from './api'
 import ChatRail from './ChatRail'
 import Workspace from './Workspace'
 import { IconPlus } from './icons'
+import { isDemoApplication } from './demoMode'
 
 const STATUS_STYLE: Record<AppStatus, { bg: string; color: string; border: string }> = {
   not_started: { bg: 'var(--color-neutral-200)', color: 'var(--color-neutral-800)', border: 'var(--color-neutral-400)' },
   in_progress: { bg: '#e3f2fd', color: '#1565c0', border: '#42a5f5' },
-  awaiting_review: { bg: '#fff3e0', color: '#e65100', border: '#ffa726' },
+  draft: { bg: '#fff3e0', color: '#e65100', border: '#ffa726' },
   ready: { bg: '#e8f5e9', color: '#2e7d32', border: '#66bb6a' },
-  applied: { bg: 'var(--color-accent-100)', color: 'var(--color-accent-800)', border: 'var(--color-accent)' },
+  submitted: { bg: 'var(--color-accent-100)', color: 'var(--color-accent-800)', border: 'var(--color-accent)' },
 }
 
 const STATUS_LABELS: Record<AppStatus, string> = {
   not_started: 'Not Started',
   in_progress: 'In Progress',
-  awaiting_review: 'Awaiting Review',
+  draft: 'Draft',
   ready: 'Ready',
-  applied: 'Applied',
+  submitted: 'Submitted',
 }
 
-const ALL_STATUSES: AppStatus[] = ['not_started', 'in_progress', 'awaiting_review', 'ready', 'applied']
+const ALL_STATUSES: AppStatus[] = ['not_started', 'in_progress', 'draft', 'ready', 'submitted']
 
-export default function Applications({ onCountChange }: { onCountChange: (n: number) => void }) {
+export default function Applications({
+  onCountChange,
+  tourView,
+}: {
+  onCountChange: (n: number) => void
+  tourView?: 'comparison' | 'autofill'
+}) {
   const [apps, setApps] = useState<AppMeta[]>([])
   const [openId, setOpenId] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
@@ -44,7 +51,15 @@ export default function Applications({ onCountChange }: { onCountChange: (n: num
     reload()
   }, [reload])
 
-  if (openId) return <Workspace id={openId} onClose={() => (setOpenId(null), reload())} />
+  useEffect(() => {
+    if (!tourView || openId || apps.length === 0) return
+    const preferred = apps.find((app) => app.status === 'ready')
+      ?? apps.find((app) => app.status === 'draft')
+      ?? apps[0]
+    setOpenId(preferred.id)
+  }, [apps, openId, tourView])
+
+  if (openId) return <Workspace id={openId} focusTab={tourView} onClose={() => (setOpenId(null), reload())} />
 
   const filtered = filter === 'all' ? apps : apps.filter((a) => a.status === filter)
 
@@ -63,10 +78,15 @@ export default function Applications({ onCountChange }: { onCountChange: (n: num
             Each is a workbench: one job, tailored from your Library.
           </p>
         </div>
-        <button className="btn btn-primary" onClick={() => setCreating(true)}>
-          <IconPlus size={15} />
-          New application
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-secondary" disabled={!statusCounts.ready} onClick={() => setFilter('ready')}>
+            Ready queue ({statusCounts.ready || 0})
+          </button>
+          <button className="btn btn-primary" onClick={() => setCreating(true)}>
+            <IconPlus size={15} />
+            New application
+          </button>
+        </div>
       </div>
 
       {/* Status filter bar */}
@@ -123,12 +143,18 @@ export default function Applications({ onCountChange }: { onCountChange: (n: num
         <tbody>
           {filtered.map((a) => {
             const style = STATUS_STYLE[a.status] || STATUS_STYLE.not_started
+            const demo = isDemoApplication(a)
             return (
-              <tr key={a.id} style={{ cursor: 'pointer' }} onClick={() => setOpenId(a.id)}>
+              <tr key={a.id} className={demo ? 'demo-record-row' : undefined} style={{ cursor: 'pointer' }} onClick={() => setOpenId(a.id)}>
                 <td style={{ width: 4, padding: 0 }}>
                   <div style={{ width: 4, height: '100%', minHeight: 36, background: style.border, borderRadius: 2 }} />
                 </td>
-                <td style={{ fontFamily: 'var(--font-heading)', fontSize: 15 }}>{a.role}</td>
+                <td style={{ fontFamily: 'var(--font-heading)', fontSize: 15 }}>
+                  <span className="demo-record-title">
+                    <span>{a.role}</span>
+                    {demo && <span className="demo-badge demo-badge-compact">Demo</span>}
+                  </span>
+                </td>
                 <td>{a.company}</td>
                 <td>
                   <span

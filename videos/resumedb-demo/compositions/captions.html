@@ -1,0 +1,214 @@
+<template id="captions-template" data-composition-id="captions" data-width="1920" data-height="1080">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+
+<style data-brand-tokens="">
+      @font-face { font-family: 'EB Garamond'; src: url('assets/fonts/eb-garamond-400.woff2') format('woff2'); font-weight: 400; font-display: block; }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/inter-400.woff2') format('woff2'); font-weight: 400; font-display: block; }
+      :root {
+      --ink: #201F1D;
+      --cream: #F3F2F2;
+      --tile: #F4E9D9;
+      --tile-strong: #B68235;
+      --coral: #6D28D9;
+      --navy: #161518;
+      --navy-soft: #1D1B1F;
+      --navy-elev: #222025;
+      --cap-ink: #201F1D;
+      --cap-canvas: #F3F2F2;
+      --cap-accent: #6D28D9;
+      --cap-accent-2: #B68235;
+      --font-display: "EB Garamond", system-ui, serif;
+      --font-body: "Inter", system-ui, sans-serif;
+      --cap-band-top: 900px;
+      --cap-band-height: 180px;
+      }
+    </style>
+
+<style>
+  #captions-root {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .caption-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+  }
+  /* the keep-out band, from captionBand(H) — frame content stays above it */
+  .caption-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--cap-band-top, 900px);
+    height: var(--cap-band-height, 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .caption-group {
+    /* every group is absolutely stacked over the SAME band — exactly one shown at a
+       time via opacity. Must be absolute: in-flow groups would lay out side-by-side. */
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+
+  /* THE lifted cream card — warm cream fill, 1px hairline ink border, one soft warm
+     shadow (claude's only elevation language), 12px radius, no tilt */
+  .caption-pill {
+    max-width: 78%;
+    padding: 22px 44px 26px;
+    background: var(--cap-canvas, #faf9f5);
+    border: 1px solid color-mix(in srgb, var(--cap-ink, #141413) 12%, transparent);
+    border-radius: 12px;
+    box-shadow:
+      0 1px 3px color-mix(in srgb, var(--cap-ink, #141413) 8%, transparent),
+      0 4px 16px color-mix(in srgb, var(--cap-ink, #141413) 4%, transparent);
+  }
+  .caption-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.12em 0.3em;
+    font-family: "EB Garamond", serif;
+    font-weight: 500;
+    font-size: clamp(40px, 4.4vw, 56px);
+    line-height: 1.24;
+    letter-spacing: -0.02em;
+  }
+
+  /* upcoming — faint warm ink, no underline */
+  .caption-word {
+    display: inline-block;
+    padding: 0 0.02em 0.06em;
+    color: color-mix(in srgb, var(--cap-ink, #141413) 40%, var(--cap-canvas, #faf9f5));
+    border-bottom: 3px solid transparent;
+  }
+  /* current word — full ink under the coral voltage underline (the brand's signature
+     inline-link gesture; border-bottom = underline without layout shift) */
+  .caption-word.is-active {
+    color: var(--cap-ink, #141413);
+    border-bottom: 3px solid var(--cap-accent, #cc785c);
+  }
+  /* already spoken — solid warm ink, underline cleared */
+  .caption-word.is-spoken {
+    color: var(--cap-ink, #141413);
+    border-bottom: 3px solid transparent;
+  }
+
+  /* optional per-word accents (dormant until a word-classer tags them) */
+  /* brand / key term — the expressive EB Garamond italic */
+  .caption-word.cap-brand {
+    font-style: italic;
+    color: var(--cap-ink, #141413);
+  }
+  .caption-word.cap-brand.is-active {
+    border-bottom: 3px solid var(--cap-accent, #cc785c);
+  }
+  /* numerals / data — slightly recessed warm ink */
+  .caption-word.cap-num {
+    color: color-mix(in srgb, var(--cap-ink, #141413) 72%, var(--cap-canvas, #faf9f5));
+  }
+  /* emphasis — a persistent coral voltage underline */
+  .caption-word.cap-cta {
+    border-bottom: 3px solid var(--cap-accent-2, #b5654a);
+    color: var(--cap-ink, #141413);
+  }
+
+  @media (max-aspect-ratio: 9/16) {
+    .caption-pill {
+      max-width: 92%;
+    }
+    .caption-line {
+      font-size: clamp(34px, 5.4vw, 46px);
+    }
+  }
+</style>
+
+<div data-hf-id="hf-p0ur" id="captions-root" data-composition-id="captions" data-timeline-locked="" data-start="0" data-duration="81.868" data-fps="30" data-width="1920" data-height="1080">
+  <div data-hf-id="hf-9flp" class="caption-layer" aria-hidden="true">
+    <div data-hf-id="hf-ajrg" id="caption-stage" class="caption-stage"></div>
+  </div>
+</div>
+
+<script>
+  // captions.mjs injects the engine's scene-aware groups + real duration here.
+  var GROUPS = [{"id":"caption-group-0","frame":1,"start":0.18,"end":0.54,"text":"Getting an","words":[{"id":"caption-word-0-0","text":"Getting","start":0.18,"end":0.42},{"id":"caption-word-0-1","text":"an","start":0.42,"end":0.54}]},{"id":"caption-group-1","frame":1,"start":0.54,"end":1.74,"text":"internship should not","words":[{"id":"caption-word-1-0","text":"internship","start":0.54,"end":1.15},{"id":"caption-word-1-1","text":"should","start":1.15,"end":1.51},{"id":"caption-word-1-2","text":"not","start":1.51,"end":1.68}]},{"id":"caption-group-2","frame":1,"start":1.74,"end":2.39,"text":"mean running","words":[{"id":"caption-word-2-0","text":"mean","start":1.74,"end":1.93},{"id":"caption-word-2-1","text":"running","start":1.93,"end":2.27}]},{"id":"caption-group-3","frame":1,"start":2.41,"end":4.04,"text":"five disconnected systems.","words":[{"id":"caption-word-3-0","text":"five","start":2.41,"end":2.59},{"id":"caption-word-3-1","text":"disconnected","start":2.59,"end":3.23},{"id":"caption-word-3-2","text":"systems.","start":3.34,"end":3.92}]},{"id":"caption-group-4","frame":1,"start":4.1,"end":4.83,"text":"ResumeDB makes","words":[{"id":"caption-word-4-0","text":"ResumeDB","start":4.1,"end":4.48},{"id":"caption-word-4-1","text":"makes","start":4.48,"end":4.83}]},{"id":"caption-group-5","frame":1,"start":4.83,"end":5.24,"text":"it one","words":[{"id":"caption-word-5-0","text":"it","start":4.83,"end":4.95},{"id":"caption-word-5-1","text":"one","start":4.97,"end":5.12}]},{"id":"caption-group-6","frame":1,"start":5.3,"end":6.52,"text":"guided workflow.","words":[{"id":"caption-word-6-0","text":"guided","start":5.3,"end":5.6},{"id":"caption-word-6-1","text":"workflow.","start":5.6,"end":6.4}]},{"id":"caption-group-7","frame":2,"start":6.58,"end":7.72,"text":"Earnestine starts with","words":[{"id":"caption-word-7-0","text":"Earnestine","start":6.58,"end":7.06},{"id":"caption-word-7-1","text":"starts","start":7.06,"end":7.4},{"id":"caption-word-7-2","text":"with","start":7.46,"end":7.6}]},{"id":"caption-group-8","frame":2,"start":7.78,"end":9.05,"text":"one verified knowledge","words":[{"id":"caption-word-8-0","text":"one","start":7.78,"end":7.92},{"id":"caption-word-8-1","text":"verified","start":7.92,"end":8.45},{"id":"caption-word-8-2","text":"knowledge","start":8.45,"end":9.04}]},{"id":"caption-group-9","frame":2,"start":9.05,"end":9.56,"text":"base.","words":[{"id":"caption-word-9-0","text":"base.","start":9.05,"end":9.44}]},{"id":"caption-group-10","frame":2,"start":9.62,"end":10.17,"text":"Experience,","words":[{"id":"caption-word-10-0","text":"Experience,","start":9.62,"end":10.17}]},{"id":"caption-group-11","frame":2,"start":10.17,"end":10.96,"text":"preferences,","words":[{"id":"caption-word-11-0","text":"preferences,","start":10.17,"end":10.96}]},{"id":"caption-group-12","frame":2,"start":10.96,"end":12.35,"text":"and explicit application","words":[{"id":"caption-word-12-0","text":"and","start":10.96,"end":11.12},{"id":"caption-word-12-1","text":"explicit","start":11.18,"end":11.63},{"id":"caption-word-12-2","text":"application","start":11.63,"end":12.23}]},{"id":"caption-group-13","frame":2,"start":12.36,"end":12.98,"text":"answers.","words":[{"id":"caption-word-13-0","text":"answers.","start":12.36,"end":12.86}]},{"id":"caption-group-14","frame":2,"start":13.14,"end":14.24,"text":"Missing facts trigger","words":[{"id":"caption-word-14-0","text":"Missing","start":13.14,"end":13.41},{"id":"caption-word-14-1","text":"facts","start":13.41,"end":13.73},{"id":"caption-word-14-2","text":"trigger","start":13.73,"end":14.15}]},{"id":"caption-group-15","frame":2,"start":14.24,"end":14.89,"text":"a question,","words":[{"id":"caption-word-15-0","text":"a","start":14.24,"end":14.24},{"id":"caption-word-15-1","text":"question,","start":14.34,"end":14.89}]},{"id":"caption-group-16","frame":2,"start":14.89,"end":15.87,"text":"never a guess.","words":[{"id":"caption-word-16-0","text":"never","start":14.89,"end":15.21},{"id":"caption-word-16-1","text":"a","start":15.21,"end":15.24},{"id":"caption-word-16-2","text":"guess.","start":15.37,"end":15.75}]},{"id":"caption-group-17","frame":3,"start":16.02,"end":16.41,"text":"Then she","words":[{"id":"caption-word-17-0","text":"Then","start":16.02,"end":16.17},{"id":"caption-word-17-1","text":"she","start":16.17,"end":16.41}]},{"id":"caption-group-18","frame":3,"start":16.41,"end":17.42,"text":"simply asks,","words":[{"id":"caption-word-18-0","text":"simply","start":16.41,"end":16.84},{"id":"caption-word-18-1","text":"asks,","start":16.96,"end":17.42}]},{"id":"caption-group-19","frame":3,"start":17.42,"end":19.18,"text":"\"Find internships I qualify","words":[{"id":"caption-word-19-0","text":"\"Find","start":17.42,"end":17.77},{"id":"caption-word-19-1","text":"internships","start":17.77,"end":18.53},{"id":"caption-word-19-2","text":"I","start":18.56,"end":18.62},{"id":"caption-word-19-3","text":"qualify","start":18.62,"end":19.07}]},{"id":"caption-group-20","frame":3,"start":19.18,"end":19.68,"text":"for,\" or","words":[{"id":"caption-word-20-0","text":"for,\"","start":19.18,"end":19.49},{"id":"caption-word-20-1","text":"or","start":19.49,"end":19.56}]},{"id":"caption-group-21","frame":3,"start":19.92,"end":20.43,"text":"pastes any","words":[{"id":"caption-word-21-0","text":"pastes","start":19.92,"end":20.15},{"id":"caption-word-21-1","text":"any","start":20.15,"end":20.43}]},{"id":"caption-group-22","frame":3,"start":20.43,"end":21.4,"text":"job URL.","words":[{"id":"caption-word-22-0","text":"job","start":20.43,"end":20.71},{"id":"caption-word-22-1","text":"URL.","start":20.71,"end":21.28}]},{"id":"caption-group-23","frame":3,"start":21.46,"end":22.6,"text":"The agent researches","words":[{"id":"caption-word-23-0","text":"The","start":21.46,"end":21.48},{"id":"caption-word-23-1","text":"agent","start":21.48,"end":21.82},{"id":"caption-word-23-2","text":"researches","start":21.82,"end":22.48}]},{"id":"caption-group-24","frame":3,"start":22.65,"end":23.12,"text":"the role,","words":[{"id":"caption-word-24-0","text":"the","start":22.65,"end":22.69},{"id":"caption-word-24-1","text":"role,","start":22.69,"end":23.12}]},{"id":"caption-group-25","frame":3,"start":23.12,"end":23.91,"text":"scores fit,","words":[{"id":"caption-word-25-0","text":"scores","start":23.12,"end":23.55},{"id":"caption-word-25-1","text":"fit,","start":23.55,"end":23.91}]},{"id":"caption-group-26","frame":3,"start":23.91,"end":24.62,"text":"and creates","words":[{"id":"caption-word-26-0","text":"and","start":23.91,"end":24.07},{"id":"caption-word-26-1","text":"creates","start":24.2,"end":24.51}]},{"id":"caption-group-27","frame":3,"start":24.62,"end":25.72,"text":"the application.","words":[{"id":"caption-word-27-0","text":"the","start":24.62,"end":24.7},{"id":"caption-word-27-1","text":"application.","start":24.81,"end":25.6}]},{"id":"caption-group-28","frame":4,"start":25.78,"end":26.14,"text":"Every run","words":[{"id":"caption-word-28-0","text":"Every","start":25.78,"end":25.94},{"id":"caption-word-28-1","text":"run","start":25.94,"end":26.14}]},{"id":"caption-group-29","frame":4,"start":26.14,"end":27.35,"text":"stays observable.","words":[{"id":"caption-word-29-0","text":"stays","start":26.14,"end":26.48},{"id":"caption-word-29-1","text":"observable.","start":26.48,"end":27.35}]},{"id":"caption-group-30","frame":4,"start":27.35,"end":28.52,"text":"Read the profile,","words":[{"id":"caption-word-30-0","text":"Read","start":27.35,"end":27.63},{"id":"caption-word-30-1","text":"the","start":27.63,"end":27.83},{"id":"caption-word-30-2","text":"profile,","start":27.83,"end":28.4}]},{"id":"caption-group-31","frame":4,"start":28.52,"end":29.7,"text":"inspect the posting,","words":[{"id":"caption-word-31-0","text":"inspect","start":28.52,"end":28.83},{"id":"caption-word-31-1","text":"the","start":28.94,"end":29.02},{"id":"caption-word-31-2","text":"posting,","start":29.12,"end":29.7}]},{"id":"caption-group-32","frame":4,"start":29.7,"end":30.66,"text":"verify evidence,","words":[{"id":"caption-word-32-0","text":"verify","start":29.7,"end":30.16},{"id":"caption-word-32-1","text":"evidence,","start":30.16,"end":30.55}]},{"id":"caption-group-33","frame":4,"start":30.66,"end":31.35,"text":"then prepare","words":[{"id":"caption-word-33-0","text":"then","start":30.66,"end":30.88},{"id":"caption-word-33-1","text":"prepare","start":31.06,"end":31.35}]},{"id":"caption-group-34","frame":4,"start":31.35,"end":32.19,"text":"the strongest","words":[{"id":"caption-word-34-0","text":"the","start":31.35,"end":31.55},{"id":"caption-word-34-1","text":"strongest","start":31.55,"end":32.07}]},{"id":"caption-group-35","frame":4,"start":32.26,"end":32.72,"text":"match.","words":[{"id":"caption-word-35-0","text":"match.","start":32.26,"end":32.72}]},{"id":"caption-group-36","frame":5,"start":32.72,"end":34.1,"text":"Applications move through","words":[{"id":"caption-word-36-0","text":"Applications","start":32.72,"end":33.44},{"id":"caption-word-36-1","text":"move","start":33.44,"end":33.67},{"id":"caption-word-36-2","text":"through","start":33.67,"end":34.1}]},{"id":"caption-group-37","frame":5,"start":34.1,"end":34.72,"text":"five clear","words":[{"id":"caption-word-37-0","text":"five","start":34.1,"end":34.3},{"id":"caption-word-37-1","text":"clear","start":34.41,"end":34.6}]},{"id":"caption-group-38","frame":5,"start":34.96,"end":35.2,"text":"stages.","words":[{"id":"caption-word-38-0","text":"stages.","start":34.96,"end":35.2}]},{"id":"caption-group-39","frame":5,"start":35.2,"end":35.76,"text":"Draft to","words":[{"id":"caption-word-39-0","text":"Draft","start":35.2,"end":35.6},{"id":"caption-word-39-1","text":"to","start":35.6,"end":35.76}]},{"id":"caption-group-40","frame":5,"start":35.76,"end":37.17,"text":"Ready requires Earnestine's","words":[{"id":"caption-word-40-0","text":"Ready","start":35.76,"end":35.99},{"id":"caption-word-40-1","text":"requires","start":36.06,"end":36.48},{"id":"caption-word-40-2","text":"Earnestine's","start":36.66,"end":37.17}]},{"id":"caption-group-41","frame":5,"start":37.17,"end":37.8,"text":"review.","words":[{"id":"caption-word-41-0","text":"review.","start":37.17,"end":37.68}]},{"id":"caption-group-42","frame":5,"start":37.86,"end":38.09,"text":"Ready to","words":[{"id":"caption-word-42-0","text":"Ready","start":37.86,"end":37.98},{"id":"caption-word-42-1","text":"to","start":37.98,"end":38.09}]},{"id":"caption-group-43","frame":5,"start":38.09,"end":39.39,"text":"submitted still requires","words":[{"id":"caption-word-43-0","text":"submitted","start":38.09,"end":38.62},{"id":"caption-word-43-1","text":"still","start":38.62,"end":38.91},{"id":"caption-word-43-2","text":"requires","start":38.91,"end":39.27}]},{"id":"caption-group-44","frame":5,"start":39.4,"end":40.34,"text":"her final click.","words":[{"id":"caption-word-44-0","text":"her","start":39.4,"end":39.54},{"id":"caption-word-44-1","text":"final","start":39.63,"end":39.84},{"id":"caption-word-44-2","text":"click.","start":39.84,"end":40.22}]},{"id":"caption-group-45","frame":6,"start":40.56,"end":40.88,"text":"For this","words":[{"id":"caption-word-45-0","text":"For","start":40.56,"end":40.6},{"id":"caption-word-45-1","text":"this","start":40.6,"end":40.88}]},{"id":"caption-group-46","frame":6,"start":40.88,"end":42.04,"text":"Northstar role,","words":[{"id":"caption-word-46-0","text":"Northstar","start":40.88,"end":41.43},{"id":"caption-word-46-1","text":"role,","start":41.54,"end":41.92}]},{"id":"caption-group-47","frame":6,"start":42.1,"end":42.85,"text":"ResumeDB matches","words":[{"id":"caption-word-47-0","text":"ResumeDB","start":42.1,"end":42.41},{"id":"caption-word-47-1","text":"matches","start":42.41,"end":42.85}]},{"id":"caption-group-48","frame":6,"start":42.85,"end":44.64,"text":"the description semantically,","words":[{"id":"caption-word-48-0","text":"the","start":42.85,"end":42.95},{"id":"caption-word-48-1","text":"description","start":43.04,"end":43.73},{"id":"caption-word-48-2","text":"semantically,","start":43.73,"end":44.6}]},{"id":"caption-group-49","frame":6,"start":44.64,"end":46,"text":"rewrites each bullet,","words":[{"id":"caption-word-49-0","text":"rewrites","start":44.64,"end":45.13},{"id":"caption-word-49-1","text":"each","start":45.13,"end":45.34},{"id":"caption-word-49-2","text":"bullet,","start":45.45,"end":45.92}]},{"id":"caption-group-50","frame":6,"start":46,"end":46.32,"text":"and shows","words":[{"id":"caption-word-50-0","text":"and","start":46,"end":46.07},{"id":"caption-word-50-1","text":"shows","start":46.07,"end":46.32}]},{"id":"caption-group-51","frame":6,"start":46.32,"end":46.99,"text":"the evidence","words":[{"id":"caption-word-51-0","text":"the","start":46.32,"end":46.47},{"id":"caption-word-51-1","text":"evidence","start":46.47,"end":46.87}]},{"id":"caption-group-52","frame":6,"start":47.06,"end":48.19,"text":"behind every stronger","words":[{"id":"caption-word-52-0","text":"behind","start":47.06,"end":47.27},{"id":"caption-word-52-1","text":"every","start":47.27,"end":47.59},{"id":"caption-word-52-2","text":"stronger","start":47.59,"end":48.07}]},{"id":"caption-group-53","frame":6,"start":48.26,"end":48.63,"text":"phrase,","words":[{"id":"caption-word-53-0","text":"phrase,","start":48.26,"end":48.62}]},{"id":"caption-group-54","frame":6,"start":48.63,"end":49.79,"text":"before and after.","words":[{"id":"caption-word-54-0","text":"before","start":48.63,"end":49.02},{"id":"caption-word-54-1","text":"and","start":49.02,"end":49.16},{"id":"caption-word-54-2","text":"after.","start":49.29,"end":49.67}]},{"id":"caption-group-55","frame":7,"start":49.8,"end":50.41,"text":"It produces","words":[{"id":"caption-word-55-0","text":"It","start":49.8,"end":49.88},{"id":"caption-word-55-1","text":"produces","start":49.88,"end":50.3}]},{"id":"caption-group-56","frame":7,"start":50.41,"end":51.6,"text":"the tailored resume,","words":[{"id":"caption-word-56-0","text":"the","start":50.41,"end":50.57},{"id":"caption-word-56-1","text":"tailored","start":50.57,"end":51.07},{"id":"caption-word-56-2","text":"resume,","start":51.07,"end":51.6}]},{"id":"caption-group-57","frame":7,"start":51.6,"end":52.36,"text":"cover letter,","words":[{"id":"caption-word-57-0","text":"cover","start":51.6,"end":51.83},{"id":"caption-word-57-1","text":"letter,","start":51.94,"end":52.24}]},{"id":"caption-group-58","frame":7,"start":52.42,"end":52.96,"text":"and answers,","words":[{"id":"caption-word-58-0","text":"and","start":52.42,"end":52.42},{"id":"caption-word-58-1","text":"answers,","start":52.42,"end":52.96}]},{"id":"caption-group-59","frame":7,"start":52.96,"end":54.23,"text":"while keeping sensitive","words":[{"id":"caption-word-59-0","text":"while","start":52.96,"end":53.24},{"id":"caption-word-59-1","text":"keeping","start":53.27,"end":53.68},{"id":"caption-word-59-2","text":"sensitive","start":53.68,"end":54.23}]},{"id":"caption-group-60","frame":7,"start":54.23,"end":54.77,"text":"facts tied","words":[{"id":"caption-word-60-0","text":"facts","start":54.23,"end":54.52},{"id":"caption-word-60-1","text":"tied","start":54.65,"end":54.77}]},{"id":"caption-group-61","frame":7,"start":54.77,"end":55.16,"text":"to the","words":[{"id":"caption-word-61-0","text":"to","start":54.77,"end":54.85},{"id":"caption-word-61-1","text":"the","start":54.89,"end":55.04}]},{"id":"caption-group-62","frame":7,"start":55.16,"end":56.24,"text":"profile and unknowns","words":[{"id":"caption-word-62-0","text":"profile","start":55.16,"end":55.47},{"id":"caption-word-62-1","text":"and","start":55.58,"end":55.66},{"id":"caption-word-62-2","text":"unknowns","start":55.77,"end":56.12}]},{"id":"caption-group-63","frame":7,"start":56.32,"end":56.82,"text":"blank.","words":[{"id":"caption-word-63-0","text":"blank.","start":56.32,"end":56.7}]},{"id":"caption-group-64","frame":8,"start":56.9,"end":57.63,"text":"After approval,","words":[{"id":"caption-word-64-0","text":"After","start":56.9,"end":57.02},{"id":"caption-word-64-1","text":"approval,","start":57.02,"end":57.63}]},{"id":"caption-group-65","frame":8,"start":57.63,"end":58.66,"text":"the extension scans","words":[{"id":"caption-word-65-0","text":"the","start":57.63,"end":57.75},{"id":"caption-word-65-1","text":"extension","start":57.84,"end":58.36},{"id":"caption-word-65-2","text":"scans","start":58.36,"end":58.66}]},{"id":"caption-group-66","frame":8,"start":58.66,"end":59.68,"text":"the application,","words":[{"id":"caption-word-66-0","text":"the","start":58.66,"end":58.84},{"id":"caption-word-66-1","text":"application,","start":58.84,"end":59.68}]},{"id":"caption-group-67","frame":8,"start":59.68,"end":60.55,"text":"previews each","words":[{"id":"caption-word-67-0","text":"previews","start":59.68,"end":60.14},{"id":"caption-word-67-1","text":"each","start":60.25,"end":60.43}]},{"id":"caption-group-68","frame":8,"start":60.8,"end":61.16,"text":"mapping,","words":[{"id":"caption-word-68-0","text":"mapping,","start":60.8,"end":61.04}]},{"id":"caption-group-69","frame":8,"start":61.22,"end":62.35,"text":"uploads the tailored","words":[{"id":"caption-word-69-0","text":"uploads","start":61.22,"end":61.51},{"id":"caption-word-69-1","text":"the","start":61.51,"end":61.71},{"id":"caption-word-69-2","text":"tailored","start":61.71,"end":62.23}]},{"id":"caption-group-70","frame":8,"start":62.42,"end":62.79,"text":"resume,","words":[{"id":"caption-word-70-0","text":"resume,","start":62.42,"end":62.79}]},{"id":"caption-group-71","frame":8,"start":62.79,"end":63.44,"text":"and fills","words":[{"id":"caption-word-71-0","text":"and","start":62.79,"end":63},{"id":"caption-word-71-1","text":"fills","start":63,"end":63.32}]},{"id":"caption-group-72","frame":8,"start":63.45,"end":64,"text":"the ATS.","words":[{"id":"caption-word-72-0","text":"the","start":63.45,"end":63.54},{"id":"caption-word-72-1","text":"ATS.","start":63.54,"end":64}]},{"id":"caption-group-73","frame":8,"start":64,"end":64.88,"text":"It stops before","words":[{"id":"caption-word-73-0","text":"It","start":64,"end":64.1},{"id":"caption-word-73-1","text":"stops","start":64.19,"end":64.46},{"id":"caption-word-73-2","text":"before","start":64.57,"end":64.76}]},{"id":"caption-group-74","frame":8,"start":65.12,"end":65.62,"text":"submit.","words":[{"id":"caption-word-74-0","text":"submit.","start":65.12,"end":65.5}]},{"id":"caption-group-75","frame":9,"start":65.7,"end":66.9,"text":"Use ResumeDB's hosted","words":[{"id":"caption-word-75-0","text":"Use","start":65.7,"end":65.74},{"id":"caption-word-75-1","text":"ResumeDB's","start":65.74,"end":66.46},{"id":"caption-word-75-2","text":"hosted","start":66.46,"end":66.9}]},{"id":"caption-group-76","frame":9,"start":66.9,"end":67.44,"text":"model,","words":[{"id":"caption-word-76-0","text":"model,","start":66.9,"end":67.44}]},{"id":"caption-group-77","frame":9,"start":67.44,"end":68.43,"text":"or connect your","words":[{"id":"caption-word-77-0","text":"or","start":67.44,"end":67.58},{"id":"caption-word-77-1","text":"connect","start":67.58,"end":68.08},{"id":"caption-word-77-2","text":"your","start":68.08,"end":68.31}]},{"id":"caption-group-78","frame":9,"start":68.44,"end":68.93,"text":"own agent","words":[{"id":"caption-word-78-0","text":"own","start":68.44,"end":68.57},{"id":"caption-word-78-1","text":"agent","start":68.57,"end":68.93}]},{"id":"caption-group-79","frame":9,"start":68.93,"end":69.42,"text":"with no","words":[{"id":"caption-word-79-0","text":"with","start":68.93,"end":69.21},{"id":"caption-word-79-1","text":"no","start":69.21,"end":69.3}]},{"id":"caption-group-80","frame":9,"start":69.6,"end":70.59,"text":"shared API key.","words":[{"id":"caption-word-80-0","text":"shared","start":69.6,"end":69.78},{"id":"caption-word-80-1","text":"API","start":69.78,"end":69.98},{"id":"caption-word-80-2","text":"key.","start":70,"end":70.47}]},{"id":"caption-group-81","frame":9,"start":70.66,"end":71.14,"text":"Either way,","words":[{"id":"caption-word-81-0","text":"Either","start":70.66,"end":70.84},{"id":"caption-word-81-1","text":"way,","start":70.84,"end":71.14}]},{"id":"caption-group-82","frame":9,"start":71.14,"end":71.8,"text":"the student","words":[{"id":"caption-word-82-0","text":"the","start":71.14,"end":71.26},{"id":"caption-word-82-1","text":"student","start":71.32,"end":71.68}]},{"id":"caption-group-83","frame":9,"start":71.86,"end":72.22,"text":"keeps the","words":[{"id":"caption-word-83-0","text":"keeps","start":71.86,"end":72.04},{"id":"caption-word-83-1","text":"the","start":72.04,"end":72.16}]},{"id":"caption-group-84","frame":9,"start":72.22,"end":72.87,"text":"same memory","words":[{"id":"caption-word-84-0","text":"same","start":72.22,"end":72.46},{"id":"caption-word-84-1","text":"memory","start":72.46,"end":72.75}]},{"id":"caption-group-85","frame":9,"start":72.89,"end":73.8,"text":"and workflow.","words":[{"id":"caption-word-85-0","text":"and","start":72.89,"end":73},{"id":"caption-word-85-1","text":"workflow.","start":73,"end":73.68}]},{"id":"caption-group-86","frame":10,"start":73.86,"end":74.13,"text":"Next,","words":[{"id":"caption-word-86-0","text":"Next,","start":73.86,"end":74.13}]},{"id":"caption-group-87","frame":10,"start":74.13,"end":75.25,"text":"email tracking,","words":[{"id":"caption-word-87-0","text":"email","start":74.13,"end":74.45},{"id":"caption-word-87-1","text":"tracking,","start":74.52,"end":75.25}]},{"id":"caption-group-88","frame":10,"start":75.25,"end":76.4,"text":"interview prep,","words":[{"id":"caption-word-88-0","text":"interview","start":75.25,"end":75.92},{"id":"caption-word-88-1","text":"prep,","start":75.92,"end":76.36}]},{"id":"caption-group-89","frame":10,"start":76.4,"end":77.59,"text":"progress journals,","words":[{"id":"caption-word-89-0","text":"progress","start":76.4,"end":76.89},{"id":"caption-word-89-1","text":"journals,","start":76.89,"end":77.47}]},{"id":"caption-group-90","frame":10,"start":77.76,"end":78.75,"text":"campus insights,","words":[{"id":"caption-word-90-0","text":"campus","start":77.76,"end":77.94},{"id":"caption-word-90-1","text":"insights,","start":77.94,"end":78.63}]},{"id":"caption-group-91","frame":10,"start":78.82,"end":79.97,"text":"four-year planning,","words":[{"id":"caption-word-91-0","text":"four-year","start":78.82,"end":79.21},{"id":"caption-word-91-1","text":"planning,","start":79.21,"end":79.85}]},{"id":"caption-group-92","frame":10,"start":80.01,"end":80.32,"text":"and major","words":[{"id":"caption-word-92-0","text":"and","start":80.01,"end":80.04},{"id":"caption-word-92-1","text":"major","start":80.04,"end":80.32}]},{"id":"caption-group-93","frame":10,"start":80.32,"end":82.12,"text":"specific career artifacts.","words":[{"id":"caption-word-93-0","text":"specific","start":80.32,"end":80.77},{"id":"caption-word-93-1","text":"career","start":80.77,"end":81.12},{"id":"caption-word-93-2","text":"artifacts.","start":81.12,"end":82}]}];
+  var DURATION = 81.868;
+
+  (function () {
+    var stage = document.getElementById("caption-stage");
+
+    // build DOM: one .caption-group per group, .caption-word per word
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.createElement("div");
+      groupEl.className = "caption-group";
+      groupEl.id = "caption-group-" + g;
+      var pill = document.createElement("div");
+      pill.className = "caption-pill";
+      var line = document.createElement("div");
+      line.className = "caption-line";
+      (group.words || []).forEach(function (w, i) {
+        var span = document.createElement("span");
+        span.className = "caption-word";
+        span.id = "caption-word-" + g + "-" + i;
+        span.textContent = String(w.text);
+        line.appendChild(span);
+      });
+      pill.appendChild(line);
+      groupEl.appendChild(pill);
+      stage.appendChild(groupEl);
+    });
+
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.getElementById("caption-group-" + g);
+      var words = group.words || [];
+      var next = GROUPS[g + 1];
+      var isLast = g === GROUPS.length - 1;
+      var start = Math.max(0, Number(group.start));
+      var end = isLast ? DURATION : Math.min(Number(next.start), Number(group.end) + 0.3);
+      if (end <= start) end = start + 0.01;
+
+      // group on/off — exactly one group visible at a time
+      tl.set(groupEl, { opacity: 1 }, start);
+      tl.set(groupEl, { opacity: 0 }, end);
+
+      // 3-state karaoke via className SETS — seek-safe (gsap.set applies on the
+      // engine's frame-by-frame seek; .call callbacks would NOT fire).
+      words.forEach(function (w, i) {
+        var el = document.getElementById("caption-word-" + g + "-" + i);
+        var at = Math.max(start, Number(w.start));
+        tl.set(el, { className: "caption-word" }, start); // upcoming (also resets on reverse-seek)
+        tl.set(el, { className: "caption-word is-active" }, at); // current
+        tl.fromTo(el, { scale: 0.98 }, { scale: 1, duration: 0.16, ease: "power1.out" }, at);
+        if (i + 1 < words.length) {
+          var nextAt = Math.max(start, Number(words[i + 1].start));
+          tl.set(el, { className: "caption-word is-spoken" }, nextAt); // demote when next activates
+        }
+      });
+      if (words.length) {
+        var lastEl = document.getElementById("caption-word-" + g + "-" + (words.length - 1));
+        var lastSpoken = Math.min(end, Number(words[words.length - 1].end) + 0.1);
+        tl.set(lastEl, { className: "caption-word is-spoken" }, lastSpoken);
+      }
+    });
+
+    // full-span anchor so the sub-comp timeline spans the whole video
+    tl.to({}, { duration: DURATION }, 0);
+    window.__timelines["captions"] = tl;
+  })();
+</script>
+
+<style>
+  .caption-line { line-height: 1.1 !important; }
+</style>
+</template>
