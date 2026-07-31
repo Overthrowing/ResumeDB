@@ -19,8 +19,10 @@ sync:
 
 # Backend only. --reload also puts main.py in dev mode, where :8000 serves the
 # API and points at :5173 instead of handing out a stale frontend/dist build.
+# --reload-dir narrows the watch to the package: a restart kills every running
+# turn, and editing a test (or anything else outside resumedb/) should not.
 backend:
-	uv run uvicorn resumedb.main:app --reload --port 8000 --app-dir backend
+	uv run uvicorn resumedb.main:app --reload --reload-dir backend/resumedb --port 8000 --app-dir backend
 
 frontend:
 	cd frontend && pnpm dev

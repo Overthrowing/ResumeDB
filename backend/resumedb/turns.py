@@ -19,6 +19,7 @@ import datetime
 import json
 import re
 import threading
+import time
 from pathlib import Path
 from typing import AsyncIterator
 
@@ -173,6 +174,7 @@ class Turn:
         self.log = log
         self.events: list[dict] = []
         self.finished = False
+        self.started = time.time()
         self._queues: set[asyncio.Queue] = set()
         self._proc = None
         self.task: asyncio.Task | None = None
@@ -219,6 +221,20 @@ class TurnManager:
     def active_convs(self, scope: str) -> set[str]:
         # snapshot: read from threadpool routes while the loop mutates the dict
         return {c for (s, c), t in list(self._active.items()) if s == scope and not t.finished}
+
+    def running(self) -> list[dict]:
+        """Every live turn, for the app-wide activity indicator. A client that
+        just reloaded has no other way to learn a turn it never opened is still
+        going, so this is the source of truth rather than any one chat socket."""
+        return sorted(
+            (
+                {"scope": s, "conversation": c, "started": t.started,
+                 "prompt": t.user_text[:120]}
+                for (s, c), t in list(self._active.items())
+                if not t.finished
+            ),
+            key=lambda t: t["started"],
+        )
 
     def start(self, repo: DataRepo, agent, scope: str, conv: str, user_text: str,
               prompt: str, model: str | None, effort: str | None) -> Turn:

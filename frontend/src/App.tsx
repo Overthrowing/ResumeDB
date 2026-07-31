@@ -10,6 +10,7 @@ import {
   Settings as SettingsIcon,
 } from 'lucide-react'
 import { ApiError, api } from '@/lib/api'
+import ActiveAgents from '@/components/ActiveAgents'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -122,7 +123,10 @@ export default function App() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto flex items-center gap-2.5 border-t px-2 py-2.5">
+        <div className="mt-auto px-0.5 pb-1.5">
+          <ActiveAgents />
+        </div>
+        <div className="flex items-center gap-2.5 border-t px-2 py-2.5">
           <div className="grid size-8 flex-none place-items-center rounded-full bg-accent font-heading text-[13px] font-semibold text-accent-foreground">
             {initials}
           </div>

@@ -75,6 +75,13 @@ def _intro(scope: str, base: str) -> str:
     return DB_INTRO
 
 
+@router.get("/api/chat/active")
+def active_turns():
+    """Every turn running right now, across scopes. Declared before the
+    /{scope}/ routes so "active" is never read as a scope."""
+    return manager.running()
+
+
 @router.get("/api/chat/{scope}/conversations")
 def list_conversations(scope: str):
     repo = _repo()

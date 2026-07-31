@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router'
 import { ChevronRight, Plus, TriangleAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type AppStatus } from '@/lib/api'
-import { useBusyScopes } from '@/chat/store'
+import { useActiveTurns } from '@/chat/active'
 import ChatRail from '@/components/ChatRail'
 import ErrorText from '@/components/ErrorText'
 import { Page, PageHeader } from '@/components/Page'
@@ -31,7 +31,7 @@ export default function Applications() {
   const qc = useQueryClient()
   const [creating, setCreating] = useState(false)
   const [filter, setFilter] = useState<AppStatus | 'all'>('all')
-  const busyScopes = useBusyScopes()
+  const working = new Set(useActiveTurns().map((t) => t.scope))
 
   const appsQ = useQuery({ queryKey: ['apps'], queryFn: api.applications })
   const apps = appsQ.data ?? []
@@ -121,7 +121,7 @@ export default function Applications() {
                           says which applications are mid-turn. Absolute, inside
                           the cell padding: a marker that shifted the title would
                           knock this row out of line with every other one. */}
-                      {busyScopes.includes(`app:${a.id}`) && (
+                      {working.has(`app:${a.id}`) && (
                         <span
                           title="Working - the assistant is mid-turn on this application"
                           className="absolute left-1.5 top-1/2 size-1.5 -translate-y-1/2 animate-pulse rounded-full bg-primary"

@@ -164,12 +164,17 @@ async def test_two_scopes_run_turns_at_the_same_time(repo, mock_agent):
     await asyncio.sleep(0.05)
     assert m.active(f"app:{a}", "20260101-000011") is turn_a
     assert m.active(f"app:{b}", "20260101-000011") is turn_b  # neither waits on the other
+    # what the activity indicator reads: a client that never opened either chat
+    # still has to be able to see both are running
+    assert [t["scope"] for t in m.running()] == [f"app:{a}", f"app:{b}"]
+    assert all(t["prompt"] and t["started"] for t in m.running())
 
     gate_b.set()  # finishing out of order must not disturb the other turn
     await collect(turn_b)
     assert m.active(f"app:{a}", "20260101-000011") is turn_a
     gate_a.set()
     await collect(turn_a)
+    assert m.running() == []  # finished turns drop out
 
     for app_id, other_id, user_text in ((a, b, "a"), (b, a, "b")):
         scope = f"app:{app_id}"

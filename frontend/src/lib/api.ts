@@ -148,6 +148,15 @@ export interface Conversation {
   active: boolean
 }
 
+/** A turn running right now, from any client. */
+export interface ActiveTurn {
+  scope: string
+  conversation: string
+  /** Unix seconds, for elapsed time. */
+  started: number
+  prompt: string
+}
+
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'error' | 'warning'
   text: string
@@ -252,6 +261,7 @@ export const api = {
   historyDiff: async (sha: string) => (await send(`/api/history/${sha}/diff`)).text(),
   revert: (sha: string) => req<{ ok: boolean }>(`/api/history/${sha}/revert`, { method: 'POST' }),
 
+  activeTurns: () => req<ActiveTurn[]>('/api/chat/active'),
   conversations: (scope: string) => req<Conversation[]>(`/api/chat/${encodeURIComponent(scope)}/conversations`),
   conversation: (scope: string, id: string) =>
     req<{ messages: ChatMessage[]; active: boolean }>(
