@@ -251,22 +251,29 @@ class TurnManager:
                 if event["type"] == "result":
                     final_text = event["text"]
                 turn.emit(event)
-            for event in await asyncio.to_thread(self._epilogue, repo, scope):
-                turn.emit(event)
         except Exception as e:
             turn.emit({"type": "error", "message": f"turn failed: {e}"})
         finally:
-            if not final_text:
-                # Cancel (and any early exit) yields no `result` event. Keep what
-                # the user already watched stream instead of dropping it, the
-                # same way an interrupted turn preserves its partial output.
-                partial = "".join(
-                    e.get("text", "") for e in turn.events if e["type"] == "text_delta"
-                )
-                if partial and cpath:
-                    append_message(cpath, {"role": "assistant", "text": partial, "interrupted": True})
-            elif cpath:
-                append_message(cpath, {"role": "assistant", "text": final_text})
+            if cpath:
+                if final_text:
+                    append_message(cpath, {"role": "assistant", "text": final_text})
+                else:
+                    # Cancel (and any early exit) yields no `result` event. Keep
+                    # what the user already watched stream instead of dropping
+                    # it, the same way an interrupted turn preserves its output.
+                    partial = "".join(
+                        e.get("text", "") for e in turn.events if e["type"] == "text_delta"
+                    )
+                    if partial:
+                        append_message(cpath, {"role": "assistant", "text": partial, "interrupted": True})
+            # After the reply is on disk, so the checkpoint contains it rather
+            # than leaving every turn's own answer uncommitted, and on every
+            # exit path: a cancelled turn still leaves edited files behind.
+            try:
+                for event in await asyncio.to_thread(self._epilogue, repo, scope):
+                    turn.emit(event)
+            except Exception as e:
+                turn.emit({"type": "error", "message": f"post-turn bookkeeping failed: {e}"})
             turn.emit({"type": TERMINAL})
             turn.finished = True
             self._active.pop((scope, conv), None)
@@ -276,10 +283,9 @@ class TurnManager:
         """Post-turn bookkeeping (blocking; runs in a thread): flag protected-
         file edits, checkpoint, re-render app resumes, count proposals."""
         events: list[dict] = []
+        outside = gitops.changed_files(repo.root, "db", "CLAUDE.md", "AGENTS.md")
         touched = [
-            f
-            for f in gitops.changed_files(repo.root, "db", "CLAUDE.md", "AGENTS.md")
-            if not f.startswith("db/chats/") and f != "db/memory.md"
+            f for f in outside if not f.startswith("db/chats/") and f != "db/memory.md"
         ]
         if touched:
             events.append({
@@ -293,6 +299,12 @@ class TurnManager:
             if scope.startswith("app:"):
                 result = render.render(repo.root, scope[4:])
                 events.append({"type": "rendered", **result})
+        # The checkpoint above stages only this scope's paths, so a stray write
+        # to db/ during an application turn would stay uncommitted - and the
+        # warning above promises the opposite. Commit exactly those files under
+        # the scope they belong to, leaving other scopes' work untouched.
+        if outside and scope != "db":
+            gitops.checkpoint(repo.root, "db", f"side effects of a {scope} turn", paths=outside)
         events.append({"type": "proposals", "count": len(repo.list_proposals())})
         return events
 

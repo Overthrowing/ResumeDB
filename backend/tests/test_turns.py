@@ -9,7 +9,7 @@ import json
 
 import pytest
 
-from resumedb import turns
+from resumedb import gitops, turns
 from resumedb.turns import BadScope, TurnBusy, TurnManager, check_scope
 
 
@@ -143,6 +143,85 @@ async def test_cancel_preserves_the_partial_answer(repo, mock_agent):
     msgs = turns.read_messages(turns.conv_path(repo, "db", "20260101-000007"))
     assert [m["role"] for m in msgs] == ["user", "assistant"]
     assert msgs[1]["text"] == "hello" and msgs[1]["interrupted"] is True
+
+
+@pytest.mark.asyncio
+async def test_two_scopes_run_turns_at_the_same_time(repo, mock_agent):
+    """Optimizing one application must not block optimizing another: turns are
+    keyed per (scope, conversation), and each folds into its own history."""
+    a = repo.create_application("Acme", "Engineer", "", "classic")
+    b = repo.create_application("Globex", "Engineer", "", "classic")
+    gate_a, gate_b = asyncio.Event(), asyncio.Event()
+    m = TurnManager()
+
+    def writer(app_id):  # each agent tailors its own application, as a real one would
+        return lambda cwd: (cwd / "applications" / app_id / "resume.yaml").write_text(f"id: {app_id}\n")
+
+    turn_a = m.start(repo, mock_agent(gate=gate_a, on_start=writer(a)),
+                     f"app:{a}", "20260101-000011", "a", "a", None, None)
+    turn_b = m.start(repo, mock_agent(gate=gate_b, on_start=writer(b)),
+                     f"app:{b}", "20260101-000011", "b", "b", None, None)
+    await asyncio.sleep(0.05)
+    assert m.active(f"app:{a}", "20260101-000011") is turn_a
+    assert m.active(f"app:{b}", "20260101-000011") is turn_b  # neither waits on the other
+
+    gate_b.set()  # finishing out of order must not disturb the other turn
+    await collect(turn_b)
+    assert m.active(f"app:{a}", "20260101-000011") is turn_a
+    gate_a.set()
+    await collect(turn_a)
+
+    for app_id, other_id, user_text in ((a, b, "a"), (b, a, "b")):
+        scope = f"app:{app_id}"
+        msgs = turns.read_messages(turns.conv_path(repo, scope, "20260101-000011"))
+        assert [m["text"] for m in msgs] == [user_text, "hello"]  # no cross-talk
+        assert not gitops.is_dirty(repo.root, scope)
+        # each turn's checkpoint carries only its own application, so undoing one
+        # tailoring session cannot revert the other's
+        log = gitops.log(repo.root, scope)
+        assert log[0]["subject"] == f"{scope}: agent turn"
+        diff = gitops.diff(repo.root, log[0]["sha"])
+        assert app_id in diff and other_id not in diff
+
+
+@pytest.mark.asyncio
+async def test_turn_leaves_the_repo_clean(repo, mock_agent):
+    """The epilogue used to checkpoint before the reply was written, so every
+    turn left its own answer sitting uncommitted until some later turn swept
+    it up."""
+    m = TurnManager()
+    turn = m.start(repo, mock_agent(), "db", "20260101-000008", "hi", "hi", None, None)
+    await collect(turn)
+    assert not gitops.is_dirty(repo.root, "db")
+
+
+@pytest.mark.asyncio
+async def test_cancelled_turn_still_checkpoints_what_the_agent_wrote(repo, mock_agent):
+    """Stop mid-tailor leaves edited files behind; without a checkpoint they are
+    uncommitted and so cannot be undone from History."""
+    gate = asyncio.Event()
+    m = TurnManager()
+    agent = mock_agent(gate=gate, on_start=lambda cwd: (cwd / "db" / "half.yaml").write_text("id: half\n"))
+    turn = m.start(repo, agent, "db", "20260101-000009", "hi", "hi", None, None)
+    await asyncio.sleep(0.05)
+    await turn.cancel()
+    await collect(turn)
+    assert (repo.root / "db" / "half.yaml").exists()
+    assert not gitops.is_dirty(repo.root, "db")
+
+
+@pytest.mark.asyncio
+async def test_app_turn_commits_its_stray_writes_to_db(repo, mock_agent):
+    """An app-scope checkpoint stages only applications/<id>, so a write to db/
+    stayed uncommitted while the warning claimed it was checkpointed."""
+    app_id = repo.create_application("Acme", "Engineer", "", "classic")
+    agent = mock_agent(on_start=lambda cwd: (cwd / "db" / "stray.yaml").write_text("id: stray\n"))
+    m = TurnManager()
+    turn = m.start(repo, agent, f"app:{app_id}", "20260101-000010", "hi", "hi", None, None)
+    events = await collect(turn)
+    warning = next(e for e in events if e["type"] == "warning")
+    assert "db/stray.yaml" in warning["message"]
+    assert not gitops.is_dirty(repo.root, "db")  # the warning's promise holds
 
 
 def test_new_conv_id_never_collides(repo):
