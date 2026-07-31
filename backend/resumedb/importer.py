@@ -1,7 +1,14 @@
+"""PDF resume import: extract text with pypdf, structure it with the agent,
+then write profile + entries through the normal datarepo layer."""
+
 import io
 import json
+import re
+
 from pypdf import PdfReader
-from .claude import run_oneshot
+
+from . import config
+from .providers import get_agent, model_for
 
 IMPORT_SCHEMA = {
     "type": "object",
@@ -19,13 +26,13 @@ IMPORT_SCHEMA = {
                         "type": "object",
                         "properties": {
                             "label": {"type": "string"},
-                            "url": {"type": "string"}
+                            "url": {"type": "string"},
                         },
-                        "required": ["label", "url"]
-                    }
-                }
+                        "required": ["label", "url"],
+                    },
+                },
             },
-            "required": ["name", "email"]
+            "required": ["name", "email"],
         },
         "entries": {
             "type": "array",
@@ -33,64 +40,70 @@ IMPORT_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "id": {"type": "string"},
-                    "type": {"type": "string", "enum": ["experience", "education", "project", "skill"]},
+                    "type": {
+                        "type": "string",
+                        "enum": ["experience", "education", "project", "skill"],
+                    },
                     "title": {"type": "string"},
                     "org": {"type": "string"},
                     "date": {"type": "string"},
-                    "bullets": {
-                        "type": "array",
-                        "items": {"type": "string"}
-                    }
+                    "bullets": {"type": "array", "items": {"type": "string"}},
                 },
-                "required": ["id", "type", "title"]
-            }
-        }
+                "required": ["id", "type", "title"],
+            },
+        },
     },
-    "required": ["profile", "entries"]
+    "required": ["profile", "entries"],
 }
 
-async def parse_resume_pdf(pdf_bytes: bytes) -> dict:
+
+class ImportError_(Exception):
+    pass
+
+
+def extract_text(pdf_bytes: bytes) -> str:
     try:
-        pdf_file = io.BytesIO(pdf_bytes)
-        reader = PdfReader(pdf_file)
-        text = ""
-        for page in reader.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text += page_text + "\n"
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        text = "\n".join(page.extract_text() or "" for page in reader.pages)
     except Exception as e:
-        raise ValueError(f"Failed to read PDF: {str(e)}")
-
+        raise ImportError_(f"Failed to read PDF: {e}")
     if not text.strip():
-        raise ValueError("The uploaded PDF resume appears to have no text content.")
+        raise ImportError_(
+            "The PDF has no extractable text (it may be a scan). "
+            "Export a text-based PDF and try again."
+        )
+    return text
 
-    prompt = f"""
-    You are an expert resume parser.
-    Extract the candidate's profile details and experience entries from the following raw resume text.
-    Convert all work experiences, education history, projects, and skills into structured items.
-    Generate a short unique ID (like a slug, e.g. "software_engineer_google" or "bs_computer_science") for each entry.
-    
-    Resume Text:
-    {text}
-    
-    Format the response EXACTLY to the requested JSON schema.
-    """
 
-    res_str = await run_oneshot(prompt, json_schema=IMPORT_SCHEMA)
-    return json.loads(res_str)
+async def parse_resume_pdf(repo_root, pdf_bytes: bytes) -> dict:
+    text = extract_text(pdf_bytes)
+    prompt = (
+        "You are an expert resume parser. Extract the candidate's profile and "
+        "entries from the raw resume text below. Convert every work experience, "
+        "education item, project, and skill group into a structured entry. Give "
+        "each entry a short lowercase dash-slug id like 'exp-google-swe' or "
+        "'edu-bs-cs'. Format the response EXACTLY to the JSON schema.\n\n"
+        f"Resume text:\n{text}"
+    )
+    cfg = config.load()
+    agent = get_agent(cfg)
+    model, effort = model_for(cfg, "chat")
+    result = await agent.oneshot(repo_root, prompt, model=model, effort=effort,
+                                 json_schema=IMPORT_SCHEMA)
+    return json.loads(result)
+
+
+def _slug(raw: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(raw).lower()).strip("-") or "entry"
+
 
 def apply_import(r, parsed: dict) -> None:
-    # Save profile
     r.save_profile(parsed.get("profile", {}))
-    
-    # Save entries
     for entry in parsed.get("entries", []):
-        entry_id = entry.get("id")
-        entry_data = {
+        r.save_entry(_slug(entry.get("id", "")), {
             "type": entry.get("type"),
             "title": entry.get("title"),
             "org": entry.get("org", ""),
             "date": entry.get("date", ""),
-            "bullets": entry.get("bullets", [])
-        }
-        r.save_entry(entry_id, entry_data)
+            "bullets": entry.get("bullets", []),
+        })

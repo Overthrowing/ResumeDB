@@ -1,6 +1,7 @@
 """ATS audit: (1) deterministic PDF-extraction diff proving machines can read
 every word of the rendered resume; (2) LLM keyword-coverage rubric vs the JD."""
 
+import json
 import re
 import unicodedata
 from pathlib import Path
@@ -8,9 +9,8 @@ from pathlib import Path
 from pypdf import PdfReader
 
 from . import config
-from .claude import ClaudeError, run_oneshot
-from .codex import run_oneshot_codex
 from .datarepo import DataRepo, _load
+from .providers import get_agent, model_for
 
 RUBRIC_SCHEMA = {
     "type": "object",
@@ -62,37 +62,16 @@ def extraction_check(repo_root: Path, app_id: str) -> dict:
 
 async def llm_rubric(repo: DataRepo, app_id: str) -> dict:
     cfg = config.load()
-    provider = cfg.get("agent_provider", "claude")
     prompt = (
         f"Follow the ats-audit skill for the application in applications/{app_id}/: "
         f"read its jd.md and resume.yaml and score keyword coverage. "
         f"Respond with only the JSON object the skill describes."
     )
     try:
-        import json
-
-        if provider == "codex":
-            codex_bin = config.codex_bin(cfg)
-            text = await run_oneshot_codex(
-                codex_bin,
-                cwd=repo.root,
-                prompt=prompt,
-                model=cfg["models"].get("audit"),
-                effort=cfg["models"].get("audit_effort"),
-                json_schema=RUBRIC_SCHEMA,
-            )
-        else:
-            claude_bin = config.claude_bin(cfg)
-            if not claude_bin:
-                return {"error": "claude CLI not found"}
-            text = await run_oneshot(
-                claude_bin,
-                cwd=repo.root,
-                prompt=prompt,
-                model=cfg["models"].get("audit"),
-                effort=cfg["models"].get("audit_effort"),
-                json_schema=RUBRIC_SCHEMA,
-            )
+        agent = get_agent(cfg)
+        model, effort = model_for(cfg, "audit")
+        text = await agent.oneshot(repo.root, prompt, model=model, effort=effort,
+                                   json_schema=RUBRIC_SCHEMA)
         return json.loads(text)
     except Exception as e:
         return {"error": str(e)}
