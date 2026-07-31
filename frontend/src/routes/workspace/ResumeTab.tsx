@@ -1,10 +1,22 @@
 import { useEffect, useState } from 'react'
+import Markdown from 'react-markdown'
 import { Download, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type Application, type RenderResult } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+
+/** The three faces of one tailoring run: what it produced, the data behind it,
+ * and why the agent made those calls. Decisions lives here rather than at the
+ * bottom of Overview - you read it while looking at the resume it explains. */
+const VIEWS = [
+  ['preview', 'Preview'],
+  ['source', 'resume.yaml'],
+  ['decisions', 'Decisions'],
+] as const
+
+type View = (typeof VIEWS)[number][0]
 
 export default function ResumeTab({
   app,
@@ -19,9 +31,10 @@ export default function ResumeTab({
   onRender: () => Promise<void>
   onSaved: () => void
 }) {
-  const [view, setView] = useState<'preview' | 'source'>('preview')
+  const [view, setView] = useState<View>('preview')
   const [source, setSource] = useState(app.files['resume.yaml'] ?? '')
   const [dirty, setDirty] = useState(false)
+  const decisions = app.files['decisions.md'] ?? ''
 
   // The agent rewrites resume.yaml behind our back; without this the editor
   // keeps the pre-agent text and "Save & render" would overwrite the tailoring.
@@ -54,10 +67,12 @@ export default function ResumeTab({
             </Badge>
           )}
         </div>
-        <div className="flex gap-1.5">
+        {/* wraps: with a wide chat rail the view switcher plus three buttons
+            outruns the column, and clipped controls beat none */}
+        <div className="flex flex-wrap justify-end gap-1.5">
           {/* h-7 track content + p-0.5 = h-8, matching the size="sm" buttons beside it */}
           <div className="inline-flex items-center gap-0.5 rounded-md bg-muted p-0.5">
-            {(['preview', 'source'] as const).map((v) => (
+            {VIEWS.map(([v, label]) => (
               <button
                 key={v}
                 aria-pressed={view === v}
@@ -69,7 +84,7 @@ export default function ResumeTab({
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >
-                {v === 'preview' ? 'Preview' : 'resume.yaml'}
+                {label}
               </button>
             ))}
           </div>
@@ -108,6 +123,17 @@ export default function ResumeTab({
             Not rendered yet - hit Render, or ask the tailoring assistant to draft it.
           </div>
         )
+      ) : view === 'decisions' ? (
+        <div className="prose-chat min-h-0 flex-1 overflow-y-auto rounded-lg border bg-card px-4 py-3 text-[13px] leading-relaxed">
+          {decisions.trim() ? (
+            <Markdown>{decisions}</Markdown>
+          ) : (
+            <div className="mt-12 text-center text-sm text-muted-foreground">
+              No decisions recorded yet - the assistant writes one bullet per tailoring choice, with
+              the JD evidence behind it.
+            </div>
+          )}
+        </div>
       ) : (
         <textarea
           spellCheck={false}

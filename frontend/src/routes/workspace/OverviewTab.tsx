@@ -78,7 +78,6 @@ export default function OverviewTab({ app, onSaved }: { app: Application; onSave
   const [jd, setJd] = useState(app.files['jd.md'] ?? '')
   const [notes, setNotes] = useState(app.files['notes.md'] ?? '')
   const [dirty, setDirty] = useState(false)
-  const decisions = app.files['decisions.md'] ?? ''
 
   // Same hazard as the resume editor: the agent and the jd-from-link fetch
   // rewrite these files, and manage-applications updates meta via the API.
@@ -226,17 +225,6 @@ export default function OverviewTab({ app, onSaved }: { app: Application; onSave
           }}
         />
       </div>
-      {decisions && (
-        <div className="mb-4">
-          <div className="mb-2 font-heading text-sm font-semibold text-accent-foreground">
-            Tailoring decisions
-            <span className="ml-2 text-[11px] font-normal text-muted-foreground">
-              - written by the agent each run, one bullet per choice with its JD evidence
-            </span>
-          </div>
-          <MarkdownField value={decisions} minHeight={120} readOnly label="Tailoring decisions" />
-        </div>
-      )}
       <Button disabled={!dirty} onClick={save}>
         Save overview
       </Button>
