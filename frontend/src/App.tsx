@@ -9,7 +9,7 @@ import {
   RefreshCw,
   Settings as SettingsIcon,
 } from 'lucide-react'
-import { api } from '@/lib/api'
+import { ApiError, api } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -51,15 +51,32 @@ export default function App() {
   if (health.isPending)
     return <div className="grid h-screen place-items-center text-sm text-muted-foreground">Loading…</div>
 
-  if (health.isError)
+  if (health.isError) {
+    // The server answering "your config is invalid" is not the server being
+    // down, and telling the user to start it would send them the wrong way.
+    const replied = health.error instanceof ApiError
     return (
       <div className="grid h-screen place-items-center">
-        <div className="max-w-sm text-center">
+        <div className="max-w-md text-center">
           <div className="mb-2 flex justify-center"><Logo /></div>
-          <h1 className="font-heading text-2xl font-semibold">Backend unreachable</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            The ResumeDB server on port 8000 is not responding. Start it with <code className="rounded bg-muted px-1">make dev</code>, then retry.
-          </p>
+          <h1 className="font-heading text-2xl font-semibold">
+            {replied ? 'ResumeDB cannot start' : 'Backend unreachable'}
+          </h1>
+          {replied ? (
+            <>
+              <p className="mt-2 text-sm text-muted-foreground">The server is running but rejected its own configuration:</p>
+              <p className="mt-2 rounded-md border border-destructive/40 bg-card px-3 py-2 text-left text-[13px] text-destructive">
+                {health.error.message}
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Fix <code className="rounded bg-muted px-1">~/.resumedb.json</code>, then retry.
+              </p>
+            </>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">
+              The ResumeDB server on port 8000 is not responding. Start it with <code className="rounded bg-muted px-1">make dev</code>, then retry.
+            </p>
+          )}
           <Button className="mt-4" variant="outline" onClick={() => health.refetch()}>
             <RefreshCw className="size-3.5" />
             Retry
@@ -67,6 +84,7 @@ export default function App() {
         </div>
       </div>
     )
+  }
 
   const p = profile.data ?? {}
   const initials =

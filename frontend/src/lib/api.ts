@@ -160,18 +160,35 @@ export interface ParsedResume {
   entries: Entry[]
 }
 
+/** The server answered, but with an error envelope. Distinguishable from a
+ * network failure, which matters: a server that replies "your config is
+ * invalid" must not be reported to the user as a server that is down. */
+export class ApiError extends Error {
+  status: number
+  code: string
+
+  constructor(message: string, status: number, code: string) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.code = code
+  }
+}
+
 /** Fetch, turning the backend's {error, detail} envelope into a thrown Error. */
 async function send(url: string, init?: RequestInit): Promise<Response> {
   const res = await fetch(url, init)
   if (!res.ok) {
     let detail = res.statusText
+    let code = 'http_error'
     try {
       const body = await res.json()
       detail = body.detail ?? body.error ?? detail
+      code = body.error ?? code
     } catch {
       /* not json */
     }
-    throw new Error(detail)
+    throw new ApiError(detail, res.status, code)
   }
   return res
 }

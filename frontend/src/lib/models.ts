@@ -24,3 +24,16 @@ export const modelLabel = (m: string, kind: ModelKind) => (m === DEFAULT_MODEL[k
  */
 export const resolveModel = (m: string | null | undefined, kind: ModelKind): string =>
   m && MODELS.includes(m) ? m : DEFAULT_MODEL[kind]
+
+/** Reasoning-effort choices. Unlike the model, effort still has a real
+ * "let the CLI decide" option, which is the empty value. */
+export const EFFORTS = ['', 'low', 'medium', 'high', 'xhigh', 'max']
+
+/** Radix Select cannot hold an empty string as a value, so the "no explicit
+ * effort" choice travels as this sentinel and is mapped back to null on save. */
+export const EFFORT_DEFAULT = 'default'
+
+/** Same guard as resolveModel: a hand-edited config can hold an effort outside
+ * the list, and an unmatched value renders a blank trigger. */
+export const resolveEffort = (e: string | null | undefined): string =>
+  e && EFFORTS.includes(e) ? e : EFFORT_DEFAULT

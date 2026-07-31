@@ -12,10 +12,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { MODELS, modelLabel, resolveModel, type ModelKind } from '@/lib/models'
+import {
+  EFFORTS,
+  EFFORT_DEFAULT,
+  MODELS,
+  modelLabel,
+  resolveEffort,
+  resolveModel,
+  type ModelKind,
+} from '@/lib/models'
 import { cn } from '@/lib/utils'
-
-const EFFORTS = ['', 'low', 'medium', 'high', 'xhigh', 'max']
 
 function ModelRow({
   label,
@@ -51,15 +57,15 @@ function ModelRow({
         </SelectContent>
       </Select>
       <Select
-        value={effort ?? 'default'}
-        onValueChange={(v) => onChange(resolveModel(model, kind), v === 'default' ? null : v)}
+        value={resolveEffort(effort)}
+        onValueChange={(v) => onChange(resolveModel(model, kind), v === EFFORT_DEFAULT ? null : v)}
       >
         <SelectTrigger size="sm" className="w-32">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {EFFORTS.map((e) => (
-            <SelectItem key={e || 'default'} value={e || 'default'}>
+            <SelectItem key={e || EFFORT_DEFAULT} value={e || EFFORT_DEFAULT}>
               {e || 'default effort'}
             </SelectItem>
           ))}
