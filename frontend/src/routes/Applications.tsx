@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router'
 import { ChevronRight, Plus, TriangleAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type AppStatus } from '@/lib/api'
+import { useBusyScopes } from '@/chat/store'
 import ChatRail from '@/components/ChatRail'
 import ErrorText from '@/components/ErrorText'
 import { Page, PageHeader } from '@/components/Page'
@@ -30,6 +31,7 @@ export default function Applications() {
   const qc = useQueryClient()
   const [creating, setCreating] = useState(false)
   const [filter, setFilter] = useState<AppStatus | 'all'>('all')
+  const busyScopes = useBusyScopes()
 
   const appsQ = useQuery({ queryKey: ['apps'], queryFn: api.applications })
   const apps = appsQ.data ?? []
@@ -114,7 +116,17 @@ export default function Applications() {
                     className="cursor-pointer border-b last:border-0 hover:bg-accent/40"
                     onClick={() => navigate(`/applications/${a.id}`)}
                   >
-                    <td className="px-4 py-3 font-heading text-[15px] font-semibold">
+                    <td className="relative px-4 py-3 font-heading text-[15px] font-semibold">
+                      {/* Turns keep running after you navigate away, so the list
+                          says which applications are mid-turn. Absolute, inside
+                          the cell padding: a marker that shifted the title would
+                          knock this row out of line with every other one. */}
+                      {busyScopes.includes(`app:${a.id}`) && (
+                        <span
+                          title="Working - the assistant is mid-turn on this application"
+                          className="absolute left-1.5 top-1/2 size-1.5 -translate-y-1/2 animate-pulse rounded-full bg-primary"
+                        />
+                      )}
                       {/* The row onClick is mouse-only; this link is the keyboard
                           route in. stopPropagation keeps the row from navigating
                           a second time when the link itself is activated. */}

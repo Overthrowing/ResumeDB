@@ -69,6 +69,34 @@ function set(scope: string, patch: Partial<ChatState>) {
   const c = get(scope)
   c.state = { ...c.state, ...patch }
   c.listeners.forEach((l) => l())
+  if ('busy' in patch) refreshBusy()
+}
+
+// -- which scopes are working, for callers outside those scopes ---------------
+// Turns keep running when you navigate away, so a list of applications has to
+// be able to say which of them are mid-turn without mounting their chats.
+
+const busyListeners = new Set<() => void>()
+let busyScopes: string[] = []
+
+function refreshBusy() {
+  const next = [...chats].filter(([, c]) => c.state.busy).map(([s]) => s).sort()
+  // useSyncExternalStore compares snapshots by identity, so only swap the array
+  // when membership actually changed: a redundant `busy` patch (turn_done after
+  // a socket close already cleared it) must not re-render every subscriber.
+  if (next.length === busyScopes.length && next.every((s, i) => s === busyScopes[i])) return
+  busyScopes = next
+  busyListeners.forEach((l) => l())
+}
+
+export function useBusyScopes(): string[] {
+  return useSyncExternalStore(
+    useCallback((cb: () => void) => {
+      busyListeners.add(cb)
+      return () => busyListeners.delete(cb)
+    }, []),
+    () => busyScopes,
+  )
 }
 
 // -- websocket lifecycle -------------------------------------------------------
