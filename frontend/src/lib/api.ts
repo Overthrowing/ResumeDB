@@ -135,7 +135,9 @@ export interface AuditResult {
     score?: number
     covered?: string[]
     missing?: string[]
-    notes?: string
+    /** One finding per string. A repo whose ats-audit skill predates the
+     * change still answers with a single paragraph. */
+    notes?: string[] | string
     error?: string
   }
 }

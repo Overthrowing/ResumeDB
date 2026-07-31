@@ -180,3 +180,29 @@ def test_extraction_check_names_the_fields_a_pdf_reader_loses(repo):
     lost = {m["field"]: m["missing_tokens"] for m in result["missing"]}
     assert lost["name"] == ["zebediah", "quux"]  # normalized, not raw
     assert result["checked"] == len(lost) == 3  # name + section title + entry title
+
+
+def test_extraction_check_ignores_link_hrefs_and_www(repo, monkeypatch):
+    """Every resume with links used to fail this check: an href never renders as
+    text, and a host reads with or without www. depending on the template."""
+    app_id = _app(repo)
+    app_dir = repo.root / "applications" / app_id
+    (app_dir / "resume.yaml").write_text(
+        "contact:\n"
+        "  links:\n"
+        "  - label: linkedin.com/in/zq\n"
+        "    url: https://www.linkedin.com/in/zq/\n"
+    )
+    (app_dir / "resume.pdf").write_bytes(b"stubbed below")
+    # what typst actually puts in the text layer: the label, with the template's
+    # www. prefix, and no trace of the href
+    monkeypatch.setattr(
+        audit, "PdfReader",
+        lambda _p: types.SimpleNamespace(
+            pages=[types.SimpleNamespace(extract_text=lambda: "www.linkedin.com/in/zq")]
+        ),
+    )
+
+    result = audit.extraction_check(repo.root, app_id)
+    assert result["checked"] == 1  # the href is not text, so it is not checked
+    assert result["ok"] is True, result["missing"]

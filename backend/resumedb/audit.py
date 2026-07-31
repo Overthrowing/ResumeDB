@@ -19,15 +19,25 @@ RUBRIC_SCHEMA = {
         "score": {"type": "number"},
         "covered": {"type": "array", "items": {"type": "string"}},
         "missing": {"type": "array", "items": {"type": "string"}},
-        "notes": {"type": "string"},
+        # a list, not a paragraph: these are read while deciding what to fix
+        "notes": {"type": "array", "items": {"type": "string"}},
     },
     "required": ["score", "covered", "missing", "notes"],
 }
 
 
+# A link's href is not text: the PDF renders the label and hides the target, so
+# checking it only ever reports words no reader was going to see.
+URL_FIELD_RE = re.compile(r"(^|\.)url$")
+# Same idea one level down: "https" never renders, and a host reads with or
+# without its www. depending on the template. Neither is a word that got lost.
+SCHEME_TOKENS = {"http", "https", "www"}
+
+
 def _norm_tokens(s: str) -> list[str]:
     s = unicodedata.normalize("NFKC", s).lower()
-    return [t for t in re.split(r"[^a-z0-9@.+#]+", s) if t]
+    tokens = (t for t in re.split(r"[^a-z0-9@.+#]+", s) if t)
+    return [t[4:] if t.startswith("www.") else t for t in tokens if t not in SCHEME_TOKENS]
 
 
 def _walk_strings(node, path: str = "") -> list[tuple[str, str]]:
@@ -58,7 +68,7 @@ def extraction_check(repo_root: Path, app_id: str) -> dict:
     haystack = set(_norm_tokens(extracted))
     data = load_yaml(app_dir / "resume.yaml") or {}
     missing = []
-    fields = _walk_strings(data)
+    fields = [f for f in _walk_strings(data) if not URL_FIELD_RE.search(f[0])]
     for path, text in fields:
         lost = [t for t in _norm_tokens(text) if t not in haystack]
         if lost:
