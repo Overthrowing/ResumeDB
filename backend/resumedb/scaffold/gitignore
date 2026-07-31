@@ -1,3 +1,4 @@
 *.pdf
 .state.json
+.resumedb/
 .DS_Store

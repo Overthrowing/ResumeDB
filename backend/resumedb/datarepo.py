@@ -1,88 +1,99 @@
 """Data repo layer: YAML CRUD for entries, applications, proposals; init/scaffold.
 
-ruamel.yaml round-trip mode so hand-written comments and key order in the
-user-owned ground truth survive form saves.
+ruamel.yaml round-trip mode (via fsio) so hand-written comments and key order
+in the user-owned ground truth survive form saves. All writes are atomic.
+
+Machine-local state (chat sessions, turn logs) lives under .resumedb/, which is
+gitignored and doubles as the "this is a ResumeDB repo" marker.
 """
 
 import datetime
-import io
 import re
 import shutil
 from pathlib import Path
 
-from ruamel.yaml import YAML
-
 from . import gitops
+from .fsio import NAME_RE, SLUG_RE, atomic_write, dump_yaml, load_yaml
 
 SCAFFOLD = Path(__file__).parent / "scaffold"
 MARKER = ".resumedb"
 ENTRY_TYPES = {"experience", "project", "skill", "course", "education", "achievement", "extra"}
 NON_ENTRY_FILES = {"profile", "memory"}
-APP_FILES = {"jd.md", "notes.md", "resume.yaml", "resume.typ", "cover-letter.md", "decisions.md"}
+APP_FILES = {"jd.md", "notes.md", "resume.yaml", "resume.typ", "decisions.md"}
 UPLOAD_EXTS = {".pdf", ".png", ".jpg", ".jpeg", ".webp", ".txt", ".md"}
+
+# Skills removed from the product; pruned from existing data repos on sync.
+RETIRED_SKILLS = {"cover-letter", "discover-jobs"}
 
 
 class DataRepoError(Exception):
     pass
 
 
-def _yaml() -> YAML:
-    # ruamel YAML instances are not thread-safe; FastAPI serves requests from a
-    # threadpool, so make a fresh round-trip instance per call.
-    y = YAML()
-    y.default_flow_style = False
-    return y
-
-
 def _load(path: Path):
-    with path.open() as f:
-        return _yaml().load(f)
+    return load_yaml(path)
 
 
 def _dump(data, path: Path) -> None:
-    buf = io.StringIO()
-    _yaml().dump(data, buf)
-    path.write_text(buf.getvalue())
-
-
-def init_datarepo(path: Path) -> None:
-    if path.exists() and any(path.iterdir()) and not (path / MARKER).exists():
-        raise DataRepoError(f"{path} exists and is not empty; refusing to scaffold over it")
-    path.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(SCAFFOLD, path, dirs_exist_ok=True)
-    (path / "gitignore").rename(path / ".gitignore")
-    (path / MARKER).touch()
-    for d in ("applications", "proposals"):
-        (path / d).mkdir(exist_ok=True)
-    gitops.init(path)
+    dump_yaml(data, path)
 
 
 def is_datarepo(path: Path) -> bool:
     return (path / MARKER).exists()
 
 
+def state_dir(root: Path) -> Path:
+    """Machine-local state directory (.resumedb/). Converts the legacy marker
+    file from older repos into a directory."""
+    d = root / MARKER
+    if d.is_file():
+        d.unlink()
+    d.mkdir(exist_ok=True)
+    return d
+
+
+def init_datarepo(path: Path) -> None:
+    if path.exists() and any(path.iterdir()) and not is_datarepo(path):
+        raise DataRepoError(f"{path} exists and is not empty; refusing to scaffold over it")
+    path.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(SCAFFOLD, path, dirs_exist_ok=True)
+    (path / "gitignore").rename(path / ".gitignore")
+    state_dir(path)
+    for d in ("applications", "proposals"):
+        (path / d).mkdir(exist_ok=True)
+    gitops.init(path)
+
+
 # App-authored boilerplate the scaffold owns. db/, applications/, proposals/
 # are deliberately absent - that is user data, never overwritten by a sync.
-BOILERPLATE_FILES = ("CLAUDE.md", "templates/SCHEMA.md", "templates/sample.yaml", "templates/classic.typ")
+BOILERPLATE_FILES = (
+    "CLAUDE.md", "AGENTS.md",
+    "templates/SCHEMA.md", "templates/sample.yaml", "templates/classic.typ",
+)
 
 
 def sync_boilerplate(path: Path, force: bool = False) -> list[str]:
-    """Sync app-authored boilerplate (skills, CLAUDE.md, template contract) from
-    the scaffold into an existing data repo.
+    """Sync app-authored boilerplate (skills, CLAUDE.md/AGENTS.md, template
+    contract) from the scaffold into an existing data repo.
 
-    force=False (health check): additive only - add whole skills the repo lacks
-    and restore a missing CLAUDE.md/template file. Never overwrites user edits.
-    force=True (make dev): overwrite the boilerplate so scaffold changes
-    propagate. Still never touches db/, applications/, or proposals/.
+    force=False: additive only - add whole skills the repo lacks and restore a
+    missing boilerplate file. Never overwrites user edits.
+    force=True (make dev / explicit sync): overwrite the boilerplate so scaffold
+    changes propagate. Still never touches db/, applications/, or proposals/.
 
-    Returns the git-relative paths that actually changed.
+    Retired skills are pruned either way. Returns the git-relative paths that
+    actually changed.
     """
     if not is_datarepo(path):
         return []
+    skills_root = path / ".claude" / "skills"
+    for name in RETIRED_SKILLS:
+        if (skills_root / name).exists():
+            shutil.rmtree(skills_root / name)
     for skill_dir in (SCAFFOLD / ".claude" / "skills").iterdir():
         if not skill_dir.is_dir():
             continue
-        target = path / ".claude" / "skills" / skill_dir.name
+        target = skills_root / skill_dir.name
         if force and target.exists():
             shutil.rmtree(target)
         if not target.exists():
@@ -92,16 +103,11 @@ def sync_boilerplate(path: Path, force: bool = False) -> list[str]:
         if force or not dst.exists():
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy(SCAFFOLD / rel, dst)
-    changed = gitops.changed_files(path, ".claude/skills", "CLAUDE.md", "templates")
+    changed = gitops.changed_files(path, ".claude/skills", "CLAUDE.md", "AGENTS.md", "templates")
     if changed:
         verb = "overwrite" if force else "add"
         gitops.checkpoint(path, "db", f"sync boilerplate from scaffold ({verb} {len(changed)} file(s))")
     return changed
-
-
-def sync_new_skills(path: Path) -> None:
-    """Additive top-up used by the health check. See sync_boilerplate."""
-    sync_boilerplate(path, force=False)
 
 
 if __name__ == "__main__":  # `python -m resumedb.datarepo` - dev boilerplate push
@@ -137,7 +143,7 @@ class DataRepo:
         return entries
 
     def entry_path(self, entry_id: str) -> Path:
-        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", entry_id):
+        if not SLUG_RE.fullmatch(entry_id):
             raise DataRepoError(f"bad entry id: {entry_id!r}")
         return self.root / "db" / f"{entry_id}.yaml"
 
@@ -182,38 +188,11 @@ class DataRepo:
 
     def get_memory(self) -> dict:
         md = self.root / "db" / "memory.md"
-        if not md.exists():
-            self._migrate_memory()
         return {"content": md.read_text() if md.exists() else ""}
 
     def save_memory(self, content: str) -> None:
-        (self.root / "db" / "memory.md").write_text(content)
+        atomic_write(self.root / "db" / "memory.md", content)
         gitops.checkpoint(self.root, "db", "save memory")
-
-    def _migrate_memory(self) -> None:
-        """One-time: convert the old structured memory.yaml to plain markdown."""
-        old = self.root / "db" / "memory.yaml"
-        if not old.exists():
-            return
-        data = _load(old) or {}
-        titles = [
-            ("narrative", "Narrative"),
-            ("voice", "Voice & style"),
-            ("constraints", "Constraints"),
-            ("emphasis", "Default emphasis"),
-            ("notes", "Notes"),
-        ]
-        sections = [
-            f"## {title}\n\n{str(data.get(key) or '').strip()}\n"
-            for key, title in titles
-            if str(data.get(key) or "").strip()
-        ]
-        (self.root / "db" / "memory.md").write_text("\n".join(sections))
-        old.unlink()
-        claude_md = self.root / "CLAUDE.md"
-        if claude_md.exists() and "memory.yaml" in claude_md.read_text():
-            claude_md.write_text(claude_md.read_text().replace("memory.yaml", "memory.md"))
-        gitops.checkpoint(self.root, "db", "migrate memory to markdown")
 
     # -- applications --------------------------------------------------------
 
@@ -229,7 +208,7 @@ class DataRepo:
         return apps
 
     def app_dir(self, app_id: str) -> Path:
-        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", app_id):
+        if not SLUG_RE.fullmatch(app_id):
             raise DataRepoError(f"bad application id: {app_id!r}")
         d = self.root / "applications" / app_id
         if not d.is_dir():
@@ -254,12 +233,11 @@ class DataRepo:
                 "template": template,
                 "created": f"{datetime.date.today():%Y-%m-%d}",
                 "status": "not_started",
-                "session_id": None,
             },
             d / "meta.yaml",
         )
-        (d / "jd.md").write_text(jd_text)
-        (d / "notes.md").write_text("")
+        atomic_write(d / "jd.md", jd_text)
+        atomic_write(d / "notes.md", "")
         shutil.copy(template_file, d / "resume.typ")
         _dump(
             {
@@ -287,10 +265,10 @@ class DataRepo:
     def save_app_file(self, app_id: str, name: str, content: str) -> None:
         if name not in APP_FILES:
             raise DataRepoError(f"not an editable file: {name}")
-        (self.app_dir(app_id) / name).write_text(content)
+        atomic_write(self.app_dir(app_id) / name, content)
         gitops.checkpoint(self.root, f"app:{app_id}", f"edit {name}")
 
-    META_FIELDS = {"company", "role", "status", "deadline", "source", "template", "session_id"}
+    META_FIELDS = {"company", "role", "status", "deadline", "source", "template"}
     APP_STATUSES = ["not_started", "in_progress", "awaiting_review", "ready", "applied"]
 
     def set_app_meta(self, app_id: str, **updates) -> None:
@@ -303,8 +281,7 @@ class DataRepo:
         meta = _load(path) or {}
         meta.update(updates)
         _dump(meta, path)
-        if set(updates) - {"session_id"}:  # session bookkeeping is not a user-visible change
-            gitops.checkpoint(self.root, f"app:{app_id}", "edit details")
+        gitops.checkpoint(self.root, f"app:{app_id}", "edit details")
 
     # -- proposals -----------------------------------------------------------
 
@@ -329,7 +306,7 @@ class DataRepo:
         return out
 
     def _proposal_path(self, name: str) -> Path:
-        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name):
+        if not NAME_RE.fullmatch(name):
             raise DataRepoError(f"bad proposal name: {name!r}")
         for ext in (".yaml", ".yml"):
             p = self.root / "proposals" / f"{name}{ext}"
@@ -400,43 +377,7 @@ class DataRepo:
         gitops.checkpoint(self.root, git_scope, f"upload {path.name}")
         return str(path.relative_to(self.root))
 
-    # -- research runs --------------------------------------------------------
-
-    def _runs_dir(self) -> Path:
-        d = self.root / "db" / "research_runs"
-        d.mkdir(parents=True, exist_ok=True)
-        return d
-
-    def save_research_run(self, run_id: str, data: dict) -> None:
-        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):
-            raise DataRepoError(f"bad run id: {run_id!r}")
-        path = self._runs_dir() / f"{run_id}.yaml"
-        _dump(data, path)
-        gitops.checkpoint(self.root, "db", f"save research run {run_id}")
-
-    def get_research_run(self, run_id: str) -> dict:
-        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_id):
-            raise DataRepoError(f"bad run id: {run_id!r}")
-        path = self._runs_dir() / f"{run_id}.yaml"
-        if not path.exists():
-            raise DataRepoError(f"no research run {run_id}")
-        return _load(path) or {}
-
-    def list_research_runs(self, limit: int = 10) -> list[dict]:
-        d = self._runs_dir()
-        runs = []
-        for f in sorted(d.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True):
-            try:
-                data = _load(f) or {}
-                runs.append(data)
-                if len(runs) >= limit:
-                    break
-            except Exception:
-                pass
-        return runs
-
     # -- templates -----------------------------------------------------------
 
     def list_templates(self) -> list[str]:
         return sorted(f.stem for f in (self.root / "templates").glob("*.typ"))
-
