@@ -99,8 +99,16 @@ def _slug(raw: str) -> str:
 
 
 def apply_import(r, parsed: dict) -> None:
-    r.save_profile(parsed.get("profile", {}))
-    for entry in parsed.get("entries", []):
+    if not isinstance(parsed, dict):
+        raise ImportError_("expected a parsed-resume object")
+    profile = parsed.get("profile", {})
+    entries = parsed.get("entries", [])
+    if not isinstance(profile, dict):
+        raise ImportError_("`profile` must be an object")
+    if not isinstance(entries, list) or any(not isinstance(e, dict) for e in entries):
+        raise ImportError_("`entries` must be a list of objects")
+    r.save_profile(profile)
+    for entry in entries:
         r.save_entry(_slug(entry.get("id", "")), {
             "type": entry.get("type"),
             "title": entry.get("title"),

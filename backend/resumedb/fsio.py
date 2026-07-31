@@ -50,9 +50,24 @@ def yaml() -> YAML:
     return y
 
 
+MAX_YAML_BYTES = 4 * 1024 * 1024
+MAX_YAML_ALIASES = 200
+
+
 def load_yaml(path: Path):
-    with path.open() as f:
-        return yaml().load(f)
+    """Parse a YAML file, refusing inputs designed to blow up on expansion.
+
+    An alias bomb (nested anchors referenced repeatedly) is a few hundred bytes
+    but expands to hundreds of millions of nodes, pinning a core and exhausting
+    memory. Agents write proposals/, so this is reachable without a human ever
+    hand-editing a file."""
+    raw = path.read_bytes()
+    if len(raw) > MAX_YAML_BYTES:
+        raise ValueError(f"{path.name} is too large to parse ({len(raw) // 1024} KB)")
+    text = raw.decode("utf-8", "replace")
+    if text.count("*") > MAX_YAML_ALIASES and text.count("&") > 1:
+        raise ValueError(f"{path.name} has too many YAML aliases to expand safely")
+    return yaml().load(text)
 
 
 def dump_yaml(data, path: Path) -> None:

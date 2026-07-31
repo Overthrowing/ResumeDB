@@ -12,10 +12,17 @@ surfaces as an error instead of a hang.
 import re
 import subprocess
 import threading
+import time
+from contextlib import contextmanager
 from pathlib import Path
 
 GIT_TIMEOUT = 30
 SHA_RE = re.compile(r"[0-9a-fA-F]{7,40}")
+# `git add` walks the tree, then opens each file. A file that disappears in
+# between (a proposal being applied, the agent subprocess editing the repo)
+# aborts the whole command, so retry a couple of times before giving up.
+ADD_RETRIES = 3
+RACE_MARKERS = ("no such file or directory", "unable to index file")
 
 _locks: dict[str, threading.RLock] = {}
 _locks_guard = threading.Lock()
@@ -29,6 +36,19 @@ def _lock(repo: Path) -> threading.RLock:
 
 class GitError(Exception):
     pass
+
+
+class GitInputError(GitError):
+    """Bad caller input (e.g. a malformed sha) rather than a git failure, so
+    routes can answer 400 instead of 500."""
+
+
+@contextmanager
+def repo_lock(repo: Path):
+    """Hold the repo lock across a multi-step mutation, so a checkpoint from
+    another request cannot stage a half-finished change."""
+    with _lock(repo):
+        yield
 
 
 def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
@@ -62,14 +82,27 @@ def init(repo: Path) -> None:
         _git(repo, "commit", "-m", "db: scaffold data repo")
 
 
-def checkpoint(repo: Path, scope: str, message: str) -> str | None:
-    """Commit changes under scope. Returns commit sha, or None if nothing changed."""
+def checkpoint(repo: Path, scope: str, message: str, paths: list[str] | None = None) -> str | None:
+    """Commit changes under scope. Returns commit sha, or None if nothing changed.
+
+    `paths` narrows what gets staged to the files this operation actually wrote.
+    Without it, concurrent saves fold into one another's commits, so a later
+    "undo save entry-7" would revert unrelated entries too.
+    """
+    pathspec = paths if paths else _scope_pathspec(scope)
     with _lock(repo):
-        _git(repo, "add", "-A", "--", *_scope_pathspec(scope))
-        staged = _git(repo, "diff", "--cached", "--quiet", check=False)
+        for attempt in range(ADD_RETRIES):
+            proc = _git(repo, "add", "-A", "--", *pathspec, check=False)
+            if proc.returncode == 0:
+                break
+            err = (proc.stderr or "").lower()
+            if attempt == ADD_RETRIES - 1 or not any(m in err for m in RACE_MARKERS):
+                raise GitError(proc.stderr.strip() or proc.stdout.strip())
+            time.sleep(0.05 * (attempt + 1))  # a file moved mid-walk; re-walk
+        staged = _git(repo, "diff", "--cached", "--quiet", "--", *pathspec, check=False)
         if staged.returncode == 0:
             return None
-        _git(repo, "commit", "-m", f"{scope}: {message}")
+        _git(repo, "commit", "-m", f"{scope}: {message}", "--", *pathspec)
         return _git(repo, "rev-parse", "HEAD").stdout.strip()
 
 
@@ -116,7 +149,7 @@ def _check_sha(sha: str) -> str:
     injection: `--output=CLAUDE.md` would make `git show` overwrite a repo file,
     and a revspec range would mass-revert. Only real hex object names pass."""
     if not SHA_RE.fullmatch(sha):
-        raise GitError(f"not a valid checkpoint id: {sha!r}")
+        raise GitInputError(f"not a valid checkpoint id: {sha!r}")
     return sha
 
 

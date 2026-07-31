@@ -71,6 +71,55 @@ def test_gitops_scope_isolation(repo):
     assert not gitops.is_dirty(root, "app:a1")
 
 
+def test_checkpoint_attribution_is_per_file(repo):
+    """Parallel saves used to fold into one another's commits, so undoing one
+    entry could revert unrelated entries."""
+    root = repo.root
+    errs = []
+
+    def save(i):
+        try:
+            repo.save_entry(f"attr-{i}", {"type": "skill", "title": f"Attr {i}"})
+        except Exception as e:  # pragma: no cover
+            errs.append(e)
+
+    threads = [threading.Thread(target=save, args=(i,)) for i in range(8)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert not errs
+    subjects = [e["subject"] for e in gitops.log(root, "db")]
+    for i in range(8):
+        assert f"db: save entry attr-{i}" in subjects  # one commit each, none folded
+
+
+def test_checkpoint_survives_files_moving_mid_add(repo):
+    """`git add` walking a directory while another request deletes a file used
+    to abort the whole command and lose the checkpoint."""
+    root = repo.root
+    scratch = root / "db" / "scratch"
+    scratch.mkdir()
+    stop = threading.Event()
+
+    def churn():
+        i = 0
+        while not stop.is_set():
+            f = scratch / f"f{i % 5}.yaml"
+            f.write_text("type: skill\ntitle: X\n")
+            f.unlink(missing_ok=True)
+            i += 1
+
+    t = threading.Thread(target=churn, daemon=True)
+    t.start()
+    try:
+        for i in range(15):
+            repo.save_memory(f"memory {i}")  # must not raise despite the churn
+    finally:
+        stop.set()
+        t.join(timeout=2)
+
+
 def test_gitops_concurrent_checkpoints(repo):
     """The per-repo lock keeps parallel checkpoints from corrupting the index."""
     root = repo.root

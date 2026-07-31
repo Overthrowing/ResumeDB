@@ -28,11 +28,11 @@ import {
 } from '@/chat/store'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { MODELS } from '@/lib/models'
 import { cn } from '@/lib/utils'
 
 const RAIL_MIN = 300
 const RAIL_MAX = 720
-const MODELS = ['', 'haiku', 'sonnet', 'opus', 'fable']
 
 export default function ChatRail({
   scope,
@@ -302,8 +302,16 @@ export default function ChatRail({
 
       {/* messages */}
       <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
+        {/* Keyed by conversation + position: Bubble holds local toolsOpen state,
+            so switching conversations must remount rather than rebind expanded
+            state to whatever message now sits at that index. */}
         {chat.messages.map((m, i) => (
-          <Bubble key={i} m={m} onRetry={m.interrupted ? () => retry(i) : undefined} busy={chat.busy} />
+          <Bubble
+            key={`${chat.convId ?? 'new'}:${i}`}
+            m={m}
+            onRetry={m.interrupted ? () => retry(i) : undefined}
+            busy={chat.busy}
+          />
         ))}
 
         {!chat.busy && proposals.filter((p) => !p.error).length >= 2 && (

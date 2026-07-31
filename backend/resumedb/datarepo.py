@@ -187,21 +187,21 @@ class DataRepo:
             doc.update(data)
             data = doc
         _dump(data, path)
-        gitops.checkpoint(self.root, "db", f"save entry {entry_id}")
+        gitops.checkpoint(self.root, "db", f"save entry {entry_id}", [f"db/{entry_id}.yaml"])
 
     def delete_entry(self, entry_id: str) -> None:
         path = self.entry_path(entry_id)
         if not path.exists():
             raise DataRepoError(f"no entry {entry_id}")
         path.unlink()
-        gitops.checkpoint(self.root, "db", f"delete entry {entry_id}")
+        gitops.checkpoint(self.root, "db", f"delete entry {entry_id}", [f"db/{entry_id}.yaml"])
 
     def get_profile(self) -> dict:
         return _load(self.root / "db" / "profile.yaml") or {}
 
     def save_profile(self, data: dict) -> None:
         _dump(data, self.root / "db" / "profile.yaml")
-        gitops.checkpoint(self.root, "db", "save profile")
+        gitops.checkpoint(self.root, "db", "save profile", ["db/profile.yaml"])
 
     def get_memory(self) -> dict:
         md = self.root / "db" / "memory.md"
@@ -209,7 +209,7 @@ class DataRepo:
 
     def save_memory(self, content: str) -> None:
         atomic_write(self.root / "db" / "memory.md", content)
-        gitops.checkpoint(self.root, "db", "save memory")
+        gitops.checkpoint(self.root, "db", "save memory", ["db/memory.md"])
 
     # -- applications --------------------------------------------------------
 
@@ -287,8 +287,10 @@ class DataRepo:
         d = self.app_dir(app_id)
         meta = self._normalize(_load(d / "meta.yaml") or {})
         meta["id"] = app_id
+        # errors="replace": one stray byte in notes.md must not make the whole
+        # application unopenable
         files = {
-            name: (d / name).read_text()
+            name: (d / name).read_text(errors="replace")
             for name in APP_FILES
             if (d / name).exists()
         }
@@ -298,7 +300,8 @@ class DataRepo:
         if name not in APP_FILES:
             raise DataRepoError(f"not an editable file: {name}")
         atomic_write(self.app_dir(app_id) / name, content)
-        gitops.checkpoint(self.root, f"app:{app_id}", f"edit {name}")
+        gitops.checkpoint(self.root, f"app:{app_id}", f"edit {name}",
+                          [f"applications/{app_id}/{name}"])
 
     META_FIELDS = {"company", "role", "status", "deadline", "source", "template", "outcome_note"}
     APP_STATUSES = [
@@ -333,7 +336,8 @@ class DataRepo:
                 history.append({"status": new_status, "date": f"{datetime.date.today():%Y-%m-%d}"})
             meta["history"] = history
         _dump(meta, path)
-        gitops.checkpoint(self.root, f"app:{app_id}", "edit details")
+        gitops.checkpoint(self.root, f"app:{app_id}", "edit details",
+                          [f"applications/{app_id}/meta.yaml"])
 
     @staticmethod
     def _synth_history(meta: dict) -> list[dict]:
@@ -402,21 +406,25 @@ class DataRepo:
         return str(target)
 
     def approve_proposal(self, name: str) -> str:
-        target = self._apply_proposal(name)
-        gitops.checkpoint(self.root, "db", f"approve proposal {name} -> {target}")
+        # hold the repo lock across write+unlink+commit: a checkpoint from
+        # another request must not stage the half-applied state
+        with gitops.repo_lock(self.root):
+            target = self._apply_proposal(name)
+            gitops.checkpoint(self.root, "db", f"approve proposal {name} -> {target}")
         return target
 
     def approve_all_proposals(self) -> dict:
         """Approve every readable proposal in one checkpoint; skip broken ones."""
         approved, skipped = [], []
-        for p in self.list_proposals():
-            try:
-                self._apply_proposal(p["name"])
-                approved.append(p["name"])
-            except DataRepoError:
-                skipped.append(p["name"])
-        if approved:
-            gitops.checkpoint(self.root, "db", f"approve {len(approved)} proposals")
+        with gitops.repo_lock(self.root):
+            for p in self.list_proposals():
+                try:
+                    self._apply_proposal(p["name"])
+                    approved.append(p["name"])
+                except DataRepoError:
+                    skipped.append(p["name"])
+            if approved:
+                gitops.checkpoint(self.root, "db", f"approve {len(approved)} proposals")
         return {"approved": approved, "skipped": skipped}
 
     def reject_proposal(self, name: str) -> None:
@@ -427,6 +435,8 @@ class DataRepo:
 
     def save_upload(self, scope: str, filename: str, data: bytes) -> str:
         """Store a chat attachment; returns its repo-relative path."""
+        if scope not in ("db", "apps") and not scope.startswith("app:"):
+            raise DataRepoError(f"bad scope: {scope!r}")
         ext = Path(filename).suffix.lower()
         if ext not in UPLOAD_EXTS:
             allowed = ", ".join(sorted(UPLOAD_EXTS))

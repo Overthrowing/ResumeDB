@@ -77,7 +77,16 @@ export default function EntryForm({
       return
     }
     try {
-      const { id: _drop, ...body } = { ...draft, type }
+      // The backend PUT is an upsert, so a new entry whose title slugifies onto
+      // an existing id would replace it without a word. Ask first.
+      if (!entry) {
+        const clash = (await api.entries()).find((e) => e.id === id)
+        if (clash && !confirm(`"${clash.title || clash.id}" already uses the id "${id}". Saving replaces it. Continue?`))
+          return
+      }
+      // `error` is a read-side annotation from list_entries; the PUT merges
+      // whatever it is given straight into the file, so drop it with `id`.
+      const { id: _drop, error: _err, ...body } = { ...draft, type }
       await api.saveEntry(id, body)
       onDone()
     } catch (e) {

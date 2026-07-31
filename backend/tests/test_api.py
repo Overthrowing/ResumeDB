@@ -46,6 +46,24 @@ def test_error_envelope(client):
     assert body["error"] == "datarepo_error"
 
 
+def test_every_error_uses_the_envelope(client):
+    """Including FastAPI's own request-validation errors, whose default body is
+    a nested list the UI cannot render."""
+    cases = [
+        client.post("/api/applications", json={"company": "only-company"}),  # missing field
+        client.get("/api/history", params={"scope": "db"}),  # fine, sanity
+        client.get("/api/history/zzzz/diff"),  # bad sha -> GitInputError
+        client.post("/api/import/resume/confirm", json={"entries": "nope"}),  # ImportError_
+    ]
+    for r in cases:
+        if r.status_code >= 400:
+            assert set(r.json()) == {"error", "detail"}, r.text
+            assert isinstance(r.json()["detail"], str)
+    assert cases[0].status_code == 400
+    assert cases[2].status_code == 400
+    assert cases[3].status_code == 400
+
+
 def test_entry_crud(client):
     before = {e["id"] for e in client.get("/api/db/entries").json()}  # scaffold sample entry
     r = client.put("/api/db/entries/my-role", json={"type": "experience", "title": "Dev"})

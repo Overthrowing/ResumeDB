@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.exceptions import HTTPException
+from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,7 +9,8 @@ from fastapi.staticfiles import StaticFiles
 from .chat import router as chat_router
 from .config import ConfigError
 from .datarepo import DataRepoError
-from .gitops import GitError
+from .gitops import GitError, GitInputError
+from .importer import ImportError_
 from .providers import AgentError
 from .routes import router
 
@@ -47,14 +48,35 @@ async def http_error(request: Request, exc: HTTPException):
     return _envelope(exc.status_code, "http_error", str(exc.detail))
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_error(request: Request, exc: RequestValidationError):
+    # FastAPI's default body is a nested list the UI cannot render; flatten it
+    # into the same {error, detail} envelope as everything else
+    first = exc.errors()[0] if exc.errors() else {}
+    loc = ".".join(str(p) for p in first.get("loc", []) if p != "body")
+    detail = f"{loc}: {first.get('msg', 'invalid request')}" if loc else str(first.get("msg", "invalid request"))
+    return _envelope(400, "bad_request", detail)
+
+
 @app.exception_handler(DataRepoError)
 async def datarepo_error(request: Request, exc: DataRepoError):
     return _envelope(400, "datarepo_error", str(exc))
 
 
+@app.exception_handler(GitInputError)
+async def git_input_error(request: Request, exc: GitInputError):
+    return _envelope(400, "bad_request", str(exc))  # caller's fault, not git's
+
+
 @app.exception_handler(GitError)
 async def git_error(request: Request, exc: GitError):
     return _envelope(500, "git_error", str(exc))
+
+
+@app.exception_handler(ImportError_)
+async def import_error(request: Request, exc: ImportError_):
+    # the message is written for the user ("the PDF has no extractable text…")
+    return _envelope(400, "import_error", str(exc))
 
 
 @app.exception_handler(ConfigError)

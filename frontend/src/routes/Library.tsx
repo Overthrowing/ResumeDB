@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { BookText, ChevronRight, Plus } from 'lucide-react'
+import { BookText, ChevronRight, Plus, TriangleAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type Entry } from '@/lib/api'
 import ChatRail from '@/components/ChatRail'
@@ -125,7 +125,26 @@ export default function Library() {
             {editing === 'new' && <EntryForm type={section} onDone={onSaved} onCancel={() => setEditing(null)} />}
 
             {current.map((e) =>
-              editing === e.id ? (
+              e.error ? (
+                /* Unreadable on disk: opening the form would save the placeholder
+                   shown here over the real file, so this row is inert. */
+                <div
+                  key={e.id}
+                  className="mb-2 flex w-full items-start gap-3 rounded-lg border border-destructive/50 bg-card px-4 py-3 text-left"
+                >
+                  <TriangleAlert className="mt-0.5 size-4 flex-none text-destructive" />
+                  <div className="min-w-0 flex-1">
+                    <div className="font-heading text-base font-semibold text-destructive">
+                      {e.id} · unreadable
+                    </div>
+                    <div className="mt-0.5 whitespace-pre-wrap break-words text-xs text-destructive">{e.error}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      Fix db/{e.id}.yaml by hand, or ask the assistant to repair it. Editing here is disabled so a
+                      save cannot overwrite it.
+                    </div>
+                  </div>
+                </div>
+              ) : editing === e.id ? (
                 <EntryForm key={e.id} type={section} entry={e} onDone={onSaved} onCancel={() => setEditing(null)} />
               ) : (
                 <button

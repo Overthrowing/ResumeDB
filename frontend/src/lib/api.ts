@@ -11,6 +11,8 @@ export interface Entry {
   bullets?: string[]
   items?: string[]
   notes?: string
+  /** Per-file parse failure surfaced by list_entries; null when the file read fine. */
+  error?: string | null
 }
 
 export interface Profile {
@@ -44,13 +46,18 @@ export interface AppMeta {
   id: string
   company: string
   role: string
-  template: string
-  created: string
-  status: AppStatus
+  /** Absent on legacy or hand-edited meta.yaml files. */
+  template?: string
+  created?: string
+  /** A legacy or hand-edited meta.yaml can hold a status outside the union;
+   * `string & {}` keeps the known statuses autocompleting while typing those. */
+  status: AppStatus | (string & {})
   history?: StatusEvent[]
   deadline?: string
   source?: string
   outcome_note?: string
+  /** Per-file parse failure surfaced by list_applications; null when meta.yaml read fine. */
+  error?: string | null
 }
 
 export interface Application {
@@ -151,8 +158,8 @@ export interface ParsedResume {
   entries: Entry[]
 }
 
-/** Parse the backend's {error, detail} envelope into a thrown Error. */
-async function req<T>(url: string, init?: RequestInit): Promise<T> {
+/** Fetch, turning the backend's {error, detail} envelope into a thrown Error. */
+async function send(url: string, init?: RequestInit): Promise<Response> {
   const res = await fetch(url, init)
   if (!res.ok) {
     let detail = res.statusText
@@ -164,7 +171,11 @@ async function req<T>(url: string, init?: RequestInit): Promise<T> {
     }
     throw new Error(detail)
   }
-  return res.json() as Promise<T>
+  return res
+}
+
+async function req<T>(url: string, init?: RequestInit): Promise<T> {
+  return (await send(url, init)).json() as Promise<T>
 }
 
 const json = (method: string, body: unknown): RequestInit => ({
@@ -179,7 +190,8 @@ export const api = {
   config: () => req<Config>('/api/config'),
   saveConfig: (cfg: Partial<Config> & { models?: Partial<ModelConfig> }) =>
     req<Config>('/api/config', json('PUT', cfg)),
-  initDatarepo: (path?: string) => req<{ ok: boolean }>('/api/datarepo/init', json('POST', { path })),
+  initDatarepo: (path?: string) =>
+    req<{ ok: boolean; path: string }>('/api/datarepo/init', json('POST', { path })),
   pickFolder: () => req<{ path: string | null }>('/api/pick-folder', { method: 'POST' }),
 
   entries: () => req<Entry[]>('/api/db/entries'),
@@ -191,7 +203,8 @@ export const api = {
   saveMemory: (content: string) => req<{ ok: boolean }>('/api/db/memory', json('PUT', { content })),
 
   proposals: () => req<Proposal[]>('/api/proposals'),
-  approveProposal: (name: string) => req<{ ok: boolean }>(`/api/proposals/${name}/approve`, { method: 'POST' }),
+  approveProposal: (name: string) =>
+    req<{ ok: boolean; target: string }>(`/api/proposals/${name}/approve`, { method: 'POST' }),
   approveAllProposals: () =>
     req<{ approved: string[]; skipped: string[] }>('/api/proposals/approve-all', { method: 'POST' }),
   rejectProposal: (name: string) => req<{ ok: boolean }>(`/api/proposals/${name}/reject`, { method: 'POST' }),
@@ -217,11 +230,7 @@ export const api = {
   templates: () => req<string[]>('/api/templates'),
 
   history: (scope: string) => req<HistoryEntry[]>(`/api/history?scope=${encodeURIComponent(scope)}`),
-  historyDiff: async (sha: string) => {
-    const res = await fetch(`/api/history/${sha}/diff`)
-    if (!res.ok) throw new Error(res.statusText)
-    return res.text()
-  },
+  historyDiff: async (sha: string) => (await send(`/api/history/${sha}/diff`)).text(),
   revert: (sha: string) => req<{ ok: boolean }>(`/api/history/${sha}/revert`, { method: 'POST' }),
 
   conversations: (scope: string) => req<Conversation[]>(`/api/chat/${encodeURIComponent(scope)}/conversations`),

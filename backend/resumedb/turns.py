@@ -23,11 +23,16 @@ from pathlib import Path
 from typing import AsyncIterator
 
 from . import gitops, render
-from .datarepo import DataRepo, state_dir
+from .datarepo import DataRepo, DataRepoError, state_dir
 from .fsio import atomic_write
 
 TERMINAL = "turn_done"
 SCOPE_RE = re.compile(r"db|apps|app:[a-z0-9][a-z0-9-]*")
+CONV_RE = re.compile(r"[0-9]{8}-[0-9]{6}")
+
+
+def CONV_RE_OK(conv: str) -> bool:
+    return bool(CONV_RE.fullmatch(conv))
 
 
 class TurnBusy(Exception):
@@ -248,7 +253,16 @@ class TurnManager:
         except Exception as e:
             turn.emit({"type": "error", "message": f"turn failed: {e}"})
         finally:
-            if final_text and cpath:
+            if not final_text:
+                # Cancel (and any early exit) yields no `result` event. Keep what
+                # the user already watched stream instead of dropping it, the
+                # same way an interrupted turn preserves its partial output.
+                partial = "".join(
+                    e.get("text", "") for e in turn.events if e["type"] == "text_delta"
+                )
+                if partial and cpath:
+                    append_message(cpath, {"role": "assistant", "text": partial, "interrupted": True})
+            elif cpath:
                 append_message(cpath, {"role": "assistant", "text": final_text})
             turn.emit({"type": TERMINAL})
             turn.finished = True
@@ -283,5 +297,18 @@ class TurnManager:
 manager = TurnManager()
 
 
-def new_conv_id() -> str:
-    return datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+def new_conv_id(repo: DataRepo, scope: str) -> str:
+    """A second-resolution timestamp id, bumped until it is free. Two chats
+    started in the same second would otherwise collide, and the second one's
+    messages would land in - or be rejected by - the first conversation.
+    The format is pinned by chat.CONV_RE, so bump rather than add precision."""
+    now = datetime.datetime.now()
+    for offset in range(60):
+        conv = (now + datetime.timedelta(seconds=offset)).strftime("%Y%m%d-%H%M%S")
+        try:
+            taken = conv_path(repo, scope, conv).exists()
+        except DataRepoError:
+            taken = False
+        if not taken and not manager.active(scope, conv):
+            return conv
+    raise DataRepoError("could not allocate a conversation id; try again")

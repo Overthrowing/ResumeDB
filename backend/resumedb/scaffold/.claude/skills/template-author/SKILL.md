@@ -3,7 +3,9 @@ name: template-author
 description: Create or modify resume templates in templates/. Use when the user asks for a new template, layout changes, or styling changes that go beyond one application.
 ---
 
-Create or modify Typst resume templates in templates/.
+Create or modify Typst resume templates in templates/. Write only inside
+templates/ - a template is shared by every future application, so never change
+an existing application's resume.typ from here.
 
 Contract (templates/SCHEMA.md is authoritative):
 

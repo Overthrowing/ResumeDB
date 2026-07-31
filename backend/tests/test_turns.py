@@ -168,6 +168,32 @@ async def test_cancel_stops_turn(repo):
     assert m.active("db", "20260101-000006") is None
 
 
+@pytest.mark.asyncio
+async def test_cancel_preserves_partial_answer(repo):
+    """What the user watched stream must survive a Stop - dropping it silently
+    was worse than the interruption."""
+    gate = asyncio.Event()
+    m = TurnManager()
+    agent = MockAgent(gate=gate)
+    turn = m.start(repo, agent, "db", "20260101-000007", "hi", "hi", None, None)
+    await asyncio.sleep(0.05)  # "hel" + "lo" have streamed; result has not
+    await turn.cancel()
+    await collect(turn)
+    msgs = turns.read_messages(turns.conv_path(repo, "db", "20260101-000007"))
+    assert [m["role"] for m in msgs] == ["user", "assistant"]
+    assert msgs[1]["text"] == "hello" and msgs[1]["interrupted"] is True
+
+
+def test_new_conv_id_never_collides(repo):
+    """Two chats started in the same second previously got the same id, and the
+    second one's message was rejected or written into the first conversation."""
+    first = turns.new_conv_id(repo, "db")
+    turns.append_message(turns.conv_path(repo, "db", first), {"role": "user", "text": "a"})
+    second = turns.new_conv_id(repo, "db")
+    assert second != first
+    assert turns.CONV_RE_OK(second)
+
+
 def test_session_state_migrates_from_legacy(repo):
     (repo.root / ".state.json").write_text(json.dumps({"sessions": {"db/x": "old-sid"}}))
     assert turns.get_session(repo, "db", "x") == "old-sid"

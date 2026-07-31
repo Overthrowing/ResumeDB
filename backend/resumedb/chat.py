@@ -37,7 +37,10 @@ DB_INTRO = (
 )
 APP_INTRO = (
     "Work on the job application in applications/{app_id}/ (its jd.md, notes.md, "
-    "resume.yaml, resume.typ). Follow the tailor-resume skill for tailoring work.\n\n"
+    "resume.yaml, resume.typ, decisions.md). Follow the tailor-resume skill for "
+    "tailoring work. meta.yaml is app-owned: never hand-edit it. To change "
+    "status, deadline, or other details, curl the ResumeDB HTTP API at {base} "
+    "(PUT {base}/api/applications/{app_id}/meta).\n\n"
 )
 APPS_INTRO = (
     "You are the Applications assistant managing the applications/ pipeline. "
@@ -189,15 +192,16 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
                 continue
 
             if conv is None:
-                conv = turns.new_conv_id()
+                conv = turns.new_conv_id(repo, scope)
                 await ws.send_json({"type": "conversation", "id": conv})
 
             prompt = text
             if not turns.get_session(repo, scope, conv):  # first turn gets the scope intro
+                base = f"http://{ws.headers.get('host', 'localhost:8000')}"
                 if scope.startswith("app:"):
-                    intro = APP_INTRO.format(app_id=scope[4:])
+                    intro = APP_INTRO.format(app_id=scope[4:], base=base)
                 elif scope == "apps":
-                    intro = APPS_INTRO.format(base=f"http://{ws.headers.get('host', 'localhost:8000')}")
+                    intro = APPS_INTRO.format(base=base)
                 else:
                     intro = DB_INTRO
                 prompt = intro + text
