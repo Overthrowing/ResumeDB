@@ -22,8 +22,10 @@ NON_ENTRY_FILES = {"profile", "memory"}
 APP_FILES = {"jd.md", "notes.md", "resume.yaml", "resume.typ", "decisions.md"}
 UPLOAD_EXTS = {".pdf", ".png", ".jpg", ".jpeg", ".webp", ".txt", ".md"}
 
-# Skills removed from the product; pruned from existing data repos on sync.
-RETIRED_SKILLS = {"cover-letter", "discover-jobs"}
+# Skills removed from the product, plus ones from the diverged agent-native line
+# that reference endpoints this backend does not serve. Pruned from existing data
+# repos on sync so an agent cannot follow instructions into a 404.
+RETIRED_SKILLS = {"cover-letter", "discover-jobs", "add-job", "prepare-application"}
 
 
 class DataRepoError(Exception):
