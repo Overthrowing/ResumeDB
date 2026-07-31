@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { ChevronRight, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type AppStatus } from '@/lib/api'
@@ -14,30 +14,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Field } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
-export const STATUS_LABELS: Record<string, string> = {
-  not_started: 'Not started',
-  in_progress: 'In progress',
-  awaiting_review: 'Awaiting review',
-  ready: 'Ready',
-  applied: 'Applied',
-  draft: 'Not started', // legacy status from older data repos
-}
-
-export const STATUS_CLASS: Record<string, string> = {
-  not_started: 'bg-muted text-muted-foreground',
-  in_progress: 'bg-sky-100 text-sky-800',
-  awaiting_review: 'bg-amber-100 text-amber-800',
-  ready: 'bg-emerald-100 text-emerald-800',
-  applied: 'bg-accent text-accent-foreground',
-}
-
-const ALL_STATUSES: AppStatus[] = ['not_started', 'in_progress', 'awaiting_review', 'ready', 'applied']
+import { PHASES, byPhase, statusMeta } from '@/lib/status'
 
 export default function Applications() {
   const navigate = useNavigate()
@@ -68,21 +51,41 @@ export default function Applications() {
           </Button>
         </div>
 
-        <div className="mb-4 flex flex-wrap gap-1.5">
-          {(['all', ...ALL_STATUSES] as const).map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className={cn(
-                'rounded-full border px-3 py-1 text-xs transition-colors',
-                filter === s
-                  ? 'border-primary bg-accent font-medium text-accent-foreground'
-                  : 'border-border text-muted-foreground hover:bg-accent/50',
-              )}
-            >
-              {s === 'all' ? `All (${apps.length})` : `${STATUS_LABELS[s]} (${counts[s] || 0})`}
-            </button>
-          ))}
+        <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <button
+            onClick={() => setFilter('all')}
+            className={cn(
+              'rounded-full border px-3 py-1 text-xs transition-colors',
+              filter === 'all'
+                ? 'border-primary bg-accent font-medium text-accent-foreground'
+                : 'border-border text-muted-foreground hover:bg-accent/50',
+            )}
+          >
+            All ({apps.length})
+          </button>
+          {PHASES.map((phase) => {
+            const shown = byPhase(phase.id).filter((s) => counts[s.id] || filter === s.id)
+            if (shown.length === 0) return null
+            return (
+              <div key={phase.id} className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{phase.label}</span>
+                {shown.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setFilter(s.id as AppStatus)}
+                    className={cn(
+                      'rounded-full border px-3 py-1 text-xs transition-colors',
+                      filter === s.id
+                        ? 'border-primary bg-accent font-medium text-accent-foreground'
+                        : 'border-border text-muted-foreground hover:bg-accent/50',
+                    )}
+                  >
+                    {s.label} ({counts[s.id] || 0})
+                  </button>
+                ))}
+              </div>
+            )
+          })}
         </div>
 
         {appsQ.isError && <div className="mb-3 text-[13px] text-destructive">{(appsQ.error as Error).message}</div>}
@@ -105,16 +108,27 @@ export default function Applications() {
                   className="cursor-pointer border-b last:border-0 hover:bg-accent/40"
                   onClick={() => navigate(`/applications/${a.id}`)}
                 >
-                  <td className="px-4 py-3 font-heading text-[15px] font-semibold">{a.role}</td>
+                  <td className="px-4 py-3 font-heading text-[15px] font-semibold">
+                    {/* The row onClick is mouse-only; this link is the keyboard
+                        route in. stopPropagation keeps the row from navigating
+                        a second time when the link itself is activated. */}
+                    <Link
+                      to={`/applications/${a.id}`}
+                      className="outline-none focus-visible:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {a.role}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3">{a.company}</td>
                   <td className="px-4 py-3">
                     <span
                       className={cn(
                         'inline-flex rounded px-2.5 py-0.5 text-[11px] font-semibold tracking-wide',
-                        STATUS_CLASS[a.status] ?? STATUS_CLASS.not_started,
+                        statusMeta(a.status).pill,
                       )}
                     >
-                      {STATUS_LABELS[a.status] ?? a.status}
+                      {statusMeta(a.status).label}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{a.deadline || '-'}</td>
@@ -128,7 +142,7 @@ export default function Applications() {
                   <td colSpan={5} className="px-4 py-6 text-muted-foreground">
                     {filter === 'all'
                       ? 'No applications yet.'
-                      : `No ${STATUS_LABELS[filter as AppStatus].toLowerCase()} applications.`}
+                      : `No ${statusMeta(filter).label.toLowerCase()} applications.`}
                   </td>
                 </tr>
               )}
@@ -207,28 +221,23 @@ function NewApplicationDialog({
           <DialogDescription>Paste the posting, drop a link for the agent to fetch, or both.</DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-3">
-          <div>
-            <Label className="mb-1.5 text-xs">Company</Label>
+          <Field label="Company">
             <Input value={company} onChange={(e) => setCompany(e.target.value)} />
-          </div>
-          <div>
-            <Label className="mb-1.5 text-xs">Role</Label>
+          </Field>
+          <Field label="Role">
             <Input value={role} onChange={(e) => setRole(e.target.value)} />
-          </div>
+          </Field>
         </div>
-        <div>
-          <Label className="mb-1.5 text-xs">Job description</Label>
+        <Field label="Job description">
           <Textarea className="min-h-24" value={jdText} onChange={(e) => setJdText(e.target.value)} />
-        </div>
+        </Field>
         <div className="grid grid-cols-[1fr_140px] gap-3">
-          <div>
-            <Label className="mb-1.5 text-xs">Posting link (agent fetches it)</Label>
+          <Field label="Posting link (agent fetches it)">
             <Input placeholder="https://…" value={jdUrl} onChange={(e) => setJdUrl(e.target.value)} />
-          </div>
-          <div>
-            <Label className="mb-1.5 text-xs">Template</Label>
+          </Field>
+          <Field label="Template">
             <Select value={template} onValueChange={setTemplate}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full" aria-label="Template">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -239,7 +248,7 @@ function NewApplicationDialog({
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </Field>
         </div>
         <DialogFooter>
           <Button variant="secondary" onClick={onClose}>

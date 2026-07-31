@@ -21,7 +21,24 @@ export interface Profile {
   links?: { label: string; url: string }[]
 }
 
-export type AppStatus = 'not_started' | 'in_progress' | 'awaiting_review' | 'ready' | 'applied'
+export type AppStatus =
+  | 'not_started'
+  | 'in_progress'
+  | 'awaiting_review'
+  | 'ready'
+  | 'applied'
+  | 'screen'
+  | 'interview'
+  | 'offer'
+  | 'accepted'
+  | 'rejected'
+  | 'ghosted'
+  | 'withdrawn'
+
+export interface StatusEvent {
+  status: AppStatus
+  date: string
+}
 
 export interface AppMeta {
   id: string
@@ -30,8 +47,10 @@ export interface AppMeta {
   template: string
   created: string
   status: AppStatus
+  history?: StatusEvent[]
   deadline?: string
   source?: string
+  outcome_note?: string
 }
 
 export interface Application {

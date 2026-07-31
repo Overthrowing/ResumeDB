@@ -5,6 +5,7 @@ import { api, type Entry } from '@/lib/api'
 import MarkdownField from '@/components/MarkdownField'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Field } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
@@ -106,32 +107,27 @@ export default function EntryForm({
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label className="mb-1.5 text-xs">{TITLE_LABEL[type]}</Label>
+        <Field label={TITLE_LABEL[type]}>
           <Input value={draft.title} onChange={(e) => set({ title: e.target.value })} />
-        </div>
+        </Field>
         {!isSkill && (
-          <div>
-            <Label className="mb-1.5 text-xs">Organization</Label>
+          <Field label="Organization">
             <Input value={draft.org ?? ''} onChange={(e) => set({ org: e.target.value })} />
-          </div>
+          </Field>
         )}
         {!isSkill && (
-          <div>
-            <Label className="mb-1.5 text-xs">Location</Label>
+          <Field label="Location">
             <Input value={draft.location ?? ''} onChange={(e) => set({ location: e.target.value })} />
-          </div>
+          </Field>
         )}
         {!isSkill && (
           <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label className="mb-1.5 text-xs">Start</Label>
+            <Field label="Start">
               <Input placeholder="2023-06" value={draft.start ?? ''} onChange={(e) => set({ start: e.target.value })} />
-            </div>
-            <div>
-              <Label className="mb-1.5 text-xs">End</Label>
+            </Field>
+            <Field label="End">
               <Input placeholder="present" value={draft.end ?? ''} onChange={(e) => set({ end: e.target.value })} />
-            </div>
+            </Field>
           </div>
         )}
       </div>
@@ -161,17 +157,15 @@ export default function EntryForm({
 
       {!isSkill && <TagEditor label="Skills & tags" values={draft.tags ?? []} onChange={(tags) => set({ tags })} />}
 
-      <div className="mt-3">
-        <Label className="mb-1.5 text-xs">
-          Details <span className="font-normal normal-case text-muted-foreground">- full context the agent draws from (unlimited)</span>
-        </Label>
+      <Field label="Details" hint=" - full context the agent draws from (unlimited)" className="mt-3">
         <MarkdownField
+          label="Details"
           value={draft.notes ?? ''}
           minHeight={80}
           placeholder="Unlimited context in markdown - stack, scope, war stories…"
           onChange={(notes) => set({ notes })}
         />
-      </div>
+      </Field>
 
       <div className="mt-4 flex gap-2">
         {entry && (

@@ -3,7 +3,7 @@
 // this module, not to any component. The server owns turn durability (turns
 // replay on reconnect); this store owns keeping the UI attached.
 
-import { useSyncExternalStore } from 'react'
+import { useCallback, useSyncExternalStore } from 'react'
 import { api, type ChatMessage, type Conversation } from '@/lib/api'
 
 export interface ChatState {
@@ -22,6 +22,10 @@ export interface ChatState {
 interface Internal {
   state: ChatState
   ws: WebSocket | null
+  /** In-flight connect/load, so StrictMode's double mount cannot open two
+   * sockets or run two loads against the same scope. */
+  connecting: Promise<WebSocket> | null
+  loading: Promise<void> | null
   listeners: Set<() => void>
   onTurnDone: Set<() => void>
   onRendered: Set<(pages: number, ok: boolean) => void>
@@ -47,7 +51,15 @@ function blank(scope: string): ChatState {
 function get(scope: string): Internal {
   let c = chats.get(scope)
   if (!c) {
-    c = { state: blank(scope), ws: null, listeners: new Set(), onTurnDone: new Set(), onRendered: new Set() }
+    c = {
+      state: blank(scope),
+      ws: null,
+      connecting: null,
+      loading: null,
+      listeners: new Set(),
+      onTurnDone: new Set(),
+      onRendered: new Set(),
+    }
     chats.set(scope, c)
   }
   return c
@@ -64,18 +76,47 @@ function set(scope: string, patch: Partial<ChatState>) {
 function socket(scope: string): Promise<WebSocket> {
   const c = get(scope)
   if (c.ws && c.ws.readyState === WebSocket.OPEN) return Promise.resolve(c.ws)
-  return new Promise((resolve, reject) => {
+  if (c.connecting) return c.connecting // a connect is already in flight
+  c.connecting = new Promise<WebSocket>((resolve, reject) => {
     const proto = location.protocol === 'https:' ? 'wss' : 'ws'
     const conv = c.state.convId ?? ''
-    const ws = new WebSocket(`${proto}://${location.host}/api/chat?scope=${encodeURIComponent(scope)}&conversation=${conv}`)
-    ws.onopen = () => resolve(ws)
-    ws.onerror = () => reject(new Error('chat connection failed'))
+    const ws = new WebSocket(
+      `${proto}://${location.host}/api/chat?scope=${encodeURIComponent(scope)}&conversation=${conv}`,
+    )
+    ws.onopen = () => {
+      c.connecting = null
+      resolve(ws)
+    }
+    ws.onerror = () => {
+      c.connecting = null
+      reject(new Error('chat connection failed'))
+    }
     ws.onmessage = (e) => handleEvent(scope, JSON.parse(e.data))
     ws.onclose = () => {
       if (c.ws === ws) c.ws = null
+      c.connecting = null
+      // The turn keeps running server-side, but this client is no longer
+      // hearing it. Never leave `busy` stuck true - it disables the composer,
+      // "New conversation", and any reload of this conversation.
+      if (c.state.busy) {
+        set(scope, {
+          busy: false,
+          streaming: '',
+          thinking: '',
+          tools: [],
+          messages: [
+            ...c.state.messages,
+            {
+              role: 'error',
+              text: 'Connection lost. The turn may still be running on the server - reopen this conversation to re-attach.',
+            },
+          ],
+        })
+      }
     }
     c.ws = ws
   })
+  return c.connecting
 }
 
 function handleEvent(scope: string, ev: { type: string; [k: string]: unknown }) {
@@ -135,9 +176,15 @@ function handleEvent(scope: string, ev: { type: string; [k: string]: unknown }) 
 // -- public API ----------------------------------------------------------------
 
 export async function refreshConversations(scope: string): Promise<Conversation[]> {
-  const convs = await api.conversations(scope).catch(() => [] as Conversation[])
-  set(scope, { conversations: convs })
-  return convs
+  try {
+    const convs = await api.conversations(scope)
+    set(scope, { conversations: convs })
+    return convs
+  } catch {
+    // keep whatever list we had: blanking it on a transient failure would
+    // strand the user with "No conversations yet" for the whole session
+    return get(scope).state.conversations
+  }
 }
 
 export async function loadConversation(scope: string, id: string | null) {
@@ -149,23 +196,31 @@ export async function loadConversation(scope: string, id: string | null) {
   if (!id) return
   try {
     const { messages, active } = await api.conversation(scope, id)
-    // guard: user may have switched conversations while we fetched
-    if (get(scope).state.convId !== id) return
+    const now = get(scope).state
+    // the user may have switched conversations, or sent a message, while we
+    // fetched - never clobber either
+    if (now.convId !== id || now.busy) return
     set(scope, { messages, loaded: true })
     if (active) await socket(scope) // re-attach: server replays the running turn
   } catch {
-    set(scope, { messages: [], loaded: true })
+    if (get(scope).state.convId === id) set(scope, { messages: [], loaded: false })
   }
 }
 
 /** First mount for a scope: load conversation list and most recent conversation. */
-export async function ensureLoaded(scope: string) {
+export function ensureLoaded(scope: string): Promise<void> {
   const c = get(scope)
-  if (c.state.loaded || c.state.busy) return
-  const convs = await refreshConversations(scope)
-  const current = c.state.convId ?? convs[0]?.id ?? null
-  await loadConversation(scope, current)
-  api.proposals().then((p) => set(scope, { proposals: p.filter((x) => !x.error).length })).catch(() => {})
+  if (c.state.loaded || c.state.busy) return Promise.resolve()
+  if (c.loading) return c.loading // StrictMode double-mount lands here
+  c.loading = (async () => {
+    try {
+      const convs = await refreshConversations(scope)
+      await loadConversation(scope, c.state.convId ?? convs[0]?.id ?? null)
+    } finally {
+      c.loading = null
+    }
+  })()
+  return c.loading
 }
 
 export async function sendMessage(scope: string, text: string, model?: string) {
@@ -190,9 +245,13 @@ export async function sendMessage(scope: string, text: string, model?: string) {
 }
 
 export function cancelTurn(scope: string) {
-  get(scope).ws?.send(JSON.stringify({ type: 'cancel' }))
+  const ws = get(scope).ws
+  if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'cancel' }))
+  else set(scope, { busy: false }) // socket already gone; unstick the composer
 }
 
+/** Throws on failure (e.g. the server's 409 while a turn runs) so the caller
+ * can surface it - a silent no-op reads as a broken button. */
 export async function deleteConversation(scope: string, id: string) {
   await api.deleteConversation(scope, id)
   const convs = await refreshConversations(scope)
@@ -216,16 +275,17 @@ export function onRendered(scope: string, fn: (pages: number, ok: boolean) => vo
 }
 
 export function setProposalCount(scope: string, n: number) {
-  set(scope, { proposals: n })
+  if (get(scope).state.proposals !== n) set(scope, { proposals: n })
 }
 
 export function useChat(scope: string): ChatState {
   const c = get(scope)
-  return useSyncExternalStore(
-    (cb) => {
+  const subscribe = useCallback(
+    (cb: () => void) => {
       c.listeners.add(cb)
       return () => c.listeners.delete(cb)
     },
-    () => c.state,
+    [c],
   )
+  return useSyncExternalStore(subscribe, () => c.state)
 }

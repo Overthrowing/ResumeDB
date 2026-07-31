@@ -107,8 +107,10 @@ def sync_boilerplate(path: Path, force: bool = False) -> list[str]:
     # machine-local turn logs into checkpoints would corrupt undo semantics
     gi = path / ".gitignore"
     lines = gi.read_text().splitlines() if gi.exists() else []
-    if ".resumedb/" not in lines:
-        atomic_write(gi, "\n".join([*lines, ".resumedb/"]) + "\n")
+    missing = [rule for rule in (".resumedb/", ".resumedb-tmp-*") if rule not in lines]
+    if missing:
+        atomic_write(gi, "\n".join([*lines, *missing]) + "\n")
+    gitops.untrack(path, MARKER)  # ignoring it is not enough once it is tracked
     changed = gitops.changed_files(path, ".claude/skills", "CLAUDE.md", "AGENTS.md", "templates", ".gitignore")
     if changed:
         verb = "overwrite" if force else "add"
@@ -139,11 +141,20 @@ class DataRepo:
     # -- entries ------------------------------------------------------------
 
     def list_entries(self) -> list[dict]:
+        """One malformed file must never hide the rest: a bad parse is surfaced
+        as data on that entry, not raised for the whole list."""
         entries = []
         for f in sorted((self.root / "db").glob("*.yaml")):
             if f.stem in NON_ENTRY_FILES:
                 continue
-            data = _load(f) or {}
+            try:
+                data = _load(f) or {}
+                if not isinstance(data, dict):
+                    raise DataRepoError("file is not a YAML mapping")
+                data["error"] = None
+            except Exception as e:
+                data = {"title": f.stem, "type": "extra",
+                        "error": f"{type(e).__name__}: {str(e)[:300]}"}
             data["id"] = f.stem
             entries.append(data)
         return entries
@@ -208,28 +219,42 @@ class DataRepo:
             meta_file = d / "meta.yaml"
             if not meta_file.exists():
                 continue
-            meta = _load(meta_file) or {}
+            try:  # a single unparseable meta.yaml must not blank the pipeline
+                loaded = _load(meta_file) or {}
+                if not isinstance(loaded, dict):
+                    raise DataRepoError("meta.yaml is not a YAML mapping")
+                meta = self._normalize(loaded)
+                meta["error"] = None
+            except Exception as e:
+                meta = {"company": d.name, "role": "(unreadable meta.yaml)",
+                        "status": "not_started", "history": [],
+                        "error": f"{type(e).__name__}: {str(e)[:300]}"}
             meta["id"] = d.name
             apps.append(meta)
         return apps
 
     def app_dir(self, app_id: str) -> Path:
-        if not SLUG_RE.fullmatch(app_id):
+        if not SLUG_RE.fullmatch(app_id) or app_id == "chats":
             raise DataRepoError(f"bad application id: {app_id!r}")
         d = self.root / "applications" / app_id
-        if not d.is_dir():
+        if not (d / "meta.yaml").exists():  # a bare directory is not an application
             raise DataRepoError(f"no application {app_id}")
         return d
 
     def create_application(self, company: str, role: str, jd_text: str, template: str) -> str:
-        slug = re.sub(r"[^a-z0-9]+", "-", f"{company} {role}".lower()).strip("-")
+        slug = re.sub(r"[^a-z0-9]+", "-", f"{company} {role}".lower()).strip("-")[:100]
+        if not slug:  # e.g. a company/role with no ASCII alphanumerics at all
+            raise DataRepoError("company and role need at least one letter or digit")
         app_id = f"{datetime.date.today():%Y-%m}-{slug}"
         d = self.root / "applications" / app_id
         if d.exists():
             raise DataRepoError(f"application {app_id} already exists")
-        template_file = self.root / "templates" / f"{template}.typ"
-        if not template_file.exists():
+        # `template` is client-controlled and becomes a path component: an
+        # unvalidated "../../.." reads any .typ file on the machine into the
+        # application (and back out through GET /applications/<id>).
+        if template not in self.list_templates():
             raise DataRepoError(f"no template {template}")
+        template_file = self.root / "templates" / f"{template}.typ"
         d.mkdir(parents=True)
         profile = self.get_profile()
         _dump(
@@ -239,6 +264,7 @@ class DataRepo:
                 "template": template,
                 "created": f"{datetime.date.today():%Y-%m-%d}",
                 "status": "not_started",
+                "history": [{"status": "not_started", "date": f"{datetime.date.today():%Y-%m-%d}"}],
             },
             d / "meta.yaml",
         )
@@ -259,7 +285,7 @@ class DataRepo:
 
     def get_application(self, app_id: str) -> dict:
         d = self.app_dir(app_id)
-        meta = _load(d / "meta.yaml") or {}
+        meta = self._normalize(_load(d / "meta.yaml") or {})
         meta["id"] = app_id
         files = {
             name: (d / name).read_text()
@@ -274,8 +300,16 @@ class DataRepo:
         atomic_write(self.app_dir(app_id) / name, content)
         gitops.checkpoint(self.root, f"app:{app_id}", f"edit {name}")
 
-    META_FIELDS = {"company", "role", "status", "deadline", "source", "template"}
-    APP_STATUSES = ["not_started", "in_progress", "awaiting_review", "ready", "applied"]
+    META_FIELDS = {"company", "role", "status", "deadline", "source", "template", "outcome_note"}
+    APP_STATUSES = [
+        # pre-submission
+        "not_started", "in_progress", "awaiting_review", "ready",
+        # submitted
+        "applied", "screen", "interview", "offer",
+        # terminal
+        "accepted", "rejected", "ghosted", "withdrawn",
+    ]
+    LEGACY_STATUSES = {"draft": "not_started"}
 
     def set_app_meta(self, app_id: str, **updates) -> None:
         bad = set(updates) - self.META_FIELDS
@@ -285,9 +319,37 @@ class DataRepo:
             raise DataRepoError(f"invalid status: {updates['status']}")
         path = self.app_dir(app_id) / "meta.yaml"
         meta = _load(path) or {}
+        # snapshot the prior state BEFORE applying updates: synthesizing the
+        # history afterwards would record the new status as the origin point
+        prior = self._normalize(meta)
+        old_status, prior_history = prior["status"], list(prior["history"])
         meta.update(updates)
+        new_status = updates.get("status")
+        if new_status and new_status != old_status:
+            # append-only transition log: the Sankey needs flows, not just the
+            # current value. Repeat entries collapse.
+            history = prior_history
+            if not history or history[-1].get("status") != new_status:
+                history.append({"status": new_status, "date": f"{datetime.date.today():%Y-%m-%d}"})
+            meta["history"] = history
         _dump(meta, path)
         gitops.checkpoint(self.root, f"app:{app_id}", "edit details")
+
+    @staticmethod
+    def _synth_history(meta: dict) -> list[dict]:
+        """Applications created before transition tracking get a one-entry
+        history from their creation date, so the flow view is not blank."""
+        status = DataRepo.LEGACY_STATUSES.get(meta.get("status"), meta.get("status"))
+        return [{"status": status or "not_started", "date": meta.get("created") or ""}]
+
+    @classmethod
+    def _normalize(cls, meta: dict) -> dict:
+        """Map retired status values and backfill history for reads."""
+        meta = dict(meta)
+        meta["status"] = cls.LEGACY_STATUSES.get(meta.get("status"), meta.get("status")) or "not_started"
+        if not meta.get("history"):
+            meta["history"] = cls._synth_history(meta)
+        return meta
 
     # -- proposals -----------------------------------------------------------
 

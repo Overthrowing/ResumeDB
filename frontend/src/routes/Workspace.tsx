@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ChevronLeft, Download, RefreshCw, RotateCcw, Sparkles } from 'lucide-react'
@@ -12,22 +12,73 @@ import {
 } from '@/lib/api'
 import ChatRail from '@/components/ChatRail'
 import MarkdownField from '@/components/MarkdownField'
-import { STATUS_CLASS, STATUS_LABELS } from '@/routes/Applications'
+import { PHASES, byPhase, isTerminal, statusMeta } from '@/lib/status'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Field } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 
-const PIPELINE: { status: AppStatus; label: string; dot: string }[] = [
-  { status: 'not_started', label: 'Not started', dot: 'bg-muted-foreground/40' },
-  { status: 'in_progress', label: 'In progress', dot: 'bg-sky-400' },
-  { status: 'awaiting_review', label: 'Awaiting review', dot: 'bg-amber-400' },
-  { status: 'ready', label: 'Ready', dot: 'bg-emerald-500' },
-  { status: 'applied', label: 'Applied', dot: 'bg-primary' },
-]
+// The happy path shown as a strip. Terminal states are an end cap instead of a
+// step, since they can be reached from anywhere.
+const PIPELINE = [...byPhase('pre'), ...byPhase('submitted')]
+
+/** One-click transitions offered for the current status, so the pipeline stays
+ * current without hunting through the dropdown. */
+const NEXT_ACTIONS: Record<string, { title: string; hint: string; actions: AppStatus[] }> = {
+  awaiting_review: {
+    title: 'Ready to lock in?',
+    hint: 'Review everything, then finalize.',
+    actions: ['ready'],
+  },
+  ready: {
+    title: 'Locked and ready.',
+    hint: 'Once you submit it, mark it applied.',
+    actions: ['applied'],
+  },
+  applied: {
+    title: 'Waiting to hear back.',
+    hint: 'Record what happens so the Outcomes view stays honest.',
+    actions: ['screen', 'rejected', 'ghosted'],
+  },
+  screen: {
+    title: 'Screen or OA in progress.',
+    hint: 'Did it move forward?',
+    actions: ['interview', 'rejected', 'ghosted'],
+  },
+  interview: {
+    title: 'Interviewing.',
+    hint: 'How did it end?',
+    actions: ['offer', 'rejected', 'ghosted'],
+  },
+  offer: {
+    title: 'You have an offer.',
+    hint: 'Close the loop.',
+    actions: ['accepted', 'withdrawn'],
+  },
+}
+
+const NEXT_LABELS: Record<string, string> = {
+  screen: 'Heard back',
+  rejected: 'Rejected',
+  ghosted: 'No response',
+  interview: 'Moved to interview',
+  offer: 'Got an offer',
+  accepted: 'Accepted',
+  withdrawn: 'Withdrew',
+  ready: 'Lock in',
+  applied: 'Mark as applied',
+}
 
 type Tab = 'overview' | 'resume' | 'ats' | 'versions'
 
@@ -83,7 +134,7 @@ export default function Workspace() {
       {/* header */}
       <div className="flex flex-none items-center gap-3 border-b px-6 py-3">
         <Button variant="ghost" size="icon-sm" asChild>
-          <Link to="/applications">
+          <Link to="/applications" title="Back to applications" aria-label="Back to applications">
             <ChevronLeft className="size-4" />
           </Link>
         </Button>
@@ -96,8 +147,8 @@ export default function Workspace() {
             application's outputs
           </div>
         </div>
-        <span className={cn('rounded px-2.5 py-0.5 text-[11px] font-semibold', STATUS_CLASS[meta.status])}>
-          {STATUS_LABELS[meta.status]}
+        <span className={cn('rounded px-2.5 py-0.5 text-[11px] font-semibold', statusMeta(meta.status).pill)}>
+          {statusMeta(meta.status).label}
         </span>
       </div>
 
@@ -105,7 +156,7 @@ export default function Workspace() {
         <div className="flex min-w-0 flex-1 flex-col border-r">
           <div className="flex-none border-b px-4 pt-2">
             <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
-              <TabsList className="bg-transparent p-0">
+              <TabsList variant="line" className="bg-transparent p-0">
                 {(
                   [
                     ['overview', 'Overview'],
@@ -114,11 +165,7 @@ export default function Workspace() {
                     ['versions', 'Versions'],
                   ] as const
                 ).map(([v, label]) => (
-                  <TabsTrigger
-                    key={v}
-                    value={v}
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-                  >
+                  <TabsTrigger key={v} value={v} className="px-3">
                     {label}
                   </TabsTrigger>
                 ))}
@@ -156,11 +203,30 @@ function Overview({ app, onSaved }: { app: Application; onSaved: () => void }) {
     source: meta.source ?? '',
     deadline: meta.deadline ?? '',
     status: meta.status,
+    outcome_note: meta.outcome_note ?? '',
   })
   const [jd, setJd] = useState(app.files['jd.md'] ?? '')
   const [notes, setNotes] = useState(app.files['notes.md'] ?? '')
   const [dirty, setDirty] = useState(false)
   const decisions = app.files['decisions.md'] ?? ''
+
+  // Same hazard as the resume editor: the agent and the jd-from-link fetch
+  // rewrite these files, and manage-applications updates meta via the API.
+  const serverJd = app.files['jd.md'] ?? ''
+  const serverNotes = app.files['notes.md'] ?? ''
+  useEffect(() => {
+    if (dirty) return
+    setJd(serverJd)
+    setNotes(serverNotes)
+    setFields({
+      company: meta.company,
+      role: meta.role,
+      source: meta.source ?? '',
+      deadline: meta.deadline ?? '',
+      status: meta.status,
+      outcome_note: meta.outcome_note ?? '',
+    })
+  }, [serverJd, serverNotes, meta, dirty])
 
   const set = (patch: Partial<typeof fields>) => {
     setFields({ ...fields, ...patch })
@@ -190,24 +256,22 @@ function Overview({ app, onSaved }: { app: Application; onSaved: () => void }) {
     }
   }
 
-  const currentIdx = PIPELINE.findIndex((s) => s.status === fields.status)
+  const closed = isTerminal(fields.status)
+  const currentIdx = PIPELINE.findIndex((s) => s.id === fields.status)
 
   return (
     <div className="max-w-2xl">
-      {/* pipeline */}
+      {/* pipeline: happy path as steps, terminal states as an end cap */}
       <div className="mb-6 flex items-center py-3">
         {PIPELINE.map((step, i) => {
-          const isActive = step.status === fields.status
-          const isPast = i < currentIdx
+          const isActive = step.id === fields.status
+          const isPast = closed ? true : i < currentIdx
           return (
-            <div key={step.status} className={cn('flex items-center', i < PIPELINE.length - 1 && 'flex-1')}>
+            <div key={step.id} className={cn('flex items-center', i < PIPELINE.length - 1 && 'flex-1')}>
               <div className="flex flex-col items-center gap-1">
                 <div
-                  className={cn(
-                    'rounded-full transition-all',
-                    isActive ? 'size-4 ring-4 ring-primary/20' : 'size-2.5',
-                    isActive || isPast ? step.dot : 'bg-border',
-                  )}
+                  className={cn('rounded-full transition-all', isActive ? 'size-4 ring-4 ring-primary/20' : 'size-2.5')}
+                  style={{ background: isActive || isPast ? step.color : 'var(--border)' }}
                 />
                 <span
                   className={cn(
@@ -219,72 +283,94 @@ function Overview({ app, onSaved }: { app: Application; onSaved: () => void }) {
                 </span>
               </div>
               {i < PIPELINE.length - 1 && (
-                <div className={cn('mx-1.5 mb-4 h-0.5 flex-1', isPast ? PIPELINE[i + 1].dot : 'bg-border')} />
+                <div
+                  className="mx-1.5 mb-4 h-0.5 flex-1"
+                  style={{ background: isPast ? PIPELINE[i + 1].color : 'var(--border)' }}
+                />
               )}
             </div>
           )
         })}
+        {closed && (
+          <>
+            <div className="mx-1.5 mb-4 h-0.5 w-6" style={{ background: statusMeta(fields.status).color }} />
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="size-4 rounded-full ring-4 ring-primary/20"
+                style={{ background: statusMeta(fields.status).color }}
+              />
+              <span className="whitespace-nowrap text-[10px] font-semibold">{statusMeta(fields.status).label}</span>
+            </div>
+          </>
+        )}
       </div>
 
-      {fields.status === 'awaiting_review' && (
-        <div className="mb-4 flex items-center gap-2 rounded-lg border border-emerald-400 bg-emerald-50/60 p-3">
-          <div className="flex-1 text-[13px]">
-            <strong className="text-emerald-800">Ready to lock in?</strong>
-            <div className="text-xs text-muted-foreground">Review everything, then finalize.</div>
+      {NEXT_ACTIONS[fields.status] && (
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border border-primary/50 bg-accent/60 p-3">
+          <div className="min-w-48 flex-1 text-[13px]">
+            <strong className="text-accent-foreground">{NEXT_ACTIONS[fields.status]!.title}</strong>
+            <div className="text-xs text-muted-foreground">{NEXT_ACTIONS[fields.status]!.hint}</div>
           </div>
-          <Button className="bg-emerald-700 hover:bg-emerald-800" onClick={() => transition('ready')}>
-            Lock in
-          </Button>
+          {NEXT_ACTIONS[fields.status]!.actions.map((a) => (
+            <Button
+              key={a}
+              variant={a === 'rejected' || a === 'ghosted' ? 'outline' : 'default'}
+              onClick={() => transition(a)}
+            >
+              {NEXT_LABELS[a] ?? statusMeta(a).label}
+            </Button>
+          ))}
         </div>
       )}
-      {fields.status === 'ready' && (
-        <div className="mb-4 flex items-center gap-2 rounded-lg border border-primary bg-accent p-3">
-          <div className="flex-1 text-[13px]">
-            <strong className="text-accent-foreground">Application is locked and ready.</strong>
-            <div className="text-xs text-muted-foreground">Once you submit it, mark it as applied.</div>
-          </div>
-          <Button onClick={() => transition('applied')}>Mark as applied</Button>
-        </div>
+
+      {closed && (
+        <Field label="Outcome note" className="mb-4">
+          <Input
+            placeholder="What happened? e.g. rejected after onsite, they went internal"
+            value={fields.outcome_note}
+            onChange={(e) => set({ outcome_note: e.target.value })}
+          />
+        </Field>
       )}
 
       <div className="mb-4 grid grid-cols-2 gap-3">
-        <div>
-          <Label className="mb-1.5 text-xs">Company</Label>
+        <Field label="Company">
           <Input value={fields.company} onChange={(e) => set({ company: e.target.value })} />
-        </div>
-        <div>
-          <Label className="mb-1.5 text-xs">Role</Label>
+        </Field>
+        <Field label="Role">
           <Input value={fields.role} onChange={(e) => set({ role: e.target.value })} />
-        </div>
+        </Field>
       </div>
       <div className="mb-4 flex gap-3">
-        <div className="flex-1">
-          <Label className="mb-1.5 text-xs">Source link</Label>
+        <Field label="Source link" className="flex-1">
           <Input value={fields.source} onChange={(e) => set({ source: e.target.value })} />
-        </div>
-        <div className="w-32">
-          <Label className="mb-1.5 text-xs">Deadline</Label>
+        </Field>
+        <Field label="Deadline" className="w-32">
           <Input value={fields.deadline} onChange={(e) => set({ deadline: e.target.value })} />
-        </div>
-        <div className="w-40">
-          <Label className="mb-1.5 text-xs">Status</Label>
+        </Field>
+        <Field label="Status" className="w-44">
           <Select value={fields.status} onValueChange={(v) => set({ status: v as AppStatus })}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Status">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {PIPELINE.map((s) => (
-                <SelectItem key={s.status} value={s.status}>
-                  {s.label}
-                </SelectItem>
+              {PHASES.map((phase) => (
+                <SelectGroup key={phase.id}>
+                  <SelectLabel>{phase.label}</SelectLabel>
+                  {byPhase(phase.id).map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               ))}
             </SelectContent>
           </Select>
-        </div>
+        </Field>
       </div>
-      <div className="mb-4">
-        <Label className="mb-1.5 text-xs">Job description</Label>
+      <Field label="Job description" className="mb-4">
         <MarkdownField
+          label="Job description"
           value={jd}
           minHeight={150}
           placeholder="Paste the posting, or create the application from a link."
@@ -293,7 +379,7 @@ function Overview({ app, onSaved }: { app: Application; onSaved: () => void }) {
             setDirty(true)
           }}
         />
-      </div>
+      </Field>
       <div className="mb-4 rounded-lg border border-primary/30 bg-card p-4">
         <div className="mb-2 flex items-center gap-1.5 font-heading text-sm font-semibold text-accent-foreground">
           <Sparkles className="size-3.5" />
@@ -320,14 +406,27 @@ function Overview({ app, onSaved }: { app: Application; onSaved: () => void }) {
               - written by the agent each run, one bullet per choice with its JD evidence
             </span>
           </div>
-          <div className="prose-chat rounded-lg border bg-card px-4 py-3 text-[13px] leading-relaxed">
-            <MarkdownField value={decisions} minHeight={120} onChange={() => {}} />
-          </div>
+          <MarkdownField value={decisions} minHeight={120} readOnly label="Tailoring decisions" />
         </div>
       )}
       <Button disabled={!dirty} onClick={save}>
         Save overview
       </Button>
+
+      {(meta.history?.length ?? 0) > 1 && (
+        <div className="mt-8">
+          <div className="mb-2 font-heading text-sm font-semibold">Status history</div>
+          <div className="flex flex-col gap-1.5">
+            {meta.history!.map((h, i) => (
+              <div key={i} className="flex items-center gap-2 text-[13px]">
+                <span className="size-2 flex-none rounded-full" style={{ background: statusMeta(h.status).color }} />
+                <span className="w-32">{statusMeta(h.status).label}</span>
+                <span className="text-xs text-muted-foreground">{h.date || 'undated'}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -348,6 +447,13 @@ function ResumeTab({
   const [view, setView] = useState<'preview' | 'source'>('preview')
   const [source, setSource] = useState(app.files['resume.yaml'] ?? '')
   const [dirty, setDirty] = useState(false)
+
+  // The agent rewrites resume.yaml behind our back; without this the editor
+  // keeps the pre-agent text and "Save & render" would overwrite the tailoring.
+  const serverSource = app.files['resume.yaml'] ?? ''
+  useEffect(() => {
+    if (!dirty) setSource(serverSource)
+  }, [serverSource, dirty])
 
   const saveSource = async () => {
     try {
@@ -374,14 +480,18 @@ function ResumeTab({
           )}
         </div>
         <div className="flex gap-1.5">
-          <div className="inline-flex overflow-hidden rounded-md border">
+          {/* h-7 track content + p-0.5 = h-8, matching the size="sm" buttons beside it */}
+          <div className="inline-flex items-center gap-0.5 rounded-md bg-muted p-0.5">
             {(['preview', 'source'] as const).map((v) => (
               <button
                 key={v}
+                aria-pressed={view === v}
                 onClick={() => setView(v)}
                 className={cn(
-                  'px-3 py-1.5 text-[13px]',
-                  view === v ? 'bg-accent font-medium text-accent-foreground' : 'hover:bg-accent/50',
+                  'flex h-7 items-center rounded-[5px] px-3 text-[13px] transition-colors',
+                  view === v
+                    ? 'bg-card font-medium text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 {v === 'preview' ? 'Preview' : 'resume.yaml'}

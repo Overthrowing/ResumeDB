@@ -12,6 +12,7 @@ import {
   TriangleAlert,
   X,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { api, type ChatMessage, type Proposal } from '@/lib/api'
 import {
   cancelTurn,
@@ -126,6 +127,8 @@ export default function ChatRail({
         const { path } = await api.upload(scope, f)
         setAttachments((a) => [...a, path])
       }
+    } catch (e) {
+      toast.error((e as Error).message)
     } finally {
       setUploading(false)
     }
@@ -151,18 +154,25 @@ export default function ChatRail({
   }
 
   const resolveProposal = async (name: string, approve: boolean) => {
-    await (approve ? api.approveProposal(name) : api.rejectProposal(name)).catch(() => {})
+    try {
+      await (approve ? api.approveProposal(name) : api.rejectProposal(name))
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
     refreshProposals()
     onDone?.()
   }
 
   const approveAll = async () => {
-    await api.approveAllProposals().catch(() => {})
+    try {
+      const { skipped } = await api.approveAllProposals()
+      if (skipped.length) toast.warning(`Skipped ${skipped.length} unreadable proposal(s).`)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
     refreshProposals()
     onDone?.()
   }
-
-  const visibleProposals = proposals
 
   return (
     <div
@@ -172,8 +182,22 @@ export default function ChatRail({
     >
       <div
         onPointerDown={startResize}
-        title="Drag to resize"
-        className="absolute -left-1 top-0 bottom-0 z-10 w-2 cursor-col-resize"
+        onKeyDown={(e) => {
+          const step = e.shiftKey ? 48 : 16
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+          e.preventDefault()
+          setWidth((w) => {
+            const next = Math.min(RAIL_MAX, Math.max(RAIL_MIN, w + (e.key === 'ArrowLeft' ? step : -step)))
+            localStorage.setItem('chatRailWidth', String(next))
+            return next
+          })
+        }}
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize chat panel"
+        tabIndex={0}
+        title="Drag to resize (or focus and use arrow keys)"
+        className="absolute -left-1 top-0 bottom-0 z-10 w-2 cursor-col-resize focus:bg-primary/30 focus:outline-none"
       />
 
       {/* header */}
@@ -213,14 +237,27 @@ export default function ChatRail({
 
       {/* history popover */}
       {showHistory && (
-        <div className="absolute left-2 right-2 top-14 z-20 max-h-72 overflow-y-auto rounded-lg border bg-popover p-1.5 shadow-md">
+        <div
+          role="listbox"
+          aria-label="Conversation history"
+          className="absolute left-2 right-2 top-14 z-20 max-h-72 overflow-y-auto rounded-lg border bg-popover p-1.5 shadow-md"
+        >
           {chat.conversations.length === 0 && (
             <div className="px-2.5 py-2 text-[13px] text-muted-foreground">No conversations yet.</div>
           )}
           {chat.conversations.map((c) => (
             <div
               key={c.id}
+              role="option"
+              tabIndex={0}
+              aria-selected={c.id === chat.convId}
               onClick={() => {
+                loadConversation(scope, c.id)
+                setShowHistory(false)
+              }}
+              onKeyDown={(e) => {
+                if (e.key !== 'Enter' && e.key !== ' ') return
+                e.preventDefault()
                 loadConversation(scope, c.id)
                 setShowHistory(false)
               }}
@@ -253,7 +290,7 @@ export default function ChatRail({
                 onClick={(e) => {
                   e.stopPropagation()
                   if (confirm('Delete this conversation? Its checkpointed history stays in git.'))
-                    deleteConversation(scope, c.id)
+                    deleteConversation(scope, c.id).catch((err) => toast.error((err as Error).message))
                 }}
               >
                 <X className="size-3" />
@@ -269,10 +306,10 @@ export default function ChatRail({
           <Bubble key={i} m={m} onRetry={m.interrupted ? () => retry(i) : undefined} busy={chat.busy} />
         ))}
 
-        {!chat.busy && visibleProposals.filter((p) => !p.error).length >= 2 && (
+        {!chat.busy && proposals.filter((p) => !p.error).length >= 2 && (
           <div className="flex flex-none items-center gap-2">
             <span className="text-xs text-muted-foreground">
-              {visibleProposals.filter((p) => !p.error).length} proposals pending
+              {proposals.filter((p) => !p.error).length} proposals pending
             </span>
             <Button size="sm" className="ml-auto h-7 text-xs" onClick={approveAll}>
               <Check className="size-3" />
@@ -281,12 +318,13 @@ export default function ChatRail({
           </div>
         )}
         {!chat.busy &&
-          visibleProposals.map((p) => <InlineProposal key={p.name} p={p} onResolve={resolveProposal} />)}
+          proposals.map((p) => <InlineProposal key={p.name} p={p} onResolve={resolveProposal} />)}
 
         {chat.busy && (
           <div className="w-full max-w-[92%] flex-none self-start">
             <button
               className="mb-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground"
+              aria-expanded={activityOpen}
               onClick={() => setActivityOpen((o) => !o)}
             >
               <span className="size-1.5 animate-pulse rounded-full bg-primary" />
@@ -407,6 +445,8 @@ export default function ChatRail({
               <Button
                 size="icon-sm"
                 className="size-7"
+                title="Send message"
+                aria-label="Send message"
                 onClick={send}
                 disabled={(!draft.trim() && attachments.length === 0) || uploading}
               >
@@ -501,6 +541,7 @@ function Bubble({ m, onRetry, busy }: { m: ChatMessage; onRetry?: () => void; bu
         <>
           <button
             className="mb-1 flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground"
+            aria-expanded={toolsOpen}
             onClick={() => setToolsOpen((o) => !o)}
           >
             {m.tools.length} tool call{m.tools.length === 1 ? '' : 's'}

@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { api, type ModelConfig, type Profile } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Field } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -66,10 +67,12 @@ export default function Settings() {
   const healthQ = useQuery({ queryKey: ['health'], queryFn: api.health })
   const profileQ = useQuery({ queryKey: ['profile'], queryFn: api.profile })
 
-  if (configQ.isPending || profileQ.isPending)
-    return <div className="p-6 text-sm text-muted-foreground">Loading…</div>
-  if (configQ.isError)
-    return <div className="p-6 text-sm text-destructive">{(configQ.error as Error).message}</div>
+  // Rendering the form on a failed profile fetch would show empty fields, and
+  // saving those would wipe the real profile.
+  const loadError = (configQ.error ?? profileQ.error) as Error | null
+  if (loadError) return <div className="p-6 text-sm text-destructive">{loadError.message}</div>
+  const config = configQ.data
+  if (!config || !profileQ.data) return <div className="p-6 text-sm text-muted-foreground">Loading…</div>
 
   return (
     <div className="flex-1 overflow-y-auto px-8 py-6">
@@ -78,10 +81,10 @@ export default function Settings() {
         <p className="mt-0.5 text-[13px] text-muted-foreground">Profile, provider, models, and data repo.</p>
       </div>
       <div className="flex max-w-xl flex-col gap-8 pb-12">
-        <ProfileSection profile={profileQ.data ?? {}} onSaved={() => qc.invalidateQueries({ queryKey: ['profile'] })} />
+        <ProfileSection profile={profileQ.data} onSaved={() => qc.invalidateQueries({ queryKey: ['profile'] })} />
         <Separator />
         <ProviderSection
-          config={configQ.data}
+          config={config}
           claudeAvailable={!!healthQ.data?.claude}
           codexAvailable={!!healthQ.data?.codex}
           onSaved={() => {
@@ -90,9 +93,9 @@ export default function Settings() {
           }}
         />
         <Separator />
-        <ModelsSection config={configQ.data} onSaved={() => qc.invalidateQueries({ queryKey: ['config'] })} />
+        <ModelsSection config={config} onSaved={() => qc.invalidateQueries({ queryKey: ['config'] })} />
         <Separator />
-        <RepoSection dataRepo={configQ.data.data_repo} />
+        <RepoSection dataRepo={config.data_repo} />
       </div>
     </div>
   )
@@ -122,22 +125,18 @@ function ProfileSection({ profile, onSaved }: { profile: Profile; onSaved: () =>
     <section>
       <h3 className="mb-3 font-heading text-lg font-semibold">Profile</h3>
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label className="mb-1.5 text-xs">Name</Label>
+        <Field label="Name">
           <Input value={draft.name ?? ''} onChange={(e) => set({ name: e.target.value })} />
-        </div>
-        <div>
-          <Label className="mb-1.5 text-xs">Email</Label>
+        </Field>
+        <Field label="Email">
           <Input value={draft.email ?? ''} onChange={(e) => set({ email: e.target.value })} />
-        </div>
-        <div>
-          <Label className="mb-1.5 text-xs">Phone</Label>
+        </Field>
+        <Field label="Phone">
           <Input value={draft.phone ?? ''} onChange={(e) => set({ phone: e.target.value })} />
-        </div>
-        <div>
-          <Label className="mb-1.5 text-xs">Location</Label>
+        </Field>
+        <Field label="Location">
           <Input value={draft.location ?? ''} onChange={(e) => set({ location: e.target.value })} />
-        </div>
+        </Field>
       </div>
       <div className="mt-3">
         <Label className="mb-1.5 text-xs">Links</Label>

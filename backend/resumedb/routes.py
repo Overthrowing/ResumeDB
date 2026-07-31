@@ -96,10 +96,18 @@ def get_config():
 
 @router.put("/config")
 def put_config(cfg: dict):
+    models = cfg.get("models", {})
+    if models is None:
+        models = {}
+    if not isinstance(models, dict):
+        raise HTTPException(400, "`models` must be an object")
     merged = config.load()
     merged.update({k: v for k, v in cfg.items() if k != "models"})
-    merged["models"].update(cfg.get("models", {}))
-    return config.save(merged)
+    merged["models"].update(models)
+    try:
+        return config.save(merged)
+    except config.ConfigError as e:
+        raise HTTPException(400, str(e))  # bad request data, not a server fault
 
 
 @router.post("/pick-folder")
@@ -130,14 +138,16 @@ class InitBody(BaseModel):
 @router.post("/datarepo/init")
 def datarepo_init(body: InitBody):
     cfg = config.load()
-    if body.path:
-        cfg["data_repo"] = body.path
-        config.save(cfg)
-    root = Path(cfg["data_repo"]).expanduser()
+    root = Path(body.path or cfg["data_repo"]).expanduser()
+    # init first: persisting the path before it works would leave the app
+    # pointing at a folder it could not scaffold
     if datarepo.is_datarepo(root):
         datarepo.sync_boilerplate(root)  # adopt an existing repo, top up boilerplate
     else:
         datarepo.init_datarepo(root)
+    if body.path:
+        cfg["data_repo"] = str(root)
+        config.save(cfg)
     return {"ok": True, "path": str(root)}
 
 
@@ -219,11 +229,21 @@ def reject_proposal(name: str):
 MAX_UPLOAD = 20 * 1024 * 1024
 
 
+async def _read_capped(file: UploadFile, limit: int) -> bytes:
+    """Read in chunks and stop at the cap, so an oversized body cannot balloon
+    memory before the size check rejects it."""
+    chunks, total = [], 0
+    while chunk := await file.read(1 << 20):
+        total += len(chunk)
+        if total > limit:
+            raise HTTPException(400, f"file too large (max {limit // (1024 * 1024)} MB)")
+        chunks.append(chunk)
+    return b"".join(chunks)
+
+
 @router.post("/upload")
 async def upload(scope: str = Form(...), file: UploadFile = File(...)):
-    data = await file.read()
-    if len(data) > MAX_UPLOAD:
-        raise HTTPException(400, "file too large (max 20 MB)")
+    data = await _read_capped(file, MAX_UPLOAD)
     path = await asyncio.to_thread(repo().save_upload, scope, file.filename or "file", data)
     return {"path": path}
 
@@ -286,6 +306,10 @@ def get_application(app_id: str):
 
 @router.put("/applications/{app_id}/meta")
 def put_app_meta(app_id: str, updates: dict):
+    # splatting an untrusted dict would let a key like "self" raise a TypeError
+    bad = [k for k in updates if not isinstance(k, str) or k not in datarepo.DataRepo.META_FIELDS]
+    if bad:
+        raise HTTPException(400, f"not editable meta fields: {sorted(map(str, bad))}")
     repo().set_app_meta(app_id, **updates)
     return {"ok": True}
 
@@ -355,7 +379,7 @@ def history_revert(sha: str):
 async def import_resume(file: UploadFile = File(...)):
     cfg = config.load()
     root = Path(cfg["data_repo"]).expanduser()  # works pre-init during onboarding
-    pdf_bytes = await file.read()
+    pdf_bytes = await _read_capped(file, MAX_UPLOAD)
     return await importer.parse_resume_pdf(root if root.is_dir() else Path.home(), pdf_bytes)
 
 

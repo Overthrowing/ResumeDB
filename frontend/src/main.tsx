@@ -8,6 +8,7 @@ import App from './App'
 import Library from './routes/Library'
 import Applications from './routes/Applications'
 import Workspace from './routes/Workspace'
+import Outcomes from './routes/Outcomes'
 import Templates from './routes/Templates'
 import Settings from './routes/Settings'
 import Onboarding from './routes/Onboarding'
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="library" element={<Library />} />
             <Route path="applications" element={<Applications />} />
             <Route path="applications/:id" element={<Workspace />} />
+            <Route path="outcomes" element={<Outcomes />} />
             <Route path="templates" element={<Templates />} />
             <Route path="settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/library" replace />} />

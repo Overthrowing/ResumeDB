@@ -9,11 +9,13 @@ staging or die on index.lock. Subprocesses get a timeout so a stale lock file
 surfaces as an error instead of a hang.
 """
 
+import re
 import subprocess
 import threading
 from pathlib import Path
 
 GIT_TIMEOUT = 30
+SHA_RE = re.compile(r"[0-9a-fA-F]{7,40}")
 
 _locks: dict[str, threading.RLock] = {}
 _locks_guard = threading.Lock()
@@ -77,6 +79,18 @@ def is_dirty(repo: Path, scope: str) -> bool:
     return bool(out.strip())
 
 
+def untrack(repo: Path, path: str) -> bool:
+    """Stop tracking a path that should never have been committed, keeping the
+    working copy. Returns True if anything was tracked. (Adding a .gitignore
+    line does not untrack files that are already in the index.)"""
+    with _lock(repo):
+        tracked = _git(repo, "ls-files", "--", path, check=False).stdout.strip()
+        if not tracked:
+            return False
+        _git(repo, "rm", "-r", "--cached", "-q", "--", path, check=False)
+        return True
+
+
 def changed_files(repo: Path, *paths: str) -> list[str]:
     """Uncommitted changed/deleted/new file paths under the given pathspecs."""
     with _lock(repo):
@@ -97,14 +111,23 @@ def log(repo: Path, scope: str, limit: int = 100) -> list[dict]:
     return entries
 
 
+def _check_sha(sha: str) -> str:
+    """A sha reaches git as an argument, so an unvalidated one is argument
+    injection: `--output=CLAUDE.md` would make `git show` overwrite a repo file,
+    and a revspec range would mass-revert. Only real hex object names pass."""
+    if not SHA_RE.fullmatch(sha):
+        raise GitError(f"not a valid checkpoint id: {sha!r}")
+    return sha
+
+
 def diff(repo: Path, sha: str) -> str:
     with _lock(repo):
-        return _git(repo, "show", "--stat", "--patch", sha).stdout
+        return _git(repo, "show", "--stat", "--patch", _check_sha(sha), "--").stdout
 
 
 def revert(repo: Path, sha: str) -> None:
     with _lock(repo):
-        proc = _git(repo, "revert", "--no-edit", sha, check=False)
+        proc = _git(repo, "revert", "--no-edit", _check_sha(sha), check=False)
         if proc.returncode != 0:
             _git(repo, "revert", "--abort", check=False)
             raise GitError(

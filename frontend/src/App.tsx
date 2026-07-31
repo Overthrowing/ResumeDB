@@ -1,7 +1,14 @@
 import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { NavLink, Outlet, useNavigate } from 'react-router'
-import { BookOpen, Briefcase, LayoutTemplate, RefreshCw, Settings as SettingsIcon } from 'lucide-react'
+import {
+  BookOpen,
+  Briefcase,
+  ChartNoAxesCombined,
+  LayoutTemplate,
+  RefreshCw,
+  Settings as SettingsIcon,
+} from 'lucide-react'
 import { api } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -18,6 +25,7 @@ function Logo() {
 const NAV = [
   { to: '/library', label: 'Library', icon: BookOpen },
   { to: '/applications', label: 'Applications', icon: Briefcase },
+  { to: '/outcomes', label: 'Outcomes', icon: ChartNoAxesCombined },
   { to: '/templates', label: 'Templates', icon: LayoutTemplate },
   { to: '/settings', label: 'Settings', icon: SettingsIcon },
 ]

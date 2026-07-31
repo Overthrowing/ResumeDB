@@ -15,6 +15,7 @@ proposals, error, turn_done).
 
 import asyncio
 import datetime
+import json
 import re
 from pathlib import Path
 
@@ -151,7 +152,16 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
 
     try:
         while True:
-            msg = await ws.receive_json()
+            # A malformed frame is a client bug, not a reason to drop the
+            # socket (and with it the user's view of a running turn).
+            try:
+                msg = await ws.receive_json()
+            except (json.JSONDecodeError, UnicodeDecodeError, KeyError):
+                await ws.send_json({"type": "error", "message": "malformed message frame (expected JSON)"})
+                continue
+            if not isinstance(msg, dict):
+                await ws.send_json({"type": "error", "message": "expected a JSON object"})
+                continue
             kind = msg.get("type")
 
             if kind == "cancel":
@@ -160,7 +170,11 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
                 continue
             if kind != "message":
                 continue
-            text = (msg.get("text") or "").strip()
+            raw = msg.get("text")
+            if not isinstance(raw, str):
+                await ws.send_json({"type": "error", "message": "`text` must be a string"})
+                continue
+            text = raw.strip()
             if not text:
                 continue
             if conv and manager.active(scope, conv):
@@ -190,8 +204,12 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
 
             kind_ = "tailor" if scope.startswith("app:") else "chat"
             model, effort = model_for(cfg, kind_)
-            model = msg.get("model") or model
-            effort = msg.get("effort") or effort
+            override = msg.get("model")
+            if isinstance(override, str) and override:
+                model = override
+            override = msg.get("effort")
+            if isinstance(override, str) and override:
+                effort = override
 
             try:
                 turn = manager.start(repo, agent, scope, conv, text, prompt, model, effort)

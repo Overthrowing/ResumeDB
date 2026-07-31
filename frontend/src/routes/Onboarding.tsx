@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { Check, CircleAlert, FolderOpen, Loader2, RefreshCw, Upload } from 'lucide-react'
@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { api, type EnvCheck, type ParsedResume } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Field } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
@@ -26,6 +27,14 @@ export default function Onboarding() {
 
   const envQ = useQuery({ queryKey: ['env'], queryFn: api.env, staleTime: 10_000 })
   const env = envQ.data
+
+  // Seed the data-folder field from the server default once, when it arrives.
+  // The input binds straight to `path` so it stays clearable - rendering
+  // `path || defaultPath` made deleting the last character snap back.
+  const defaultPath = env?.data_repo ?? ''
+  useEffect(() => {
+    if (defaultPath) setPath((p) => p || defaultPath)
+  }, [defaultPath])
 
   const finish = async () => {
     await qc.invalidateQueries({ queryKey: ['health'] })
@@ -89,7 +98,6 @@ export default function Onboarding() {
         )}
         {step === 'repo' && (
           <RepoStep
-            defaultPath={env?.data_repo ?? ''}
             path={path}
             setPath={setPath}
             onDone={() => setStep('import')}
@@ -272,18 +280,15 @@ function ProviderStep({
 }
 
 function RepoStep({
-  defaultPath,
   path,
   setPath,
   onDone,
 }: {
-  defaultPath: string
   path: string
   setPath: (p: string) => void
   onDone: () => void
 }) {
   const [busy, setBusy] = useState(false)
-  const effective = path || defaultPath
 
   const pick = async () => {
     try {
@@ -297,7 +302,7 @@ function RepoStep({
   const init = async () => {
     setBusy(true)
     try {
-      await api.initDatarepo(effective)
+      await api.initDatarepo(path)
       onDone()
     } catch (e) {
       toast.error((e as Error).message)
@@ -313,15 +318,17 @@ function RepoStep({
         A plain folder of YAML + markdown, versioned with git. Yours forever - readable without this app. Pointing at
         an existing ResumeDB folder adopts it as-is.
       </p>
-      <div className="flex gap-2">
-        <Input value={effective} onChange={(e) => setPath(e.target.value)} placeholder="/Users/you/resume-data" />
+      <div className="flex items-end gap-2">
+        <Field label="Data folder" className="min-w-0 flex-1">
+          <Input value={path} onChange={(e) => setPath(e.target.value)} placeholder="/Users/you/resume-data" />
+        </Field>
         <Button variant="outline" onClick={pick}>
           <FolderOpen className="size-4" />
           Browse…
         </Button>
       </div>
       <div className="mt-4 flex justify-end">
-        <Button disabled={!effective || busy} onClick={init}>
+        <Button disabled={!path || busy} onClick={init}>
           {busy && <Loader2 className="size-3.5 animate-spin" />}
           {busy ? 'Setting up…' : 'Create / adopt folder'}
         </Button>

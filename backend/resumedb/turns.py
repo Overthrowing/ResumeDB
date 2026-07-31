@@ -60,9 +60,24 @@ def conv_path(repo: DataRepo, scope: str, conv: str) -> Path:
 
 
 def read_messages(path: Path) -> list[dict]:
+    """Skip corrupt lines rather than 500 the whole conversation: an
+    interrupted append can leave a partial line behind."""
     if not path.exists():
         return []
-    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+    out = []
+    for line in path.read_text().splitlines():
+        if not line.strip():
+            continue
+        try:
+            msg = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(msg, dict):
+            msg.setdefault("role", "assistant")
+            if not isinstance(msg.get("text"), str):
+                msg["text"] = "" if msg.get("text") is None else str(msg["text"])
+            out.append(msg)
+    return out
 
 
 def append_message(path: Path, msg: dict) -> None:
@@ -83,8 +98,16 @@ def _state_path(repo: DataRepo) -> Path:
 
 
 def _state(repo: DataRepo) -> dict:
+    """Machine-local bookkeeping: a torn write must not 500 every chat
+    request, so unreadable state is treated as empty state."""
     p = _state_path(repo)
-    return json.loads(p.read_text()) if p.exists() else {}
+    if not p.exists():
+        return {}
+    try:
+        data = json.loads(p.read_text())
+    except (json.JSONDecodeError, OSError):
+        return {}
+    return data if isinstance(data, dict) else {}
 
 
 def get_session(repo: DataRepo, scope: str, conv: str) -> str | None:
