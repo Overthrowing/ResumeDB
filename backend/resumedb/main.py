@@ -1,9 +1,10 @@
+import sys
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .chat import router as chat_router
@@ -92,6 +93,27 @@ async def agent_error(request: Request, exc: AgentError):
 app.include_router(router)
 app.include_router(chat_router)
 
+# In dev (`--reload`, i.e. `make dev`) the Vite server on :5173 is the real
+# frontend. Serving frontend/dist here too would quietly hand out whatever
+# stale bundle happens to be on disk, so point at :5173 instead of mounting it.
+DEV = "--reload" in sys.argv
+
 dist = Path(__file__).parent.parent.parent / "frontend" / "dist"
-if dist.is_dir():
+if DEV or not dist.is_dir():
+
+    @app.get("/", response_class=HTMLResponse)
+    def dev_index():
+        where = "the dev server" if DEV else "a production build"
+        hint = (
+            '<a href="http://localhost:5173">http://localhost:5173</a>'
+            if DEV
+            else "run <code>make build</code> first"
+        )
+        return (
+            "<title>ResumeDB API</title>"
+            '<body style="font-family:system-ui;padding:3rem;max-width:34rem">'
+            f"<h1>ResumeDB API</h1><p>This port serves the API. The UI is on {where}: {hint}</p>"
+            '<p><a href="/docs">API docs</a></p>'
+        )
+else:
     app.mount("/", StaticFiles(directory=dist, html=True), name="frontend")
