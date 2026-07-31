@@ -130,10 +130,10 @@ export default function Library() {
               ) : (
                 <button
                   key={e.id}
-                  className="mb-2 flex w-full items-center gap-3 rounded-lg border bg-card px-4 py-3 text-left transition-colors hover:border-primary/40"
+                  className="mb-2 flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 overflow-hidden rounded-lg border bg-card px-4 py-3 text-left transition-colors hover:border-primary/40"
                   onClick={() => setEditing(e.id)}
                 >
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-52 flex-1 basis-52">
                     <div className="font-heading text-base font-semibold">
                       {e.title}
                       {e.org ? ` · ${e.org}` : ''}
@@ -144,7 +144,7 @@ export default function Library() {
                         .join(' · ')}
                     </div>
                   </div>
-                  <div className="flex flex-none gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {(e.type === 'skill' ? (e.items ?? []) : (e.tags ?? [])).slice(0, 3).map((t) => (
                       <Badge key={t} variant="secondary" className="text-[11px]">
                         {t}

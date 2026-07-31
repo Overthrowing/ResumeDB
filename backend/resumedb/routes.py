@@ -224,7 +224,8 @@ async def upload(scope: str = Form(...), file: UploadFile = File(...)):
     data = await file.read()
     if len(data) > MAX_UPLOAD:
         raise HTTPException(400, "file too large (max 20 MB)")
-    return {"path": repo().save_upload(scope, file.filename or "file", data)}
+    path = await asyncio.to_thread(repo().save_upload, scope, file.filename or "file", data)
+    return {"path": path}
 
 
 # -- applications --------------------------------------------------------------
@@ -242,6 +243,9 @@ def list_applications():
     return repo().list_applications()
 
 
+_bg_tasks: set[asyncio.Task] = set()  # keep strong refs so fetches survive GC
+
+
 @router.post("/applications")
 async def create_application(body: NewApplication):
     r = repo()
@@ -250,9 +254,13 @@ async def create_application(body: NewApplication):
         f"(Fetching job description from {fetch_url} - refresh in a minute.)"
         if fetch_url else body.jd_text
     )
-    app_id = r.create_application(body.company, body.role, jd_text, body.template)
+    app_id = await asyncio.to_thread(
+        r.create_application, body.company, body.role, jd_text, body.template
+    )
     if fetch_url:
-        asyncio.create_task(_fetch_jd(r, app_id, fetch_url))
+        task = asyncio.create_task(_fetch_jd(r, app_id, fetch_url))
+        _bg_tasks.add(task)
+        task.add_done_callback(_bg_tasks.discard)
     return {"ok": True, "id": app_id}
 
 
@@ -266,7 +274,7 @@ async def _fetch_jd(r: datarepo.DataRepo, app_id: str, url: str) -> None:
         agent = get_agent(cfg)
         model, effort = model_for(cfg, "jd")
         await agent.oneshot(r.root, prompt, model=model, effort=effort)
-        gitops.checkpoint(r.root, f"app:{app_id}", "fetch jd from link")
+        await asyncio.to_thread(gitops.checkpoint, r.root, f"app:{app_id}", "fetch jd from link")
     except Exception:
         pass  # placeholder jd.md stays; the user can paste the text instead
 

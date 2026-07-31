@@ -9,24 +9,31 @@ from .config import typst_bin
 
 
 def render(repo: Path, app_id: str) -> dict:
-    """Compile applications/<id>/resume.typ -> resume.pdf. Returns render status."""
+    """Compile applications/<id>/resume.typ -> resume.pdf. Returns render status
+    (never raises: typst/pypdf failures come back as {ok: False, stderr})."""
     typst = typst_bin()
     if not typst:
         return {"ok": False, "pages": 0, "stderr": "typst not installed (brew install typst)"}
     app_dir = f"applications/{app_id}"
-    proc = subprocess.run(
-        [
-            typst, "compile",
-            "--root", str(repo),
-            "--input", f"data=/{app_dir}/resume.yaml",
-            f"{app_dir}/resume.typ",
-            f"{app_dir}/resume.pdf",
-        ],
-        cwd=repo, capture_output=True, text=True, timeout=60,
-    )
+    try:
+        proc = subprocess.run(
+            [
+                typst, "compile",
+                "--root", str(repo),
+                "--input", f"data=/{app_dir}/resume.yaml",
+                f"{app_dir}/resume.typ",
+                f"{app_dir}/resume.pdf",
+            ],
+            cwd=repo, capture_output=True, text=True, timeout=60,
+        )
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "pages": 0, "stderr": "typst timed out after 60s"}
     if proc.returncode != 0:
         return {"ok": False, "pages": 0, "stderr": proc.stderr}
-    pages = len(PdfReader(repo / app_dir / "resume.pdf").pages)
+    try:
+        pages = len(PdfReader(repo / app_dir / "resume.pdf").pages)
+    except Exception as e:
+        return {"ok": False, "pages": 0, "stderr": f"rendered PDF unreadable: {e}"}
     return {"ok": True, "pages": pages, "overflow": pages > 1, "stderr": ""}
 
 
@@ -35,15 +42,18 @@ def validate_template(repo: Path, name: str) -> dict:
     typst = typst_bin()
     if not typst:
         return {"ok": False, "stderr": "typst not installed"}
-    proc = subprocess.run(
-        [
-            typst, "compile",
-            "--root", str(repo),
-            "--format", "pdf",
-            "--input", "data=/templates/sample.yaml",
-            f"templates/{name}.typ",
-            "/dev/null",
-        ],
-        cwd=repo, capture_output=True, text=True, timeout=60,
-    )
+    try:
+        proc = subprocess.run(
+            [
+                typst, "compile",
+                "--root", str(repo),
+                "--format", "pdf",
+                "--input", "data=/templates/sample.yaml",
+                f"templates/{name}.typ",
+                "/dev/null",
+            ],
+            cwd=repo, capture_output=True, text=True, timeout=60,
+        )
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "stderr": "typst timed out after 60s"}
     return {"ok": proc.returncode == 0, "stderr": proc.stderr}

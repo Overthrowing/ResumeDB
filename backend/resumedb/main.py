@@ -15,19 +15,31 @@ from .routes import router
 
 app = FastAPI(title="ResumeDB")
 
+
+def _envelope(status: int, error: str, detail: str) -> JSONResponse:
+    return JSONResponse(status_code=status, content={"error": error, "detail": detail})
+
+
+@app.middleware("http")
+async def catch_all_errors(request: Request, call_next):
+    # A plain @exception_handler(Exception) would run outside CORSMiddleware,
+    # so the dev frontend could not read 500 envelopes. This sits inside it.
+    try:
+        return await call_next(request)
+    except Exception as exc:  # noqa: BLE001 - the last-resort envelope
+        return _envelope(500, "internal_error", f"{type(exc).__name__}: {exc}")
+
+
 # Dev frontend origin only. No credentials, so this is CORS-valid (the old
 # allow_origins=["*"] + allow_credentials=True combination is rejected by
 # browsers). The built frontend is served same-origin below and needs no CORS.
+# Added after the catch-all middleware, so CORS wraps it (last added = outermost).
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-def _envelope(status: int, error: str, detail: str) -> JSONResponse:
-    return JSONResponse(status_code=status, content={"error": error, "detail": detail})
 
 
 @app.exception_handler(HTTPException)
@@ -53,11 +65,6 @@ async def config_error(request: Request, exc: ConfigError):
 @app.exception_handler(AgentError)
 async def agent_error(request: Request, exc: AgentError):
     return _envelope(503, "agent_error", str(exc))
-
-
-@app.exception_handler(Exception)
-async def unhandled_error(request: Request, exc: Exception):
-    return _envelope(500, "internal_error", f"{type(exc).__name__}: {exc}")
 
 
 app.include_router(router)

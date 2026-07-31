@@ -1,6 +1,7 @@
 """PDF resume import: extract text with pypdf, structure it with the agent,
 then write profile + entries through the normal datarepo layer."""
 
+import asyncio
 import io
 import json
 import re
@@ -76,7 +77,7 @@ def extract_text(pdf_bytes: bytes) -> str:
 
 
 async def parse_resume_pdf(repo_root, pdf_bytes: bytes) -> dict:
-    text = extract_text(pdf_bytes)
+    text = await asyncio.to_thread(extract_text, pdf_bytes)  # pypdf off the event loop
     prompt = (
         "You are an expert resume parser. Extract the candidate's profile and "
         "entries from the raw resume text below. Convert every work experience, "

@@ -103,7 +103,13 @@ def sync_boilerplate(path: Path, force: bool = False) -> list[str]:
         if force or not dst.exists():
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy(SCAFFOLD / rel, dst)
-    changed = gitops.changed_files(path, ".claude/skills", "CLAUDE.md", "AGENTS.md", "templates")
+    # adopted pre-refactor repos lack the .resumedb/ ignore; committing
+    # machine-local turn logs into checkpoints would corrupt undo semantics
+    gi = path / ".gitignore"
+    lines = gi.read_text().splitlines() if gi.exists() else []
+    if ".resumedb/" not in lines:
+        atomic_write(gi, "\n".join([*lines, ".resumedb/"]) + "\n")
+    changed = gitops.changed_files(path, ".claude/skills", "CLAUDE.md", "AGENTS.md", "templates", ".gitignore")
     if changed:
         verb = "overwrite" if force else "add"
         gitops.checkpoint(path, "db", f"sync boilerplate from scaffold ({verb} {len(changed)} file(s))")

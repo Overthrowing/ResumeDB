@@ -17,17 +17,32 @@ Durability layers:
 import asyncio
 import datetime
 import json
+import re
+import threading
 from pathlib import Path
 from typing import AsyncIterator
 
 from . import gitops, render
 from .datarepo import DataRepo, state_dir
+from .fsio import atomic_write
 
 TERMINAL = "turn_done"
+SCOPE_RE = re.compile(r"db|apps|app:[a-z0-9][a-z0-9-]*")
 
 
 class TurnBusy(Exception):
     pass
+
+
+class BadScope(Exception):
+    pass
+
+
+def check_scope(scope: str) -> str:
+    """Whitelist scopes; they are client-controlled and become path components."""
+    if not SCOPE_RE.fullmatch(scope):
+        raise BadScope(f"bad scope: {scope!r}")
+    return scope
 
 
 # -- conversation storage ------------------------------------------------------
@@ -83,7 +98,7 @@ def set_session(repo: DataRepo, scope: str, conv: str, sid: str | None) -> None:
         data.get("sessions", {}).pop(key, None)
     else:
         data.setdefault("sessions", {})[key] = sid
-    _state_path(repo).write_text(json.dumps(data))
+    atomic_write(_state_path(repo), json.dumps(data))
 
 
 # -- turn log ------------------------------------------------------------------
@@ -94,24 +109,28 @@ def _turn_log(repo: DataRepo, scope: str, conv: str) -> Path:
     return d / f"{conv}.jsonl"
 
 
+_reap_lock = threading.Lock()  # reap runs from threadpool routes AND the event loop
+
+
 def reap_stale(repo: DataRepo, scope: str, conv: str, manager: "TurnManager") -> bool:
     """Fold a turn log orphaned by a backend crash/restart into the
     conversation as an interrupted assistant message. Returns True if reaped."""
     log = _turn_log(repo, scope, conv)
-    if not log.exists() or manager.active(scope, conv):
-        return False
-    partial = "".join(
-        e.get("text", "")
-        for e in (json.loads(l) for l in log.read_text().splitlines() if l.strip())
-        if e.get("type") == "text_delta"
-    )
-    append_message(conv_path(repo, scope, conv), {
-        "role": "assistant",
-        "text": partial,
-        "interrupted": True,
-    })
-    log.unlink()
-    return True
+    with _reap_lock:
+        if not log.exists() or manager.active(scope, conv):
+            return False
+        events = [json.loads(l) for l in log.read_text().splitlines() if l.strip()]
+        log.unlink(missing_ok=True)
+        # a log ending in turn_done is finished leftovers, not an interruption
+        if not events or events[-1].get("type") == TERMINAL:
+            return False
+        partial = "".join(e.get("text", "") for e in events if e.get("type") == "text_delta")
+        append_message(conv_path(repo, scope, conv), {
+            "role": "assistant",
+            "text": partial,
+            "interrupted": True,
+        })
+        return True
 
 
 # -- turn ----------------------------------------------------------------------
@@ -167,7 +186,8 @@ class TurnManager:
         return t if t and not t.finished else None
 
     def active_convs(self, scope: str) -> set[str]:
-        return {c for (s, c), t in self._active.items() if s == scope and not t.finished}
+        # snapshot: read from threadpool routes while the loop mutates the dict
+        return {c for (s, c), t in list(self._active.items()) if s == scope and not t.finished}
 
     def start(self, repo: DataRepo, agent, scope: str, conv: str, user_text: str,
               prompt: str, model: str | None, effort: str | None) -> Turn:
@@ -184,11 +204,12 @@ class TurnManager:
     async def _run(self, turn: Turn, repo: DataRepo, agent, prompt: str,
                    model: str | None, effort: str | None) -> None:
         scope, conv = turn.scope, turn.conv
-        cpath = conv_path(repo, scope, conv)
-        append_message(cpath, {"role": "user", "text": turn.user_text})
-        turn.emit({"type": "turn_start", "user_text": turn.user_text})
+        cpath: Path | None = None
         final_text = ""
         try:
+            cpath = conv_path(repo, scope, conv)
+            append_message(cpath, {"role": "user", "text": turn.user_text})
+            turn.emit({"type": "turn_start", "user_text": turn.user_text})
             session_id = get_session(repo, scope, conv)
             proc = agent.start_turn(repo.root, prompt, session_id=session_id,
                                     model=model, effort=effort)
@@ -204,12 +225,12 @@ class TurnManager:
         except Exception as e:
             turn.emit({"type": "error", "message": f"turn failed: {e}"})
         finally:
-            if final_text:
+            if final_text and cpath:
                 append_message(cpath, {"role": "assistant", "text": final_text})
-            turn.log.unlink(missing_ok=True)
             turn.emit({"type": TERMINAL})
             turn.finished = True
             self._active.pop((scope, conv), None)
+            turn.log.unlink(missing_ok=True)  # after the last emit, or it reappears
 
     def _epilogue(self, repo: DataRepo, scope: str) -> list[dict]:
         """Post-turn bookkeeping (blocking; runs in a thread): flag protected-

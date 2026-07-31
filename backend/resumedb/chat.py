@@ -23,7 +23,7 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from . import config, gitops, turns
 from .datarepo import DataRepo, DataRepoError
 from .providers import AgentError, get_agent, model_for
-from .turns import TurnBusy, manager
+from .turns import BadScope, TurnBusy, check_scope, manager
 
 router = APIRouter()
 
@@ -56,9 +56,17 @@ def _check_conv(conv: str) -> str:
     return conv
 
 
+def _check_scope(scope: str) -> str:
+    try:
+        return check_scope(scope)
+    except BadScope as e:
+        raise HTTPException(400, str(e))
+
+
 @router.get("/api/chat/{scope}/conversations")
 def list_conversations(scope: str):
     repo = _repo()
+    _check_scope(scope)
     try:
         d = turns.chats_dir(repo, scope)
     except DataRepoError as e:
@@ -83,6 +91,7 @@ def list_conversations(scope: str):
 @router.get("/api/chat/{scope}/conversations/{conv}")
 def get_conversation(scope: str, conv: str):
     repo = _repo()
+    _check_scope(scope)
     try:
         turns.reap_stale(repo, scope, _check_conv(conv), manager)
         return {
@@ -96,6 +105,7 @@ def get_conversation(scope: str, conv: str):
 @router.delete("/api/chat/{scope}/conversations/{conv}")
 def delete_conversation(scope: str, conv: str):
     repo = _repo()
+    _check_scope(scope)
     if manager.active(scope, _check_conv(conv)):
         raise HTTPException(409, "a turn is running in this conversation; cancel it first")
     try:
@@ -105,6 +115,7 @@ def delete_conversation(scope: str, conv: str):
     if not path.exists():
         raise HTTPException(404, f"no conversation {conv}")
     path.unlink()
+    turns._turn_log(repo, scope, conv).unlink(missing_ok=True)
     turns.set_session(repo, scope, conv, None)
     gitops.checkpoint(repo.root, scope, f"delete conversation {conv}")
     return {"ok": True}
@@ -123,6 +134,12 @@ async def _forward(ws: WebSocket, turn: turns.Turn) -> None:
 @router.websocket("/api/chat")
 async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
     await ws.accept()
+    try:
+        check_scope(scope)
+    except BadScope as e:
+        await ws.send_json({"type": "error", "message": str(e)})
+        await ws.close()
+        return
     repo = _repo()
     conv = conversation if conversation and CONV_RE.fullmatch(conversation) else None
 

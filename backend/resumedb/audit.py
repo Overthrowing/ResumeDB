@@ -48,7 +48,10 @@ def extraction_check(repo_root: Path, app_id: str) -> dict:
     pdf = app_dir / "resume.pdf"
     if not pdf.exists():
         return {"ok": False, "error": "not rendered yet", "missing": [], "checked": 0}
-    extracted = " ".join(page.extract_text() or "" for page in PdfReader(pdf).pages)
+    try:
+        extracted = " ".join(page.extract_text() or "" for page in PdfReader(pdf).pages)
+    except Exception as e:
+        return {"ok": False, "error": f"could not read resume.pdf: {e}", "missing": [], "checked": 0}
     haystack = set(_norm_tokens(extracted))
     data = _load(app_dir / "resume.yaml") or {}
     missing = []
