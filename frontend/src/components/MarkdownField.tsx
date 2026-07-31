@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Markdown from 'react-markdown'
+import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
 
 // Notion-style live field: rendered markdown at rest, raw editor on click,
 // re-rendered on blur.
@@ -8,23 +10,23 @@ export default function MarkdownField({
   onChange,
   placeholder = 'Write markdown…',
   minHeight = 90,
-  style,
+  className,
 }: {
   value: string
   onChange: (v: string) => void
   placeholder?: string
   minHeight?: number
-  style?: React.CSSProperties
+  className?: string
 }) {
   const [editing, setEditing] = useState(false)
 
   if (editing)
     return (
-      <textarea
-        className="input"
+      <Textarea
         autoFocus
         spellCheck={false}
-        style={{ minHeight, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 13, lineHeight: 1.6, ...style }}
+        style={{ minHeight }}
+        className={cn('font-mono text-[13px] leading-relaxed', className)}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={() => setEditing(false)}
@@ -33,14 +35,17 @@ export default function MarkdownField({
 
   return (
     <div
-      className="input chat-md"
       role="textbox"
       tabIndex={0}
       onClick={() => setEditing(true)}
       onFocus={() => setEditing(true)}
-      style={{ minHeight, cursor: 'text', overflowY: 'auto', fontSize: 13, lineHeight: 1.6, ...style }}
+      style={{ minHeight }}
+      className={cn(
+        'prose-chat cursor-text overflow-y-auto rounded-md border border-input bg-card px-3 py-2 text-[13px] leading-relaxed',
+        className,
+      )}
     >
-      {value.trim() ? <Markdown>{value}</Markdown> : <span className="text-muted">{placeholder}</span>}
+      {value.trim() ? <Markdown>{value}</Markdown> : <span className="text-muted-foreground">{placeholder}</span>}
     </div>
   )
 }

@@ -1,117 +1,115 @@
-import { useCallback, useEffect, useState } from 'react'
-import { api, type Health, type Profile } from './api'
-import { IconBriefcase, IconLogo, IconSettings, IconTemplate, IconUser } from './icons'
-import Library from './Library'
-import Applications from './Applications'
-import Ingest from './Ingest'
-import InterviewPrep from './InterviewPrep'
-import Templates from './Templates'
-import Settings from './Settings'
-import Onboarding from './Onboarding'
+import { useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { NavLink, Outlet, useNavigate } from 'react-router'
+import { BookOpen, Briefcase, LayoutTemplate, RefreshCw, Settings as SettingsIcon } from 'lucide-react'
+import { api } from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-type Screen = 'library' | 'applications' | 'ingest' | 'interview' | 'templates' | 'settings'
+function Logo() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="2" y="2" width="20" height="20" rx="5" fill="var(--primary)" />
+      <path d="M8 7h5.5a2.5 2.5 0 0 1 0 5H8zM8 12h5l3.5 5" stroke="var(--primary-foreground)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  )
+}
+
+const NAV = [
+  { to: '/library', label: 'Library', icon: BookOpen },
+  { to: '/applications', label: 'Applications', icon: Briefcase },
+  { to: '/templates', label: 'Templates', icon: LayoutTemplate },
+  { to: '/settings', label: 'Settings', icon: SettingsIcon },
+]
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('library')
-  const [health, setHealth] = useState<Health | null>(null)
-  const [profile, setProfile] = useState<Profile>({})
-  const [appCount, setAppCount] = useState<number | null>(null)
+  const navigate = useNavigate()
+  const health = useQuery({ queryKey: ['health'], queryFn: api.health })
+  const profile = useQuery({
+    queryKey: ['profile'],
+    queryFn: api.profile,
+    enabled: health.data?.data_repo_ok === true,
+  })
+  const apps = useQuery({
+    queryKey: ['apps'],
+    queryFn: api.applications,
+    enabled: health.data?.data_repo_ok === true,
+  })
 
-  const refresh = useCallback(() => {
-    api.health().then(setHealth).catch(() => setHealth(null))
-  }, [])
-  useEffect(refresh, [refresh])
   useEffect(() => {
-    if (!health?.data_repo_ok) return
-    api.profile().then(setProfile).catch(() => {})
-    api.applications().then((a) => setAppCount(a.length)).catch(() => {})
-  }, [health])
+    if (health.data && !health.data.data_repo_ok) navigate('/onboarding', { replace: true })
+  }, [health.data, navigate])
 
-  if (!health) return null
-  if (!health.data_repo_ok) return <Onboarding health={health} onDone={refresh} />
+  if (health.isPending)
+    return <div className="grid h-screen place-items-center text-sm text-muted-foreground">Loading…</div>
 
+  if (health.isError)
+    return (
+      <div className="grid h-screen place-items-center">
+        <div className="max-w-sm text-center">
+          <div className="mb-2 flex justify-center"><Logo /></div>
+          <h1 className="font-heading text-2xl font-semibold">Backend unreachable</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            The ResumeDB server on port 8000 is not responding. Start it with <code className="rounded bg-muted px-1">make dev</code>, then retry.
+          </p>
+          <Button className="mt-4" variant="outline" onClick={() => health.refetch()}>
+            <RefreshCw className="size-3.5" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    )
+
+  const p = profile.data ?? {}
   const initials =
-    (profile.name || '')
+    (p.name || '')
       .split(' ')
       .map((w) => w[0])
       .slice(0, 2)
       .join('')
       .toUpperCase() || '·'
 
-  const nav: { id: Screen; label: string; icon: React.ReactNode; extra?: React.ReactNode }[] = [
-    { id: 'library', label: 'Profile', icon: <IconUser /> },
-    {
-      id: 'applications',
-      label: 'Applications',
-      icon: <IconBriefcase />,
-      extra:
-        appCount !== null ? (
-          <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--color-neutral-600)', fontFamily: 'var(--font-heading)' }}>
-            {appCount}
-          </span>
-        ) : undefined,
-    },
-    {
-      id: 'ingest',
-      label: 'Ingest & Discover',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flex: 'none' }}>
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </svg>
-      ),
-    },
-    {
-      id: 'interview',
-      label: 'Interview Prep',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flex: 'none' }}>
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-          <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
-        </svg>
-      ),
-    },
-    { id: 'templates', label: 'Templates', icon: <IconTemplate /> },
-    { id: 'settings', label: 'Settings', icon: <IconSettings /> },
-  ]
-
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--color-bg)', color: 'var(--color-text)', fontFamily: 'var(--font-body)' }}>
-      <aside style={{ width: 232, flex: 'none', borderRight: '1px solid var(--color-divider)', display: 'flex', flexDirection: 'column', padding: 'var(--space-4) var(--space-3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '0 6px var(--space-4)' }}>
-          <IconLogo />
-          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: 19, letterSpacing: '-.01em' }}>ResumeDB</span>
+    <div className="flex h-screen overflow-hidden bg-background text-foreground">
+      <aside className="flex w-56 flex-none flex-col border-r bg-sidebar px-3 py-4">
+        <div className="flex items-center gap-2.5 px-1.5 pb-5">
+          <Logo />
+          <span className="font-heading text-[19px] font-semibold tracking-tight">ResumeDB</span>
         </div>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {nav.map((n) => (
-            <div key={n.id} className={`nav-item${screen === n.id ? ' active' : ''}`} onClick={() => setScreen(n.id)}>
-              {n.icon}
-              {n.label}
-              {n.extra}
-            </div>
+        <nav className="flex flex-col gap-0.5">
+          {NAV.map(({ to, label, icon: Icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                  isActive && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
+                )
+              }
+            >
+              <Icon className="size-4 flex-none" />
+              {label}
+              {to === '/applications' && apps.data !== undefined && (
+                <span className="ml-auto font-heading text-[11px] text-muted-foreground">{apps.data.length}</span>
+              )}
+            </NavLink>
           ))}
         </nav>
-        <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 9, padding: '10px 8px', borderTop: '1px solid var(--color-divider)' }}>
-          <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'var(--color-accent-200)', color: 'var(--color-accent-800)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-heading)', fontSize: 13 }}>
+        <div className="mt-auto flex items-center gap-2.5 border-t px-2 py-2.5">
+          <div className="grid size-8 flex-none place-items-center rounded-full bg-accent font-heading text-[13px] font-semibold text-accent-foreground">
             {initials}
           </div>
-          <div style={{ lineHeight: 1.3 }}>
-            <div style={{ fontSize: 13 }}>{profile.name || 'Set up your profile'}</div>
-            <div style={{ fontSize: 11, color: 'var(--color-neutral-600)' }}>{profile.email || ''}</div>
+          <div className="min-w-0 leading-tight">
+            <div className="truncate text-[13px]">{p.name || 'Set up your profile'}</div>
+            <div className="truncate text-[11px] text-muted-foreground">{p.email || ''}</div>
           </div>
         </div>
       </aside>
 
-      <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {screen === 'library' && <Library />}
-        {screen === 'applications' && <Applications onCountChange={setAppCount} />}
-        {screen === 'ingest' && <Ingest />}
-        {screen === 'interview' && <InterviewPrep />}
-        {screen === 'templates' && <Templates />}
-        {screen === 'settings' && <Settings health={health} onProfileChange={setProfile} />}
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <Outlet />
       </main>
     </div>
   )
 }
-

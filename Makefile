@@ -4,6 +4,12 @@
 # Force-syncs scaffold boilerplate into the data repo first, so edits to skills,
 # CLAUDE.md, and templates/ propagate on every dev start.
 dev: sync
+	@if lsof -ti tcp:8000 >/dev/null 2>&1; then \
+		echo "error: port 8000 is already taken (a stale backend?):"; \
+		lsof -i tcp:8000 -P | tail -n +2; \
+		echo "kill it first: kill $$(lsof -ti tcp:8000)"; \
+		exit 1; \
+	fi
 	$(MAKE) -j2 backend frontend
 
 # Overwrite the data repo's app-authored boilerplate (skills, CLAUDE.md,

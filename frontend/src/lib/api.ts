@@ -21,10 +21,6 @@ export interface Profile {
   links?: { label: string; url: string }[]
 }
 
-export interface Memory {
-  content: string
-}
-
 export type AppStatus = 'not_started' | 'in_progress' | 'awaiting_review' | 'ready' | 'applied'
 
 export interface AppMeta {
@@ -36,7 +32,6 @@ export interface AppMeta {
   status: AppStatus
   deadline?: string
   source?: string
-  session_id?: string | null
 }
 
 export interface Application {
@@ -58,17 +53,25 @@ export interface ModelConfig {
 
 export interface Config {
   data_repo: string
+  agent_provider: 'claude' | 'codex'
   claude_bin: string | null
+  codex_bin: string | null
   models: ModelConfig
 }
 
 export interface Health {
   agent_provider: string
   claude: string | null
-  claude_version: string | null
   codex: string | null
-  codex_version: string | null
   typst: string | null
+  data_repo: string
+  data_repo_ok: boolean
+}
+
+export interface EnvCheck {
+  claude: { installed: boolean; version: string | null; authed: boolean }
+  codex: { installed: boolean; version: string | null; authed: boolean | null }
+  typst: { installed: boolean; version: string | null }
   data_repo: string
   data_repo_ok: boolean
 }
@@ -109,47 +112,34 @@ export interface AuditResult {
   }
 }
 
-export interface JobLead {
-  company: string
-  role: string
-  location?: string
-  term?: string
-  department?: string
-  team?: string
-  deadline?: string | null
-  salary_amount?: number | null
-  salary_currency?: string
-  salary_period?: string
-  priority?: number
-  what_they_look_for?: string
-  good_to_know?: string
-  job_description?: string
-  notes?: string
-  application_url?: string
-  source_url?: string
-}
-
-export interface ResearchRun {
+export interface Conversation {
   id: string
-  kind: 'search' | 'ingest'
-  query: string
-  status: 'pending' | 'completed' | 'failed'
-  summary: string
-  created_at: string
-  error?: string | null
-  result?: {
-    summary?: string
-    job?: JobLead
-    jobs?: JobLead[]
-  } | null
+  title: string
+  created: number
+  count: number
+  active: boolean
 }
 
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'error' | 'warning'
+  text: string
+  tools?: string[]
+  interrupted?: boolean
+}
+
+export interface ParsedResume {
+  profile: Profile
+  entries: Entry[]
+}
+
+/** Parse the backend's {error, detail} envelope into a thrown Error. */
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init)
   if (!res.ok) {
     let detail = res.statusText
     try {
-      detail = (await res.json()).detail ?? detail
+      const body = await res.json()
+      detail = body.detail ?? body.error ?? detail
     } catch {
       /* not json */
     }
@@ -166,8 +156,10 @@ const json = (method: string, body: unknown): RequestInit => ({
 
 export const api = {
   health: () => req<Health>('/api/health'),
+  env: () => req<EnvCheck>('/api/env'),
   config: () => req<Config>('/api/config'),
-  saveConfig: (cfg: Partial<Config>) => req<Config>('/api/config', json('PUT', cfg)),
+  saveConfig: (cfg: Partial<Config> & { models?: Partial<ModelConfig> }) =>
+    req<Config>('/api/config', json('PUT', cfg)),
   initDatarepo: (path?: string) => req<{ ok: boolean }>('/api/datarepo/init', json('POST', { path })),
   pickFolder: () => req<{ path: string | null }>('/api/pick-folder', { method: 'POST' }),
 
@@ -176,12 +168,13 @@ export const api = {
   deleteEntry: (id: string) => req<{ ok: boolean }>(`/api/db/entries/${id}`, { method: 'DELETE' }),
   profile: () => req<Profile>('/api/db/profile'),
   saveProfile: (p: Profile) => req<{ ok: boolean }>('/api/db/profile', json('PUT', p)),
-  memory: () => req<Memory>('/api/db/memory'),
+  memory: () => req<{ content: string }>('/api/db/memory'),
   saveMemory: (content: string) => req<{ ok: boolean }>('/api/db/memory', json('PUT', { content })),
 
   proposals: () => req<Proposal[]>('/api/proposals'),
   approveProposal: (name: string) => req<{ ok: boolean }>(`/api/proposals/${name}/approve`, { method: 'POST' }),
-  approveAllProposals: () => req<{ approved: string[]; skipped: string[] }>('/api/proposals/approve-all', { method: 'POST' }),
+  approveAllProposals: () =>
+    req<{ approved: string[]; skipped: string[] }>('/api/proposals/approve-all', { method: 'POST' }),
   rejectProposal: (name: string) => req<{ ok: boolean }>(`/api/proposals/${name}/reject`, { method: 'POST' }),
 
   upload: (scope: string, file: File) => {
@@ -212,48 +205,18 @@ export const api = {
   },
   revert: (sha: string) => req<{ ok: boolean }>(`/api/history/${sha}/revert`, { method: 'POST' }),
 
-  agentIngest: (body: { input: string }) => req<{ run_id: string; summary: string; job: JobLead }>('/api/agent/ingest', json('POST', body)),
-  agentSearch: (body: { query: string }) => req<{ run_id: string; summary: string; jobs: JobLead[] }>('/api/agent/search', json('POST', body)),
-  runs: (limit?: number) => req<ResearchRun[]>(`/api/agent/runs${limit ? `?limit=${limit}` : ''}`),
-  run: (id: string) => req<ResearchRun>(`/api/agent/runs/${id}`),
-  review: (id: string) => req<ReviewReport>(`/api/applications/${id}/review`, { method: 'POST' }),
-  generateInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/generate`, { method: 'POST' }),
-  getInterviewQuestions: (id: string) => req<InterviewQuestion[]>(`/api/applications/${id}/interview/questions`),
+  conversations: (scope: string) => req<Conversation[]>(`/api/chat/${encodeURIComponent(scope)}/conversations`),
+  conversation: (scope: string, id: string) =>
+    req<{ messages: ChatMessage[]; active: boolean }>(
+      `/api/chat/${encodeURIComponent(scope)}/conversations/${id}`,
+    ),
+  deleteConversation: (scope: string, id: string) =>
+    req<{ ok: boolean }>(`/api/chat/${encodeURIComponent(scope)}/conversations/${id}`, { method: 'DELETE' }),
+
   importResume: (file: File) => {
     const fd = new FormData()
     fd.append('file', file)
-    return req<ParsedResume>('/api/import/resume', {
-      method: 'POST',
-      body: fd,
-    })
+    return req<ParsedResume>('/api/import/resume', { method: 'POST', body: fd })
   },
   confirmImport: (parsed: ParsedResume) => req<{ ok: boolean }>('/api/import/resume/confirm', json('POST', parsed)),
 }
-
-export interface ReviewItem {
-  severity: 'critical' | 'medium' | 'low'
-  category: 'missing_field' | 'weak_content' | 'keyword_gap' | 'suggestion'
-  title: string
-  description: string
-  action: string
-}
-
-export interface ReviewReport {
-  readiness_score: number
-  summary: string
-  items: ReviewItem[]
-}
-
-export interface InterviewQuestion {
-  id: string
-  type: 'behavioral' | 'technical' | 'situational'
-  question: string
-  context: string
-  tips: string
-}
-
-export interface ParsedResume {
-  profile: Profile
-  entries: Entry[]
-}
-
