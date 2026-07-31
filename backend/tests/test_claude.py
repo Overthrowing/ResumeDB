@@ -1,4 +1,8 @@
-"""Parser tests against real stream-json lines recorded from claude 2.1.197."""
+"""Claude stream-json parsing, against real lines recorded from claude 2.1.197.
+
+parse_line is the only place the CLI's wire format meets the app, so these
+fixtures are the contract: if a line stops parsing, chat goes silent.
+"""
 
 import json
 
@@ -13,37 +17,45 @@ RATE_LIMIT = '{"type":"rate_limit_event","rate_limit_info":{"status":"allowed"},
 HOOK = '{"type":"system","subtype":"hook_started","hook_id":"x","hook_name":"SessionStart:startup","session_id":"d4b3b0a2"}'
 
 
-def test_init_yields_session():
-    assert parse_line(INIT) == {"type": "session", "session_id": "d4b3b0a2-f7da-44b4-b11f-ad89d70befda"}
+def test_init_line_carries_the_session_id():
+    """Losing it breaks resume, so every later turn starts a fresh session."""
+    assert parse_line(INIT) == {
+        "type": "session", "session_id": "d4b3b0a2-f7da-44b4-b11f-ad89d70befda"
+    }
 
 
-def test_text_and_thinking_deltas():
+def test_text_and_thinking_deltas_are_separate_event_types():
     assert parse_line(TEXT_DELTA) == {"type": "text_delta", "text": "ok"}
     assert parse_line(THINKING_DELTA) == {"type": "thinking_delta", "text": "The"}
 
 
-def test_tool_use_start():
+def test_tool_use_start_yields_the_tool_name():
     assert parse_line(TOOL_USE_START) == {"type": "tool_use", "name": "Read"}
 
 
-def test_result():
-    ev = parse_line(RESULT)
-    assert ev == {"type": "result", "text": "ok", "is_error": False, "cost_usd": 0.016898999999999997}
+def test_result_line_carries_text_error_flag_and_cost():
+    assert parse_line(RESULT) == {
+        "type": "result", "text": "ok", "is_error": False, "cost_usd": 0.016898999999999997
+    }
 
 
-def test_unknown_types_skipped():
+def test_noise_lines_are_skipped_instead_of_crashing_the_stream():
+    """The CLI interleaves rate-limit and hook events with content; an
+    unrecognized line must be dropped, never raised."""
     assert parse_line(RATE_LIMIT) is None
     assert parse_line(HOOK) is None
     assert parse_line("") is None
     assert parse_line("not json at all") is None
 
 
-def test_ansi_stripped():
+def test_ansi_control_codes_are_stripped_before_parsing():
+    """The CLI writes cursor codes onto otherwise valid json lines."""
     assert parse_line("\x1b[2K" + TEXT_DELTA) == {"type": "text_delta", "text": "ok"}
 
 
-def test_null_result_text():
+def test_null_result_text_becomes_an_empty_string():
+    """A tool-only turn ends with result:null; `None` would break the fold into
+    the conversation JSONL."""
     obj = json.loads(RESULT)
     obj["result"] = None
-    ev = parse_line(json.dumps(obj))
-    assert ev is not None and ev["text"] == ""
+    assert parse_line(json.dumps(obj))["text"] == ""

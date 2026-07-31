@@ -9,7 +9,8 @@ from pathlib import Path
 from pypdf import PdfReader
 
 from . import config
-from .datarepo import DataRepo, _load
+from .datarepo import DataRepo
+from .fsio import load_yaml
 from .providers import get_agent, model_for
 
 RUBRIC_SCHEMA = {
@@ -44,6 +45,8 @@ def _walk_strings(node, path: str = "") -> list[tuple[str, str]]:
 
 
 def extraction_check(repo_root: Path, app_id: str) -> dict:
+    """Prove a machine can read every word of the rendered PDF: every token in
+    resume.yaml must appear in the text pypdf extracts back out."""
     app_dir = repo_root / "applications" / app_id
     pdf = app_dir / "resume.pdf"
     if not pdf.exists():
@@ -53,7 +56,7 @@ def extraction_check(repo_root: Path, app_id: str) -> dict:
     except Exception as e:
         return {"ok": False, "error": f"could not read resume.pdf: {e}", "missing": [], "checked": 0}
     haystack = set(_norm_tokens(extracted))
-    data = _load(app_dir / "resume.yaml") or {}
+    data = load_yaml(app_dir / "resume.yaml") or {}
     missing = []
     fields = _walk_strings(data)
     for path, text in fields:

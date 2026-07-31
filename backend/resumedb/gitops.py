@@ -13,7 +13,6 @@ import re
 import subprocess
 import threading
 import time
-from contextlib import contextmanager
 from pathlib import Path
 
 GIT_TIMEOUT = 30
@@ -28,7 +27,10 @@ _locks: dict[str, threading.RLock] = {}
 _locks_guard = threading.Lock()
 
 
-def _lock(repo: Path) -> threading.RLock:
+def repo_lock(repo: Path) -> threading.RLock:
+    """The repo's lock, held by every operation here and by callers that need a
+    multi-step mutation to stay atomic (a checkpoint from another request must
+    not stage a half-finished change). Reentrant, so nesting is safe."""
     key = str(Path(repo).resolve())
     with _locks_guard:
         return _locks.setdefault(key, threading.RLock())
@@ -41,14 +43,6 @@ class GitError(Exception):
 class GitInputError(GitError):
     """Bad caller input (e.g. a malformed sha) rather than a git failure, so
     routes can answer 400 instead of 500."""
-
-
-@contextmanager
-def repo_lock(repo: Path):
-    """Hold the repo lock across a multi-step mutation, so a checkpoint from
-    another request cannot stage a half-finished change."""
-    with _lock(repo):
-        yield
 
 
 def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
@@ -76,7 +70,7 @@ def _scope_pathspec(scope: str) -> list[str]:
 
 
 def init(repo: Path) -> None:
-    with _lock(repo):
+    with repo_lock(repo):
         _git(repo, "init")
         _git(repo, "add", "-A")
         _git(repo, "commit", "-m", "db: scaffold data repo")
@@ -90,7 +84,7 @@ def checkpoint(repo: Path, scope: str, message: str, paths: list[str] | None = N
     "undo save entry-7" would revert unrelated entries too.
     """
     pathspec = paths if paths else _scope_pathspec(scope)
-    with _lock(repo):
+    with repo_lock(repo):
         for attempt in range(ADD_RETRIES):
             proc = _git(repo, "add", "-A", "--", *pathspec, check=False)
             if proc.returncode == 0:
@@ -107,7 +101,7 @@ def checkpoint(repo: Path, scope: str, message: str, paths: list[str] | None = N
 
 
 def is_dirty(repo: Path, scope: str) -> bool:
-    with _lock(repo):
+    with repo_lock(repo):
         out = _git(repo, "status", "--porcelain", "--", *_scope_pathspec(scope)).stdout
     return bool(out.strip())
 
@@ -116,7 +110,7 @@ def untrack(repo: Path, path: str) -> bool:
     """Stop tracking a path that should never have been committed, keeping the
     working copy. Returns True if anything was tracked. (Adding a .gitignore
     line does not untrack files that are already in the index.)"""
-    with _lock(repo):
+    with repo_lock(repo):
         tracked = _git(repo, "ls-files", "--", path, check=False).stdout.strip()
         if not tracked:
             return False
@@ -126,13 +120,13 @@ def untrack(repo: Path, path: str) -> bool:
 
 def changed_files(repo: Path, *paths: str) -> list[str]:
     """Uncommitted changed/deleted/new file paths under the given pathspecs."""
-    with _lock(repo):
+    with repo_lock(repo):
         out = _git(repo, "status", "--porcelain", "--", *paths).stdout
     return [line[3:].strip().strip('"') for line in out.splitlines() if line.strip()]
 
 
 def log(repo: Path, scope: str, limit: int = 100) -> list[dict]:
-    with _lock(repo):
+    with repo_lock(repo):
         proc = _git(
             repo, "log", f"-{limit}", "--format=%H%x00%ct%x00%s", "--",
             *_scope_pathspec(scope), check=False,
@@ -154,12 +148,12 @@ def _check_sha(sha: str) -> str:
 
 
 def diff(repo: Path, sha: str) -> str:
-    with _lock(repo):
+    with repo_lock(repo):
         return _git(repo, "show", "--stat", "--patch", _check_sha(sha), "--").stdout
 
 
 def revert(repo: Path, sha: str) -> None:
-    with _lock(repo):
+    with repo_lock(repo):
         proc = _git(repo, "revert", "--no-edit", _check_sha(sha), check=False)
         if proc.returncode != 0:
             _git(repo, "revert", "--abort", check=False)

@@ -1,3 +1,10 @@
+"""The ASGI app: routers, the one error envelope, and frontend serving.
+
+Every failure leaves here as {"error", "detail"} with a real status code, so the
+UI has exactly one error shape to render. Domain exceptions map to their status
+here rather than each route catching and re-raising.
+"""
+
 import sys
 from pathlib import Path
 

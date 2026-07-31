@@ -1,6 +1,6 @@
 # Using the Claude Code CLI as an LLM Backend in Any Project
 
-A practical guide to embedding the `claude` CLI (Claude Code) as a headless LLM engine inside another application — the pattern Dayflow uses, generalized. Instead of calling the Anthropic API with an API key, you shell out to the locally installed `claude` binary and let the user's existing Claude Code login pay for inference.
+A practical guide to embedding the `claude` CLI (Claude Code) as a headless LLM engine inside another application - the pattern Dayflow uses, generalized. Instead of calling the Anthropic API with an API key, you shell out to the locally installed `claude` binary and let the user's existing Claude Code login pay for inference.
 
 Verified against Claude Code **2.1.197**. Flags occasionally change; run `claude --help` to confirm.
 
@@ -12,7 +12,7 @@ Verified against Claude Code **2.1.197**. Flags occasionally change; run `claude
 
 - **Zero API-key management.** Auth rides on the user's existing Claude subscription or API login. Your app never stores a secret.
 - **Free capability upgrades.** The CLI brings its own agentic loop, tools (file read, bash, web search), model routing, and retries.
-- **Multimodal via the filesystem.** The model can read images/PDFs from disk with its Read tool — no base64 plumbing.
+- **Multimodal via the filesystem.** The model can read images/PDFs from disk with its Read tool - no base64 plumbing.
 
 **Cons**
 
@@ -50,7 +50,7 @@ claude auth status
 
 - **Binary missing:** exit code 127, or stderr containing `command not found`. Surface: "Install Claude Code and run `claude auth login`."
 - **Not authenticated:** non-zero exit with an auth error on stderr. Surface: "Run `claude auth login` in a terminal."
-- Don't try to drive the OAuth flow yourself — it's interactive by design. Send the user to a terminal.
+- Don't try to drive the OAuth flow yourself - it's interactive by design. Send the user to a terminal.
 
 ### CI / servers
 
@@ -80,7 +80,7 @@ Useful companions:
 | Flag | Purpose |
 |---|---|
 | `--model <alias-or-id>` | `sonnet`, `opus`, `haiku`, `fable`, or a full model ID. Omit to use the user's default. |
-| `--effort low\|medium\|high\|xhigh\|max` | Reasoning effort — `low` for cheap classification, higher for hard tasks |
+| `--effort low\|medium\|high\|xhigh\|max` | Reasoning effort - `low` for cheap classification, higher for hard tasks |
 | `--output-format text\|json\|stream-json` | See §5 |
 | `--resume <session-id>` | Continue a prior conversation (multi-turn) |
 | `--no-session-persistence` | Don't write the session to disk (one-shot batch jobs; can't be resumed) |
@@ -90,7 +90,7 @@ Useful companions:
 
 ### Passing the prompt safely
 
-The prompt is a positional argument — **always shell-escape it** (or better, avoid the shell entirely and pass argv directly to the process API). If you must build a shell string, single-quote and escape embedded quotes; use `--` before the prompt so a prompt starting with `-` isn't parsed as a flag:
+The prompt is a positional argument - **always shell-escape it** (or better, avoid the shell entirely and pass argv directly to the process API). If you must build a shell string, single-quote and escape embedded quotes; use `--` before the prompt so a prompt starting with `-` isn't parsed as a flag:
 
 ```bash
 claude -p --model sonnet -- 'What does '\''--verbose'\'' do in this project?'
@@ -117,7 +117,7 @@ Note: `-p` skips the workspace-trust dialog, so only invoke it in directories yo
 
 Headless runs can't answer interactive permission prompts, so you must decide up front what the model may do. Pick ONE of these postures per call:
 
-**a) No tools at all — pure text generation:**
+**a) No tools at all - pure text generation:**
 
 ```bash
 claude -p --tools "" -- '<prompt>'
@@ -140,15 +140,15 @@ claude -p --allowedTools "Bash(git *) Read" -- '<prompt>'  # permission-rule gra
 claude -p --dangerously-skip-permissions -- '<prompt>'
 ```
 
-Only appropriate when the working directory is a sandbox your app owns and the prompt content is trusted. This is what Dayflow uses because it runs in an app-owned empty directory. If the prompt embeds untrusted third-party content (web pages, user uploads), prefer (a) or (b) — prompt injection plus unrestricted Bash is a real exfiltration risk.
+Only appropriate when the working directory is a sandbox your app owns and the prompt content is trusted. This is what Dayflow uses because it runs in an app-owned empty directory. If the prompt embeds untrusted third-party content (web pages, user uploads), prefer (a) or (b) - prompt injection plus unrestricted Bash is a real exfiltration risk.
 
 `--permission-mode` (`default`, `acceptEdits`, `plan`, `bypassPermissions`, ...) is the softer dial when you do have a settings file with permission rules.
 
 **Isolate from user config.** The user's own MCP servers, hooks, and plugins can slow down or break your invocation. Defensive flags:
 
-- `--strict-mcp-config` — ignore all configured MCP servers (only use ones you pass via `--mcp-config`).
-- `--setting-sources ""` — don't load user/project settings.
-- `--bare` — the maximal version: skips hooks, plugins, CLAUDE.md discovery, keychain reads (see §7).
+- `--strict-mcp-config` - ignore all configured MCP servers (only use ones you pass via `--mcp-config`).
+- `--setting-sources ""` - don't load user/project settings.
+- `--bare` - the maximal version: skips hooks, plugins, CLAUDE.md discovery, keychain reads (see §7).
 
 ---
 
@@ -178,17 +178,17 @@ Event shapes to handle (parse each line independently; ignore unknown types for 
 
 | Line `type` | Meaning | What to extract |
 |---|---|---|
-| `system` (subtype `init`) | Run started | `session_id` — save it for `--resume` |
+| `system` (subtype `init`) | Run started | `session_id` - save it for `--resume` |
 | `stream_event` | Wrapped API stream event | `event.delta.type == "text_delta"` → `event.delta.text`; `"thinking_delta"` → `event.delta.thinking` |
-| `assistant` / `user` | Full message turns (incl. tool use/results) | Optional — tool-call visibility |
+| `assistant` / `user` | Full message turns (incl. tool use/results) | Optional - tool-call visibility |
 | `result` | Final outcome | `result` (final text), `is_error`, cost/usage fields |
 
 Parsing rules learned the hard way (from Dayflow's implementation):
 
 - **Buffer by newline.** Chunks from the pipe don't align with line boundaries; accumulate bytes and split on `\n`.
-- **Strip ANSI escapes** before `JSON.parse` — depending on TTY detection the CLI can emit escape sequences around output.
+- **Strip ANSI escapes** before `JSON.parse` - depending on TTY detection the CLI can emit escape sequences around output.
 - **Deduplicate the final text.** If you accumulated `text_delta`s, ignore the `result` payload's text (or vice versa) or you'll show the answer twice.
-- **Drain remaining stdout after process exit** — the last lines often arrive after the exit notification.
+- **Drain remaining stdout after process exit** - the last lines often arrive after the exit notification.
 
 ### Structured output
 
@@ -209,9 +209,9 @@ The result text is guaranteed to validate against the schema.
 The CLI persists sessions on disk. To build a chat feature:
 
 1. First call: parse `session_id` from the `system`/init event (stream-json) or the `json` result object.
-2. Subsequent calls: add `--resume <session-id>` — full history is restored server-side of your app; you only send the new user message.
+2. Subsequent calls: add `--resume <session-id>` - full history is restored server-side of your app; you only send the new user message.
 3. `--fork-session` resumes into a *new* session id (branching); `--session-id <uuid>` lets you pre-pick the id.
-4. `-c` / `--continue` resumes the most recent session in the cwd — convenient for CLIs, too implicit for apps (prefer explicit `--resume`).
+4. `-c` / `--continue` resumes the most recent session in the cwd - convenient for CLIs, too implicit for apps (prefer explicit `--resume`).
 
 For stateless batch jobs, add `--no-session-persistence` so you don't accumulate session files in the user's `~/.claude`.
 
@@ -221,7 +221,7 @@ For stateless batch jobs, add `--no-session-persistence` so you don't accumulate
 
 Everything you know about prompting applies, plus a few CLI-specific levers:
 
-- **System prompts:** `--system-prompt` replaces the entire Claude Code system prompt (you lose its tool-use scaffolding — usually not what you want); `--append-system-prompt` adds your instructions on top (usually what you want). Both have `-file` variants in recent versions for long prompts.
+- **System prompts:** `--system-prompt` replaces the entire Claude Code system prompt (you lose its tool-use scaffolding - usually not what you want); `--append-system-prompt` adds your instructions on top (usually what you want). Both have `-file` variants in recent versions for long prompts.
 - **Project context via CLAUDE.md:** anything in `CLAUDE.md` at the cwd is auto-loaded. For an app-owned sandbox directory, you can *write* a CLAUDE.md there to inject standing instructions without lengthening each prompt.
 - **Images and files:** there is no `--image` flag. List absolute file paths in the prompt and let the model read them with its Read tool (which handles images and PDFs natively):
 
@@ -232,24 +232,24 @@ Everything you know about prompting applies, plus a few CLI-specific levers:
   - /path/to/frame2.png
   ```
 
-  This requires the Read tool to be enabled — don't combine with `--tools ""`.
+  This requires the Read tool to be enabled - don't combine with `--tools ""`.
 - **Determinism helpers:** put output-format contracts in the prompt *and* enforce with `--json-schema`; keep per-request variability (timestamps, ids) at the end of the prompt so prompt caching still hits.
 - **Effort as a quality dial:** `--effort low` for classification/extraction, `high`/`xhigh` for analysis. Cheaper and more reliable than model-switching for most tuning.
-- **`--bare` for reproducibility:** in `--bare` mode, nothing from the user's machine (hooks, plugins, memory, CLAUDE.md) leaks into your prompt — you supply all context explicitly via flags. Auth becomes strictly `ANTHROPIC_API_KEY`. Ideal for embedded/server use; not suitable when you specifically want the user's subscription login.
+- **`--bare` for reproducibility:** in `--bare` mode, nothing from the user's machine (hooks, plugins, memory, CLAUDE.md) leaks into your prompt - you supply all context explicitly via flags. Auth becomes strictly `ANTHROPIC_API_KEY`. Ideal for embedded/server use; not suitable when you specifically want the user's subscription login.
 
 ---
 
 ## 8. Process management in a host application
 
-Lessons from a production integration (Dayflow, macOS/Swift — the patterns are language-agnostic):
+Lessons from a production integration (Dayflow, macOS/Swift - the patterns are language-agnostic):
 
 - **Spawn via login shell** (`$SHELL -l -i -c "cd <sandbox> && exec claude ..."`) so PATH and auth resolve like the user's terminal. `exec` avoids a lingering shell parent.
 - **Timeouts are mandatory.** Agentic runs can hang. Enforce a wall-clock timeout (Dayflow: 300 s), kill the process on expiry, and capture partial stdout/stderr into the error for debugging.
 - **Capture stderr separately.** It's your only diagnostic channel: `command not found`, auth errors, rate limits all land there.
-- **PTY caveat:** if you attach the process to a pseudo-terminal (e.g. to influence TTY-dependent behavior), initialize it with a real window size (80×24). Claude Code's terminal layer crashes on a 0×0 PTY grid. If you don't need a PTY, plain pipes are simpler and avoid ANSI noise — Dayflow uses pipes for one-shot calls and a sized PTY only where required.
+- **PTY caveat:** if you attach the process to a pseudo-terminal (e.g. to influence TTY-dependent behavior), initialize it with a real window size (80×24). Claude Code's terminal layer crashes on a 0×0 PTY grid. If you don't need a PTY, plain pipes are simpler and avoid ANSI noise - Dayflow uses pipes for one-shot calls and a sized PTY only where required.
 - **Read stdout continuously.** A full pipe buffer will deadlock the child. Attach a reader before/immediately after launch.
-- **One process per request; no pooling.** The CLI is designed for this — session state lives on disk, not in the process. Concurrency = spawn N processes (mind the user's rate limits).
-- **Log the exact command line** (with the prompt elided or truncated) — indispensable when users report failures.
+- **One process per request; no pooling.** The CLI is designed for this - session state lives on disk, not in the process. Concurrency = spawn N processes (mind the user's rate limits).
+- **Log the exact command line** (with the prompt elided or truncated) - indispensable when users report failures.
 
 Skeleton in pseudo-code:
 

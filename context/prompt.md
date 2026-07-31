@@ -1,5 +1,13 @@
 # ResumeDB - Agreed Design
 
+Historical. This is the design of the original build, kept for its rationale.
+The current app is described by @context/refactor-plan.md and
+@context/outcomes-plan.md; where they disagree with this file, they win. Known
+drift: the Python environment is uv (not micromamba), session ids are
+machine-local under `.resumedb/` (not in the application folder), the status set
+has grown to twelve values, and discovery, interview prep, cover letters,
+readiness review, and the Chrome extension were cut.
+
 This is the shared understanding reached after a full design interview. It refines
 @context/vision.md into concrete decisions. The UI to implement is the Resume
 Studio design referenced in @context/design.md. The LLM integration pattern

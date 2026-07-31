@@ -28,6 +28,8 @@ from .fsio import atomic_write
 
 TERMINAL = "turn_done"
 SCOPE_RE = re.compile(r"db|apps|app:[a-z0-9][a-z0-9-]*")
+# Conversation ids are second-resolution timestamps; the format is pinned here
+# and everywhere else goes through CONV_RE_OK.
 CONV_RE = re.compile(r"[0-9]{8}-[0-9]{6}")
 
 
@@ -187,8 +189,9 @@ class Turn:
         q: asyncio.Queue = asyncio.Queue()
         self._queues.add(q)
         try:
-            n = len(self.events)
-            for event in self.events[:n]:
+            # copy: emit() appends while we replay, and those events reach us
+            # through the queue instead (registered above, so none are lost)
+            for event in list(self.events):
                 yield event
                 if event["type"] == TERMINAL:
                     return
@@ -301,7 +304,7 @@ def new_conv_id(repo: DataRepo, scope: str) -> str:
     """A second-resolution timestamp id, bumped until it is free. Two chats
     started in the same second would otherwise collide, and the second one's
     messages would land in - or be rejected by - the first conversation.
-    The format is pinned by chat.CONV_RE, so bump rather than add precision."""
+    The format is pinned by CONV_RE, so bump rather than add precision."""
     now = datetime.datetime.now()
     for offset in range(60):
         conv = (now + datetime.timedelta(seconds=offset)).strftime("%Y%m%d-%H%M%S")

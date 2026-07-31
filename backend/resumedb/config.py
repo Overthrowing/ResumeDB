@@ -16,9 +16,12 @@ Effort = Literal["low", "medium", "high", "xhigh", "max"] | None
 
 
 class Models(BaseModel):
-    chat: str | None = None  # null = user's CLI default
+    # Every model has a concrete default. null is still accepted because a
+    # config written before this change can hold one: for tailor it means
+    # "inherit the chat model", elsewhere "let the CLI pick".
+    chat: str | None = "sonnet"
     chat_effort: Effort = None
-    tailor: str | None = None  # null = fall back to chat model
+    tailor: str | None = "opus"
     tailor_effort: Effort = "high"  # tailoring thinks by default
     audit: str | None = "sonnet"
     audit_effort: Effort = "low"
@@ -38,6 +41,17 @@ class ConfigError(Exception):
     pass
 
 
+def _validated(cfg: dict, where: str = "") -> Config:
+    """Pydantic's error list is unreadable in a toast, so report only the first
+    offending field. `where` names the source when the value came off disk."""
+    try:
+        return Config(**cfg)
+    except ValidationError as e:
+        first = e.errors()[0]
+        loc = ".".join(str(p) for p in first["loc"])
+        raise ConfigError(f"{where}invalid value for '{loc}': {first['msg']}")
+
+
 def load() -> dict:
     stored = {}
     if CONFIG_PATH.exists():
@@ -45,22 +59,12 @@ def load() -> dict:
             stored = json.loads(CONFIG_PATH.read_text())
         except json.JSONDecodeError as e:
             raise ConfigError(f"{CONFIG_PATH} is not valid JSON: {e}")
-    try:
-        return Config(**stored).model_dump()
-    except ValidationError as e:
-        first = e.errors()[0]
-        loc = ".".join(str(p) for p in first["loc"])
-        raise ConfigError(f"{CONFIG_PATH}: invalid value for '{loc}': {first['msg']}")
+    return _validated(stored, f"{CONFIG_PATH}: ").model_dump()
 
 
 def save(cfg: dict) -> dict:
     """Validate and persist. Returns the normalized config."""
-    try:
-        model = Config(**cfg)
-    except ValidationError as e:
-        first = e.errors()[0]
-        loc = ".".join(str(p) for p in first["loc"])
-        raise ConfigError(f"invalid value for '{loc}': {first['msg']}")
+    model = _validated(cfg)
     atomic_write(CONFIG_PATH, model.model_dump_json(indent=2) + "\n")
     return model.model_dump()
 

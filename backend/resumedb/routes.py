@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, PlainTextResponse
 from pydantic import BaseModel
 
 from . import audit, config, datarepo, gitops, importer, render
-from .providers import AgentError, get_agent, model_for
+from .providers import get_agent, model_for
 
 router = APIRouter(prefix="/api")
 
@@ -42,7 +42,10 @@ def health():
     }
 
 
-async def _probe(argv: list[str] | None, timeout: float = 15) -> tuple[bool, str]:
+PROBE_TIMEOUT = 15
+
+
+async def _probe(argv: list[str] | None) -> tuple[bool, str]:
     """(ok, stdout) for a CLI probe; (False, "") if the binary is missing."""
     if not argv:
         return False, ""
@@ -50,7 +53,7 @@ async def _probe(argv: list[str] | None, timeout: float = 15) -> tuple[bool, str
         proc = await asyncio.create_subprocess_exec(
             *argv, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL,
         )
-        async with asyncio.timeout(timeout):
+        async with asyncio.timeout(PROBE_TIMEOUT):
             out, _ = await proc.communicate()
         return proc.returncode == 0, out.decode("utf-8", "replace").strip()
     except (TimeoutError, OSError):
@@ -342,7 +345,7 @@ def get_pdf(app_id: str):
 @router.post("/applications/{app_id}/audit")
 async def audit_application(app_id: str):
     r = repo()
-    r.app_dir(app_id)
+    r.app_dir(app_id)  # 404/400 before spending an agent call on a bad id
     extraction = await asyncio.to_thread(audit.extraction_check, r.root, app_id)
     llm = await audit.llm_rubric(r, app_id)
     return {"extraction": extraction, "llm": llm}

@@ -5,7 +5,8 @@ description = "Local resume tailoring app - Python backend"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi",
-    "uvicorn",
+    "pydantic",  # imported directly by config.py and routes.py, not just via fastapi
+    "uvicorn",  # the ASGI server `make dev` runs; never imported in app code
     "ruamel.yaml",
     "pypdf",
     "python-multipart",  # required by the /api/upload multipart form endpoints
@@ -18,8 +19,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest",
-    "httpx",
-    "pytest-asyncio>=1.4.0",
+    "httpx",  # required by fastapi's TestClient; not imported in test code
+    "pytest-asyncio>=1.4.0",  # drives the async turn tests via asyncio_mode below
 ]
 
 [tool.uv]

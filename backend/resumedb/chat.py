@@ -24,11 +24,9 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from . import config, gitops, turns
 from .datarepo import DataRepo, DataRepoError
 from .providers import AgentError, get_agent, model_for
-from .turns import BadScope, TurnBusy, check_scope, manager
+from .turns import CONV_RE_OK, BadScope, TurnBusy, check_scope, manager
 
 router = APIRouter()
-
-CONV_RE = re.compile(r"[0-9]{8}-[0-9]{6}")
 
 DB_INTRO = (
     "You are the Library assistant for this resume data repo. The user message "
@@ -55,7 +53,7 @@ def _repo() -> DataRepo:
 
 
 def _check_conv(conv: str) -> str:
-    if not CONV_RE.fullmatch(conv):
+    if not CONV_RE_OK(conv):
         raise HTTPException(400, f"bad conversation id: {conv!r}")
     return conv
 
@@ -65,6 +63,16 @@ def _check_scope(scope: str) -> str:
         return check_scope(scope)
     except BadScope as e:
         raise HTTPException(400, str(e))
+
+
+def _intro(scope: str, base: str) -> str:
+    """The scope's standing instructions, prepended to the first prompt of a
+    conversation (later turns resume the session and already have them)."""
+    if scope.startswith("app:"):
+        return APP_INTRO.format(app_id=scope[4:], base=base)
+    if scope == "apps":
+        return APPS_INTRO.format(base=base)
+    return DB_INTRO
 
 
 @router.get("/api/chat/{scope}/conversations")
@@ -125,6 +133,12 @@ def delete_conversation(scope: str, conv: str):
     return {"ok": True}
 
 
+def _override(value, default: str | None) -> str | None:
+    """Per-message model/effort override from the client; anything that is not
+    a non-empty string falls back to the configured default."""
+    return value if isinstance(value, str) and value else default
+
+
 async def _forward(ws: WebSocket, turn: turns.Turn) -> None:
     """Send a turn's events (replay + live) to one socket. Socket death here is
     fine - the turn keeps running and a reconnect replays."""
@@ -145,7 +159,7 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
         await ws.close()
         return
     repo = _repo()
-    conv = conversation if conversation and CONV_RE.fullmatch(conversation) else None
+    conv = conversation if conversation and CONV_RE_OK(conversation) else None
 
     forward: asyncio.Task | None = None
     if conv:
@@ -198,22 +212,11 @@ async def chat_ws(ws: WebSocket, scope: str, conversation: str = ""):
             prompt = text
             if not turns.get_session(repo, scope, conv):  # first turn gets the scope intro
                 base = f"http://{ws.headers.get('host', 'localhost:8000')}"
-                if scope.startswith("app:"):
-                    intro = APP_INTRO.format(app_id=scope[4:], base=base)
-                elif scope == "apps":
-                    intro = APPS_INTRO.format(base=base)
-                else:
-                    intro = DB_INTRO
-                prompt = intro + text
+                prompt = _intro(scope, base) + text
 
-            kind_ = "tailor" if scope.startswith("app:") else "chat"
-            model, effort = model_for(cfg, kind_)
-            override = msg.get("model")
-            if isinstance(override, str) and override:
-                model = override
-            override = msg.get("effort")
-            if isinstance(override, str) and override:
-                effort = override
+            model, effort = model_for(cfg, "tailor" if scope.startswith("app:") else "chat")
+            model = _override(msg.get("model"), model)
+            effort = _override(msg.get("effort"), effort)
 
             try:
                 turn = manager.start(repo, agent, scope, conv, text, prompt, model, effort)

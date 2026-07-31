@@ -1,11 +1,19 @@
+"""Codex provider: the same normalized events as claude.py, over the Codex SDK.
+
+Experimental and deliberately unverified against a live Codex install. The SDK
+is an optional dependency, so this module must import cleanly without it and
+only complain when the provider is actually selected.
+
+Events match ClaudeProcess exactly (session, text_delta, thinking_delta, result,
+error) so turns.py never has to know which provider is running.
+"""
+
 from __future__ import annotations  # keep annotations lazy so the SDK stays optional
 
 import asyncio
 from pathlib import Path
 from typing import AsyncIterator
 
-# Codex is an optional provider. Importing this module must never fail when the
-# openai_codex SDK is absent - the default claude pipeline does not need it.
 try:
     from openai_codex import AsyncCodex, CodexConfig, ApprovalMode, Sandbox, CodexError
     from openai_codex.generated.v2_all import (
@@ -34,22 +42,21 @@ def _require_codex() -> None:
             "Install it, or set agent_provider back to 'claude' in settings."
         ) from _CODEX_IMPORT_ERROR
 
+
 def _map_effort(effort: str | None) -> ReasoningEffort | None:
+    """Config uses the Claude effort names; "max" is Codex's "xhigh". An
+    unknown level falls back to the model default rather than failing a turn."""
     if not effort:
         return None
-    val = effort.lower()
-    if val == "max":
-        val = "xhigh"
+    val = "xhigh" if effort.lower() == "max" else effort.lower()
     try:
         return ReasoningEffort(val)
     except ValueError:
         return None
 
+
 class CodexProcess:
-    """One chat turn using the OpenAI Codex SDK.
-    Iterate events(); call cancel() from another task to stop.
-    Yields normalized events matching ClaudeProcess structure.
-    """
+    """One chat turn. Iterate events(); call cancel() from another task to stop."""
 
     def __init__(
         self,
@@ -76,26 +83,21 @@ class CodexProcess:
             try:
                 await self.turn_handle.interrupt()
             except Exception:
-                pass
+                pass  # already finished or the transport is gone; nothing to stop
 
     async def events(self) -> AsyncIterator[dict]:
-        config = CodexConfig(
-            codex_bin=self.codex_bin,
-            cwd=str(self.cwd)
-        )
-
+        config = CodexConfig(codex_bin=self.codex_bin, cwd=str(self.cwd))
         try:
             async with AsyncCodex(config) as codex:
                 if self.session_id:
                     try:
                         thread = await codex.thread_resume(self.session_id)
                     except Exception:
-                        thread = await codex.thread_start()
+                        thread = await codex.thread_start()  # stale id: start fresh
                 else:
                     thread = await codex.thread_start()
 
                 yield {"type": "session", "session_id": thread.id}
-
                 if self._cancelled:
                     yield {"type": "error", "message": "Cancelled."}
                     return
@@ -105,7 +107,7 @@ class CodexProcess:
                     model=self.model,
                     effort=self.effort,
                     approval_mode=ApprovalMode.deny_all,
-                    sandbox=Sandbox.full_access
+                    sandbox=Sandbox.full_access,
                 )
 
                 items = []
@@ -115,37 +117,41 @@ class CodexProcess:
                         async for notification in self.turn_handle.stream():
                             if self._cancelled:
                                 break
-                            
-                            method = notification.method
                             payload = notification.payload
-
                             if isinstance(payload, AgentMessageDeltaNotification):
                                 yield {"type": "text_delta", "text": payload.delta}
                             elif isinstance(payload, ReasoningTextDeltaNotification):
                                 yield {"type": "thinking_delta", "text": payload.delta}
                             elif isinstance(payload, ItemCompletedNotification):
+                                # the final text is assembled from items, not deltas
                                 items.append(payload.item)
                             elif isinstance(payload, TurnCompletedNotification):
                                 got_result = True
-                                response = _final_assistant_response_from_items(items)
                                 yield {
                                     "type": "result",
-                                    "text": response or "",
+                                    "text": _final_assistant_response_from_items(items) or "",
                                     "is_error": payload.turn.status.value == "failed",
-                                    "cost_usd": None
+                                    "cost_usd": None,
                                 }
                 except TimeoutError:
                     await self.cancel()
-                    yield {"type": "error", "message": f"Agent turn timed out after {CHAT_TIMEOUT}s and was stopped."}
+                    yield {"type": "error",
+                           "message": f"Agent turn timed out after {CHAT_TIMEOUT}s and was stopped."}
                     return
-                
+
                 if self._cancelled:
                     yield {"type": "error", "message": "Cancelled."}
                 elif not got_result:
                     yield {"type": "error", "message": "Turn did not complete successfully."}
-
         except Exception as e:
-            yield {"type": "error", "message": f"Codex error: {str(e)}"}
+            # a turn must always terminate with an event turns.py can fold in,
+            # never with an exception out of the generator. After a cancel the
+            # SDK often raises during teardown; reporting that as "Codex error"
+            # would tell the user their deliberate Stop had failed.
+            if self._cancelled:
+                yield {"type": "error", "message": "Cancelled."}
+            else:
+                yield {"type": "error", "message": f"Codex error: {e}"}
 
 
 async def run_oneshot_codex(
@@ -156,27 +162,22 @@ async def run_oneshot_codex(
     effort: str | None = None,
     json_schema: dict | None = None,
 ) -> str:
-    """One-shot call using Codex (no session persistence). Returns the result text."""
+    """One-shot call (no session persistence). Returns the result text."""
     _require_codex()
-    config = CodexConfig(
-        codex_bin=codex_bin,
-        cwd=str(cwd)
-    )
-    mapped_effort = _map_effort(effort)
-
+    config = CodexConfig(codex_bin=codex_bin, cwd=str(cwd))
     async with AsyncCodex(config) as codex:
         thread = await codex.thread_start(ephemeral=True)
+        turn_handle = None
         try:
             async with asyncio.timeout(ONESHOT_TIMEOUT):
                 turn_handle = await thread.turn(
                     prompt,
                     model=model,
-                    effort=mapped_effort,
+                    effort=_map_effort(effort),
                     output_schema=json_schema,
                     approval_mode=ApprovalMode.deny_all,
-                    sandbox=Sandbox.full_access
+                    sandbox=Sandbox.full_access,
                 )
-                
                 items = []
                 async for notification in turn_handle.stream():
                     payload = notification.payload
@@ -186,10 +187,16 @@ async def run_oneshot_codex(
                         if payload.turn.status.value == "failed":
                             msg = payload.turn.error.message if payload.turn.error else "Unknown error"
                             raise CodexError(f"Turn failed: {msg}")
-
                 response = _final_assistant_response_from_items(items)
                 if response is None:
                     raise CodexError("No response received from Codex.")
                 return response
         except TimeoutError:
+            # Abandoning the handle leaves the remote turn running and billing;
+            # CodexProcess.cancel() interrupts for the same reason.
+            if turn_handle is not None:
+                try:
+                    await turn_handle.interrupt()
+                except Exception:
+                    pass
             raise CodexError(f"Codex call timed out after {ONESHOT_TIMEOUT}s")

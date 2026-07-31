@@ -304,6 +304,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "pydantic" },
     { name = "pypdf" },
     { name = "python-multipart" },
     { name = "ruamel-yaml" },
@@ -320,6 +321,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi" },
+    { name = "pydantic" },
     { name = "pypdf" },
     { name = "python-multipart" },
     { name = "ruamel-yaml" },

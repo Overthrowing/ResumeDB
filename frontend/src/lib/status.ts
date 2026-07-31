@@ -36,8 +36,6 @@ export function statusMeta(id: string | undefined): StatusMeta {
   return (id && BY_ID.get(id)) || FALLBACK
 }
 
-export const statusLabel = (id: string | undefined) => statusMeta(id).label
-
 export const PHASES: { id: Phase; label: string }[] = [
   { id: 'pre', label: 'Before applying' },
   { id: 'submitted', label: 'In the pipeline' },

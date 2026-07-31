@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { api, type AppMeta } from '@/lib/api'
+import ErrorText from '@/components/ErrorText'
+import { Page, PageHeader, SectionHeader } from '@/components/Page'
 import Sankey, { type Flow } from '@/components/Sankey'
+import StatusPill from '@/components/StatusPill'
 import { STATUSES, STATUS_ORDER } from '@/lib/status'
-import { cn } from '@/lib/utils'
 
 /** Applications that ever reached one of these milestones, per their history. */
 function reached(apps: AppMeta[], ids: string[]): AppMeta[] {
@@ -86,17 +88,13 @@ export default function Outcomes() {
   })).filter((s) => s.count > 0)
 
   return (
-    <div className="flex-1 overflow-y-auto px-8 py-6">
-      <div className="mb-5">
-        <h2 className="font-heading text-[26px] font-semibold leading-tight">Outcomes</h2>
-        <p className="mt-0.5 text-[13px] text-muted-foreground">
-          Where your applications actually go, from the status history of every application.
-        </p>
-      </div>
+    <Page>
+      <PageHeader
+        title="Outcomes"
+        subtitle="Where your applications actually go, from the status history of every application."
+      />
 
-      {appsQ.isError && (
-        <div className="mb-3 text-[13px] text-destructive">{(appsQ.error as Error).message}</div>
-      )}
+      <ErrorText error={appsQ.error} className="mb-3" />
 
       <div className="mb-6 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <Tile label="Applications" value={stats.total} />
@@ -114,16 +112,17 @@ export default function Outcomes() {
       )}
 
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <h3 className="font-heading text-lg font-semibold">Flow</h3>
+        <SectionHeader title="Flow" />
         <div className="ml-auto flex flex-wrap gap-1.5">
           {byStatus.map((s) => (
-            <span
+            <StatusPill
               key={s.id}
-              className={cn('rounded px-2 py-0.5 text-[11px] font-medium', s.pill)}
+              status={s.id}
+              className="px-2 font-medium"
               title={`${s.count} currently ${s.label.toLowerCase()}`}
             >
               {s.label} {s.count}
-            </span>
+            </StatusPill>
           ))}
         </div>
       </div>
@@ -137,7 +136,7 @@ export default function Outcomes() {
           </p>
         )}
       </div>
-    </div>
+    </Page>
   )
 }
 

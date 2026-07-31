@@ -77,9 +77,11 @@ export interface ModelConfig {
   jd_effort: string | null
 }
 
+export type AgentProvider = 'claude' | 'codex'
+
 export interface Config {
   data_repo: string
-  agent_provider: 'claude' | 'codex'
+  agent_provider: AgentProvider
   claude_bin: string | null
   codex_bin: string | null
   models: ModelConfig

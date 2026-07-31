@@ -25,6 +25,9 @@ NAME_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,119}")
 # seeing them at all.
 TMP_PREFIX = ".resumedb-tmp-"
 
+MAX_YAML_BYTES = 4 * 1024 * 1024
+MAX_YAML_ALIASES = 200
+
 
 def atomic_write(path: Path, text: str) -> None:
     """Write text to path via temp file + rename in the same directory."""
@@ -48,10 +51,6 @@ def yaml() -> YAML:
     y = YAML()
     y.default_flow_style = False
     return y
-
-
-MAX_YAML_BYTES = 4 * 1024 * 1024
-MAX_YAML_ALIASES = 200
 
 
 def load_yaml(path: Path):

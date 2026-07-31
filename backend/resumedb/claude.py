@@ -31,6 +31,17 @@ class ClaudeError(Exception):
     pass
 
 
+def _killpg(proc: asyncio.subprocess.Process | None) -> None:
+    """Kill the whole process group. The CLI spawns its own tool subprocesses
+    (start_new_session gives them their own group), and killing only the parent
+    would leave those running."""
+    if proc and proc.returncode is None:
+        try:
+            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+
+
 def parse_line(line: str) -> dict | None:
     """Parse one stream-json line into a normalized event (or None to skip)."""
     line = ANSI_RE.sub("", line).strip()
@@ -106,14 +117,7 @@ class ClaudeProcess:
 
     async def cancel(self) -> None:
         self._cancelled = True
-        self._kill()
-
-    def _kill(self) -> None:
-        if self.proc and self.proc.returncode is None:
-            try:
-                os.killpg(os.getpgid(self.proc.pid), signal.SIGKILL)
-            except ProcessLookupError:
-                pass
+        _killpg(self.proc)
 
     async def events(self) -> AsyncIterator[dict]:
         self.proc = await asyncio.create_subprocess_exec(
@@ -142,12 +146,12 @@ class ClaudeProcess:
                             got_result = True
                         yield event
         except TimeoutError:
-            self._kill()
+            _killpg(self.proc)
             yield {"type": "error", "message": f"Agent turn timed out after {CHAT_TIMEOUT}s and was stopped."}
             return
         finally:
-            if self.proc.returncode is None and not self._cancelled:
-                self._kill()
+            if not self._cancelled:
+                _killpg(self.proc)
 
         await self.proc.wait()
         stderr = (await stderr_task).decode("utf-8", "replace").strip()
@@ -193,10 +197,7 @@ async def run_oneshot(
         async with asyncio.timeout(ONESHOT_TIMEOUT):
             stdout, stderr = await proc.communicate(prompt.encode())
     except TimeoutError:
-        try:
-            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
-        except ProcessLookupError:
-            pass
+        _killpg(proc)
         raise ClaudeError(f"claude call timed out after {ONESHOT_TIMEOUT}s")
     if proc.returncode != 0:
         raise ClaudeError(_friendly_error(proc.returncode or 0, stderr.decode("utf-8", "replace")))

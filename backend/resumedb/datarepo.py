@@ -32,12 +32,17 @@ class DataRepoError(Exception):
     pass
 
 
-def _load(path: Path):
-    return load_yaml(path)
+def _load_mapping(path: Path) -> dict:
+    """Load a YAML file that has to be a mapping. Raises DataRepoError, which
+    the list_* readers catch per file and surface as data on that item."""
+    data = load_yaml(path) or {}
+    if not isinstance(data, dict):
+        raise DataRepoError(f"{path.name} is not a YAML mapping")
+    return data
 
 
-def _dump(data, path: Path) -> None:
-    dump_yaml(data, path)
+def _today() -> str:
+    return f"{datetime.date.today():%Y-%m-%d}"
 
 
 def is_datarepo(path: Path) -> bool:
@@ -150,9 +155,7 @@ class DataRepo:
             if f.stem in NON_ENTRY_FILES:
                 continue
             try:
-                data = _load(f) or {}
-                if not isinstance(data, dict):
-                    raise DataRepoError("file is not a YAML mapping")
+                data = _load_mapping(f)
                 data["error"] = None
             except Exception as e:
                 data = {"title": f.stem, "type": "extra",
@@ -170,7 +173,7 @@ class DataRepo:
         path = self.entry_path(entry_id)
         if not path.exists():
             raise DataRepoError(f"no entry {entry_id}")
-        data = _load(path) or {}
+        data = load_yaml(path) or {}
         data["id"] = entry_id
         return data
 
@@ -183,12 +186,12 @@ class DataRepo:
             raise DataRepoError("title is required")
         path = self.entry_path(entry_id)
         if path.exists():  # merge into loaded doc to preserve comments/order
-            doc = _load(path) or {}
+            doc = load_yaml(path) or {}
             for k in [k for k in doc if k not in data]:
                 del doc[k]
             doc.update(data)
             data = doc
-        _dump(data, path)
+        dump_yaml(data, path)
         gitops.checkpoint(self.root, "db", f"save entry {entry_id}", [f"db/{entry_id}.yaml"])
 
     def delete_entry(self, entry_id: str) -> None:
@@ -199,10 +202,10 @@ class DataRepo:
         gitops.checkpoint(self.root, "db", f"delete entry {entry_id}", [f"db/{entry_id}.yaml"])
 
     def get_profile(self) -> dict:
-        return _load(self.root / "db" / "profile.yaml") or {}
+        return load_yaml(self.root / "db" / "profile.yaml") or {}
 
     def save_profile(self, data: dict) -> None:
-        _dump(data, self.root / "db" / "profile.yaml")
+        dump_yaml(data, self.root / "db" / "profile.yaml")
         gitops.checkpoint(self.root, "db", "save profile", ["db/profile.yaml"])
 
     def get_memory(self) -> dict:
@@ -222,10 +225,7 @@ class DataRepo:
             if not meta_file.exists():
                 continue
             try:  # a single unparseable meta.yaml must not blank the pipeline
-                loaded = _load(meta_file) or {}
-                if not isinstance(loaded, dict):
-                    raise DataRepoError("meta.yaml is not a YAML mapping")
-                meta = self._normalize(loaded)
+                meta = self._normalize(_load_mapping(meta_file))
                 meta["error"] = None
             except Exception as e:
                 meta = {"company": d.name, "role": "(unreadable meta.yaml)",
@@ -247,7 +247,8 @@ class DataRepo:
         slug = re.sub(r"[^a-z0-9]+", "-", f"{company} {role}".lower()).strip("-")[:100]
         if not slug:  # e.g. a company/role with no ASCII alphanumerics at all
             raise DataRepoError("company and role need at least one letter or digit")
-        app_id = f"{datetime.date.today():%Y-%m}-{slug}"
+        created = _today()
+        app_id = f"{created[:7]}-{slug}"  # YYYY-MM prefix keeps the folder sorted
         d = self.root / "applications" / app_id
         if d.exists():
             raise DataRepoError(f"application {app_id} already exists")
@@ -259,21 +260,21 @@ class DataRepo:
         template_file = self.root / "templates" / f"{template}.typ"
         d.mkdir(parents=True)
         profile = self.get_profile()
-        _dump(
+        dump_yaml(
             {
                 "company": company,
                 "role": role,
                 "template": template,
-                "created": f"{datetime.date.today():%Y-%m-%d}",
+                "created": created,
                 "status": "not_started",
-                "history": [{"status": "not_started", "date": f"{datetime.date.today():%Y-%m-%d}"}],
+                "history": [{"status": "not_started", "date": created}],
             },
             d / "meta.yaml",
         )
         atomic_write(d / "jd.md", jd_text)
         atomic_write(d / "notes.md", "")
         shutil.copy(template_file, d / "resume.typ")
-        _dump(
+        dump_yaml(
             {
                 "name": profile.get("name", ""),
                 "headline": role,
@@ -287,7 +288,7 @@ class DataRepo:
 
     def get_application(self, app_id: str) -> dict:
         d = self.app_dir(app_id)
-        meta = self._normalize(_load(d / "meta.yaml") or {})
+        meta = self._normalize(load_yaml(d / "meta.yaml") or {})
         meta["id"] = app_id
         # errors="replace": one stray byte in notes.md must not make the whole
         # application unopenable
@@ -323,7 +324,7 @@ class DataRepo:
         if "status" in updates and updates["status"] not in self.APP_STATUSES:
             raise DataRepoError(f"invalid status: {updates['status']}")
         path = self.app_dir(app_id) / "meta.yaml"
-        meta = _load(path) or {}
+        meta = load_yaml(path) or {}
         # snapshot the prior state BEFORE applying updates: synthesizing the
         # history afterwards would record the new status as the origin point
         prior = self._normalize(meta)
@@ -335,26 +336,21 @@ class DataRepo:
             # current value. Repeat entries collapse.
             history = prior_history
             if not history or history[-1].get("status") != new_status:
-                history.append({"status": new_status, "date": f"{datetime.date.today():%Y-%m-%d}"})
+                history.append({"status": new_status, "date": _today()})
             meta["history"] = history
-        _dump(meta, path)
+        dump_yaml(meta, path)
         gitops.checkpoint(self.root, f"app:{app_id}", "edit details",
                           [f"applications/{app_id}/meta.yaml"])
 
-    @staticmethod
-    def _synth_history(meta: dict) -> list[dict]:
-        """Applications created before transition tracking get a one-entry
-        history from their creation date, so the flow view is not blank."""
-        status = DataRepo.LEGACY_STATUSES.get(meta.get("status"), meta.get("status"))
-        return [{"status": status or "not_started", "date": meta.get("created") or ""}]
-
     @classmethod
     def _normalize(cls, meta: dict) -> dict:
-        """Map retired status values and backfill history for reads."""
+        """Read-side migration: map retired status values, and give an
+        application written before transition tracking a one-entry history from
+        its creation date so the flow view is not blank."""
         meta = dict(meta)
         meta["status"] = cls.LEGACY_STATUSES.get(meta.get("status"), meta.get("status")) or "not_started"
         if not meta.get("history"):
-            meta["history"] = cls._synth_history(meta)
+            meta["history"] = [{"status": meta["status"], "date": meta.get("created") or ""}]
         return meta
 
     # -- proposals -----------------------------------------------------------
@@ -368,9 +364,7 @@ class DataRepo:
         out = []
         for f in sorted(p for ext in ("*.yaml", "*.yml") for p in d.glob(ext)):
             try:
-                data = _load(f) or {}
-                if not isinstance(data, dict):
-                    raise DataRepoError("file is not a YAML mapping")
+                data = _load_mapping(f)
                 out.append({"name": f.stem, "target": data.get("target"), "data": data, "error": None})
             except Exception as e:  # scanner/parser errors carry useful positions
                 out.append({
@@ -392,7 +386,7 @@ class DataRepo:
         """Write a proposal to its db/ target and delete the file. No checkpoint."""
         src = self._proposal_path(name)
         try:
-            data = _load(src) or {}
+            data = load_yaml(src) or {}
         except Exception as e:
             raise DataRepoError(
                 f"proposal {name} is not valid YAML ({type(e).__name__}). "
@@ -403,7 +397,7 @@ class DataRepo:
         target = data.pop("target", None)
         if not target or not re.fullmatch(r"db/[a-z0-9][a-z0-9-]*\.yaml", str(target)):
             raise DataRepoError(f"proposal {name} has no valid db/ target")
-        _dump(data, self.root / target)
+        dump_yaml(data, self.root / target)
         src.unlink()
         return str(target)
 

@@ -5,7 +5,9 @@ import { toast } from 'sonner'
 import { api, type Entry } from '@/lib/api'
 import ChatRail from '@/components/ChatRail'
 import EntryForm from '@/components/EntryForm'
+import ErrorText from '@/components/ErrorText'
 import MarkdownField from '@/components/MarkdownField'
+import { Page, PageHeader } from '@/components/Page'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -97,30 +99,30 @@ export default function Library() {
       </div>
 
       {/* center */}
-      <div className="min-w-0 flex-1 overflow-y-auto px-8 py-6">
-        {entriesQ.isError && (
-          <div className="mb-3 text-[13px] text-destructive">{(entriesQ.error as Error).message}</div>
-        )}
+      <Page>
+        <ErrorText error={entriesQ.error} className="mb-3" />
 
         {section === 'memory' ? (
           <MemoryDoc />
         ) : (
           <>
-            <div className="mb-5 flex items-end justify-between">
-              <div>
-                <h2 className="font-heading text-[26px] font-semibold leading-tight">{sectionMeta?.label}</h2>
-                <p className="mt-0.5 text-[13px] text-muted-foreground">
+            <PageHeader
+              title={sectionMeta?.label}
+              subtitle={
+                <>
                   {current.length}{' '}
                   {current.length === 1
                     ? sectionMeta?.plural.replace(/ies$/, 'y').replace(/s$/, '')
                     : sectionMeta?.plural}
-                </p>
-              </div>
-              <Button onClick={() => setEditing('new')}>
-                <Plus className="size-4" />
-                Add {section}
-              </Button>
-            </div>
+                </>
+              }
+              action={
+                <Button onClick={() => setEditing('new')}>
+                  <Plus className="size-4" />
+                  Add {section}
+                </Button>
+              }
+            />
 
             {editing === 'new' && <EntryForm type={section} onDone={onSaved} onCancel={() => setEditing(null)} />}
 
@@ -189,7 +191,7 @@ export default function Library() {
             )}
           </>
         )}
-      </div>
+      </Page>
 
       <ChatRail
         scope="db"
@@ -222,20 +224,19 @@ function MemoryDoc() {
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col">
-      <div className="mb-2 flex items-baseline justify-between">
-        <div>
-          <h2 className="font-heading text-[26px] font-semibold leading-tight">Memory</h2>
-          <p className="mt-0.5 max-w-[52ch] text-[13px] text-muted-foreground">
-            Standing context every application inherits - read by each tailoring session. Plain markdown, structured
-            however you like.
-          </p>
-        </div>
-        <Badge variant="outline" className="flex-none">
-          Shared context
-        </Badge>
-      </div>
+      <PageHeader
+        className="mb-2 items-baseline"
+        title="Memory"
+        subtitle="Standing context every application inherits - read by each tailoring session. Plain markdown, structured however you like."
+        subtitleClassName="max-w-[52ch]"
+        action={
+          <Badge variant="outline" className="flex-none">
+            Shared context
+          </Badge>
+        }
+      />
       <div className="mb-4 h-px bg-border" />
-      {memQ.isError && <div className="mb-3 text-[13px] text-destructive">{(memQ.error as Error).message}</div>}
+      <ErrorText error={memQ.error} className="mb-3" />
       {memQ.isSuccess && (
         <MarkdownField
           value={value}

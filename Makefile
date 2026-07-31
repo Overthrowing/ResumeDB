@@ -17,14 +17,19 @@ dev: sync
 sync:
 	cd backend && uv run python -m resumedb.datarepo
 
+# Backend only. --reload also puts main.py in dev mode, where :8000 serves the
+# API and points at :5173 instead of handing out a stale frontend/dist build.
 backend:
 	uv run uvicorn resumedb.main:app --reload --port 8000 --app-dir backend
 
 frontend:
 	cd frontend && pnpm dev
 
+# Backend test suite. uv run provisions .venv from uv.lock on first use.
 test:
 	uv run pytest backend/tests -q
 
+# Production frontend bundle into frontend/dist, which a non-reload backend
+# serves itself on :8000.
 build:
 	cd frontend && pnpm build

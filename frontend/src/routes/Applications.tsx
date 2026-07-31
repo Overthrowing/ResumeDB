@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router'
 import { ChevronRight, Plus, TriangleAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type AppStatus } from '@/lib/api'
 import ChatRail from '@/components/ChatRail'
+import ErrorText from '@/components/ErrorText'
+import { Page, PageHeader } from '@/components/Page'
+import StatusPill from '@/components/StatusPill'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,10 +21,9 @@ import { Field } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { cn } from '@/lib/utils'
-import { DEFAULT_TEMPLATE } from '@/lib/templates'
-
 import { PHASES, byPhase, statusMeta } from '@/lib/status'
+import { DEFAULT_TEMPLATE } from '@/lib/templates'
+import { cn } from '@/lib/utils'
 
 export default function Applications() {
   const navigate = useNavigate()
@@ -38,32 +40,22 @@ export default function Applications() {
 
   return (
     <div className="flex min-h-0 flex-1">
-      <div className="min-w-0 flex-1 overflow-y-auto px-8 py-6">
-        <div className="mb-5 flex items-end justify-between">
-          <div>
-            <h2 className="font-heading text-[26px] font-semibold leading-tight">Applications</h2>
-            <p className="mt-0.5 text-[13px] text-muted-foreground">
-              Each is a workbench: one job, tailored from your Library.
-            </p>
-          </div>
-          <Button onClick={() => setCreating(true)}>
-            <Plus className="size-4" />
-            New application
-          </Button>
-        </div>
+      <Page>
+        <PageHeader
+          title="Applications"
+          subtitle="Each is a workbench: one job, tailored from your Library."
+          action={
+            <Button onClick={() => setCreating(true)}>
+              <Plus className="size-4" />
+              New application
+            </Button>
+          }
+        />
 
         <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <button
-            onClick={() => setFilter('all')}
-            className={cn(
-              'rounded-full border px-3 py-1 text-xs transition-colors',
-              filter === 'all'
-                ? 'border-primary bg-accent font-medium text-accent-foreground'
-                : 'border-border text-muted-foreground hover:bg-accent/50',
-            )}
-          >
+          <FilterChip active={filter === 'all'} onClick={() => setFilter('all')}>
             All ({apps.length})
-          </button>
+          </FilterChip>
           {PHASES.map((phase) => {
             const shown = byPhase(phase.id).filter((s) => counts[s.id] || filter === s.id)
             if (shown.length === 0) return null
@@ -71,25 +63,20 @@ export default function Applications() {
               <div key={phase.id} className="flex flex-wrap items-center gap-1.5">
                 <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{phase.label}</span>
                 {shown.map((s) => (
-                  <button
+                  <FilterChip
                     key={s.id}
+                    active={filter === s.id}
                     onClick={() => setFilter(s.id as AppStatus)}
-                    className={cn(
-                      'rounded-full border px-3 py-1 text-xs transition-colors',
-                      filter === s.id
-                        ? 'border-primary bg-accent font-medium text-accent-foreground'
-                        : 'border-border text-muted-foreground hover:bg-accent/50',
-                    )}
                   >
                     {s.label} ({counts[s.id] || 0})
-                  </button>
+                  </FilterChip>
                 ))}
               </div>
             )
           })}
         </div>
 
-        {appsQ.isError && <div className="mb-3 text-[13px] text-destructive">{(appsQ.error as Error).message}</div>}
+        <ErrorText error={appsQ.error} className="mb-3" />
 
         {/* Below ~560px of content (a wide chat rail on a small window) the
             columns would compress into unreadable towers; scroll instead. */}
@@ -141,14 +128,7 @@ export default function Applications() {
                     </td>
                     <td className="whitespace-nowrap px-4 py-3">{a.company}</td>
                     <td className="whitespace-nowrap px-4 py-3">
-                      <span
-                        className={cn(
-                          'inline-flex rounded px-2.5 py-0.5 text-[11px] font-semibold tracking-wide',
-                          statusMeta(a.status).pill,
-                        )}
-                      >
-                        {statusMeta(a.status).label}
-                      </span>
+                      <StatusPill status={a.status} className="inline-flex tracking-wide" />
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">{a.deadline || '-'}</td>
                     <td className="px-2 py-3 text-muted-foreground">
@@ -179,7 +159,7 @@ export default function Applications() {
             navigate(`/applications/${id}`)
           }}
         />
-      </div>
+      </Page>
 
       <ChatRail
         scope="apps"
@@ -189,6 +169,30 @@ export default function Applications() {
         onDone={reload}
       />
     </div>
+  )
+}
+
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'rounded-full border px-3 py-1 text-xs transition-colors',
+        active
+          ? 'border-primary bg-accent font-medium text-accent-foreground'
+          : 'border-border text-muted-foreground hover:bg-accent/50',
+      )}
+    >
+      {children}
+    </button>
   )
 }
 
