@@ -96,7 +96,12 @@ def checkpoint(repo: Path, scope: str, message: str, paths: list[str] | None = N
         staged = _git(repo, "diff", "--cached", "--quiet", "--", *pathspec, check=False)
         if staged.returncode == 0:
             return None
-        _git(repo, "commit", "-m", f"{scope}: {message}", "--", *pathspec)
+        # Commit the index, not `commit -- <pathspec>`: the pathspec form
+        # re-reads the working tree and so drops a staged change with no
+        # worktree counterpart, e.g. untracking a file that is now gitignored.
+        # The add above already limited what this operation staged, and the
+        # repo lock keeps another operation from staging alongside it.
+        _git(repo, "commit", "-m", f"{scope}: {message}")
         return _git(repo, "rev-parse", "HEAD").stdout.strip()
 
 

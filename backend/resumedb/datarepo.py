@@ -117,11 +117,16 @@ def sync_boilerplate(path: Path, force: bool = False) -> list[str]:
     missing = [rule for rule in (".resumedb/", ".resumedb-tmp-*") if rule not in lines]
     if missing:
         atomic_write(gi, "\n".join([*lines, *missing]) + "\n")
-    gitops.untrack(path, MARKER)  # ignoring it is not enough once it is tracked
+    # ignoring it is not enough once it is tracked; the resulting index change
+    # must be part of this checkpoint, or adoption leaves the user's repo dirty
+    untracked_marker = gitops.untrack(path, MARKER)
     changed = gitops.changed_files(path, ".claude/skills", "CLAUDE.md", "AGENTS.md", "templates", ".gitignore")
-    if changed:
+    if changed or untracked_marker:
         verb = "overwrite" if force else "add"
-        gitops.checkpoint(path, "db", f"sync boilerplate from scaffold ({verb} {len(changed)} file(s))")
+        note = f"sync boilerplate from scaffold ({verb} {len(changed)} file(s))"
+        if untracked_marker:
+            note += f"; stop tracking {MARKER}/"
+        gitops.checkpoint(path, "db", note)
     return changed
 
 
