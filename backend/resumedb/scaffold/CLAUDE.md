@@ -31,9 +31,7 @@ inside it to tailor resumes per job application.
   task that justifies it.
 - resume.yaml must follow the schema in templates/SCHEMA.md exactly.
 - Truth policy: rephrasing, reordering, and mirroring job-description terminology
-  is always fine. A claim that goes beyond what db/ supports is an embellishment:
-  propose it, clearly marked as such, and let the user decide. Never silently
-  invent metrics or scope. If a metric is missing, ask the user for the number.
+  is always fine. If a metric is missing, ask the user for the number instead of making it up.
 - Edit resume.typ only to fix space constraints, never to change content.
 - Render from the repo root with:
   typst compile --root . --input data=/applications/<id>/resume.yaml applications/<id>/resume.typ applications/<id>/resume.pdf
