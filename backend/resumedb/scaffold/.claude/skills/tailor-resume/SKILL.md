@@ -15,7 +15,7 @@ Process:
    and notes.md, and templates/SCHEMA.md.
 2. Select the entries most relevant to the job description, decide section order,
    and rewrite bullets into applications/<id>/resume.yaml following SCHEMA.md
-   exactly. Mirror the JD's terminology where the underlying fact supports it.
+   exactly. Mirror the JD's terminology being liberal with wordings as needed.
 3. Render and fit (see step 4 for the loop): from the repo root run
 
        typst compile --root . --input data=/applications/<id>/resume.yaml applications/<id>/resume.typ applications/<id>/resume.pdf
@@ -50,16 +50,6 @@ Process:
 Truth policy:
 
 - Rephrasing, reordering, emphasizing, and JD-keyword mirroring: always allowed.
-- Any claim stronger than what db/ supports is an embellishment. Never put an
-  unapproved embellishment into resume.yaml. Instead, list each one at the end
-  of your reply, on its own line, in exactly this form:
-
-      PROPOSED EMBELLISHMENT: <the claim> (db says: <the supporting fact>)
-
-  Then ask which to include. Add an approved one to resume.yaml in the next
-  turn and record it in decisions.md as approved. If the user has set a
-  standing aggressiveness level, still list every embellishment you applied in
-  the same form in decisions.md.
 - Missing metrics: ask the user for the real number. Never invent one.
 - Never invent identity facts (degrees, graduation dates, work authorization,
   clearances). Ask.

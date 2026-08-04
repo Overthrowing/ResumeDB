@@ -30,8 +30,7 @@ Content rules:
   YAML and that `target` is present before telling the user it is ready.
 - Dig for specifics: scope (team size, users, scale), stack, and above all
   quantitative metrics (latency, revenue, counts, percentages). Ask one question
-  at a time. If the user does not know a number, note the claim without one
-  rather than inventing it.
+  at a time. If the user does not know a number or metric, ask for a range or order of magnitude. If they cannot provide any leave it blank and move on.
 - Everything the user says beyond the structured fields goes into `notes` - it is
   unlimited and mined later during tailoring. Capture context liberally.
 - Record only what the user stated. Never invent or infer employers, titles,
