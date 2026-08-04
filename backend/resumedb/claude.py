@@ -25,6 +25,11 @@ from typing import AsyncIterator
 CHAT_TIMEOUT = 600
 ONESHOT_TIMEOUT = 180
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+# One event is one line, and a line carries a whole tool result - reading the
+# db/ entries in one pass runs to megabytes. asyncio's default 64 KiB stream
+# limit turns that into "Separator is not found, and chunk exceed the limit"
+# and kills the turn mid-run, so give readline() room for a real payload.
+STREAM_LIMIT = 16 * 1024 * 1024
 
 
 class ClaudeError(Exception):
@@ -123,6 +128,7 @@ class ClaudeProcess:
         self.proc = await asyncio.create_subprocess_exec(
             *self.argv,
             cwd=self.cwd,
+            limit=STREAM_LIMIT,
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
@@ -134,10 +140,23 @@ class ClaudeProcess:
 
         stderr_task = asyncio.create_task(self.proc.stderr.read())
         got_result = False
+        oversized = False  # warn once, not once per dropped chunk
         try:
             async with asyncio.timeout(CHAT_TIMEOUT):
                 while True:
-                    raw = await self.proc.stdout.readline()
+                    try:
+                        raw = await self.proc.stdout.readline()
+                    except ValueError:
+                        # Still bigger than STREAM_LIMIT. asyncio drops the
+                        # chunk, so reading resumes mid-line and parse_line
+                        # discards the remainder. Losing one event beats losing
+                        # the turn, which is what an unhandled raise costs.
+                        if not oversized:
+                            oversized = True
+                            yield {"type": "warning", "message":
+                                   "One agent event was too large to read and was skipped. "
+                                   "The turn is still running."}
+                        continue
                     if not raw:
                         break
                     event = parse_line(raw.decode("utf-8", "replace"))

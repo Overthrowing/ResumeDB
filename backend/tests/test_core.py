@@ -246,3 +246,31 @@ def test_save_upload_in_an_app_scope_lands_in_that_application(repo):
     assert (repo.root / path).read_bytes() == b"\x89PNG"
     # committed on the application's own scope, so undo stays scoped
     assert any("upload posting.png" in e["subject"] for e in gitops.log(repo.root, f"app:{app_id}"))
+
+
+def test_first_real_resume_moves_an_application_to_in_progress(repo):
+    """A scaffolded application already has a resume.yaml, so only its sections
+    getting content counts as the draft starting."""
+    app_id = repo.create_application("Acme", "Engineer", "jd", "classic")
+    assert repo.get_application(app_id)["meta"]["status"] == "not_started"
+
+    # the empty scaffold must not count
+    assert repo.mark_drafted(app_id) is False
+    assert repo.get_application(app_id)["meta"]["status"] == "not_started"
+
+    repo.save_app_file(app_id, "resume.yaml", "name: Zed\nsections:\n- title: Experience\n  entries: []\n")
+    meta = repo.get_application(app_id)["meta"]
+    assert meta["status"] == "in_progress"
+    assert [h["status"] for h in meta["history"]] == ["not_started", "in_progress"]
+
+
+def test_marking_drafted_never_walks_back_a_later_status(repo):
+    """Re-tailoring an application you already sent must not undo that."""
+    app_id = repo.create_application("Acme", "Engineer", "jd", "classic")
+    repo.save_app_file(app_id, "resume.yaml", "sections:\n- title: X\n  entries: []\n")
+    repo.set_app_meta(app_id, status="applied")
+
+    repo.save_app_file(app_id, "resume.yaml", "sections:\n- title: Y\n  entries: []\n")
+    meta = repo.get_application(app_id)["meta"]
+    assert meta["status"] == "applied"
+    assert [h["status"] for h in meta["history"]] == ["not_started", "in_progress", "applied"]

@@ -310,6 +310,29 @@ class DataRepo:
         atomic_write(self.app_dir(app_id) / name, content)
         gitops.checkpoint(self.root, f"app:{app_id}", f"edit {name}",
                           [f"applications/{app_id}/{name}"])
+        if name == "resume.yaml":
+            self.mark_drafted(app_id)
+
+    def mark_drafted(self, app_id: str) -> bool:
+        """Move a still-untouched application to in_progress once its resume has
+        real content. Returns True if the status moved.
+
+        The signal is resume.yaml having sections: create_application scaffolds
+        the file with `sections: []`, so its existence proves nothing. Only
+        not_started advances - a later status is a statement the user made, and
+        re-tailoring an application they already sent must not walk it back.
+        """
+        try:
+            meta = _load_mapping(self.app_dir(app_id) / "meta.yaml")
+            if self._normalize(meta)["status"] != "not_started":
+                return False
+            resume = load_yaml(self.app_dir(app_id) / "resume.yaml") or {}
+        except (DataRepoError, OSError, ValueError):
+            return False  # a half-written or malformed app is not a status event
+        if not (isinstance(resume, dict) and resume.get("sections")):
+            return False
+        self.set_app_meta(app_id, status="in_progress")
+        return True
 
     META_FIELDS = {"company", "role", "status", "deadline", "source", "template", "outcome_note"}
     APP_STATUSES = [

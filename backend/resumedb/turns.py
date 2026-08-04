@@ -313,8 +313,12 @@ class TurnManager:
         if gitops.is_dirty(repo.root, scope):
             gitops.checkpoint(repo.root, scope, "agent turn")
             if scope.startswith("app:"):
-                result = render.render(repo.root, scope[4:])
+                app_id = scope[4:]
+                result = render.render(repo.root, app_id)
                 events.append({"type": "rendered", **result})
+                # the agent writes resume.yaml directly, so the API never sees
+                # the draft that starts an application
+                repo.mark_drafted(app_id)
         # The checkpoint above stages only this scope's paths, so a stray write
         # to db/ during an application turn would stay uncommitted - and the
         # warning above promises the opposite. Commit exactly those files under
