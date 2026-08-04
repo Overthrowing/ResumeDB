@@ -16,6 +16,21 @@ Process:
 2. Select the entries most relevant to the job description, decide section order,
    and rewrite bullets into applications/<id>/resume.yaml following SCHEMA.md
    exactly. Mirror the JD's terminology being liberal with wordings as needed.
+
+   When two entries are comparably relevant - neither covers a JD requirement the
+   other misses - keep the one that stands out more. An entry stands out when db/
+   records any of:
+   - external validation: won or placed in a competitive process, selected from a
+     named applicant pool, worked under a named lab or institution, published
+   - scale: real users, large data, sustained duration, a team led, budget or
+     compute
+   - technical depth: the hard part was built from scratch rather than assembled
+
+   A standout entry that is only loosely related still earns its place over a
+   routine one that matches the JD's wording exactly. Keep one or two of these,
+   not a page of them. This never overrides a requirement the JD names outright:
+   if the JD asks for something and only one entry demonstrates it, that entry
+   stays.
 3. Render and fit (see step 4 for the loop): from the repo root run
 
        typst compile --root . --input data=/applications/<id>/resume.yaml applications/<id>/resume.typ applications/<id>/resume.pdf
@@ -24,7 +39,9 @@ Process:
    happen.
 4. Fit to exactly 1 page. If it is 2+ pages, cut in this order and re-render
    after each pass:
-   1. whole entries with the weakest JD tie (oldest and least relevant first)
+   1. whole entries with the weakest JD tie (oldest and least relevant first).
+      Among entries with a comparable tie, cut the least standout first, and
+      never cut your strongest standout entry to keep a routine one.
    2. surplus bullets - trim the weakest, keeping 3-5 on the lead role and 1-2
       on older ones
    3. wording - tighten long bullets to one line each without dropping metrics
@@ -42,6 +59,8 @@ Process:
      reliability of our edge data plane")
    - keyword mirroring choices and any db content you considered but left out,
      with the reason
+   - when you kept a loosely-related entry because it stands out, say so and name
+     which of validation / scale / depth it was
    Decisions without a JD tie (space constraints, memory.md rules) name that
    reason instead. This overview is how the user audits your work - never skip
    or compress it to generalities. A run without a rewritten decisions.md is

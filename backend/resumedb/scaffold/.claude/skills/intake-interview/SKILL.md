@@ -31,6 +31,10 @@ Content rules:
 - Dig for specifics: scope (team size, users, scale), stack, and above all
   quantitative metrics (latency, revenue, counts, percentages). Ask one question
   at a time. If the user does not know a number or metric, ask for a range or order of magnitude. If they cannot provide any leave it blank and move on.
+- Ask whether the work was selected, placed, or recognized competitively, and out
+  of how many - a pool size or placement is a fact worth capturing. Tailoring uses
+  it to break ties between comparably relevant entries, so an unrecorded award is
+  a line that never makes the resume.
 - Everything the user says beyond the structured fields goes into `notes` - it is
   unlimited and mined later during tailoring. Capture context liberally.
 - Record only what the user stated. Never invent or infer employers, titles,
