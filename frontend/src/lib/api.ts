@@ -58,6 +58,8 @@ export interface AppMeta {
   outcome_note?: string
   /** Per-file parse failure surfaced by list_applications; null when meta.yaml read fine. */
   error?: string | null
+  /** Present on the list payload; drives which rows can be exported. */
+  has_pdf?: boolean
 }
 
 export interface Application {
@@ -255,6 +257,9 @@ export const api = {
   saveAppMeta: (id: string, updates: Partial<AppMeta>) =>
     req<{ ok: boolean }>(`/api/applications/${id}/meta`, json('PUT', updates)),
   render: (id: string) => req<RenderResult>(`/api/applications/${id}/render`, { method: 'POST' }),
+  deleteApplication: (id: string) => req<{ ok: boolean }>(`/api/applications/${id}`, { method: 'DELETE' }),
+  resetApplication: (id: string) => req<{ ok: boolean }>(`/api/applications/${id}/reset`, { method: 'POST' }),
+  exportUrl: (ids: string[]) => `/api/applications/export.zip?ids=${encodeURIComponent(ids.join(','))}`,
   audit: (id: string) => req<AuditResult>(`/api/applications/${id}/audit`, { method: 'POST' }),
 
   templates: () => req<string[]>('/api/templates'),

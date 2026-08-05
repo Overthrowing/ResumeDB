@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
+import { resumeFilename } from '@/lib/resumeFile'
 import { Download, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type Application, type RenderResult } from '@/lib/api'
@@ -101,7 +102,7 @@ export default function ResumeTab({
           <Button variant="secondary" size="sm" asChild>
             <a
               href={`/api/applications/${app.meta.id}/resume.pdf`}
-              download={`resume-${app.meta.company.toLowerCase()}.pdf`}
+              download={resumeFilename(app.meta)}
             >
               <Download className="size-3.5" />
               Export

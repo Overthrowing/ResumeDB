@@ -4,11 +4,14 @@ The `client` fixture (backend/conftest.py) points the app at a scaffolded temp
 data repo and a temp config file; `repo` is that same repo.
 """
 
+import io
 import shutil
+import zipfile
 
 import pytest
 
-from resumedb import turns
+from resumedb import gitops, turns
+from resumedb.fsio import load_yaml
 
 
 def test_health_does_not_mutate_the_repo(client, repo):
@@ -292,3 +295,62 @@ def test_mock_agent_tailor_render_e2e(client, repo, mock_agent):
     audit = client.post(f"/api/applications/{app_id}/audit")
     assert audit.status_code == 200
     assert audit.json()["extraction"]["ok"] is True  # every yaml token survives extraction
+
+
+def test_delete_application_removes_it_and_survives_in_history(client, repo):
+    app_id = repo.create_application("Acme", "Engineer", "jd", "classic")
+    assert client.delete(f"/api/applications/{app_id}").status_code == 200
+    assert not (repo.root / "applications" / app_id).exists()
+    assert app_id not in [a["id"] for a in client.get("/api/applications").json()]
+    # git-as-undo is the whole safety net for a destructive bulk action
+    subjects = [e["subject"] for e in gitops.log(repo.root, f"app:{app_id}")]
+    assert any("delete application" in s for s in subjects)
+    assert client.delete(f"/api/applications/{app_id}").status_code == 400  # already gone
+
+
+def test_reset_application_clears_output_and_keeps_the_job(client, repo):
+    app_id = repo.create_application("Acme", "Engineer", "the posting text", "classic")
+    d = repo.root / "applications" / app_id
+    repo.save_app_file(app_id, "resume.yaml", "sections:\n- title: Experience\n  entries: []\n")
+    repo.save_app_file(app_id, "notes.md", "lead with the ledger work")
+    (d / "decisions.md").write_text("why I did it")
+    (d / "resume.pdf").write_bytes(b"%PDF-1.7")
+    (d / "chats").mkdir(exist_ok=True)
+    (d / "chats" / "20260101-000000.jsonl").write_text('{"role":"user","text":"hi"}\n')
+    assert repo.get_application(app_id)["meta"]["status"] == "in_progress"
+
+    assert client.post(f"/api/applications/{app_id}/reset").status_code == 200
+
+    meta = repo.get_application(app_id)["meta"]
+    assert meta["status"] == "not_started"
+    assert meta["company"] == "Acme" and meta["role"] == "Engineer"
+    assert load_yaml(d / "resume.yaml")["sections"] == []      # back to the shell
+    assert not (d / "decisions.md").exists()
+    assert not (d / "resume.pdf").exists()
+    assert not (d / "chats").exists()
+    assert (d / "jd.md").read_text() == "the posting text"      # the job survives
+    assert (d / "notes.md").read_text() == "lead with the ledger work"
+    assert not gitops.is_dirty(repo.root, f"app:{app_id}")      # nothing left uncommitted
+
+
+def test_export_zip_names_entries_by_company_and_role(client, repo):
+    a = repo.create_application("Jane Street", "Linux Engineer", "jd", "classic")
+    b = repo.create_application("Jane Street", "Network Engineer", "jd", "classic")
+    (repo.root / "applications" / a / "resume.pdf").write_bytes(b"%PDF-a")
+    (repo.root / "applications" / b / "resume.pdf").write_bytes(b"%PDF-b")
+
+    res = client.get(f"/api/applications/export.zip?ids={a},{b}")
+    assert res.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(res.content)) as z:
+        names = sorted(z.namelist())
+    # company alone would collide: two roles at one company, one filename
+    assert names == [
+        "Resume - Jane Street - Linux Engineer.pdf",
+        "Resume - Jane Street - Network Engineer.pdf",
+    ]
+
+
+def test_export_zip_reports_when_nothing_is_rendered(client, repo):
+    app_id = repo.create_application("Acme", "Engineer", "jd", "classic")
+    assert client.get(f"/api/applications/export.zip?ids={app_id}").status_code == 404
+    assert client.get("/api/applications/export.zip?ids=").status_code == 400

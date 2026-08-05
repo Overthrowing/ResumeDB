@@ -237,8 +237,54 @@ class DataRepo:
                         "status": "not_started", "history": [],
                         "error": f"{type(e).__name__}: {str(e)[:300]}"}
             meta["id"] = d.name
+            meta["has_pdf"] = (d / "resume.pdf").exists()  # drives bulk export
             apps.append(meta)
         return apps
+
+    @staticmethod
+    def _blank_resume(role: str, profile: dict) -> dict:
+        """The empty shell a new application starts from. Reset restores it, so
+        an application that has been reset is indistinguishable from a new one."""
+        return {
+            "name": profile.get("name", ""),
+            "headline": role,
+            "contact": {k: v for k, v in profile.items() if k != "name"},
+            "sections": [],
+        }
+
+    def delete_application(self, app_id: str) -> None:
+        """Remove the application outright. The checkpoint is the safety net:
+        the folder is recoverable from History until the user prunes it."""
+        d = self.app_dir(app_id)
+        if not d.exists():
+            raise DataRepoError(f"no application {app_id}")
+        meta = load_yaml(d / "meta.yaml") or {}
+        label = f"{meta.get('company', app_id)} - {meta.get('role', '')}".strip(" -")
+        shutil.rmtree(d)
+        gitops.checkpoint(self.root, f"app:{app_id}", f"delete application ({label})")
+
+    def reset_application(self, app_id: str) -> None:
+        """Back to a freshly created application: the job survives, everything
+        derived from it does not. jd.md, notes.md and the meta details are what
+        the user typed; the resume, its PDF, the decisions log and the chat
+        history are all output that a re-tailor should regenerate from scratch."""
+        d = self.app_dir(app_id)
+        if not (d / "meta.yaml").exists():
+            raise DataRepoError(f"no application {app_id}")
+        meta = _load_mapping(d / "meta.yaml")
+        label = f"{meta.get('company', app_id)} - {meta.get('role', '')}".strip(" -")
+        # One lock for the whole reset: a checkpoint from another request must
+        # not land between the file wipe and the status change.
+        with gitops.repo_lock(self.root):
+            dump_yaml(self._blank_resume(meta.get("role", ""), self.get_profile()), d / "resume.yaml")
+            for name in ("resume.pdf", "decisions.md"):
+                (d / name).unlink(missing_ok=True)
+            shutil.rmtree(d / "chats", ignore_errors=True)
+            # set_app_meta only checkpoints meta.yaml, so the file wipe above
+            # needs its own commit; this one goes last so History reads
+            # "reset application" first
+            self.set_app_meta(app_id, status="not_started")
+            gitops.checkpoint(self.root, f"app:{app_id}", f"reset application ({label})")
 
     def app_dir(self, app_id: str) -> Path:
         if not SLUG_RE.fullmatch(app_id) or app_id == "chats":
@@ -279,15 +325,7 @@ class DataRepo:
         atomic_write(d / "jd.md", jd_text)
         atomic_write(d / "notes.md", "")
         shutil.copy(template_file, d / "resume.typ")
-        dump_yaml(
-            {
-                "name": profile.get("name", ""),
-                "headline": role,
-                "contact": {k: v for k, v in profile.items() if k != "name"},
-                "sections": [],
-            },
-            d / "resume.yaml",
-        )
+        dump_yaml(self._blank_resume(role, profile), d / "resume.yaml")
         gitops.checkpoint(self.root, f"app:{app_id}", f"create application ({company}, {role})")
         return app_id
 

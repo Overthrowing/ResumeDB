@@ -3,15 +3,19 @@ via the handlers in main.py; route code raises HTTPException or domain errors.
 """
 
 import asyncio
+import io
 import json
+import re
 import sys
+import zipfile
 from pathlib import Path
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse
 from pydantic import BaseModel
 
-from . import audit, config, datarepo, gitops, importer, render
+from . import audit, config, datarepo, gitops, importer, render, turns
+from .fsio import load_yaml
 from .providers import get_agent, model_for
 
 router = APIRouter(prefix="/api")
@@ -302,6 +306,44 @@ async def _fetch_jd(r: datarepo.DataRepo, app_id: str, url: str) -> None:
         pass  # placeholder jd.md stays; the user can paste the text instead
 
 
+def pdf_name(meta: dict) -> str:
+    """Company AND role: a folder of resume-google.pdf files is unusable once
+    you have applied to more than one team at the same company."""
+    parts = [str(meta.get(k, "")).strip() for k in ("company", "role")]
+    stem = " - ".join([p for p in parts if p]) or str(meta.get("id", "resume"))
+    return re.sub(r'[/\\:*?"<>|]', "-", f"Resume - {stem}")[:150] + ".pdf"
+
+
+@router.get("/applications/export.zip")
+def export_pdfs(ids: str = ""):
+    """One zip of rendered PDFs. A zip rather than N downloads: browsers gate
+    multi-file downloads behind a permission prompt, and the names have to be
+    rewritten anyway."""
+    r = repo()
+    wanted = [i for i in ids.split(",") if i.strip()]
+    if not wanted:
+        raise HTTPException(400, "no applications selected")
+    buf = io.BytesIO()
+    written = 0
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        for app_id in wanted:
+            pdf = r.app_dir(app_id) / "resume.pdf"  # validates the id
+            if not pdf.exists():
+                continue  # not rendered yet; the UI already says so
+            meta = load_yaml(r.app_dir(app_id) / "meta.yaml") or {}
+            z.writestr(pdf_name({**meta, "id": app_id}), pdf.read_bytes())
+            written += 1
+    # count, not buffer size: an empty zip is still 22 bytes of central
+    # directory, so a size check would hand back a valid but empty archive
+    if not written:
+        raise HTTPException(404, "none of the selected applications have a rendered PDF")
+    return Response(
+        buf.getvalue(),
+        media_type="application/zip",
+        headers={"Content-Disposition": 'attachment; filename="resumes.zip"'},
+    )
+
+
 @router.get("/applications/{app_id}")
 def get_application(app_id: str):
     return repo().get_application(app_id)
@@ -332,6 +374,27 @@ def render_application(app_id: str):
     r = repo()
     r.app_dir(app_id)
     return render.render(r.root, app_id)
+
+
+def _no_turn_running(app_id: str, verb: str) -> None:
+    """Deleting or wiping an application out from under a live agent leaves the
+    turn writing into a folder that no longer means anything."""
+    if turns.manager.active_convs(f"app:{app_id}"):
+        raise HTTPException(409, f"a turn is running on this application; stop it before you {verb} it")
+
+
+@router.delete("/applications/{app_id}")
+def delete_application(app_id: str):
+    _no_turn_running(app_id, "delete")
+    repo().delete_application(app_id)
+    return {"ok": True}
+
+
+@router.post("/applications/{app_id}/reset")
+def reset_application(app_id: str):
+    _no_turn_running(app_id, "reset")
+    repo().reset_application(app_id)
+    return {"ok": True}
 
 
 @router.get("/applications/{app_id}/resume.pdf")
