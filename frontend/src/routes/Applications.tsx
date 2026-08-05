@@ -1,10 +1,21 @@
 import { useState, type ReactNode } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router'
-import { CheckSquare, ChevronRight, Download, Plus, RotateCcw, Trash2, TriangleAlert, X } from 'lucide-react'
+import {
+  CheckSquare,
+  ChevronRight,
+  Download,
+  Plus,
+  RotateCcw,
+  Sparkles,
+  Trash2,
+  TriangleAlert,
+  X,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { api, type AppMeta, type AppStatus } from '@/lib/api'
 import { useActiveTurns } from '@/chat/active'
+import { sendMessage } from '@/chat/store'
 import ChatRail from '@/components/ChatRail'
 import ErrorText from '@/components/ErrorText'
 import { Page, PageHeader } from '@/components/Page'
@@ -34,6 +45,9 @@ import { PHASES, byPhase, statusMeta } from '@/lib/status'
 import { DEFAULT_TEMPLATE } from '@/lib/templates'
 import { cn } from '@/lib/utils'
 
+/** Same wording the tailoring assistant expects; the skill does the rest. */
+const TAILOR_PROMPT = 'Tailor the resume for this application.'
+
 export default function Applications() {
   const navigate = useNavigate()
   const qc = useQueryClient()
@@ -52,6 +66,7 @@ export default function Applications() {
 
   // Selection survives filter changes only for rows still on screen: acting on
   // an application you can no longer see is how bulk delete goes wrong.
+  const notStarted = apps.filter((a) => a.status === 'not_started' && !a.error)
   const visibleIds = filtered.map((a) => a.id)
   const selectedVisible = visibleIds.filter((id) => selected.has(id))
   const toggle = (id: string) =>
@@ -69,6 +84,19 @@ export default function Applications() {
           subtitle="Each is a workbench: one job, tailored from your Library."
           action={
             <div className="flex items-center gap-2">
+              {!selecting && notStarted.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setFilter('not_started')
+                    setSelected(new Set(notStarted.map((a) => a.id)))
+                    setSelecting(true)
+                  }}
+                >
+                  <Sparkles className="size-4" />
+                  Tailor {notStarted.length} not started
+                </Button>
+              )}
               <Button
                 variant={selecting ? 'default' : 'outline'}
                 onClick={() => {
@@ -279,7 +307,7 @@ function RowCheckbox({ a, checked, onToggle }: { a: AppMeta; checked: boolean; o
   )
 }
 
-type BulkAction = 'delete' | 'reset'
+type BulkAction = 'delete' | 'reset' | 'tailor'
 
 const ACTION_COPY: Record<BulkAction, { title: string; verb: string; body: string; danger: boolean }> = {
   delete: {
@@ -289,6 +317,15 @@ const ACTION_COPY: Record<BulkAction, { title: string; verb: string; body: strin
       'Removes the folder and everything in it. Each deletion is checkpointed, so you can still ' +
       'recover it from the Versions tab of any application until you prune history.',
     danger: true,
+  },
+  tailor: {
+    title: 'Tailor these resumes',
+    verb: 'Tailor',
+    body:
+      'Starts one tailoring turn per application, all at once. Each is a full agent run against ' +
+      'your Library, so this costs real model usage and takes minutes. They run in the background - ' +
+      'you can leave this page, and the sidebar shows what is still working.',
+    danger: false,
   },
   reset: {
     title: 'Reset applications',
@@ -325,6 +362,13 @@ function SelectionBar({
   const exportable = chosen.filter((a) => a.has_pdf)
 
   const run = async (action: BulkAction) => {
+    if (action === 'tailor') {
+      actionable.forEach((a) => sendMessage(`app:${a.id}`, TAILOR_PROMPT))
+      setConfirming(null)
+      toast.success(`Started ${actionable.length} tailoring turn${actionable.length === 1 ? '' : 's'}.`)
+      onDone()
+      return
+    }
     setBusy(true)
     const call = action === 'delete' ? api.deleteApplication : api.resetApplication
     const failures: string[] = []
@@ -390,18 +434,37 @@ function SelectionBar({
             ))}
           </SelectContent>
         </Select>
-        <Button variant="outline" size="sm" asChild={exportable.length > 0} disabled={exportable.length === 0}>
+        {/* One label, one width. Swapping in "No rendered PDFs" made the
+            button jump wider than its neighbours and wrap its own icon; the
+            reason belongs in the tooltip, not in the label. */}
+        <Button
+          variant="outline"
+          size="sm"
+          asChild={exportable.length > 0}
+          disabled={exportable.length === 0}
+          title={
+            !ids.length
+              ? 'Select applications to export'
+              : exportable.length === 0
+                ? 'None of the selected applications have a rendered PDF yet'
+                : `Download ${exportable.length} PDF${exportable.length === 1 ? '' : 's'} as a zip`
+          }
+        >
           {exportable.length > 0 ? (
             <a href={api.exportUrl(exportable.map((a) => a.id))} download>
               <Download className="size-3.5" />
-              Export {exportable.length} PDF{exportable.length === 1 ? '' : 's'}
+              Export {exportable.length}
             </a>
           ) : (
-            <span>
+            <>
               <Download className="size-3.5" />
-              No rendered PDFs
-            </span>
+              Export
+            </>
           )}
+        </Button>
+        <Button size="sm" disabled={busy || !actionable.length} onClick={() => setConfirming('tailor')}>
+          <Sparkles className="size-3.5" />
+          Tailor
         </Button>
         <Button variant="outline" size="sm" disabled={busy || !actionable.length} onClick={() => setConfirming('reset')}>
           <RotateCcw className="size-3.5" />
